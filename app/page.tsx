@@ -2,6 +2,7 @@
 // import AboutUsSection from './components/AboutUsSection'
 import CuratedCollection from "@/components/CuratedCollection"
 import HeroSection from "@/components/HeroSection"
+import AboutPage from '@/components/About'
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
 
       </main>
       <CuratedCollection />
+      <AboutPage />
       </>
   )
 }

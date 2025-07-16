@@ -198,7 +198,7 @@ export default function Footer() {
             {/* Copyright */}
             <div className="mt-12 pt-8 border-t border-t-[#CDB04E80] border-gray-600 text-center">
               <p className="text-gray-400 text-sm">
-              Copyright © Novaa Real Estate | Designed by NEXGENO
+              Copyright &copy; Novaa Real Estate | Designed by NEXGENO
               </p>
             </div>
           </div>
