@@ -1,10 +1,8 @@
 "use client";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/index";
-import { setRegion } from "@/redux/slices/collectionSlice";
 import CollectionCard from "./CollectionCard";
-import { Button } from "@/components/ui/button";
 import RegionTabs from "./RegionTabs";
 import { useAppDispatch } from "@/redux/hooks";
 

@@ -7,11 +7,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux";
 
-interface CardProps {
-  name: string;
-  image: string;
-  price: string;
-}
+// interface CardProps {
+//   name: string;
+//   image: string;
+//   price: string;
+// }
 
 export default function CollectionCard() {
   const { selectedRegion, allData } = useAppSelector(
