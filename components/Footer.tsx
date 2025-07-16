@@ -40,7 +40,7 @@ export default function Footer() {
               className="font-josefin font-light
  text-lg sm:text-xl mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto"
             >
-              Live the island life you've always imagined - serene, luxurious,
+              Live the island life you&apos;ve always imagined - serene, luxurious,
               and yours to own.
             </p>
 
@@ -65,7 +65,7 @@ export default function Footer() {
                 </h3>
                 <p className="text-[#FFFFFF] text-sm font-normal leading-loose">
                   is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry's standard dummy text ever
+                  Lorem Ipsum has been the industry&apos;s standard dummy text ever
                   since the 1500s,
                 </p>
               </div>
