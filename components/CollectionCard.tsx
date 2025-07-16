@@ -68,7 +68,7 @@ export default function CollectionCard() {
           transition={{ delay: index * 0.1, duration: 0.6 }}
           className="relative group rounded-3xl overflow-hidden shadow-xl bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
-          <div className="relative h-[80vh] overflow-hidden group">
+          <div className="relatives h-[60vh] sm:h-[80vh] overflow-hidden group">
             {/* Background Image */}
             <AnimatePresence mode="wait">
               <motion.div

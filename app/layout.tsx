@@ -3,8 +3,9 @@ import { Josefin_Sans
 } from 'next/font/google'
 // import { Providers } from './providers'
 import { cn } from '@/lib/utils' // (if using Shadcn's `cn` helper)
-import Navbar from '@/components/Navbar'
 import { Providers } from '@/lib/providers'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 
 
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Navbar />
           {children}
         </Providers>
+        <Footer />
       </body>
     </html>
   )

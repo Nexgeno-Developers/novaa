@@ -20,12 +20,12 @@ export default function HeroSection() {
 
 
       {/* Text Overlay */}
-      <div className=" font-cinzel absolute bottom-10 left-10 z-10 text-white max-w-[80%]">
+      <div className=" font-cinzel absolute left-0 sm:absolute bottom-[10rem] p-5 sm:bottom-10 sm:left-10 z-10 text-white max-w-[80%]">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-[60px] leading-[100%] tracking-[0%] font-cinzel font-normal"
+          className="text-[50px] sm:text-[60px] leading-[100%] tracking-[0%] font-cinzel font-normal"
         >
           Experience <span className="font-semibold">Unparalleled</span>
         </motion.h2>
