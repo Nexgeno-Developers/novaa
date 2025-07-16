@@ -53,7 +53,7 @@ export default function AboutPage() {
 
       {/* NOVA Background Text - Between both images (z-30) */}
       <motion.div
-        className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none"
+        className="hidden sm:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none"
         style={{
           y: novaY,
           opacity: novaOpacity,
@@ -85,7 +85,7 @@ export default function AboutPage() {
       </div>
 
       {/* Content - Topmost layer (z-50) */}
-      <div className="relative z-50 flex flex-col justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="relative z-50 flex flex-col justify-between sm:justify-center min-h-screen px-4 sm:px-6 lg:px-8">
         {/* About Heading */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -116,7 +116,7 @@ export default function AboutPage() {
                 </h3>
                 <p className="text-gray-300 text-base sm:text-sm leading-relaxed mb-8">
                   is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry's standard dummy text ever
+                  Lorem Ipsum has been the industry&apos;s standard dummy text ever
                   since the 1500s, when an unknown printer took a galley of type
                   and scrambled it to make a type specimen book. It has survived
                   not only five centuries, but also the leap into electronic
@@ -146,23 +146,6 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
-
-      {/* Mobile Responsive Adjustments */}
-      <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap");
-
-        @media (max-width: 768px) {
-          .mobile-nova {
-            font-size: 120px !important;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .mobile-nova {
-            font-size: 80px !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
