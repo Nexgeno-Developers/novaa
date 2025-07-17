@@ -104,7 +104,7 @@ const CrisisInvestPeaceSection = () => {
             </h3>
             <p className="font-josefin font-light text-[#303030] text-lg lg:text-xl max-w-4xl mx-auto ">
               From pandemics to storms, uncertainties may pause life in india.
-              But your investment journey doesn't have to stop. Phuket is
+              But your investment journey doesn&apos;t have to stop. Phuket is
               stable, safe, and growing - keep your dreams moving forward.
             </p>
           </motion.div>
