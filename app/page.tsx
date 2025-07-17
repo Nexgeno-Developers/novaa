@@ -9,6 +9,7 @@ import NovaaAdvantageSection from '@/components/NovaaAdvantageSection'
 import ClientSection from '@/components/ClientSection'
 import InvestSection from '@/components/InvestSection'
 import InvestorInsightsSection from '@/components/InvestorInsightsSection'
+import Testimonials from '@/components/Testimonials'
 
 
 export default function Home() {
@@ -27,6 +28,7 @@ export default function Home() {
       <ClientSection />
       <InvestSection />
       <InvestorInsightsSection />
+      <Testimonials />
       </>
   )
 }
