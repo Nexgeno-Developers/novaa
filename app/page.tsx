@@ -8,6 +8,7 @@ import PhuketPropertiesSection from '@/components/PhuketPropertiesSection'
 import NovaaAdvantageSection from '@/components/NovaaAdvantageSection'
 import ClientSection from '@/components/ClientSection'
 import InvestSection from '@/components/InvestSection'
+import InvestorInsightsSection from '@/components/InvestorInsightsSection'
 
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
       <NovaaAdvantageSection />
       <ClientSection />
       <InvestSection />
+      <InvestorInsightsSection />
       </>
   )
 }
