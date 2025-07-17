@@ -60,16 +60,16 @@ export default function AboutPage() {
         }}
       >
         <h1
-          className="text-yellow-300  font-normal leading-none tracking-normal select-none"
+          className="text-yellow-300 leading-none select-none"
           style={{
             fontFamily: "Cinzel, serif",
-            fontSize: "clamp(120px, 15vw, 200px)",
+            fontSize: "clamp(220px, 15vw, 300px)",
             lineHeight: "100%",
             letterSpacing: "0%",
             fontWeight: 400,
           }}
         >
-          NOVA
+          NOVAA
         </h1>
       </motion.div>
 

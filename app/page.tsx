@@ -3,6 +3,8 @@
 import CuratedCollection from "@/components/CuratedCollection"
 import HeroSection from "@/components/HeroSection"
 import AboutPage from '@/components/About'
+import WhyInvestSection from '@/components/WhyInvestSection'
+
 
 export default function Home() {
   return (
@@ -14,6 +16,8 @@ export default function Home() {
       </main>
       <CuratedCollection />
       <AboutPage />
+      <WhyInvestSection />
+      
       </>
   )
 }
