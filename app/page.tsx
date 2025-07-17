@@ -4,6 +4,7 @@ import CuratedCollection from "@/components/CuratedCollection"
 import HeroSection from "@/components/HeroSection"
 import AboutPage from '@/components/About'
 import WhyInvestSection from '@/components/WhyInvestSection'
+import PhuketPropertiesSection from '@/components/PhuketPropertiesSection'
 
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <CuratedCollection />
       <AboutPage />
       <WhyInvestSection />
+      <PhuketPropertiesSection />
       
       </>
   )

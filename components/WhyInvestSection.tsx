@@ -3,7 +3,6 @@
 import React from 'react'
 import { motion, Variants } from 'framer-motion'
 import Image from 'next/image'
-import { TrendingUp, DollarSign, MapPin, BarChart3 } from 'lucide-react'
 
 export default function WhyInvestSection() {
   const investmentPoints = [
