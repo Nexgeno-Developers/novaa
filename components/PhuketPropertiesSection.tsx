@@ -125,7 +125,7 @@ const PhuketPropertiesSection = () => {
               variants={itemVariants}
               className="font-josefin text-[#FFFFFF] text-md lg:text-lg font-light max-w-2xl"
             >
-              Explore our Curated Selection of Luxury Residences. Whether you're
+              Explore our Curated Selection of Luxury Residences. Whether you&#39;re
               seeking a beachfront villa, an investment opportunity, or a
               peaceful escape, unveil infinite blue development opportunities
               built of lifestyle and location in Phuket.
