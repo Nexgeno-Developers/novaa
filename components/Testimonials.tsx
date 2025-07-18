@@ -111,7 +111,7 @@ const TestimonialCard = ({ testimonial, isActive }) => {
         transition={{ delay: 0.2 }}
         className="text-[#303030CC] text-base leading-relaxed mb-8 flex-grow"
       >
-        "{testimonial.quote}"
+        &quot;{testimonial.quote}&quot;
       </motion.p>
 
       <motion.div
