@@ -43,7 +43,7 @@ const testimonials = [
     role: "Business Magnate, Singapore",
     rating: 5,
     quote:
-      "“From visa assistance to legal paperwork, Novaa handled everything flawlessly. A truly luxurious experience.” — Mr. David Chen, Business Magnate, Singapore",
+      "From visa assistance to legal paperwork, Novaa handled everything flawlessly. A truly luxurious experience. — Mr. David Chen, Business Magnate, Singapore",
     avatar: "/testimonials/image-one.png",
     demo: "Demo",
   },
@@ -53,7 +53,7 @@ const testimonials = [
     role: "Entrepreneur, Mumbai",
     rating: 5,
     quote:
-      "“Novaa transformed my investment journey. Their transparency and end-to-end support made owning a luxury property in Phuket effortless.” — Mr. Arjun Mehra, Entrepreneur, Mumbai",
+      "Novaa transformed my investment journey. Their transparency and end-to-end support made owning a luxury property in Phuket effortless. — Mr. Arjun Mehra, Entrepreneur, Mumbai",
     avatar: "/testimonials/image-two.png",
     demo: "Demo",
   },
@@ -63,7 +63,7 @@ const testimonials = [
     role: "Investor, London",
     rating: 5,
     quote:
-      "“The rental income from my Layan Verde property exceeded my expectations. Novaa’s management is impeccable.” — Ms. Elena Volkov, Investor, London",
+      "The rental income from my Layan Verde property exceeded my expectations. Novaa management is impeccable. — Ms. Elena Volkov, Investor, London",
     avatar: "/testimonials/image-three.png",
     demo: "Demo",
   },
