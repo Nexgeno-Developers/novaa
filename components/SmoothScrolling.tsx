@@ -1,9 +1,13 @@
 "use client";
 import { ReactLenis, useLenis } from 'lenis/react'
+import { ReactNode } from 'react';
 
-function SmoothScrolling({ children } : any) {
+type SmoothScrollingProps = {
+  children: ReactNode;
+};
+
+function SmoothScrolling({ children } : SmoothScrollingProps) {
   return (
-    // @ts-ignore
     <ReactLenis root>
       {children}
     </ReactLenis>
