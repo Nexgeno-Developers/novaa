@@ -30,25 +30,25 @@ export default function Navbar() {
       {/* Middle: Desktop Navbar */}
       <nav className="font-josefin text-lg font-semibold hidden lg:flex items-center space-x-8 ml-auto mr-10">
         <Link
-          href="#"
+          href="/"
           className="hover:text-[#F0DE9C] transition-colors duration-300"
         >
           Home
         </Link>
         <Link
-          href="#"
+          href="about-us"
           className="hover:text-[#F0DE9C] transition-colors duration-300"
         >
           About Us
         </Link>
         <Link
-          href="#"
+          href="/project"
           className="hover:text-[#F0DE9C] transition-colors duration-300"
         >
           Projects
         </Link>
         <Link
-          href="#"
+          href="/blog"
           className="hover:text-[#F0DE9C] transition-colors duration-300"
         >
           Blogs
