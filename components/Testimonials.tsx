@@ -10,7 +10,7 @@ type UseCarouselOptions = {
 };
 
 // Simple carousel hook (replacing Embla for this demo)
-const useCarousel = <T = any>(slides: T[], options: UseCarouselOptions = {}) => {
+const useCarousel = (slides: Testimonial[], options: UseCarouselOptions = {}) => {
   console.log("Slides ", slides);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { autoplay = false, delay = 5000 } = options;
@@ -155,7 +155,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
 };
 
 export default function EliteClientsTestimonials() {
-  const { currentIndex, scrollNext, scrollPrev } = useCarousel<Testimonial>(testimonials, {
+  const { currentIndex, scrollNext, scrollPrev } = useCarousel(testimonials, {
     autoplay: true,
     delay: 5000,
   });
