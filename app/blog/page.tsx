@@ -14,13 +14,13 @@ export default function Blog() {
             {galleryImages.slice(0, 3).map((img, idx) => (
               <div
                 key={idx}
-                className="relative w-full max-w-[615px] h-[720px] rounded-[40px] overflow-hidden"
+                className="relative w-full max-w-[615px] h-[720px] rounded-[40px] overflow-hidden group"
               >
                 <Image
                   src={img.src}
                   alt={`Gallery ${idx + 1}`}
                   fill
-                  className="object-cover rounded-[40px]"
+                  className="object-cover rounded-[40px] group-hover:scale-105 transition-all duration-500"
                 />
                 {/* Overlay */}
                 <div className="absolute bottom-0 left-0 p-4 z-10 text-white max-w-[474px]">
@@ -38,17 +38,17 @@ export default function Blog() {
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col gap-10 w-full md:w-1/2">
+          <div className="flex flex-col gap-10 w-full md:w-1/2 ">
             {galleryImages.slice(3, 6).map((img, idx) => (
               <div
                 key={idx}
-                className="relative w-full max-w-[615px] h-[540px] rounded-[40px] overflow-hidden"
+                className="relative w-full max-w-[615px] h-[540px] rounded-[40px] overflow-hidden group"
               >
                 <Image
                   src={img.src}
                   alt={`Gallery ${idx + 4}`}
                   fill
-                  className="object-cover rounded-[40px]"
+                  className="object-cover rounded-[40px] group-hover:scale-105 transition-all duration-500"
                 />
                 {/* Overlay */}
                 <div className="absolute bottom-0 left-0 p-4 z-10 text-white max-w-[474px]">

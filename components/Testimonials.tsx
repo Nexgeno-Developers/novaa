@@ -11,7 +11,7 @@ type UseCarouselOptions = {
 
 // Simple carousel hook (replacing Embla for this demo)
 const useCarousel = (slides: Testimonial[], options: UseCarouselOptions = {}) => {
-  console.log("Slides ", slides);
+  // console.log("Slides ", slides);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { autoplay = false, delay = 5000 } = options;
 
