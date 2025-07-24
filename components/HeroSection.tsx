@@ -27,13 +27,13 @@ export default function HeroSection() {
           transition={{ duration: 1 }}
           className="text-[50px] sm:text-[60px] leading-[100%] tracking-[0%] font-cinzel font-normal"
         >
-          Experience <span className="font-semibold">Unparalleled</span>
+          Experience Unparalleled
         </motion.h2>
         <motion.h3
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-3xl md:text-4xl text-[#F0DE9C] mt-2 font-cinzel"
+          className="font-bold text-3xl md:text-5xl text-[#F0DE9C] mt-2 font-cinzel"
         >
           Luxury in Thailand
         </motion.h3>

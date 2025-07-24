@@ -15,13 +15,12 @@ export default function CuratedCollection() {
   return (
     <section className="py-20 bg-[#fffef8]">
       <div className="flex flex-col sm:flex-row justify-around items-center p-2">
-        <div className="text-center mb-10 flex flex-col justify-center items-center">
-          <h2 className="text-4xl font-serif mb-2 text-[#D4AF37]">
-            CURATED <span className="text-black">COLLECTION</span>
+        <div className="mb-10 flex flex-col justify-center items-start">
+          <h2 className="font-cinzel text-4xl font-extrabold mb-2 text-[#D4AF37]">
+            CURATED <span className="text-black font-bold">COLLECTION</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Discover our exclusive portfolio of luxury homes...
-          </p>
+          <p className="font-josefin font-light text-[#303030] max-w-2xl mx-auto">
+          Discover our exclusive portfolio of luxury  homes in Thailand's most prestigious locations, each offering exceptional returns and unparalleled lifestyle experiences</p>
         </div>
 
         <div className=" flex flex-col sm:flex-row justify-center items-center mb-10">

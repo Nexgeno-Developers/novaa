@@ -4,8 +4,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
+type UseCarouselOptions = {
+  autoplay?: boolean;
+  delay?: number;
+};
+
 // Simple carousel hook (replacing Embla for this demo)
-const useCarousel = (slides, options = {}) => {
+const useCarousel = <T = any>(slides: T[], options: UseCarouselOptions = {}) => {
+  console.log("Slides ", slides);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { autoplay = false, delay = 5000 } = options;
 
@@ -17,7 +23,7 @@ const useCarousel = (slides, options = {}) => {
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
-  const scrollTo = useCallback((index) => {
+  const scrollTo = useCallback((index: number) => {
     setCurrentIndex(index);
   }, []);
 
@@ -36,7 +42,17 @@ const useCarousel = (slides, options = {}) => {
   };
 };
 
-const testimonials = [
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  rating: number;
+  quote: string;
+  avatar: string;
+  demo: string;
+}
+
+const testimonials : Testimonial[] = [
   {
     id: 1,
     name: "Mr. David Chen",
@@ -70,10 +86,10 @@ const testimonials = [
 ];
 
 interface Rating {
-    rating : number
+  rating: number;
 }
 
-const StarRating = ({ rating } : Rating) => {
+const StarRating = ({ rating }: Rating) => {
   return (
     <div className="flex gap-1 mb-4">
       {[...Array(5)].map((_, index) => (
@@ -95,7 +111,12 @@ const StarRating = ({ rating } : Rating) => {
   );
 };
 
-const TestimonialCard = ({ testimonial, isActive }) => {
+type TestimonialCardProps = {
+  testimonial: Testimonial; // or a more specific type like `Testimonial[]`
+  isActive: boolean;
+};
+
+const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -119,7 +140,7 @@ const TestimonialCard = ({ testimonial, isActive }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
         className="flex justify-between items-center gap-4"
-      > 
+      >
         <p className="font-light ">Demo</p>
         <div className="relative flex justify-end">
           <img
@@ -134,7 +155,7 @@ const TestimonialCard = ({ testimonial, isActive }) => {
 };
 
 export default function EliteClientsTestimonials() {
-  const { currentIndex, scrollNext, scrollPrev } = useCarousel(testimonials, {
+  const { currentIndex, scrollNext, scrollPrev } = useCarousel<Testimonial>(testimonials, {
     autoplay: true,
     delay: 5000,
   });

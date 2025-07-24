@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils' // (if using Shadcn's `cn` helper)
 import { Providers } from '@/lib/providers'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import SmoothScrolling from "@/components/SmoothScrolling";
+
 
 
 
@@ -26,7 +28,10 @@ export default function RootLayout({
       <body className={cn(josefin_sans.className)}>
         <Providers>
         <Navbar />
+        <SmoothScrolling>
+
           {children}
+        </SmoothScrolling>
         </Providers>
         <Footer />
       </body>

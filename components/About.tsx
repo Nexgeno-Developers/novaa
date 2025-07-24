@@ -19,7 +19,7 @@ export default function AboutPage() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[80vh] w-full overflow-hidden py-[15vh]"
+      className="relative min-h-[100vh] w-full overflow-hidden py-[15vh]"
     >
       {/* Bottom Background Image - WITH clouds (z-10) */}
       <div className="absolute inset-0 z-10">
@@ -33,42 +33,34 @@ export default function AboutPage() {
       </div>
 
       {/* Gradient Overlay - Bottom half */}
-       {/* Gradient Overlay - Bottom half with scroll and hover effects */}
-       <motion.div 
+      {/* Gradient Overlay - Bottom half with scroll and hover effects */}
+      <motion.div
         className="absolute inset-0 z-45 transition-all duration-500"
         style={{
           background: useTransform(
-            scrollYProgress, 
-            [0, 1], 
+            scrollYProgress,
+            [0, 1],
             [
-              'linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 1) 100%)',
-              'linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 0.25) 100%)'
+              "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 1) 100%)",
+              "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 0.25) 100%)",
             ]
-          )
+          ),
         }}
         whileHover={{
-          background: 'linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 1) 100%)'
+          background:
+            "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 1) 100%)",
         }}
       />
 
       {/* NOVA Background Text - Between both images (z-30) */}
       <motion.div
-        className="hidden sm:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none"
+        className="hidden sm:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none transition-all duration-100"
         style={{
           y: novaY,
           opacity: novaOpacity,
         }}
       >
-        <h1
-          className="text-yellow-300 leading-none select-none"
-          style={{
-            fontFamily: "Cinzel, serif",
-            fontSize: "clamp(220px, 15vw, 300px)",
-            lineHeight: "100%",
-            letterSpacing: "0%",
-            fontWeight: 400,
-          }}
-        >
+        <h1 className="font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-[200px]">
           NOVAA
         </h1>
       </motion.div>
@@ -94,7 +86,7 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center mb-16 lg:mb-24"
         >
-          <h2 className="text-5xl sm:text-6xl lg:text-7xl font-light text-white mb-4">
+          <h2 className="font-josefin text-5xl sm:text-6xl lg:text-[80px] font-light text-white mb-4">
             About
           </h2>
         </motion.div>
@@ -116,13 +108,13 @@ export default function AboutPage() {
                 </h3>
                 <p className="text-gray-300 text-base sm:text-sm leading-relaxed mb-8">
                   is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry&apos;s standard dummy text ever
-                  since the 1500s, when an unknown printer took a galley of type
-                  and scrambled it to make a type specimen book. It has survived
-                  not only five centuries, but also the leap into electronic
-                  typesetting, remaining essentially unchanged. It was
-                  popularised in the 1960s with the release of Letraset sheets
-                  containing Lorem Ipsum passages, and more recently with
+                  Lorem Ipsum has been the industry&apos;s standard dummy text
+                  ever since the 1500s, when an unknown printer took a galley of
+                  type and scrambled it to make a type specimen book. It has
+                  survived not only five centuries, but also the leap into
+                  electronic typesetting, remaining essentially unchanged. It
+                  was popularised in the 1960s with the release of Letraset
+                  sheets containing Lorem Ipsum passages, and more recently with
                   desktop publishing software like Aldus PageMaker including
                   versions of Lorem Ipsum.
                 </p>
