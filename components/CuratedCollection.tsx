@@ -20,7 +20,7 @@ export default function CuratedCollection() {
             CURATED <span className="text-black font-bold">COLLECTION</span>
           </h2>
           <p className="font-josefin font-light text-[#303030] max-w-2xl mx-auto">
-          Discover our exclusive portfolio of luxury  homes in Thailand's most prestigious locations, each offering exceptional returns and unparalleled lifestyle experiences</p>
+          Discover our exclusive portfolio of luxury  homes in Thailand&apos;s most prestigious locations, each offering exceptional returns and unparalleled lifestyle experiences</p>
         </div>
 
         <div className=" flex flex-col sm:flex-row justify-center items-center mb-10">
