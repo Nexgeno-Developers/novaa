@@ -32,15 +32,14 @@ export default function Project() {
                   onClick={() => dispatch(setRegion(region))}
                   disabled={isDisabled}
                   variant="ghost"
-                  className={`cursor-pointer relative rounded-none px-6 py-6 text-[20px] sm:text-[22px] font-semibold transition 
-                    ${isActive ? "text-black" : "text-black"} hover:text-black`}
+                  className="cursor-pointer relative rounded-none px-6 py-6 text-[20px] sm:text-[22px] font-semibold text-black transition hover:text-black"
                 >
                   <span className="relative flex items-center gap-1">
                     {region}
                     {isDisabled && (
                       <Badge
                         variant="secondary"
-                        className="absolute -top-3.5 -right-5  text-[#01292B] text-[8px] py-[2px] px-[6px] rounded-sm uppercase bg-gray-200"
+                        className="absolute -top-3.5 -right-5 text-[#01292B] text-[8px] py-[2px] px-[6px] rounded-sm uppercase bg-gray-200"
                       >
                         Soon
                       </Badge>
@@ -48,14 +47,13 @@ export default function Project() {
                   </span>
 
                   {isActive && (
-  <>
-    {/* Top black border if active */}
-    <div className="absolute -top-[12px] left-0 right-0 h-[2px]  bg-black" />
-    {/* Bottom black border if active */}
-    <div className="absolute -bottom-[12px] left-0 right-0 h-[2px] bg-black" />
-  </>
-)}
-
+                    <>
+                      {/* Top black border if active */}
+                      <div className="absolute -top-[12px] left-0 right-0 h-[2px] bg-black" />
+                      {/* Bottom black border if active */}
+                      <div className="absolute -bottom-[12px] left-0 right-0 h-[2px] bg-black" />
+                    </>
+                  )}
                 </Button>
               );
             })}
@@ -63,11 +61,11 @@ export default function Project() {
         </div>
 
         {/* Cards Grid */}
-        <div className="min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6 px-10">
+       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6 px-10">
+
           <CollectionCard />
-           <CollectionCard />
-            <CollectionCard />
-             
+          <CollectionCard />
+          <CollectionCard />
         </div>
       </section>
     </>

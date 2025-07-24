@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Josefin_Sans } from "next/font/google";
-
+import Link from "next/link";
 const josefin = Josefin_Sans({
   weight: "500",
   subsets: ["latin"],
@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export default function Breadcrumbs({ title }: BreadcrumbsProps) {
   return (
-    <section className="relative w-full h-[530px]">
+    <section className="relative w-full h-[438px]">
       {/* Full background image without opacity */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -22,17 +22,24 @@ export default function Breadcrumbs({ title }: BreadcrumbsProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full w-full flex flex-col items-center mt-6 justify-center text-white text-center pt-12 px-4">
-        <h1 className={`${josefin.className} text-[70px] font-medium leading-[100%]`}>
-          {title}
-        </h1>
+      <div className="relative z-10 h-full w-full flex flex-col items-center mt-6 justify-center text-white text-center pt-12  px-4">
+      <h1
+  className={`${josefin.className} text-[62px] font-medium leading-[100%] w-[388px] h-[70px]`}
+>
+  {title}
+</h1>
+
 
         {/* Breadcrumb */}
         <div
-          className="absolute bottom-8 mb-7 flex items-center justify-center px-6 py-3 rounded-[20px] backdrop-blur-md"
-          style={{ backgroundColor: "#CDB04E1A" }}
+          className="absolute bottom-4 mb-7 mt-4 flex items-center justify-center pb-2 px-6 py-3 rounded-[20px] backdrop-blur-md  bg-[#CDB04E1A]"
+         
         >
-          <span className="text-[16px] font-semibold text-white">HOME</span>
+         <Link href="/">
+  <span className="text-[16px] font-semibold text-white cursor-pointer">
+    HOME
+  </span>
+</Link>
 
           <Image
             src="/images/home.svg"

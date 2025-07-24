@@ -61,89 +61,103 @@ export default function ContactUs() {
   </div>
 </div>
 
-
-       {/* Form & Map */}
-<div className="bg-[#01292B] rounded-[10px] overflow-hidden p-0 lg:flex">
-  {/* Map */}
-  <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
-    <div className="w-[514px] h-[666px] rounded-[20px] overflow-hidden">
-      <Image
-        src="/images/map.webp"
-        alt="Map"
-        width={514}
-        height={666}
-        className="w-full h-full object-cover"
-      />
-    </div>
+  <div className="container">
+      <div className="h-[666px] flex rounded-[20px] overflow-hidden bg-[#01292B]">
+  {/* Map Section -  514px width */}
+  <div className="w-[514px] h-full">
+    <Image
+      src="/images/map.webp"
+      alt="Map"
+      width={514}
+      height={666}
+      className="w-full h-full object-cover"
+    />
   </div>
 
-  {/* Form */}
-  <div className="w-full lg:w-1/2 p-6 lg:p-12 flex flex-col justify-center">
-    <h2 className="text-white text-[24px] md:text-[30px] lg:text-[32px] font-bold leading-tight mb-3">
-      We Would Love To Hear <br />
-      <span className="text-[#CDB04E]">From You</span>
-    </h2>
-    <p className="text-white text-sm mb-6 max-w-md">
-      Feel free to reach out with any questions or feedback – we’re here to help!
-    </p>
+  {/* Form Section - fills remaining width (746px) */}
+ <div className="w-[746px] h-[666px] px-12 pt-20 pb-10 flex flex-col justify-center rounded-[20px] bg-[#072D2C]">
+  <h2 className="text-white text-[40px]  font-bold  mb-3">
+    We Would Love To Hear <br />
+    <span className="text-[#CDB04E] ">From You</span>
+  </h2>
 
-    <form className="space-y-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="name" className="text-white block mb-1">Full Name</label>
-          <input
-            id="name"
-            placeholder="Enter your full name"
-            className="w-full bg-transparent border border-[#CDB04E] text-white placeholder-white px-4 py-2 rounded"
-          />
-        </div>
-        <div>
-          <label htmlFor="phone" className="text-white block mb-1">Phone No</label>
-          <input
-            id="phone"
-            placeholder="Enter your phone no"
-            className="w-full bg-transparent border border-[#CDB04E] text-white placeholder-white px-4 py-2 rounded"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="text-white block mb-1">Country of Residence</label>
-          <select className="w-full bg-transparent border border-[#CDB04E] text-white px-4 py-2 rounded">
-            <option>Select your country</option>
-            <option>Thailand</option>
-            <option>UAE</option>
-            <option>UK</option>
-            <option>USA</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-white block mb-1">Preferred Investment Location</label>
-          <select className="w-full bg-transparent border border-[#CDB04E] text-white px-4 py-2 rounded">
-            <option>Thailand (Phuket)</option>
-            <option>Thailand (Bangkok)</option>
-            <option>UAE (Dubai)</option>
-          </select>
-        </div>
-      </div>
-
+  <p className="text-white font-josefin text-[18px] pt-5 pb-5 font-light mb-6 max-w-[517px]">
+    Feel free to reach out with any questions or feedback — we are here to help!
+  </p>
+  <div/>
+  <form className="space-y-5 font-josefin text-[14px] ">
+    <div className="grid grid-cols-2 gap-4">
       <div>
-        <label className="text-white block mb-1">Message (Optional)</label>
-        <textarea
-          placeholder="Tell us about investment goals..."
-          className="w-full bg-transparent border border-[#CDB04E] text-white placeholder-white px-4 py-2 rounded min-h-[96px]"
+        <label htmlFor="name" className="text-white block mb-1 font-normal">Full Name</label>
+        <input
+          id="name"
+          placeholder="Enter your full name"
+          className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white  px-4 py-2 rounded"
         />
       </div>
+      <div>
+        <label htmlFor="phone" className="text-white block mb-1 font-normal">Phone No</label>
+        <input
+          id="phone"
+          placeholder="Enter your phone no"
+          className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white px-4 py-2 rounded"
+        />
+      </div>
+    </div>
 
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <label className="text-white block mb-1 font-normal">Country of Residence</label>
+        <select
+  className="w-full bg-transparent border border-[#FFFFFFCC] text-white px-4 py-2 rounded"
+  defaultValue=""
+>
+  <option value="" disabled>Select your country</option>
+  <option value="thailand">Thailand</option>
+  <option value="uae">UAE</option>
+  <option value="uk">UK</option>
+  <option value="usa">USA</option>
+</select>
+
+      </div>
+      <div>
+        <label className="text-white block mb-1 font-normal">Preferred Investment Location</label>
+      <select
+  className="w-full bg-transparent border border-[#FFFFFFCC] text-white px-4 py-2 rounded"
+  defaultValue=""
+>
+  <option value="" disabled>Select your country</option>
+  <option value="thailand">Thailand</option>
+  <option value="uae">UAE</option>
+  <option value="uk">UK</option>
+  <option value="usa">USA</option>
+</select>
+
+
+      </div>
+    </div>
+
+    <div>
+      <label className="text-white block mb-1 font-normal">Message (Optional)</label>
+      <textarea
+        placeholder="Tell us about investment goals..."
+        className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white  px-4 py-2 rounded min-h-[96px]"
+      />
+    </div>
+
+    <div className="flex justify-end">
       <button
         type="submit"
-        className="bg-[#CDB04E] hover:bg-[#d8bc59] text-black font-bold text-[15px] px-8 py-3 rounded"
+        className="w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-[#CDB04E] hover:bg-[#d8bc59] text-[#01292B];
+ font-josefin font-semibold text-[14px] leading-[100%]"
       >
         Submit
       </button>
-    </form>
-  </div>
+    </div>
+  </form>
+</div>
+
+</div>
 </div>
 
           </div>

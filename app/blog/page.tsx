@@ -24,11 +24,11 @@ export default function Blog() {
                 />
                 {/* Overlay */}
                 <div className="absolute bottom-0 left-0 p-4 z-10 text-white max-w-[474px]">
-                  <h3 className="text-[20px] leading-[126%] font-medium font-[Josefin_Sans]">
+                  <h3 className="text-[20px] leading-[126%] font-medium">
                     {img.text}
                   </h3>
                   <div className="w-[363px] h-px bg-[#CDB04E] my-2" />
-                  <p className="text-[14px] leading-[130%] font-light font-[Josefin_Sans]">
+                  <p className="text-[14px] leading-[130%] font-light ">
                     {img.subtext}
                   </p>
                 </div>
@@ -52,11 +52,11 @@ export default function Blog() {
                 />
                 {/* Overlay */}
                 <div className="absolute bottom-0 left-0 p-4 z-10 text-white max-w-[474px]">
-                  <h3 className="text-[20px] leading-[126%] font-medium font-[Josefin_Sans]">
+                  <h3 className="text-[20px]  font-medium ">
                     {img.text}
                   </h3>
                   <div className="w-[363px] h-px bg-[#CDB04E] my-2" />
-                  <p className="text-[14px] leading-[130%] font-light font-[Josefin_Sans]">
+                  <p className="text-[14px]  font-light ">
                     {img.subtext}
                   </p>
                 </div>
