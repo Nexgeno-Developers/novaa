@@ -103,7 +103,7 @@ const PhuketPropertiesSection = () => {
             viewport={{ once: true, amount: 0.3 }}
           >
             {/* Main Heading */}
-            <motion.div variants={headingVariants} className="space-y-4">
+            <motion.div variants={headingVariants} className="space-y-4 text-center sm:text-left ">
               <h1 className="text-white text-2xl lg:text-3xl xl:text-4xl font-normal">
                 DISCOVER PRIME PROPERTIES
               </h1>
@@ -123,7 +123,7 @@ const PhuketPropertiesSection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFF] text-md lg:text-lg font-light max-w-2xl"
+              className="font-josefin text-[#FFFFFF] text-center sm:text-left text-md lg:text-lg font-light max-w-2xl"
             >
               Explore our Curated Selection of Luxury Residences. Whether you&#39;re
               seeking a beachfront villa, an investment opportunity, or a

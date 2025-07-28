@@ -13,10 +13,10 @@ export default function CuratedCollection() {
   );
 
   return (
-    <section className="py-20 bg-[#fffef8]">
-      <div className="flex flex-col sm:flex-row justify-around items-center p-2">
-        <div className="mb-10 flex flex-col justify-center items-start">
-          <h2 className="font-cinzel text-4xl font-extrabold mb-2 text-[#D4AF37]">
+    <section className="py-20 bg-foreground">
+      <div className="flex flex-col sm:flex-row justify-center sm:justify-around items-center p-2">
+        <div className="mb-10 flex flex-col justify-center items-center sm:items-start text-center sm:text-left">
+          <h2 className="font-cinzel text-4xl font-extrabold mb-2 text-[#D4AF37] ">
             CURATED <span className="text-black font-bold">COLLECTION</span>
           </h2>
           <p className="font-josefin font-light text-[#303030] max-w-2xl mx-auto">
@@ -28,7 +28,7 @@ export default function CuratedCollection() {
         </div>
       </div>
 
-      <div className="min-h-[60vh] sm:min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6 px-10">
+      <div className="min-h-[50vh] sm:min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6 px-10">
         <CollectionCard />
       </div>
     </section>

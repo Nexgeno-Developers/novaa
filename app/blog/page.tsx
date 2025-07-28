@@ -1,8 +1,13 @@
+"use client"
+
 import Image from "next/image";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { galleryImages } from "@/lib/data";
+import { useRouter } from "next/navigation";
 
 export default function Blog() {
+  const router = useRouter();
+
   return (
     <>
       <Breadcrumbs title="Blog" />
@@ -14,7 +19,10 @@ export default function Blog() {
             {galleryImages.slice(0, 3).map((img, idx) => (
               <div
                 key={idx}
-                className="relative w-full max-w-[615px] h-[720px] rounded-[40px] overflow-hidden group"
+                className="relative w-full max-w-[615px] h-[720px] rounded-[40px] overflow-hidden group cursor-pointer"
+                onClick={() => {
+                  router.push('/blog-details')
+                }}
               >
                 <Image
                   src={img.src}
@@ -42,7 +50,10 @@ export default function Blog() {
             {galleryImages.slice(3, 6).map((img, idx) => (
               <div
                 key={idx}
-                className="relative w-full max-w-[615px] h-[540px] rounded-[40px] overflow-hidden group"
+                className="relative w-full max-w-[615px] h-[540px] rounded-[40px] overflow-hidden group cursor-pointer"
+                onClick={() => {
+                  router.push('/blog-details')
+                }}
               >
                 <Image
                   src={img.src}

@@ -144,7 +144,7 @@ export default function InvestorInsightsSection() {
   return (
     <div className="min-h-screen relative overflow-hidden">
 
-      <div className="min-h-[140vh] bg-[#01292B] relative z-10 py-16 lg:pt-40">
+      <div className="min-h-screen sm:min-h-[140vh] bg-background relative z-10 py-16 lg:pt-40">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center my-10 w-full px-20">
           {/* Left Content */}
           <motion.div

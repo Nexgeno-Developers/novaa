@@ -8,9 +8,6 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import SmoothScrolling from "@/components/SmoothScrolling";
 
-
-
-
 const josefin_sans = Josefin_Sans({ subsets: ['latin'] })
 
 export const metadata = {
@@ -28,10 +25,9 @@ export default function RootLayout({
       <body className={cn(josefin_sans.className)}>
         <Providers>
         <Navbar />
-        <SmoothScrolling>
-
+        {/* <SmoothScrolling> */}
           {children}
-        </SmoothScrolling>
+        {/* </SmoothScrolling> */}
         </Providers>
         <Footer />
       </body>

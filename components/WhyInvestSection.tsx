@@ -87,7 +87,7 @@ export default function WhyInvestSection() {
             className="space-y-8"
           >
             {/* Header */}
-            <motion.div variants={itemVariants} className="space-y-3">
+            <motion.div variants={itemVariants} className="space-y-3 text-center sm:text-left">
               <h2 className="text-3xl lg:text-4xl font-normal text-[#303030]">
                 Why Invest in
               </h2>
@@ -99,7 +99,7 @@ export default function WhyInvestSection() {
             {/* Subtitle */}
             <motion.p 
               variants={itemVariants}
-              className="font-josefin text-[#303030] font-light text-lg leading-relaxed"
+              className="font-josefin text-[#303030] font-light text-lg text-center sm:text-left leading-relaxed"
             >
               Thailand&#39;s real estate market is a haven for HNIs seeking capital growth, passive income, and a luxurious lifestyle.
             </motion.p>

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
 import { RootState } from "@/redux";
+import { useRouter } from "next/navigation";
 
 // interface CardProps {
 //   name: string;
@@ -14,9 +15,13 @@ import { RootState } from "@/redux";
 // }
 
 export default function CollectionCard() {
+  const router = useRouter();
+
   const { selectedRegion, allData } = useAppSelector(
     (state: RootState) => state.curated
   );
+
+  // const router = useRouter();
 
   //   const tabs = ["Thailand", "UAE", "Europe"];
 
@@ -68,7 +73,9 @@ export default function CollectionCard() {
           transition={{ delay: index * 0.1, duration: 0.6 }}
           className="relative group rounded-3xl overflow-hidden shadow-xl bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
-          <div className="relatives h-[60vh] sm:h-[80vh] overflow-hidden group">
+          <div className="relatives h-[50vh] sm:h-[80vh] overflow-hidden group cursor-pointer" 
+            onClick={() => router.push('/project-detail')}
+          >
             {/* Background Image */}
             <AnimatePresence mode="wait">
               <motion.div
@@ -90,15 +97,17 @@ export default function CollectionCard() {
 
             {/* Overlay Content at bottom */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-8">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xl font-semibold text-[#D4AF37]">
+              <div className="flex items-center gap-4 justify-between mb-2">
+                <h3 className="text-xl font-semibold text-primary border-r-2 border-r-primary pr-10 sm:pr-20">
                   {property.name}
                 </h3>
                 <span className="text-lg font-bold text-white">
                   {property.price}
                 </span>
               </div>
-              <p className="text-sm text-gray-200">{property.description}</p>
+              <p className="text-sm text-gray-200 border-t-2 pt-2 border-t-primary">
+                {property.description}
+              </p>
             </div>
 
             {/* Optional badge */}
@@ -111,7 +120,10 @@ export default function CollectionCard() {
             {/* Navigation Arrows */}
             <div className="absolute inset-0 flex items-center justify-between p-4">
               <motion.button
-                onClick={() => prevImage(property.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage(property.id);
+                }}
                 className="text-[#FFFFFFCC]"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -119,7 +131,10 @@ export default function CollectionCard() {
                 <ChevronLeft className="w-15 h-15 bg-transparent" />
               </motion.button>
               <motion.button
-                onClick={() => nextImage(property.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage(property.id)
+                }}
                 className="text-[#FFFFFFCC]"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -133,11 +148,12 @@ export default function CollectionCard() {
               {property.images.map((_, imgIndex) => (
                 <button
                   key={imgIndex}
-                  onClick={() =>
-                    setCurrentImageIndex((prev) => ({
+                  onClick={(e) =>{
+                    e.stopPropagation();
+                    setCurrentImageIndex((prev ) => ({
                       ...prev,
                       [property.id]: imgIndex,
-                    }))
+                    }))}
                   }
                   className={`w-2 h-2 rounded-full ${
                     (currentImageIndex[property.id] || 0) === imgIndex
