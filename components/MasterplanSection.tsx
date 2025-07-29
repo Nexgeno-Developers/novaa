@@ -80,13 +80,13 @@ const MasterplanSection = () => {
           </motion.div>
 
           {/* Interactive Tabs Section */}
-          <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-5">
+          <div className="w-full flex flex-col items-center">
             {features.map((feature) => (
               <motion.div
                 key={feature.id}
                 layout // This prop enables the magic layout animation
                 onClick={() => setActiveTab(feature.id)}
-                className="w-full rounded-2xl overflow-hidden cursor-pointer"
+                className="w-full  overflow-hidden cursor-pointer"
                 transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
               >
                 {activeTab === feature.id ? (
