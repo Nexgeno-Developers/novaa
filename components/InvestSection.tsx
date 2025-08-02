@@ -76,14 +76,14 @@ const CrisisInvestPeaceSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-gray-50 to-gray-100 py-20 overflow-hidden">
       {/* Background Pattern */}
 
       <div className="relative z-10 w-full">
-        <div className="">
+        <div className="container mx-auto">
           {/* Header */}
           <motion.div
-            className="max-w-6xl mx-auto text-center mb-16"
+            className=" text-center mb-16"
             variants={headingVariants}
             initial="hidden"
             whileInView="visible"

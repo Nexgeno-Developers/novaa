@@ -45,7 +45,7 @@ const AnimatedTestimonials = ({
 
   return (
     <div className="flex items-center justify-center">
-      <div className="relative h-100 w-full max-w-md">
+      <div className="relative h-100 w-100 container mx-auto">
         <AnimatePresence>
           {testimonials.map((testimonial, index) => (
             <motion.div
@@ -76,7 +76,7 @@ const AnimatedTestimonials = ({
               }}
               className="absolute inset-0 origin-bottom"
             >
-              <div className="relative h-full w-60 sm:w-80 rounded-3xl bg-white shadow-2xl overflow-hidden">
+              <div className="relative h-full rounded-3xl bg-white shadow-2xl overflow-hidden">
                 {/* Image Container with padding */}
                 <div className="p-4 pb-2">
                   <img
@@ -109,43 +109,45 @@ export default function InvestorInsightsSection() {
         "Luxury residential properties in 2024 with heavy property demand averaging 25% increase while rental yields in prime areas reached 7.8%, making it a new destination for HNIs.",
       name: "Luxury Property Market",
       designation: "2024 Market Analysis",
-      src: "/images/invest-1.png",
+      src: "/images/invest-three.png",
     },
     {
       quote:
         "Commercial real estate opportunities showing 15% growth in Q3 2024, with office spaces in prime locations commanding premium rents.",
       name: "Commercial Real Estate",
       designation: "Q3 2024 Report",
-      src: "/images/invest-2.png",
+      src: "/images/invest-four.png",
     },
     {
       quote:
         "Sustainable developments and green building initiatives are driving new investment patterns with 20% higher appreciation rates.",
       name: "Sustainable Development",
       designation: "Green Investment Trends",
-      src: "/images/invest-3.jpg",
+      src: "/images/invest-three.jpg",
     },
     {
       quote:
         "Smart city developments and infrastructure projects are creating new opportunities for forward-thinking investors.",
       name: "Smart City Projects",
       designation: "Future Development",
-      src: "/images/invest-4.png",
+      src: "/images/invest-two.png",
     },
     {
       quote:
         "Residential townships with integrated amenities showing consistent 12% annual growth in tier-2 cities across India.",
       name: "Residential Townships",
       designation: "Growth Markets",
-      src: "/images/invest-1.png",
+      src: "/images/invest-one.png",
     },
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="bg-background relative overflow-hidden py-20  ">
 
-      <div className="min-h-screen sm:min-h-[140vh] bg-background relative z-10 py-16 lg:pt-40">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center my-10 w-full px-20">
+<div className="absolute top-[20%] bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
+
+      <div className="container mx-auto  relative z-10 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-18 items-center my-10">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -178,7 +180,7 @@ export default function InvestorInsightsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="font-josefin text-lg lg:text-xl text-[#FFFFFFE5] font-light leading-relaxed max-w-md"
+                className="font-josefin text-lg lg:text-xl text-[#FFFFFFE5] font-light leading-relaxed"
               >
                 Stay informed with trending stories, industry updates, and
                 thoughtful articles curated just for you.
@@ -202,11 +204,6 @@ export default function InvestorInsightsSection() {
           {/* </motion.div> */}
         </div>
       </div>
-
-      {/* Decorative elements */}
-      {/* <div className="absolute top-1/4 right-1/4 w-2 h-2 bg-yellow-400 rounded-full opacity-60"></div>
-      <div className="absolute bottom-1/3 left-1/4 w-1 h-1 bg-teal-300 rounded-full opacity-40"></div>
-      <div className="absolute top-1/2 left-1/3 w-1.5 h-1.5 bg-white rounded-full opacity-30"></div> */}
     </div>
   );
 }

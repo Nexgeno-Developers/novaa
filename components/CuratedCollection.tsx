@@ -13,8 +13,8 @@ export default function CuratedCollection() {
   );
 
   return (
-    <section className="py-20 bg-foreground">
-      <div className="flex flex-col sm:flex-row justify-center sm:justify-around items-center p-2">
+    <section className="py-20 bg-secondary">
+      <div className="container mx-auto flex flex-col sm:flex-row justify-center sm:justify-between items-center p-2">
         <div className="mb-10 flex flex-col justify-center items-center sm:items-start text-center sm:text-left">
           <h2 className="font-cinzel text-4xl font-extrabold mb-2 text-[#D4AF37] ">
             CURATED <span className="text-black font-bold">COLLECTION</span>
@@ -23,12 +23,12 @@ export default function CuratedCollection() {
           Discover our exclusive portfolio of luxury  homes in Thailand&apos;s most prestigious locations, each offering exceptional returns and unparalleled lifestyle experiences</p>
         </div>
 
-        <div className=" flex flex-col sm:flex-row justify-center items-center mb-10">
+        <div className="flex flex-col sm:flex-row  justify-center items-center mb-10">
           <RegionTabs />
         </div>
       </div>
 
-      <div className="min-h-[50vh] sm:min-h-[80vh] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6 px-10">
+      <div className="container mx-auto flex flex-col px-5 sm:px-0 sm:flex-row rounded-[20px] gap-6">
         <CollectionCard />
       </div>
     </section>

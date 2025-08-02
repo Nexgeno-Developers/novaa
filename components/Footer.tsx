@@ -8,22 +8,41 @@ import { ArrowRight, Phone, Mail, MessageCircle } from "lucide-react";
 export default function Footer() {
   return (
     <>
-      <footer className="relative min-h-screen w-full overflow-hidden pb-10 pt-20">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/footer.jpg"
-            alt="Phuket Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
+      <footer className="relative w-full bg-[#000000D9] overflow-hidden  pb-10 pt-20">
+        <div
+          className="absolute inset-0 z-10 bg-cover bg-center"
+          style={{
+            clipPath: "polygon(0 0, 0 53%, 58% 0)",
+            backgroundImage: "url('/footer/bg-one.png')",
+          }}
+        >
+          <div className="absolute inset-0 bg-[#000000D9]"></div>
         </div>
 
+        {/* Layer 3: Second clipped background */}
+        <div
+          className="absolute inset-0 z-10 bg-cover bg-center"
+          style={{
+            clipPath: "polygon(0 53%, 58% 0, 100% 0, 0% 100%)",
+            backgroundImage: "url('/footer/bg-two.png')",
+          }}
+        >          <div className="absolute inset-0 bg-[#000000D9]"></div>
+</div>
+
+        {/* Layer 4: Third clipped background */}
+        <div
+          className="absolute inset-0 z-10 bg-cover bg-center"
+          style={{
+            clipPath: "polygon(100% 100%, 100% 0, 0% 100%)",
+            backgroundImage: "url('/footer/bg-three.png')",
+          }}
+        >          <div className="absolute inset-0 bg-[#000000D9]"></div>
+</div>
+
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" /> */}
+
         {/* Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center min-h-screen text-white px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto relative z-40 flex flex-col justify-center items-center text-white px-4 sm:px-6 lg:px-8">
           {/* Main Hero Section */}
           <div className=" text-center mb-16 max-w-5xl">
             <h1 className="font-cinzel text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-normal">
@@ -40,13 +59,13 @@ export default function Footer() {
               className="font-josefin font-light
  text-lg sm:text-xl mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto"
             >
-              Live the island life you&apos;ve always imagined - serene, luxurious,
-              and yours to own.
+              Live the island life you&apos;ve always imagined - serene,
+              luxurious, and yours to own.
             </p>
 
             {/* CTA Button */}
             <div className="inline-block">
-              <button className="group relative bg-transparent border-2 border-[#F0DE9C] text-[#F0DE9C] px-8 py-4 rounded-full hover:bg-[#F0DE9C] hover:text-black transition-all duration-300 flex flex-col items-center gap-1 text-lg font-medium text-center">
+              <button className="group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-8 py-4 rounded-full hover:bg-[#30303033] hover:text-black transition-all duration-300 flex flex-col items-center gap-1 text-lg font-medium text-center">
                 <span>Explore</span>
                 <span>Your Future</span>
                 <span>Home</span>
@@ -56,7 +75,7 @@ export default function Footer() {
           </div>
 
           {/* Footer Content */}
-          <div className="w-full max-w-7xl bg-[#01292BCC]/90 backdrop-blur-sm rounded-3xl p-8 sm:p-12">
+          <div className="w-full max-w-7xl bg-[#01292BCC] rounded-3xl p-8 sm:p-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* About Us */}
               <div className="lg:col-span-1">
@@ -65,8 +84,8 @@ export default function Footer() {
                 </h3>
                 <p className="text-[#FFFFFF] text-sm font-normal leading-loose">
                   is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum has been the industry&apos;s standard dummy text ever
-                  since the 1500s,
+                  Lorem Ipsum has been the industry&apos;s standard dummy text
+                  ever since the 1500s,
                 </p>
               </div>
 
@@ -145,13 +164,13 @@ export default function Footer() {
                   <div className="flex gap-4">
                     <Link
                       href="#"
-                      className="w-10 h-10 bg-[#CDB04E] rounded-full flex items-center justify-center hover:bg-white transition-colors duration-300"
+                      className="w-10 h-10 bg-white  rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
                       <MessageCircle className="w-5 h-5 text-[#01292B]" />
                     </Link>
                     <Link
                       href="#"
-                      className="w-10 h-10 bg-[#CDB04E] rounded-full flex items-center justify-center hover:bg-white transition-colors duration-300"
+                      className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
                       <svg
                         className="w-5 h-5 text-[#01292B]"
@@ -163,7 +182,7 @@ export default function Footer() {
                     </Link>
                     <Link
                       href="#"
-                      className="w-10 h-10 bg-[#CDB04E] rounded-full flex items-center justify-center hover:bg-white transition-colors duration-300"
+                      className="w-10 h-10 bg-white  rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
                       <svg
                         className="w-5 h-5 text-[#01292B]"
@@ -175,7 +194,7 @@ export default function Footer() {
                     </Link>
                     <Link
                       href="#"
-                      className="w-10 h-10 bg-[#CDB04E] rounded-full flex items-center justify-center hover:bg-white transition-colors duration-300"
+                      className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
                       <svg
                         className="w-5 h-5 text-[#01292B]"
@@ -196,9 +215,9 @@ export default function Footer() {
             </div>
 
             {/* Copyright */}
-            <div className="mt-12 pt-8 border-t border-t-[#CDB04E80] border-gray-600 text-center">
-              <p className="text-gray-400 text-sm">
-              Copyright &copy; Novaa Real Estate | Designed by NEXGENO
+            <div className="mt-12 pt-8 border-t border-t-[#CDB04E80] text-center">
+              <p className="text-[#FFFFFFCC] text-sm">
+                Copyright &copy; Novaa Real Estate | Designed by NEXGENO
               </p>
             </div>
           </div>

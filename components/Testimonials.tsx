@@ -10,7 +10,10 @@ type UseCarouselOptions = {
 };
 
 // Simple carousel hook (replacing Embla for this demo)
-const useCarousel = (slides: Testimonial[], options: UseCarouselOptions = {}) => {
+const useCarousel = (
+  slides: Testimonial[],
+  options: UseCarouselOptions = {}
+) => {
   // console.log("Slides ", slides);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { autoplay = false, delay = 5000 } = options;
@@ -52,7 +55,7 @@ interface Testimonial {
   demo: string;
 }
 
-const testimonials : Testimonial[] = [
+const testimonials: Testimonial[] = [
   {
     id: 1,
     name: "Mr. David Chen",
@@ -122,41 +125,35 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-white rounded-2xl p-8 h-full flex flex-col"
+      className=""
     >
-      <StarRating rating={testimonial.rating} />
+      <div className="relative">
+  {/* Card with inverted radius */}
+  <div className="inverted-radius bg-white rounded-[40px] p-8 h-full flex flex-col relative z-10">
+    <StarRating rating={testimonial.rating} />
+    <p className="text-[#303030CC] text-base leading-relaxed mb-8 flex-grow">
+      &quot;{testimonial.quote}&quot;
+    </p>
+    <p className="font-light">Demo</p>
+  </div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="text-[#303030CC] text-base leading-relaxed mb-8 flex-grow"
-      >
-        &quot;{testimonial.quote}&quot;
-      </motion.p>
+  {/* Avatar outside the mask */}
+  <div className="absolute bottom-0 right-3">
+    <img
+      src={testimonial.avatar}
+      alt={testimonial.name}
+      className="w-14 h-14 rounded-full object-cover border-1 border-[#CDB04E]"
+    />
+  </div>
+</div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="flex justify-between items-center gap-4"
-      >
-        <p className="font-light ">Demo</p>
-        <div className="relative flex justify-end">
-          <img
-            src={testimonial.avatar}
-            alt={testimonial.name}
-            className="w-12 h-12 rounded-full object-cover"
-          />
-        </div>
-      </motion.div>
     </motion.div>
   );
 };
 
 export default function EliteClientsTestimonials() {
   const { currentIndex, scrollNext, scrollPrev } = useCarousel(testimonials, {
-    autoplay: true,
+    // autoplay: true,
     delay: 5000,
   });
 
@@ -173,8 +170,8 @@ export default function EliteClientsTestimonials() {
   const visibleTestimonials = getVisibleTestimonials();
 
   return (
-    <div className="bg-gray-50 py-20">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="bg-secondary py-20">
+      <div className="container mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -182,9 +179,9 @@ export default function EliteClientsTestimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 font-cinzel"
         >
-          <h2 className="text-3xl lg:text-4xl font-nromal text-[#01292B] mb-4">
+          <h2 className="text-3xl lg:text-4xl font-nromal text-[#01292B] mb-4 uppercase">
             What Our{" "}
-            <span className="text-[#D4AF37] font-bold">Elite Clients</span> Say
+            <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
           </h2>
           <p className="font-josefin text-[#303030] text-md font-light">
             Real stories from real people who trust us
@@ -219,14 +216,14 @@ export default function EliteClientsTestimonials() {
             onClick={scrollPrev}
             className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
           >
-            <ArrowLeft className="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-200" />
+            <ArrowLeft className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
           </button>
 
           <button
             onClick={scrollNext}
             className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
           >
-            <ArrowRight className="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-200" />
+            <ArrowRight className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
           </button>
         </motion.div>
       </div>

@@ -71,9 +71,9 @@ export default function CollectionCard() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.6 }}
-          className="relative group rounded-3xl overflow-hidden shadow-xl bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          className="container mx-auto relative group rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
-          <div className="relatives h-[50vh] sm:h-[80vh] overflow-hidden group cursor-pointer" 
+          <div className="relative h-[560px] overflow-hidden group cursor-pointer" 
             onClick={() => router.push('/project-detail')}
           >
             {/* Background Image */}
@@ -90,41 +90,49 @@ export default function CollectionCard() {
                   src={property.images[currentImageIndex[property.id] || 0]}
                   alt={property.name}
                   fill
-                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover h-full group-hover:scale-105 transition-transform duration-300"
                 />
               </motion.div>
             </AnimatePresence>
+            <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[#000000] to-[#00000000]"></div>
 
             {/* Overlay Content at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-8">
-              <div className="flex items-center gap-4 justify-between mb-2">
-                <h3 className="text-xl font-semibold text-primary border-r-2 border-r-primary pr-10 sm:pr-20">
+            <div className="absolute bottom-0 left-0 right-0 text-white p-8">
+              
+              <div className="flex items-center gap-4 mb-2">
+                <h3 className="text-xl font-semibold text-primary border-r-2 border-r-primary pr-5">
                   {property.name}
                 </h3>
                 <span className="text-lg font-bold text-white">
                   {property.price}
                 </span>
+                
               </div>
-              <p className="text-sm text-gray-200 border-t-2 pt-2 border-t-primary">
+              <div className="flex items-start justify-center gap-2 py-1 mb-2 w-[50%] rounded-xl bg-[#CDB04E1A]">
+                <Image src={'/icons/map-pin.svg'} width={15} height={15} alt="Location Icon" />
+                  {property.location}
+                </div>
+              
+              <p className="text-sm text-gray-200 border-t-[0.5px] pt-2 border-t-primary">
                 {property.description}
               </p>
             </div>
 
             {/* Optional badge */}
             {property.badge && (
-              <div className="absolute top-4 right-0 bg-yellow-500 text-white px-3 py-1 rounded-l-xl text-xs font-medium">
+              <div className="absolute font-josefin top-10 right-0 bg-[#D4AF37] text-background px-3 py-1 rounded-l-3xl text-lg font-medium">
                 {property.badge}
               </div>
             )}
 
             {/* Navigation Arrows */}
-            <div className="absolute inset-0 flex items-center justify-between p-4">
+            <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage(property.id);
                 }}
-                className="text-[#FFFFFFCC]"
+                className="cursor-pointer text-[#FFFFFFCC]"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -135,7 +143,7 @@ export default function CollectionCard() {
                   e.stopPropagation();
                   nextImage(property.id)
                 }}
-                className="text-[#FFFFFFCC]"
+                className="cursor-pointer text-[#FFFFFFCC]"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >

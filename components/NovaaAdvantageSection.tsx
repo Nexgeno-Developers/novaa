@@ -12,7 +12,7 @@ const NovaaAdvantageSection = () => {
       title: "Scouting Excellence",
       description:
         "We identify prime properties in high-growth areas, ensuring maximum returns and flexibility.",
-      icon: '/advantage-section-images/icon-one.svg',
+      icon: '/advantage-section-images/icon-one.png',
       position: "top-left",
       angle: -45,
     },
@@ -21,7 +21,7 @@ const NovaaAdvantageSection = () => {
       title: "Freehold & Rental Income Support",
       description:
         "Secure freehold ownership and set up rentals or your rental income with guaranteed returns.",
-      icon: '/advantage-section-images/icon-two.svg',
+      icon: '/advantage-section-images/icon-two.png',
       position: "top-right",
       angle: 45,
     },
@@ -30,7 +30,7 @@ const NovaaAdvantageSection = () => {
       title: "Unmatched Transparency",
       description:
         "Every transaction is clear and documented, ensuring you gain the complete peace of mind.",
-      icon: '/advantage-section-images/icon-three.svg',
+      icon: '/advantage-section-images/icon-three.png',
       position: "left",
       angle: -90,
     },
@@ -39,7 +39,7 @@ const NovaaAdvantageSection = () => {
       title: "Bureaucratic Ease",
       description:
         "We manage all regulatory processes, so you can focus on enjoying your investment.",
-      icon: '/advantage-section-images/icon-four.svg',
+      icon: '/advantage-section-images/icon-four.png',
       position: "right",
       angle: 90,
     },
@@ -48,7 +48,7 @@ const NovaaAdvantageSection = () => {
       title: "Visa & Legal Assistance",
       description:
         "From residency programs to legal consultations, we provide comprehensive support.",
-      icon: '/advantage-section-images/icon-five.svg',
+      icon: '/advantage-section-images/icon-five.png',
       position: "bottom-left",
       angle: -135,
     },
@@ -57,7 +57,7 @@ const NovaaAdvantageSection = () => {
       title: "Expert Curation",
       description:
         "Early property selection and exclusive access to the best developments of the global elite.",
-      icon: '/advantage-section-images/icon-six.svg',
+      icon: '/advantage-section-images/icon-six.png',
       position: "bottom-right",
       angle: 135,
     },
@@ -67,17 +67,17 @@ const NovaaAdvantageSection = () => {
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-8 left-8 lg:top-12 lg:left-0`;
+        return `${baseClasses} top-8 left-8 lg:top-0 lg:left-5`;
       case "top-right":
-        return `${baseClasses} top-8 right-8 lg:top-12 lg:right-5`;
+        return `${baseClasses} top-8 right-8 lg:top-0 lg:right-10`;
       case "left":
         return `${baseClasses} top-1/2 left-4 lg:left-[-2rem] transform -translate-y-1/2`;
       case "right":
         return `${baseClasses} top-1/2 right-4 lg:right-[-1rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 lg:bottom-12 lg:left-[-0.5rem]`;
+        return `${baseClasses} bottom-8 left-8 lg:bottom-0 lg:left-[1rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 lg:bottom-12 lg:right-[1rem]`;
+        return `${baseClasses} bottom-8 right-8 lg:bottom-0 lg:right-[3rem]`;
       default:
         return baseClasses;
     }
@@ -139,8 +139,8 @@ const NovaaAdvantageSection = () => {
   };
 
   return (
-    <section className="font-cinzel relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-20 overflow-hidden">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section className="font-cinzel relative bg-secondary py-20 overflow-hidden">
+      <div className="container mx-auto">
         {/* Header */}
         <motion.div
           className="text-center mb-16"
@@ -149,20 +149,16 @@ const NovaaAdvantageSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl lg:text-5xl xl:text-6xl font-normal text-gray-800 mb-4">
+          <h2 className="text-4xl lg:text-5xl font-normal text-gray-800 mb-4">
             THE NOVAA{" "}
             <span
-              className="text-5xl lg:text-5xl xl:text-6xl font-bold bg-clip-text text-transparent"
-              style={{
-                background: "linear-gradient(0deg, #D4AF37, #D4AF37)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+              className="text-5xl lg:text-5xl font-bold bg-clip-text text-transparent bg-[#D4AF37]"
+            
             >
               ADVANTAGE
             </span>
           </h2>
-          <p className="font-josefin text-[#303030] text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+          <p className="font-josefin text-[#303030] text-lg lg:text-xl mx-auto leading-relaxed">
             At Novaa, we redefine the investment experience by offering
             end-to-end solutions tailored for HNIs
           </p>
@@ -170,7 +166,7 @@ const NovaaAdvantageSection = () => {
 
         {/* Main Content Area */}
         <motion.div
-          className="relative max-w-7xl mx-auto"
+          className="relative container mx-auto"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -230,18 +226,18 @@ const NovaaAdvantageSection = () => {
                   )} hidden  sm:flex font-josefin max-w-xs lg:max-w-sm space-x-4`}
                 >
                      {/* Content */}
-                  <div className="space-y-2 mx-4">
-                    <h3 className="text-md lg:text-lg font-semibold text-gray-800">
+                  <div className="font-josefin space-y-2 mx-4">
+                    <h3 className="text-md lg:text-xl font-normal text-background">
                       {advantage.title}
                     </h3>
-                    <p className="text-xs lg:text-sm text-gray-600">
+                    <p className="text-xs lg:text-base font-light text-[#303030] leading-relaxed">
                       {advantage.description}
                     </p>
                   </div>
 
                   {/* Icon Circle */}
-                  <div className="flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 bg-gray-800 rounded-full flex items-center justify-center shadow-lg">
-                    <Image src={advantage.icon} width={50} height={50} alt="icon" />
+                  <div className="flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center shadow-lg">
+                    <Image src={advantage.icon} width={100} height={100} alt="icon" />
                   </div>
 
                  

@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="flex items-center justify-center w-[40vh] md:w-[40vh] sm:w-32 bg-background h-full">
         <Image
           src={"/images/logo.png"}
-          width={100}
+          width={150}
           height={100}
           alt="Logo"
           className=""
@@ -28,7 +28,7 @@ export default function Navbar() {
       </div>
 
       {/* Middle: Desktop Navbar */}
-      <nav className="font-josefin text-lg font-semibold hidden lg:flex items-center space-x-8 ml-auto mr-10">
+      <nav className="font-josefin text-lg font-normal hidden lg:flex items-center space-x-10 ml-auto mr-10">
         <Link
           href="/"
           className="hover:text-[#F0DE9C] transition-colors duration-300"

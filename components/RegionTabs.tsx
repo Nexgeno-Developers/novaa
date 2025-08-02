@@ -26,11 +26,11 @@ export default function RegionTabs() {
             onClick={() => dispatch(setRegion(region))}
             disabled={isDisabled}
             variant="ghost"
-            className={`cursor-pointer relative rounded-none   px-4 py-6 font-medium transition 
+            className={`font-josefin cursor-pointer text-[22px] relative rounded-none px-5 sm:px-10 py-8 font-medium transition 
               ${
                 isActive
-                  ? " border-t-gray-400 border-b-black border-y-2 text-black"
-                  : "border-transparent text-black"
+                  ? " border-t-gray-400 border-b-black border-y-2 text-[#01292B]"
+                  : "border-transparent text-[#01292BCC]"
               }
               hover:text-black`}
           >
@@ -39,7 +39,7 @@ export default function RegionTabs() {
               {isDisabled && (
                 <Badge
                   variant="secondary"
-                  className="absolute text-black top-0 text-[6px] py-0.5 px-1 rounded-sm uppercase"
+                  className="font-josefin absolute font-medium text-background top-0 text-[10px] py-0.5 px-2 rounded-lg uppercase"
                 >
                   Soon
                 </Badge>

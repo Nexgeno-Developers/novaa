@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative min-h-[142vh] overflow-hidden">
+    <section className="relative overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}
@@ -95,8 +95,8 @@ const ClientTestimonialsSection = () => {
       />
 
       {/* Content */}
-      <div className="font-cinzel relative z-20 container mx-auto px-4 lg:px-8 py-20">
-        <div className="max-w-4xl mx-auto">
+      <div className="font-cinzel relative z-20 container mx-auto py-20">
+        <div className="">
           {/* Header */}
           <motion.div
             className="text-center mb-16"
@@ -106,9 +106,8 @@ const ClientTestimonialsSection = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl lg:text-5xl xl:text-6xl font-normal text-white mb-6">
-              WHAT{" "}
               <span
-                className="font-bold bg-clip-text text-transparent"
+                className="font-bold bg-clip-text text-transparent uppercase"
                 style={{
                   background:
                     "radial-gradient(59.18% 59.18% at 25.81% 20.89%, #C3912F 0%, #F5E7A8 48.93%, #C3912F 100%) ",
@@ -116,11 +115,10 @@ const ClientTestimonialsSection = () => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                OUR CLIENTS
-              </span>{" "}
-              SAY
+                 faq
+              </span>
             </h2>
-            <p className="font-josefin font-light text-[#FFFFFFE5] text-lg lg:text-xl">
+            <p className="font-josefin font-light text-[#FFFFFFE5] text-lg leading-normal">
               Real feedback from the people who trust us with their goals.
             </p>
           </motion.div>
@@ -136,7 +134,7 @@ const ClientTestimonialsSection = () => {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.id}
-                className="border-[0.5px] border-[#CDB04E] rounded-2xl overflow-hidden backdrop-blur-xs"
+                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden "
                 variants={itemVariants}
                 whileHover={{
                   
@@ -145,7 +143,7 @@ const ClientTestimonialsSection = () => {
                 }}
               >
                 <motion.button
-                  className="w-full p-6 text-left focus:outline-none"
+                  className="w-full  p-6 text-left focus:outline-none"
                   onClick={() => toggleExpanded(index)}
                   whileHover={{ backgroundColor: "rgba(212, 175, 55, 0.05)" }}
                   transition={{ duration: 0.3 }}
@@ -179,10 +177,10 @@ const ClientTestimonialsSection = () => {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-6 pt-2">
+                      <div className="px-6 pb-6 pt-2 bg-[#CDB04E0D]">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.p
-                          className="font-josefin text-[#FFFFFF] text-md font-light"
+                          className="font-josefin text-[#FFFFFF] text-base leading-normal font-light"
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.1, duration: 0.3 }}

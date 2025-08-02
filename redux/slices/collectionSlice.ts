@@ -7,6 +7,7 @@ export type PropertyType = {
   name: string
   price: string
   images: string[]
+  location : string
   description: string
   badge?: string
 }
@@ -30,6 +31,7 @@ const initialState : CuratedState = {
           "/collections/collection2.jpg",
           "/collections/collection3.png",
         ],
+        location : "Phuket Thailand",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -42,6 +44,7 @@ const initialState : CuratedState = {
           "/collections/collection2.jpg",
           "/collections/collection3.png",
         ],
+        location : "Phuket Thailand",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
         badge: "Elora",
@@ -54,7 +57,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket Thailand",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -68,7 +71,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket UAE",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -80,7 +83,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket UAE",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -92,7 +95,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket UAE",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -106,7 +109,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket Europe",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -118,7 +121,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket Europe",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },
@@ -130,7 +133,7 @@ const initialState : CuratedState = {
           "/collections/collection1.png",
           "/collections/collection2.jpg",
           "/collections/collection3.png",
-        ],
+        ], location : "Phuket Europe",
         description:
           "A simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       },

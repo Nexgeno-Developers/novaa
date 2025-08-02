@@ -22,9 +22,9 @@ export default function Home() {
         <PhuketPropertiesSection />
         <NovaaAdvantageSection />
         <ClientSection />
-        <InvestSection />
-        <InvestorInsightsSection />
+        {/* <InvestSection /> */}
         <Testimonials />
+        <InvestorInsightsSection />
       </main>
     </>
   );

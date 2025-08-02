@@ -15,12 +15,12 @@ export default function HeroSection() {
         priority
       />
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(183.79deg,rgba(1,41,43,0)_3.21%,#01292B_91.78%)]" />
+      {/* Dark bottom overlay */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 z-0 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
 
 
       {/* Text Overlay */}
-      <div className=" font-cinzel absolute left-0 sm:absolute bottom-[10rem] p-5 sm:bottom-10 sm:left-10 z-10 text-white max-w-[80%]">
+      <div className="container mx-auto font-cinzel absolute left-0 sm:absolute bottom-[10rem] p-5 sm:bottom-10 sm:left-10 z-10 text-white">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}

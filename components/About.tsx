@@ -19,7 +19,7 @@ export default function AboutPage() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[100vh] w-full overflow-hidden py-[15vh]"
+      className="relative overflow-hidden"
     >
       {/* Bottom Background Image - WITH clouds (z-10) */}
       <div className="absolute inset-0 z-10">
@@ -34,27 +34,16 @@ export default function AboutPage() {
 
       {/* Gradient Overlay - Bottom half */}
       {/* Gradient Overlay - Bottom half with scroll and hover effects */}
-      <motion.div
-        className="absolute inset-0 z-45 transition-all duration-500"
-        style={{
-          background: useTransform(
-            scrollYProgress,
-            [0, 1],
-            [
-              "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 1) 100%)",
-              "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 0.25) 100%)",
-            ]
-          ),
-        }}
-        whileHover={{
-          background:
-            "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, rgba(1, 41, 43, 1) 100%)",
-        }}
+      <div
+        className="absolute inset-x-0 h-1/2 bottom-0 z-45 transition-all duration-500 bg-gradient-to-t from-[#01292B] to-[#01292B00]"
+      />
+      <div
+        className="absolute inset-x-0 h-1/6 top-0 z-45 transition-all duration-500 bg-gradient-to-b from-[#01292B] to-[#01292B00]"
       />
 
       {/* NOVA Background Text - Between both images (z-30) */}
       <motion.div
-        className="hidden sm:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none transition-all duration-100"
+        className="hidden sm:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none transition-all duration-1500"
         style={{
           y: novaY,
           opacity: novaOpacity,
@@ -77,7 +66,7 @@ export default function AboutPage() {
       </div>
 
       {/* Content - Topmost layer (z-50) */}
-      <div className="relative z-50 flex flex-col justify-between sm:justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto py-20 relative z-50 flex flex-col justify-between sm:justify-center">
         {/* About Heading */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -86,7 +75,7 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center mb-16 lg:mb-24"
         >
-          <h1 className="font-josefin text-5xl sm:text-6xl lg:text-[80px] font-light text-white mb-4">
+          <h1 className="font-josefin text-5xl sm:text-6xl lg:text-[80px] font-light text-white mb-10">
             About
           </h1>
           <h2 className="sm:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-8xl">
@@ -96,21 +85,21 @@ export default function AboutPage() {
         </motion.div>
 
         {/* Content Container */}
-        <div className="max-w-7xl mx-auto w-full mt-30">
-          <div className="flex flex-col sm:flex-row justify-around items-center">
+        <div className="container mx-auto mt-60">
+          <div className="flex flex-col sm:flex-row justify-between items-center">
             {/* Left Column - About Text */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
-              className="flex flex-col sm:flex-row justify-around items-center bg-transparent  p-8 sm:p-10 lg:p-12 rounded-lg"
+              className="flex flex-col sm:flex-row justify-between items-center bg-transparent  rounded-lg"
             >
-              <div className="max-w-xl">
-                <h3 className="text-white text-center sm:text-left text-4xl sm:text-2xl font-semibold mb-6">
+              <div className="">
+                <h3 className="text-white text-center sm:text-left text-4xl sm:text-2xl font-semibold mb-10">
                   About
                 </h3>
-                <p className="text-gray-300 text-center sm:text-left text-base sm:text-sm leading-relaxed mb-8">
+                <p className="max-w-2xl text-[#FFFFFFCC] text-center sm:text-left text-base sm:text-sm leading-relaxed mb-8">
                   is simply dummy text of the printing and typesetting industry.
                   Lorem Ipsum has been the industry&apos;s standard dummy text
                   ever since the 1500s, when an unknown printer took a galley of
@@ -129,11 +118,8 @@ export default function AboutPage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer transition-all duration-300"
-                style={{
-                  background:
-                    "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
-                }}
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-6 py-3 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer transition-all duration-300"
+                
               >
                 Discover More
                 <ArrowRight className="w-5 h-5" />
