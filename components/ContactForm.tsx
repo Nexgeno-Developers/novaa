@@ -13,7 +13,7 @@ const ContactForm = () => {
     message: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e  : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -21,7 +21,7 @@ const ContactForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Handle form submission logic here
