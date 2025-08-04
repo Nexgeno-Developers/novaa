@@ -160,7 +160,7 @@ export default function InvestorInsightsSection() {
 
   return (
     <div className="bg-background relative overflow-hidden py-20">
-      <div className="absolute top-[15%] bottom-[15%] sm:top-[20%] sm:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
+      <div className="absolute top-[15%] bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
 
       <div className="container mx-auto  relative z-10 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-18 items-center my-10">
@@ -176,7 +176,7 @@ export default function InvestorInsightsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="font-cinzel text-4xl lg:text-5xl xl:text-6xl font-light text-white leading-tight text-center sm:text-left mt-0 sm:mt-10"
+                className="font-cinzel text-4xl lg:text-5xl xl:text-6xl font-light text-white leading-tight text-center lg:text-left mt-0 sm:mt-10"
               >
                 Insights for the{" "}
                 <h3
@@ -196,7 +196,7 @@ export default function InvestorInsightsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="font-josefin text-lg lg:text-xl text-[#FFFFFFE5] font-light leading-relaxed text-center sm:text-left "
+                className="font-josefin text-lg lg:text-xl text-[#FFFFFFE5] font-light leading-relaxed text-center lg:text-left md:pb-20 lg:pb-0 "
               >
                 Stay informed with trending stories, industry updates, and
                 thoughtful articles curated just for you.

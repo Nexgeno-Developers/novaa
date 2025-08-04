@@ -67,17 +67,17 @@ const NovaaAdvantageSection = () => {
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-8 left-8 lg:top-0 lg:left-5`;
+        return `${baseClasses} top-8 left-8 md:top-0 md:left-0 lg:top-0 lg:left-5`;
       case "top-right":
-        return `${baseClasses} top-8 right-8 lg:top-0 lg:right-10`;
+        return `${baseClasses} top-8 right-8 md:top-0 md:-right-8 lg:top-0 lg:right-10`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 lg:left-[-2rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:left-0 lg:left-[-2rem] transform -translate-y-1/2`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 lg:right-[-1rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-10 lg:right-[-1rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 lg:bottom-0 lg:left-[1rem]`;
+        return `${baseClasses} bottom-8 left-8 md:bottom-0 lg:bottom-0 lg:left-[1rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 lg:bottom-0 lg:right-[3rem]`;
+        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:-right-10 lg:bottom-0 lg:right-[3rem]`;
       default:
         return baseClasses;
     }
@@ -220,11 +220,11 @@ const NovaaAdvantageSection = () => {
                 <div
                   className={`${getContentPosition(
                     advantage.position
-                  )} hidden  sm:flex font-josefin max-w-xs lg:max-w-sm space-x-4`}
+                  )} hidden  sm:flex font-josefin max-w-[250px] lg:max-w-sm space-x-4`}
                 >
                   {/* Content */}
                   <div className="font-josefin space-y-2 mx-4">
-                    <h3 className="text-md lg:text-xl font-normal text-background">
+                    <h3 className="text-sm lg:text-xl font-normal text-background">
                       {advantage.title}
                     </h3>
                     <p className="text-xs lg:text-base font-light text-[#303030] leading-relaxed">
@@ -233,7 +233,7 @@ const NovaaAdvantageSection = () => {
                   </div>
 
                   {/* Icon Circle */}
-                  <div className="flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="hidden flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full lg:flex items-center justify-center shadow-lg">
                     <Image
                       src={advantage.icon}
                       width={100}
@@ -248,7 +248,7 @@ const NovaaAdvantageSection = () => {
         </motion.div>
 
         {/* Mobile Layout - 2 Cards Per Row */}
-        <div className="lg:hidden mt-16">
+        <div className="md:hidden mt-16">
           <motion.div
             className="grid grid-cols-2 gap-4"
             variants={containerVariants}

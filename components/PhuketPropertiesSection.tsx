@@ -378,7 +378,7 @@ const PhuketPropertiesSection = () => {
             {/* Main Heading */}
             <motion.div
               variants={headingVariants}
-              className="space-y-4 text-center sm:text-left "
+              className="space-y-4 text-center lg:text-left "
             >
               <h1 className="text-white text-2xl lg:text-3xl xl:text-4xl font-normal">
                 DISCOVER PRIME PROPERTIES
@@ -391,7 +391,7 @@ const PhuketPropertiesSection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-md lg:text-lg font-light max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-md lg:text-lg font-light w-full px-5 lg:max-w-2xl"
             >
               Explore a Curated Selection of Luxury Residences . Whether
               you&#39;re seeking a beachfront retreat, an investment
@@ -403,7 +403,7 @@ const PhuketPropertiesSection = () => {
             {/* Phuket Explorer Section */}
             <motion.div
               variants={itemVariants}
-              className="space-y-6 font-josefin text-center sm:text-left"
+              className="space-y-6 font-josefin text-center lg:text-left"
             >
               <h3 className="text-white font-medium text-4xl">
                 Phuket Explorer
@@ -413,7 +413,7 @@ const PhuketPropertiesSection = () => {
               </p>
 
               {/* Category Buttons */}
-              <div className="space-y-3 flex flex-col items-center sm:items-start">
+              <div className="space-y-3 flex flex-col items-center lg:items-start">
                 {Object.keys(explorerData).map((key) => {
                   const categoryKey = key as Category;
                   const isActive = activeCategory === categoryKey;
@@ -458,7 +458,7 @@ const PhuketPropertiesSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center justify-center sm:justify-start space-x-3 text-xl text-white font-cinzel"
+                  className="flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel"
                 >
                   <Image
                     src={"/icons/map-pin.svg"}
@@ -486,7 +486,7 @@ const PhuketPropertiesSection = () => {
                     {currentData.locations.map((location) => (
                       <motion.div
                         key={location.name}
-                        className="flex items-center justify-center sm:justify-start space-x-3 group"
+                        className="flex items-center justify-center lg:justify-start space-x-3 group"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                       >
@@ -505,7 +505,7 @@ const PhuketPropertiesSection = () => {
           </motion.div>
 
           {/* Right Side - Map */}
-          <div className="w-full sm:h-[600px] lg:h-full sm:mt-20 flex px-10 sm:px-0 items-center justify-center">
+          <div className="w-full sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
             <motion.div
               className="relative w-full max-w-xl h-full"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -515,7 +515,7 @@ const PhuketPropertiesSection = () => {
               <Image
                 src={"/images/map2.png"}
                 alt="map"
-                width={450}
+                width={650}
                 height={450}
               />
 

@@ -159,7 +159,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       transition={{ duration: 0.5 }}
       className=""
     >
-      <div className="relative">
+      <div className="relative flex justify-center items-center">
         {/* Card with inverted radius */}
         <div className="inverted-radius bg-white rounded-[40px] p-8 h-full flex flex-col relative z-10 ">
           <StarRating rating={testimonial.rating} />
@@ -170,7 +170,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
         </div>
 
         {/* Avatar outside the mask */}
-        <div className="absolute sm:bottom-0 bottom-0 right-5 sm:right-0">
+        <div className="absolute sm:bottom-0 bottom-0 right-5 md:right-40 lg:right-0">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
@@ -223,7 +223,7 @@ export default function EliteClientsTestimonials() {
         <div className="flex gap-6 sm:px-6">
           {testimonials.map((testimonial, index) => (
             <div
-              className="min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.3333%] px-2"
+              className="min-w-0 flex-[0_0_100%] lg:flex-[0_0_33.3333%] px-2"
               key={testimonial.id}
             >
               <TestimonialCard testimonial={testimonial} isActive={index === selectedIndex} />

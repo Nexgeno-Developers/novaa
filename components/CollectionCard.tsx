@@ -73,7 +73,7 @@ export default function CollectionCard() {
           transition={{ delay: index * 0.1, duration: 0.6 }}
           className="container mx-auto relative group rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
-          <div className="relative h-[560px] overflow-hidden group cursor-pointer" 
+          <div className="relative h-[500px] lg:h-[560px] overflow-hidden group cursor-pointer" 
             onClick={() => router.push('/project-detail')}
           >
             {/* Background Image */}
@@ -93,23 +93,23 @@ export default function CollectionCard() {
             <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[#000000] to-[#00000000]"></div>
 
             {/* Overlay Content at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 text-white p-8">
+            <div className="absolute bottom-0 left-0 right-0 text-white p-4 lg:p-8">
               
               <div className="flex items-center gap-4 mb-2">
-                <h3 className="text-xl font-semibold text-primary border-r-2 border-r-primary pr-5">
+                <h3 className="text-md md:text-lg lg:text-xl font-semibold text-primary border-r-2 border-r-primary pr-2 lg:pr-5">
                   {property.name}
                 </h3>
-                <span className="text-lg font-bold text-white">
+                <span className="text-sm md:text-md lg:text-lg font-bold text-white">
                   {property.price}
                 </span>
                 
               </div>
-              <div className="flex items-start justify-center gap-2 py-1 mb-2 w-[50%] rounded-xl bg-[#CDB04E1A]">
+              <div className="flex items-start justify-center gap-2 py-1 mb-2 w-full lg:w-[50%] rounded-xl bg-[#CDB04E1A]">
                 <Image src={'/icons/map-pin.svg'} width={15} height={15} alt="Location Icon" />
                   {property.location}
                 </div>
               
-              <p className="text-sm text-gray-200 border-t-[0.5px] pt-2 border-t-primary">
+              <p className="text-xs lg:text-sm text-gray-200 border-t-[0.5px] pt-2 border-t-primary">
                 {property.description}
               </p>
             </div>
@@ -132,7 +132,7 @@ export default function CollectionCard() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <ChevronLeft className="w-15 h-15 bg-transparent" />
+                <ChevronLeft className="w-10 h-10 lg:w-15 lg:h-15 bg-transparent" />
               </motion.button>
               <motion.button
                 onClick={(e) => {
@@ -143,7 +143,7 @@ export default function CollectionCard() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <ChevronRight className="w-15 h-15 bg-transparent" />
+                <ChevronRight className="w-10 h-10 lg:w-15 lg:h-15 bg-transparent" />
               </motion.button>
             </div>
 

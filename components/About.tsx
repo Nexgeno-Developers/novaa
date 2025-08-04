@@ -49,7 +49,7 @@ export default function AboutPage() {
           opacity: novaOpacity,
         }}
       >
-        <h1 className="font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-[200px]">
+        <h1 className="font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] md:text-[180px] lg:text-[200px]">
           NOVAA
         </h1>
       </motion.div>
@@ -86,7 +86,7 @@ export default function AboutPage() {
 
         {/* Content Container */}
         <div className="container mx-auto mt-60">
-          <div className="flex flex-col sm:flex-row justify-between items-center">
+          <div className="flex flex-col lg:flex-row justify-between items-center">
             {/* Left Column - About Text */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
