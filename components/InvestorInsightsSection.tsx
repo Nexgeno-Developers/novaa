@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 type Testimonial = {
   quote: string;
-  name: string;
+  content: string;
   designation: string;
   src: string;
 };
@@ -39,17 +39,25 @@ const AnimatedTestimonials = ({
     }
   }, [autoplay]);
 
+  let toggle = true;
+
   const randomRotateY = () => {
-    return Math.floor(Math.random() * 21) - 10;
+    const value = toggle
+      ? Math.floor(-14 * 1) - 0 // -20
+      : Math.floor(11 * 1) + 0; // 20
+
+    toggle = !toggle;
+    return value;
   };
 
   return (
     <div className="flex items-center justify-center">
-      <div className="relative h-100 w-100 container mx-auto">
+      <div className="relative h-[570px] w-[500px] ">
         <AnimatePresence>
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.src}
+              onClick={handleNext}
               initial={{
                 opacity: 0,
                 scale: 0.9,
@@ -62,7 +70,7 @@ const AnimatedTestimonials = ({
                 z: isActive(index) ? 0 : -100,
                 rotate: isActive(index) ? 0 : randomRotateY(),
                 zIndex: isActive(index) ? 40 : testimonials.length + 2 - index,
-                y: isActive(index) ? [0, -80, 0] : 0,
+                y: isActive(index) ? [0, -80, 0] : -25,
               }}
               exit={{
                 opacity: 0,
@@ -71,25 +79,28 @@ const AnimatedTestimonials = ({
                 rotate: randomRotateY(),
               }}
               transition={{
-                duration: 0.8,
+                duration: 0.9,
                 ease: "easeInOut",
               }}
               className="absolute inset-0 origin-bottom"
             >
-              <div className="relative h-full rounded-3xl bg-white shadow-2xl overflow-hidden">
+              <div className="relative h-full rounded-3xl bg-white overflow-hidden">
                 {/* Image Container with padding */}
                 <div className="p-4 pb-2">
                   <img
                     src={testimonial.src}
-                    alt={testimonial.name}
-                    className="w-full h-70 rounded-2xl object-cover object-center"
+                    alt={testimonial.content}
+                    className="w-full h-[360px] rounded-2xl object-cover object-center"
                     draggable={false}
                   />
                 </div>
 
                 {/* Content below image */}
                 <div className="px-4 pb-4">
-                  <p className="font-josefin text-xs text-[#303030] font-light">
+                  <h1 className="py-2 font-josefin font-medium text-xl text-background">
+                    {testimonial.content}
+                  </h1>
+                  <p className="font-josefin border-t-[0.5px] pt-2 border-t-[#01292BCC] text-sm leading-normal text-[#303030] font-light">
                     {testimonial.quote}
                   </p>
                 </div>
@@ -107,44 +118,48 @@ export default function InvestorInsightsSection() {
     {
       quote:
         "Luxury residential properties in 2024 with heavy property demand averaging 25% increase while rental yields in prime areas reached 7.8%, making it a new destination for HNIs.",
-      name: "Luxury Property Market",
+      content:
+        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
       designation: "2024 Market Analysis",
       src: "/images/invest-three.png",
     },
     {
       quote:
         "Commercial real estate opportunities showing 15% growth in Q3 2024, with office spaces in prime locations commanding premium rents.",
-      name: "Commercial Real Estate",
+      content:
+        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
       designation: "Q3 2024 Report",
       src: "/images/invest-four.png",
     },
     {
       quote:
         "Sustainable developments and green building initiatives are driving new investment patterns with 20% higher appreciation rates.",
-      name: "Sustainable Development",
+      content:
+        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
       designation: "Green Investment Trends",
-      src: "/images/invest-three.jpg",
+      src: "/images/invest-three.png",
     },
-    {
-      quote:
-        "Smart city developments and infrastructure projects are creating new opportunities for forward-thinking investors.",
-      name: "Smart City Projects",
-      designation: "Future Development",
-      src: "/images/invest-two.png",
-    },
-    {
-      quote:
-        "Residential townships with integrated amenities showing consistent 12% annual growth in tier-2 cities across India.",
-      name: "Residential Townships",
-      designation: "Growth Markets",
-      src: "/images/invest-one.png",
-    },
+    // {
+    //   quote:
+    //     "Smart city developments and infrastructure projects are creating new opportunities for forward-thinking investors.",
+    //   content:
+    //     "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
+    //   designation: "Future Development",
+    //   src: "/images/invest-two.png",
+    // },
+    // {
+    //   quote:
+    //     "Residential townships with integrated amenities showing consistent 12% annual growth in tier-2 cities across India.",
+    //   content:
+    //     "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
+    //   designation: "Growth Markets",
+    //   src: "/images/invest-one.png",
+    // },
   ];
 
   return (
     <div className="bg-background relative overflow-hidden py-20  ">
-
-<div className="absolute top-[20%] bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
+      <div className="absolute top-[20%] bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
 
       <div className="container mx-auto  relative z-10 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-18 items-center my-10">
@@ -195,12 +210,12 @@ export default function InvestorInsightsSection() {
             // transition={{ duration: 0.8, delay: 0.6 }}
             className=""
           > */}
-            <div className="relative z-10">
-              <AnimatedTestimonials
-                testimonials={propertyInsights}
-                autoplay={true}
-              />
-            </div>
+          <div className="relative z-10">
+            <AnimatedTestimonials
+              testimonials={propertyInsights}
+              autoplay={true}
+            />
+          </div>
           {/* </motion.div> */}
         </div>
       </div>
