@@ -151,12 +151,12 @@ export default function Footer() {
               <div className="lg:col-span-1">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-white text-4xl font-medium">
+                    <span className="text-white text-2xl sm:text-4xl font-medium">
                       +91 123456789
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-white text-4xl font-medium">
+                    <span className="text-white text-2xl sm:text-4xl font-medium">
                       Demo@gmail.com
                     </span>
                   </div>

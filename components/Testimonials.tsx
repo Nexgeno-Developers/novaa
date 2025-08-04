@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+
 
 type UseCarouselOptions = {
   autoplay?: boolean;
@@ -10,40 +12,40 @@ type UseCarouselOptions = {
 };
 
 // Simple carousel hook (replacing Embla for this demo)
-const useCarousel = (
-  slides: Testimonial[],
-  options: UseCarouselOptions = {}
-) => {
-  // console.log("Slides ", slides);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const { autoplay = false, delay = 5000 } = options;
+// const useCarousel = (
+//   slides: Testimonial[],
+//   options: UseCarouselOptions = {}
+// ) => {
+//   // console.log("Slides ", slides);
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const { autoplay = false } = options;
 
-  const scrollNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % slides.length);
-  }, [slides.length]);
+//   const scrollNext = useCallback(() => {
+//     setCurrentIndex((prev) => (prev + 1) % slides.length);
+//   }, [slides.length]);
 
-  const scrollPrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  }, [slides.length]);
+//   const scrollPrev = useCallback(() => {
+//     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+//   }, [slides.length]);
 
-  const scrollTo = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
+//   const scrollTo = useCallback((index: number) => {
+//     setCurrentIndex(index);
+//   }, []);
 
-  useEffect(() => {
-    if (autoplay) {
-      const interval = setInterval(scrollNext, delay);
-      return () => clearInterval(interval);
-    }
-  }, [autoplay, delay, scrollNext]);
+//   useEffect(() => {
+//     if (autoplay) {
+//       const interval = setInterval(scrollNext);
+//       return () => clearInterval(interval);
+//     }
+//   }, [autoplay, scrollNext]);
 
-  return {
-    currentIndex,
-    scrollNext,
-    scrollPrev,
-    scrollTo,
-  };
-};
+//   return {
+//     currentIndex,
+//     scrollNext,
+//     scrollPrev,
+//     scrollTo,
+//   };
+// };
 
 interface Testimonial {
   id: number;
@@ -78,6 +80,36 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 3,
+    name: "Ms. Elena Volkov",
+    role: "Investor, London",
+    rating: 5,
+    quote:
+      "The rental income from my Layan Verde property exceeded my expectations. Novaa management is impeccable. — Ms. Elena Volkov, Investor, London",
+    avatar: "/testimonials/image-three.png",
+    demo: "Demo",
+  },
+  {
+    id: 4,
+    name: "Ms. Elena Volkov",
+    role: "Investor, London",
+    rating: 5,
+    quote:
+      "The rental income from my Layan Verde property exceeded my expectations. Novaa management is impeccable. — Ms. Elena Volkov, Investor, London",
+    avatar: "/testimonials/image-three.png",
+    demo: "Demo",
+  },
+  {
+    id: 5,
+    name: "Ms. Elena Volkov",
+    role: "Investor, London",
+    rating: 5,
+    quote:
+      "The rental income from my Layan Verde property exceeded my expectations. Novaa management is impeccable. — Ms. Elena Volkov, Investor, London",
+    avatar: "/testimonials/image-three.png",
+    demo: "Demo",
+  },
+  {
+    id: 6,
     name: "Ms. Elena Volkov",
     role: "Investor, London",
     rating: 5,
@@ -138,7 +170,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
         </div>
 
         {/* Avatar outside the mask */}
-        <div className="absolute sm:bottom-0 bottom-0 right-10 sm:right-3">
+        <div className="absolute sm:bottom-0 bottom-0 right-5 sm:right-0">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
@@ -151,81 +183,77 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
 };
 
 export default function EliteClientsTestimonials() {
-  const { currentIndex, scrollNext, scrollPrev } = useCarousel(testimonials, {
-    // autoplay: true,
-    delay: 5000,
-  });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Get 3 testimonials to display (current and next 2)
-  const getVisibleTestimonials = () => {
-    const visible = [];
-    for (let i = 0; i < 3; i++) {
-      const index = (currentIndex + i) % testimonials.length;
-      visible.push(testimonials[index]);
-    }
-    return visible;
-  };
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
-  const visibleTestimonials = getVisibleTestimonials();
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    onSelect();
+  }, [emblaApi, onSelect]);
 
   return (
     <div className="bg-secondary py-20">
-      <div className="container mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16 font-cinzel"
-        >
-          <h2 className="text-3xl lg:text-4xl font-nromal text-[#01292B] mb-4 uppercase">
-            What Our{" "}
-            <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
-          </h2>
-          <p className="font-josefin text-[#303030] text-md font-light">
-            Real stories from real people who trust us
-          </p>
-        </motion.div>
+    <div className="container mx-auto">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-16 font-cinzel"
+      >
+        <h2 className="text-3xl lg:text-4xl font-normal text-[#01292B] mb-4 uppercase">
+          What Our <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
+        </h2>
+        <p className="font-josefin text-[#303030] text-md font-light">
+          Real stories from real people who trust us
+        </p>
+      </motion.div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {visibleTestimonials.map((testimonial, index) => (
-            <motion.div
-              key={`${testimonial.id}-${currentIndex}`}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+      {/* Embla Carousel */}
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex gap-6 sm:px-6">
+          {testimonials.map((testimonial, index) => (
+            <div
+              className="min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.3333%] px-2"
+              key={testimonial.id}
             >
-              <TestimonialCard
-                testimonial={testimonial}
-                isActive={index === 0}
-              />
-            </motion.div>
+              <TestimonialCard testimonial={testimonial} isActive={index === selectedIndex} />
+            </div>
           ))}
         </div>
-
-        {/* Navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex items-center justify-center gap-4"
-        >
-          <button
-            onClick={scrollPrev}
-            className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
-          >
-            <ArrowLeft className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
-          </button>
-
-          <button
-            onClick={scrollNext}
-            className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
-          >
-            <ArrowRight className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
-          </button>
-        </motion.div>
       </div>
+
+      {/* Navigation */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="flex items-center justify-center gap-4 mt-10"
+      >
+        <button
+          onClick={scrollPrev}
+          className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
+        >
+          <ArrowLeft className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
+        </button>
+
+        <button
+          onClick={scrollNext}
+          className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
+        >
+          <ArrowRight className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
+        </button>
+      </motion.div>
     </div>
+  </div>
   );
 }

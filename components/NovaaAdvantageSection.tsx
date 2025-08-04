@@ -12,7 +12,7 @@ const NovaaAdvantageSection = () => {
       title: "Scouting Excellence",
       description:
         "We identify prime properties in high-growth areas, ensuring maximum returns and flexibility.",
-      icon: '/advantage-section-images/icon-one.png',
+      icon: "/advantage-section-images/icon-one.png",
       position: "top-left",
       angle: -45,
     },
@@ -21,7 +21,7 @@ const NovaaAdvantageSection = () => {
       title: "Freehold & Rental Income Support",
       description:
         "Secure freehold ownership and set up rentals or your rental income with guaranteed returns.",
-      icon: '/advantage-section-images/icon-two.png',
+      icon: "/advantage-section-images/icon-two.png",
       position: "top-right",
       angle: 45,
     },
@@ -30,7 +30,7 @@ const NovaaAdvantageSection = () => {
       title: "Unmatched Transparency",
       description:
         "Every transaction is clear and documented, ensuring you gain the complete peace of mind.",
-      icon: '/advantage-section-images/icon-three.png',
+      icon: "/advantage-section-images/icon-three.png",
       position: "left",
       angle: -90,
     },
@@ -39,7 +39,7 @@ const NovaaAdvantageSection = () => {
       title: "Bureaucratic Ease",
       description:
         "We manage all regulatory processes, so you can focus on enjoying your investment.",
-      icon: '/advantage-section-images/icon-four.png',
+      icon: "/advantage-section-images/icon-four.png",
       position: "right",
       angle: 90,
     },
@@ -48,7 +48,7 @@ const NovaaAdvantageSection = () => {
       title: "Visa & Legal Assistance",
       description:
         "From residency programs to legal consultations, we provide comprehensive support.",
-      icon: '/advantage-section-images/icon-five.png',
+      icon: "/advantage-section-images/icon-five.png",
       position: "bottom-left",
       angle: -135,
     },
@@ -57,13 +57,13 @@ const NovaaAdvantageSection = () => {
       title: "Expert Curation",
       description:
         "Early property selection and exclusive access to the best developments of the global elite.",
-      icon: '/advantage-section-images/icon-six.png',
+      icon: "/advantage-section-images/icon-six.png",
       position: "bottom-right",
       angle: 135,
     },
   ];
 
-  const getPositionClasses = (position:string) => {
+  const getPositionClasses = (position: string) => {
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
@@ -83,7 +83,7 @@ const NovaaAdvantageSection = () => {
     }
   };
 
-  const getContentPosition = (position:string) => {
+  const getContentPosition = (position: string) => {
     switch (position) {
       case "top-left":
         return "flex-row";
@@ -151,10 +151,7 @@ const NovaaAdvantageSection = () => {
         >
           <h2 className="text-4xl lg:text-5xl font-normal text-gray-800 mb-4">
             THE NOVAA{" "}
-            <span
-              className="text-5xl lg:text-5xl font-bold bg-clip-text text-transparent bg-[#D4AF37]"
-            
-            >
+            <span className="text-5xl lg:text-5xl font-bold bg-clip-text text-transparent bg-[#D4AF37]">
               ADVANTAGE
             </span>
           </h2>
@@ -225,7 +222,7 @@ const NovaaAdvantageSection = () => {
                     advantage.position
                   )} hidden  sm:flex font-josefin max-w-xs lg:max-w-sm space-x-4`}
                 >
-                     {/* Content */}
+                  {/* Content */}
                   <div className="font-josefin space-y-2 mx-4">
                     <h3 className="text-md lg:text-xl font-normal text-background">
                       {advantage.title}
@@ -237,52 +234,54 @@ const NovaaAdvantageSection = () => {
 
                   {/* Icon Circle */}
                   <div className="flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center shadow-lg">
-                    <Image src={advantage.icon} width={100} height={100} alt="icon" />
+                    <Image
+                      src={advantage.icon}
+                      width={100}
+                      height={100}
+                      alt="icon"
+                    />
                   </div>
-
-                 
                 </div>
               </motion.div>
             );
           })}
-
-
         </motion.div>
 
-        {/* Mobile Layout - Stacked Cards */}
+        {/* Mobile Layout - 2 Cards Per Row */}
         <div className="lg:hidden mt-16">
           <motion.div
-            className="space-y-8"
+            className="grid grid-cols-2 gap-4"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {advantages.map((advantage, index) => {
-              return (
-                <motion.div
-                  key={`mobile-${advantage.id}`}
-                  className="bg-white rounded-xl p-6 shadow-lg"
-                  variants={itemVariants}
-                  whileHover={{ y: -5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="font-josefin flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center">
-                    <Image src={advantage.icon} width={50} height={50} alt="icon" />
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {advantage.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {advantage.description}
-                      </p>
-                    </div>
+            {advantages.map((advantage, index) => (
+              <motion.div
+                key={`mobile-${advantage.id}`}
+                className="bg-white rounded-xl p-4 shadow-lg"
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="font-josefin flex items-center flex-col space-x-4">
+                  <div className="flex items-center justify-between gap-4 py-2">
+                  <Image
+                    src={advantage.icon}
+                    width={40}
+                    height={40}
+                    alt="icon"
+                  />
+                  <h3 className="text-sm font-semibold text-gray-800">
+                    {advantage.title}
+                  </h3>
                   </div>
-                </motion.div>
-              );
-            })}
+                </div>
+                  <p className=" font-josefin text-xs text-gray-600 leading-relaxed">
+                    {advantage.description}
+                  </p>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </div>

@@ -22,7 +22,7 @@ export default function Breadcrumbs({ title }: BreadcrumbsProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full w-full flex flex-col items-center mt-6 justify-center text-white text-center pt-12  px-4">
+      <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-white text-center pt-12  px-4">
         <h1
           className={`${josefin.className} text-[62px] font-medium leading-[100%] w-[388px] h-[70px]`}
         >

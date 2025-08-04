@@ -100,8 +100,9 @@ const AnimatedTestimonials = ({
                   <h1 className="py-2 font-josefin font-medium text-md sm:text-xl text-background">
                     {testimonial.content}
                   </h1>
-                  <p className="font-josefin border-t-[0.5px] pt-2 border-t-[#01292BCC] text-xs sm:text-sm leading-normal text-[#303030] font-light">
+                  <p className="relative font-josefin pt-4 text-xs sm:text-sm leading-normal text-[#303030] font-light">
                     {testimonial.quote}
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
                   </p>
                 </div>
               </div>
@@ -139,22 +140,22 @@ export default function InvestorInsightsSection() {
       designation: "Green Investment Trends",
       src: "/images/invest-three.png",
     },
-    // {
-    //   quote:
-    //     "Smart city developments and infrastructure projects are creating new opportunities for forward-thinking investors.",
-    //   content:
-    //     "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-    //   designation: "Future Development",
-    //   src: "/images/invest-two.png",
-    // },
-    // {
-    //   quote:
-    //     "Residential townships with integrated amenities showing consistent 12% annual growth in tier-2 cities across India.",
-    //   content:
-    //     "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-    //   designation: "Growth Markets",
-    //   src: "/images/invest-one.png",
-    // },
+    {
+      quote:
+        "Smart city developments and infrastructure projects are creating new opportunities for forward-thinking investors.",
+      content:
+        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
+      designation: "Future Development",
+      src: "/images/invest-two.png",
+    },
+    {
+      quote:
+        "Residential townships with integrated amenities showing consistent 12% annual growth in tier-2 cities across India.",
+      content:
+        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
+      designation: "Growth Markets",
+      src: "/images/invest-one.png",
+    },
   ];
 
   return (

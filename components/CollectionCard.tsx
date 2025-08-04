@@ -80,10 +80,6 @@ export default function CollectionCard() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${property.id}-${currentImageIndex[property.id] || 0}`}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.01 }}
                 className="absolute inset-0"
               >
                 <Image
@@ -126,7 +122,7 @@ export default function CollectionCard() {
             )}
 
             {/* Navigation Arrows */}
-            <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-between p-4 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();

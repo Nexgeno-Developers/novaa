@@ -92,7 +92,7 @@ const ModernAmenities = () => {
   }
 
   return (
-    <section className="relative min-h-screen w-full bg-background py-24 overflow-hidden">
+    <section className="relative bg-background py-24 overflow-hidden">
       {/* Background Pattern/Texture */}
       {/* <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-600/20 to-transparent"></div>
@@ -104,7 +104,7 @@ const ModernAmenities = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className="max-w-7xl mx-auto"
+          className="container mx-auto"
         >
           {/* Header */}
           <motion.div 
@@ -131,7 +131,7 @@ const ModernAmenities = () => {
                 {amenities.map((amenity, index) => (
                   <div 
                     key={amenity.id} 
-                    className="flex-[0_0_100%] min-w-0 pl-4 md:flex-[0_0_50%] lg:flex-[0_0_33.333%]"
+                    className="flex-[0_0_100%] min-w-0 pl-4 md:flex-[0_0_33.3333%] lg:flex-[0_0_33.333%]"
                   >
                     <motion.div
                       className="relative group cursor-pointer h-80 rounded-2xl overflow-hidden mx-2"

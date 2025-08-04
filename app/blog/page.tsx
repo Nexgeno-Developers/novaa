@@ -19,7 +19,7 @@ export default function Blog() {
             {galleryImages.slice(0, 3).map((img, idx) => (
               <div
                 key={idx}
-                className="relative w-full max-w-[615px] h-[720px] rounded-[40px] overflow-hidden group cursor-pointer"
+                className="relative w-full max-w-[615px] h-[440px] sm:h-[720px] rounded-[40px] overflow-hidden group cursor-pointer"
                 onClick={() => {
                   router.push('/blog-details')
                 }}
@@ -50,7 +50,7 @@ export default function Blog() {
             {galleryImages.slice(3, 6).map((img, idx) => (
               <div
                 key={idx}
-                className="relative w-full max-w-[615px] h-[540px] rounded-[40px] overflow-hidden group cursor-pointer"
+                className="relative w-full max-w-[615px] h-[440px] sm:h-[540px] rounded-[40px] overflow-hidden group cursor-pointer"
                 onClick={() => {
                   router.push('/blog-details')
                 }}

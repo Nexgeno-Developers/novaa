@@ -59,7 +59,7 @@ const ContactForm = () => {
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/images/ContactFormBg.png')`,
+          backgroundImage: `url('/images/ContactFormBackground.jpg')`,
         }}
       />
 
@@ -234,7 +234,7 @@ const ContactForm = () => {
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-primary hover:bg-yellow-400 text-background font-semibold px-12 py-3 rounded-2xl cursor-pointer text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-12 py-3 rounded-[10px] cursor-pointer text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Submit
               </motion.button>

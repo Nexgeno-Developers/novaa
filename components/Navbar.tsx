@@ -51,7 +51,7 @@ export default function Navbar() {
           href="/blog"
           className="hover:text-[#F0DE9C] transition-colors duration-300"
         >
-          Blogs
+          Blog
         </Link>
       </nav>
 
@@ -116,7 +116,7 @@ export default function Navbar() {
                 className="hover:text-[#F0DE9C] transition-colors duration-300 py-2 border-b border-white/10"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Blogs
+                Blog
               </Link>
               <motion.button
                 whileHover={{ scale: 1.05 }}
