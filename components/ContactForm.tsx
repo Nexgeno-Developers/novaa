@@ -70,7 +70,7 @@ const ContactForm = () => {
       />
 
       {/* Top to Bottom Gradient */}
-      <div className="absolute top-0 w-full h-1/4 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
+      <div className="absolute top-0 w-full h-1/3 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
 
       {/* Bottom to Top Gradient */}
       <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
