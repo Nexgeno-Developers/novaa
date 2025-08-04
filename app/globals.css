@@ -7,7 +7,7 @@
 /* HTML: <img class="inverted-radius" src="" alt=""> */
 .inverted-radius {
   --r: 20px; /* the radius */
-  --s: 30px; /* size of inner curve */
+  --s: 40px; /* size of inner curve */
   --x: 20px; /* horizontal offset (no percentane) */
   --y: 10px; /* vertical offset (no percentage) */
   

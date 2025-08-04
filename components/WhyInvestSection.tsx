@@ -117,7 +117,7 @@ export default function WhyInvestSection() {
                 <motion.div
                   key={point.id}
                   variants={itemVariants}
-                  className="flex items-start gap-6 group py-2"
+                  className="flex items-start gap-6 group py-2 px-2 sm:px-0"
                 >
                   {/* Icon Circle */}
                   <div className="flex-shrink-0 w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300">

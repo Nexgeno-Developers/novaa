@@ -128,25 +128,24 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       className=""
     >
       <div className="relative">
-  {/* Card with inverted radius */}
-  <div className="inverted-radius bg-white rounded-[40px] p-8 h-full flex flex-col relative z-10">
-    <StarRating rating={testimonial.rating} />
-    <p className="text-[#303030CC] text-base leading-relaxed mb-8 flex-grow">
-      &quot;{testimonial.quote}&quot;
-    </p>
-    <p className="font-light">Demo</p>
-  </div>
+        {/* Card with inverted radius */}
+        <div className="inverted-radius bg-white rounded-[40px] p-8 h-full flex flex-col relative z-10 ">
+          <StarRating rating={testimonial.rating} />
+          <p className="text-[#303030CC] text-base leading-relaxed mb-8 flex-grow">
+            &quot;{testimonial.quote}&quot;
+          </p>
+          <p className="font-light">Demo</p>
+        </div>
 
-  {/* Avatar outside the mask */}
-  <div className="absolute bottom-0 right-3">
-    <img
-      src={testimonial.avatar}
-      alt={testimonial.name}
-      className="w-14 h-14 rounded-full object-cover border-1 border-[#CDB04E]"
-    />
-  </div>
-</div>
-
+        {/* Avatar outside the mask */}
+        <div className="absolute sm:bottom-0 bottom-0 right-10 sm:right-3">
+          <img
+            src={testimonial.avatar}
+            alt={testimonial.name}
+            className="w-14 h-14 rounded-full object-cover border-1 border-[#CDB04E]"
+          />
+        </div>
+      </div>
     </motion.div>
   );
 };

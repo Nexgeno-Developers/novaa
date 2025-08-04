@@ -403,7 +403,7 @@ const PhuketPropertiesSection = () => {
             {/* Phuket Explorer Section */}
             <motion.div
               variants={itemVariants}
-              className="space-y-6 font-josefin"
+              className="space-y-6 font-josefin text-center sm:text-left"
             >
               <h3 className="text-white font-medium text-4xl">
                 Phuket Explorer
@@ -413,7 +413,7 @@ const PhuketPropertiesSection = () => {
               </p>
 
               {/* Category Buttons */}
-              <div className="space-y-3">
+              <div className="space-y-3 flex flex-col items-center sm:items-start">
                 {Object.keys(explorerData).map((key) => {
                   const categoryKey = key as Category;
                   const isActive = activeCategory === categoryKey;
@@ -458,7 +458,7 @@ const PhuketPropertiesSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center space-x-3 text-xl text-white font-cinzel"
+                  className="flex items-center justify-center sm:justify-start space-x-3 text-xl text-white font-cinzel"
                 >
                   <Image
                     src={"/icons/map-pin.svg"}
@@ -486,7 +486,7 @@ const PhuketPropertiesSection = () => {
                     {currentData.locations.map((location) => (
                       <motion.div
                         key={location.name}
-                        className="flex items-center space-x-3 group"
+                        className="flex items-center justify-center sm:justify-start space-x-3 group"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                       >
@@ -505,7 +505,7 @@ const PhuketPropertiesSection = () => {
           </motion.div>
 
           {/* Right Side - Map */}
-          <div className="w-full h-[600px] lg:h-full mt-20 flex items-center justify-center">
+          <div className="w-full sm:h-[600px] lg:h-full sm:mt-20 flex px-10 sm:px-0 items-center justify-center">
             <motion.div
               className="relative w-full max-w-xl h-full"
               initial={{ opacity: 0, scale: 0.9 }}
