@@ -52,7 +52,7 @@ export default function HeroSection() {
         </motion.h3>
         
       </div>
-      <div className="absolute bottom-30 mx-5 md:bottom-20 md:left-[40px] lg:bottom-20 lg:right-20 flex justify-end gap-4 z-20">
+      <div className="absolute bottom-20 mx-5 md:bottom-20 md:left-[40px] lg:bottom-20 lg:right-20 flex justify-end gap-4 z-20">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

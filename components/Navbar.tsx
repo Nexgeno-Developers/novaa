@@ -15,9 +15,9 @@ export default function Navbar() {
   };
 
   return (
-    <header className="absolute top-0 w-full h-20 bg-background sm:bg-[#00000099] backdrop-blur-sm flex items-center justify-between text-white z-20">
+    <header className="absolute top-0 w-full h-20 bg-background lg:bg-[#00000099] backdrop-blur-sm flex items-center justify-between text-white z-20">
       {/* Left: Logo */}
-      <div className="flex items-center justify-center w-[40vh] md:w-[40vh] sm:w-32 bg-background h-full">
+      <div className="flex items-center justify-center w-[40vh] md:w-full lg:w-[40vh] sm:w-32 bg-background h-full">
         <Image
           src={"/images/logo.png"}
           width={150}

@@ -122,7 +122,7 @@ export default function CollectionCard() {
             )}
 
             {/* Navigation Arrows */}
-            <div className="absolute inset-0 flex items-center justify-between p-4 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-between p-4 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
