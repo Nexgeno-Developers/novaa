@@ -364,7 +364,7 @@ const PhuketPropertiesSection = () => {
       />
       {/* Top gradient overlay */}
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
-      // {/* Bottom gradient overlay */}
+      {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
       <div className="relative z-20 container mx-auto  py-20 lg:py-28">
         <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
