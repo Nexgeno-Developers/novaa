@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative h-[930px] overflow-hidden pt-20">
       {/* Background Image */}
       <Image
         src="/images/hero.jpg"
@@ -13,6 +13,7 @@ export default function HeroSection() {
         layout="fill"
         objectFit="cover"
         priority
+        className="h-full"
       />
 
       {/* Dark bottom overlay */}
@@ -33,8 +34,9 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="font-bold text-3xl md:text-5xl text-[#F0DE9C] mt-2 font-cinzel"
+          className="font-bold text-3xl md:text-5xl leading-[100%]  bg-gradient-to-tl from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent mt-2 font-cinzel"
         >
+          
           Luxury in Thailand
         </motion.h3>
       </div>

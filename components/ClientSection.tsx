@@ -38,7 +38,7 @@ const ClientTestimonialsSection = () => {
     },
   ];
 
-  const toggleExpanded = (index : number) => {
+  const toggleExpanded = (index: number) => {
     // console.log("Index" , index);
     setExpandedIndex(expandedIndex === index ? -1 : index);
   };
@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative min-h-[110vh] md:min-h-[70vh] lg:h-[840px] overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}
@@ -95,7 +95,7 @@ const ClientTestimonialsSection = () => {
       />
 
       {/* Content */}
-      <div className="font-cinzel relative z-20 container mx-auto py-20">
+      <div className="font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto py-20">
         <div className="">
           {/* Header */}
           <motion.div
@@ -115,7 +115,7 @@ const ClientTestimonialsSection = () => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                 faq
+                faq
               </span>
             </h2>
             <p className="font-josefin font-light text-[#FFFFFFE5] text-lg leading-normal">
@@ -137,7 +137,6 @@ const ClientTestimonialsSection = () => {
                 className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden "
                 variants={itemVariants}
                 whileHover={{
-                  
                   borderColor: "#e1c159",
                   transition: { duration: 0.3 },
                 }}
@@ -160,9 +159,9 @@ const ClientTestimonialsSection = () => {
                       transition={{ duration: 0.3 }}
                     >
                       {expandedIndex === index ? (
-                        <ArrowUp className="w-6 h-6 text-[#C3912F]" />
+                        <ArrowUp className="w-6 h-6 text-[#C3912F] cursor-pointer" />
                       ) : (
-                        <ArrowDown className="w-6 h-6 text-[#C3912F]" />
+                        <ArrowDown className="w-6 h-6 text-[#C3912F] cursor-pointer" />
                       )}
                     </motion.div>
                   </div>
@@ -177,7 +176,7 @@ const ClientTestimonialsSection = () => {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-6 pt-2 bg-[#CDB04E0D]">
+                      <div className="px-6 pb-6 pt-2">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.p
                           className="font-josefin text-[#FFFFFF] text-base leading-normal font-light"

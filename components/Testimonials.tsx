@@ -11,42 +11,6 @@ type UseCarouselOptions = {
   delay?: number;
 };
 
-// Simple carousel hook (replacing Embla for this demo)
-// const useCarousel = (
-//   slides: Testimonial[],
-//   options: UseCarouselOptions = {}
-// ) => {
-//   // console.log("Slides ", slides);
-//   const [currentIndex, setCurrentIndex] = useState(0);
-//   const { autoplay = false } = options;
-
-//   const scrollNext = useCallback(() => {
-//     setCurrentIndex((prev) => (prev + 1) % slides.length);
-//   }, [slides.length]);
-
-//   const scrollPrev = useCallback(() => {
-//     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
-//   }, [slides.length]);
-
-//   const scrollTo = useCallback((index: number) => {
-//     setCurrentIndex(index);
-//   }, []);
-
-//   useEffect(() => {
-//     if (autoplay) {
-//       const interval = setInterval(scrollNext);
-//       return () => clearInterval(interval);
-//     }
-//   }, [autoplay, scrollNext]);
-
-//   return {
-//     currentIndex,
-//     scrollNext,
-//     scrollPrev,
-//     scrollTo,
-//   };
-// };
-
 interface Testimonial {
   id: number;
   name: string;

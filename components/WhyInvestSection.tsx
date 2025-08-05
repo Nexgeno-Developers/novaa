@@ -94,10 +94,10 @@ export default function WhyInvestSection() {
               variants={itemVariants}
               className="space-y-3 text-center sm:text-left"
             >
-              <h2 className="text-3xl lg:text-4xl font-normal text-[#303030]">
+              <h2 className="text-3xl lg:text-[50px] font-normal text-[#303030]">
                 Why Invest in
               </h2>
-              <h3 className="text-3xl lg:text-4xl font-bold text-[#D4AF37] leading-tight">
+              <h3 className="text-3xl lg:text-[50px] font-bold text-[#D4AF37]">
                 Phuket Thailand
               </h3>
             </motion.div>
@@ -105,7 +105,7 @@ export default function WhyInvestSection() {
             {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-black font-normal text-lg text-center sm:text-left leading-relaxed"
+              className="font-josefin text-black font-light text-lg text-center sm:text-left leading-tight"
             >
               Thailand&#39;s real estate market is a haven for HNIs seeking
               capital growth, passive income, and a luxurious lifestyle.
@@ -132,8 +132,8 @@ export default function WhyInvestSection() {
 
                   {/* Content */}
                   <div className="flex-1 space-y-2 font-josefin">
-                    <h4 className="text-xl text-[#01292B]">{point.title}</h4>
-                    <p className="text-[#303030] font-normal text-md leading-relaxed">
+                    <h4 className="text-xl font-normal text-[#01292B]">{point.title}</h4>
+                    <p className="text-[#303030] font-light text-md leading-relaxed">
                       {point.description}
                     </p>
                     {/* {point.details && (
@@ -153,12 +153,12 @@ export default function WhyInvestSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="flex flex-wrap gap-[35px] h-full mx-5 sm:mx-0"
-          >
+            className="flex flex-wrap gap-5 h-full mx-5"
+            >
             {/* Top Left - Image 1 (60%) */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-100 basis-[50%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-110 basis-[50%] rounded-3xl overflow-hidden"
             >
               <Image
                 src={images[0]}
@@ -171,7 +171,7 @@ export default function WhyInvestSection() {
             {/* Top Right - Image 2 (30%) */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-100 basis-[40%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-110 basis-[40%] rounded-3xl overflow-hidden shadow-lg"
             >
               <Image
                 src={images[1]}

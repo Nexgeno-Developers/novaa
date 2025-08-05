@@ -1,193 +1,3 @@
-// "use client";
-
-// import React from "react";
-// import { motion, Variants } from "framer-motion";
-// import Image from "next/image";
-
-// const PhuketPropertiesSection = () => {
-//   const features = [
-//     {
-//       title: "Strategic Locations",
-//       description:
-//         "All projects are conveniently near popular tourist sites at upcoming prime areas.",
-//     },
-//     {
-//       title: "Rental Potential",
-//       description:
-//         "High demand from expats and tourists for short-term and long-term rentals.",
-//     },
-//     {
-//       title: "Modern Lifestyle",
-//       description:
-//         "Premium amenities, cosmopolitan design, and luxury conveniences.",
-//     },
-//     {
-//       title: "Developer Trust",
-//       description:
-//         "Respected developers like Banyan Group and Origin ensure quality and timely delivery.",
-//     },
-//   ];
-
-//   const containerVariants: Variants = {
-//     hidden: { opacity: 0 },
-//     visible: {
-//       opacity: 1,
-//       transition: {
-//         staggerChildren: 0.3,
-//         duration: 0.8,
-//       },
-//     },
-//   };
-
-//   const itemVariants: Variants = {
-//     hidden: { opacity: 0, x: -50 },
-//     visible: {
-//       opacity: 1,
-//       x: 0,
-//       transition: {
-//         duration: 0.6,
-//         ease: "easeOut",
-//       },
-//     },
-//   };
-
-//   const headingVariants: Variants = {
-//     hidden: { opacity: 0, y: 30 },
-//     visible: {
-//       opacity: 1,
-//       y: 0,
-//       transition: {
-//         duration: 0.8,
-//         ease: "easeOut",
-//       },
-//     },
-//   };
-
-//   return (
-//     <section className="relative overflow-hidden">
-//       <div
-//         className="absolute inset-0 z-0 bg-cover bg-center"
-//         style={{
-//           backgroundImage: `
-//       linear-gradient(270deg, rgba(1, 41, 43, 0) -542.65%, #01292B 100%),
-//       url('/images/background.jpg')
-//     `,
-//         }}
-//       />
-
-//       {/* Top gradient overlay */}
-//       {/* <div
-//         className="absolute top-0 left-0 w-full h-full z-10"
-//         style={{
-//           background:
-//             "linear-gradient(180deg, rgba(1, 41, 43, 0) 0%, #01292B 100%)",
-//         }}
-//       /> */}
-
-//       {/* Bottom gradient overlay */}
-//       {/* <div
-//         className="absolute bottom-0 left-0 w-full h-full z-10"
-//         style={{
-//           background: 'linear-gradient(0deg, rgba(1, 41, 43, 0) 0%, #01292B 100%)'
-//         }}
-//       /> */}
-
-//       <div className="relative z-20 container mx-auto py-20">
-//         <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-//           {/* Left Content */}
-//           <motion.div
-//             className="space-y-8"
-//             variants={containerVariants}
-//             initial="hidden"
-//             whileInView="visible"
-//             viewport={{ once: true, amount: 0.3 }}
-//           >
-//             {/* Main Heading */}
-//             <motion.div variants={headingVariants} className="space-y-4 text-center sm:text-left ">
-//               <h1 className="text-white text-2xl lg:text-3xl xl:text-4xl font-normal">
-//                 DISCOVER PRIME PROPERTIES
-//               </h1>
-//               <h2
-//                 className="text-2xl lg:text-3xl xl:text-4xl font-bold bg-clip-text text-transparent"
-//                 style={{
-//                   background:
-//                     "radial-gradient(55.66% 55.66% at -0.55% 62.22%, #C3912F 0%, #F5E7A8 51.68%, #C3912F 100%)",
-//                   WebkitBackgroundClip: "text",
-//                   WebkitTextFillColor: "transparent",
-//                 }}
-//               >
-//                 ACROSS PHUKET
-//               </h2>
-//             </motion.div>
-
-//             {/* Description */}
-//             <motion.p
-//               variants={itemVariants}
-//               className="font-josefin text-[#FFFFFF] text-center sm:text-left text-md lg:text-lg font-light max-w-2xl"
-//             >
-//               Explore our Curated Selection of Luxury Residences. Whether you&#39;re
-//               seeking a beachfront villa, an investment opportunity, or a
-//               peaceful escape, unveil infinite blue development opportunities
-//               built of lifestyle and location in Phuket.
-//             </motion.p>
-
-//             {/* Why Invest Section */}
-//             <motion.div variants={itemVariants} className="space-y-6">
-//               <h3 className="font-josefin text-white text-xl lg:text-2xl font-medium">
-//                 Why Invest in These Locations?
-//               </h3>
-
-//               <div className="space-y-6">
-//                 {features.map((feature, index) => (
-//                   <motion.div
-//                     key={index}
-//                     variants={itemVariants}
-//                     className="flex items-start space-x-4"
-//                   >
-//                     {/* Gold Circle Icon */}
-//                     <div className="flex-shrink-0 mt-1">
-//                       <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F]">
-//                         <Image
-//                           src={"/icons/pin.svg"}
-//                           alt="pin icon"
-//                           width={50}
-//                           height={50}
-//                         />
-//                       </div>
-//                     </div>
-
-//                     <div className="space-y-2">
-//                       <h4 className="font-josefin text-[#C3912F] text-xl font-normal">
-//                         {feature.title}
-//                       </h4>
-//                       <p className="font-josefin text-white text-base font-light">
-//                         {feature.description}
-//                       </p>
-//                     </div>
-//                   </motion.div>
-//                 ))}
-//               </div>
-//             </motion.div>
-//           </motion.div>
-
-//           {/* Right Side - Map Placeholder */}
-//           <motion.div
-//             className="flex items-center justify-center"
-//             initial={{ opacity: 0, scale: 0.9 }}
-//             whileInView={{ opacity: 1, scale: 1 }}
-//             viewport={{ once: true, amount: 0.3 }}
-//             transition={{ duration: 0.8, ease: "easeOut" }}
-//           >
-//              <Image src={'/images/map2.png'} alt="map" width={400} height={400} />
-//           </motion.div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default PhuketPropertiesSection;
-
 "use client";
 
 import React, { useState } from "react";
@@ -195,7 +5,6 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
 
 // --- Data for the explorer ---
-// You can easily update this data to change the content for each category.
 const explorerData = {
   beaches: {
     title: "Beaches Locations",
@@ -366,7 +175,7 @@ const PhuketPropertiesSection = () => {
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
-      <div className="relative z-20 container mx-auto  py-20 lg:py-28">
+      <div className="relative z-20 container mx-auto  py-20">
         <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           {/* Left Content */}
           <motion.div
@@ -391,7 +200,7 @@ const PhuketPropertiesSection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-md lg:text-lg font-light w-full px-5 lg:max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-md lg:text-lg font-light w-full px-5 sm:px-0 leading-snug lg:max-w-2xl"
             >
               Explore a Curated Selection of Luxury Residences . Whether
               you&#39;re seeking a beachfront retreat, an investment
@@ -408,7 +217,7 @@ const PhuketPropertiesSection = () => {
               <h3 className="text-white font-medium text-4xl">
                 Phuket Explorer
               </h3>
-              <p className="text-[#FFFFFFE5] text-lg font-light">
+              <p className="text-[#FFFFFFE5] text-lg font-light border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0">
                 Discover the beauty and development of Phuket Island
               </p>
 
@@ -421,7 +230,7 @@ const PhuketPropertiesSection = () => {
                     <button
                       key={categoryKey}
                       onClick={() => setActiveCategory(categoryKey)}
-                      className={`w-[60%] flex items-center space-x-4 p-4 rounded-4xl border border-[#01292B] transition-all duration-300 group cursor-pointer ${
+                      className={`w-[80%] flex items-center space-x-4 p-4 rounded-[20px] border border-[#01292B] transition-all duration-300 group cursor-pointer ${
                         isActive
                           ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
                           : "bg-[#CDB04E33] text-[#CDB04E] hover:border-[#C3912F] hover:bg-opacity-30"
@@ -432,16 +241,24 @@ const PhuketPropertiesSection = () => {
                           isActive ? "text-background" : "text-background"
                         }`}
                       >
-                        <Image
-                          src={explorerData[categoryKey].icon}
-                          width={35}
-                          height={35}
-                          alt="Map pin "
-                          className="pl-2 border-l-2 border-l-background"
-                        />
+                        <div className="flex items-center border-l-2 pl-2 border-l-background h-[35px]">
+                          <div
+                            className={`w-[35px] h-[35px] ${
+                              isActive ? "bg-background" : "bg-primary"
+                            } mask mask-center mask-no-repeat`}
+                            style={{
+                              WebkitMaskImage: `url(${explorerData[categoryKey].icon})`,
+                              maskImage: `url(${explorerData[categoryKey].icon})`,
+                              WebkitMaskSize: "contain",
+                              maskSize: "contain",
+                              WebkitMaskRepeat: "no-repeat",
+                              maskRepeat: "no-repeat",
+                            }}
+                          />
+                        </div>
                       </div>
                       <span className="text-lg font-medium font-josefin">
-                      {explorerData[categoryKey].title}
+                        {explorerData[categoryKey].title.split(" ")[0]}
                       </span>
                     </button>
                   );
@@ -458,16 +275,16 @@ const PhuketPropertiesSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
-                  className="flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel"
+                  className="border-t-[0.5px] border-b-white w-[80%] flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel mx-auto lg:mx-0 "
                 >
                   <Image
                     src={"/icons/map-pin.svg"}
                     width={20}
                     height={20}
                     alt="Map pin"
-                    className="hover:cursor-pointer"
+                    className="hover:cursor-pointer pt-2"
                   />
-                  <span className="font-josefin text-3xl leading-relaxed pt-2">
+                  <span className="pt-4 font-josefin text-3xl leading-relaxed">
                     {currentData.title}
                   </span>
                 </motion.h4>
@@ -482,11 +299,12 @@ const PhuketPropertiesSection = () => {
                       transition: { staggerChildren: 0.05 },
                     }}
                     exit={{ opacity: 0 }}
+                    className="border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0"
                   >
                     {currentData.locations.map((location) => (
                       <motion.div
                         key={location.name}
-                        className="flex items-center justify-center lg:justify-start space-x-3 group"
+                        className=" flex items-center justify-center lg:justify-start space-x-3 group"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                       >

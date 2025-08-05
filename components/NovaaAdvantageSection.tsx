@@ -149,9 +149,9 @@ const NovaaAdvantageSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl lg:text-5xl font-normal text-gray-800 mb-4">
+          <h2 className="text-4xl lg:text-[50px] font-normal text-[#303030] mb-4">
             THE NOVAA{" "}
-            <span className="text-5xl lg:text-5xl font-bold bg-clip-text text-transparent bg-[#D4AF37]">
+            <span className="text-5xl lg:text-[50px] font-bold bg-clip-text text-transparent bg-[#D4AF37]">
               ADVANTAGE
             </span>
           </h2>
@@ -181,13 +181,13 @@ const NovaaAdvantageSection = () => {
                 {/* Background Image */}
                 <div className="absolute inset-0">
                   <Image
-                    src={"/advantage-section-images/bg.jpg"}
+                    src={"/advantage-section-images/background.png"}
                     fill
                     className="object-cover "
                     alt="background"
                   />
                 </div>
-                <div className="absolute inset-0 bg-[#01292B99]"></div>
+                <div className="absolute inset-0 bg-[#00000080]"></div>
 
                 {/* Center Logo/Icon */}
                 <div className="absolute inset-0 flex items-center justify-center">

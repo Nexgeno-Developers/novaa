@@ -15,7 +15,7 @@ export default function RegionTabs() {
   );
 
   return (
-    <div className="flex justify-center items-center mb-10 gap-4 border-y-2 border-gray-200">
+    <div className="flex justify-center items-center mb-10 ">
       {regions.map((region) => {
         const isActive = selectedRegion === region;
         const isDisabled = region !== "Thailand";
@@ -26,11 +26,11 @@ export default function RegionTabs() {
             onClick={() => dispatch(setRegion(region))}
             disabled={isDisabled}
             variant="ghost"
-            className={`font-josefin cursor-pointer text-[22px] relative rounded-none px-5 sm:px-10 py-8 font-medium transition 
+            className={`font-josefin cursor-pointer text-[22px] relative rounded-none px-5 sm:px-10 py-8 font-medium transition border-y-2
               ${
                 isActive
-                  ? " border-t-gray-400 border-b-black border-y-2 text-[#01292B]"
-                  : "border-transparent text-[#01292BCC]"
+                  ? "  border-background  text-[#01292B]"
+                  : " border-[#01292B80] border-y-[1.2px]  text-[#01292BCC]"
               }
               hover:text-black`}
           >
@@ -39,7 +39,7 @@ export default function RegionTabs() {
               {isDisabled && (
                 <Badge
                   variant="secondary"
-                  className="font-josefin absolute font-medium text-background top-0 text-[10px] py-0.5 px-2 rounded-lg uppercase"
+                  className="font-josefin absolute font-medium text-background top-1 text-xs py-[0.5px] px-2 rounded-[20px]"
                 >
                   Soon
                 </Badge>

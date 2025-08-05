@@ -13,14 +13,11 @@ export default function AboutPage() {
   });
 
   // Transform for NOVA heading - moves up as user scrolls
-  const novaY = useTransform(scrollYProgress, [0, 0.3], [200, -170]);
+  const novaY = useTransform(scrollYProgress, [0, 0.3], [200, -155]);
   const novaOpacity = useTransform(scrollYProgress, [0.1, 0.35], [0, 1]);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative overflow-hidden"
-    >
+    <section ref={containerRef} className="relative overflow-hidden">
       {/* Bottom Background Image - WITH clouds (z-10) */}
       <div className="absolute inset-0 z-10">
         <Image
@@ -34,12 +31,8 @@ export default function AboutPage() {
 
       {/* Gradient Overlay - Bottom half */}
       {/* Gradient Overlay - Bottom half with scroll and hover effects */}
-      <div
-        className="absolute inset-x-0 h-1/2 bottom-0 z-45 transition-all duration-500 bg-gradient-to-t from-[#01292B] to-[#01292B00]"
-      />
-      <div
-        className="absolute inset-x-0 h-1/6 top-0 z-45 transition-all duration-500 bg-gradient-to-b from-[#01292B] to-[#01292B00]"
-      />
+      <div className="absolute inset-x-0 h-1/2 bottom-0 z-45 transition-all duration-500 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
+      <div className="absolute inset-x-0 h-1/6 top-0 z-45 transition-all duration-500 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
 
       {/* NOVA Background Text - Between both images (z-30) */}
       <motion.div
@@ -49,9 +42,23 @@ export default function AboutPage() {
           opacity: novaOpacity,
         }}
       >
-        <h1 className="font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] md:text-[180px] lg:text-[200px]">
-          NOVAA
-        </h1>
+        <div className="relative inline-block select-none">
+          {/* Outline Layer */}
+          <h1
+            className="absolute top-0 left-0 font-cinzel font-bold leading-none md:text-[180px] lg:text-[200px] text-black"
+            style={{
+              WebkitTextStroke: "1px #F5E7A8",
+              color: "transparent",
+            }}
+          >
+            NOVAA
+          </h1>
+
+          {/* Gradient Layer */}
+          <h1 className="relative font-cinzel font-bold leading-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] md:text-[180px] lg:text-[200px]">
+            NOVAA
+          </h1>
+        </div>
       </motion.div>
 
       {/* Top Background Image - WITHOUT clouds (z-40) */}
@@ -75,13 +82,12 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center mb-16 lg:mb-24"
         >
-          <h1 className="font-josefin text-5xl sm:text-6xl lg:text-[80px] font-light text-white mb-10">
+          <h1 className="font-josefin text-5xl sm:text-6xl lg:text-[80px] font-normal text-white mb-5">
             About
           </h1>
           <h2 className="sm:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-8xl">
             NOVAA
           </h2>
-          
         </motion.div>
 
         {/* Content Container */}
@@ -96,7 +102,7 @@ export default function AboutPage() {
               className="flex flex-col sm:flex-row justify-between items-center bg-transparent  rounded-lg"
             >
               <div className="">
-                <h3 className="text-white text-center sm:text-left text-4xl sm:text-2xl font-semibold mb-10">
+                <h3 className="text-white text-center sm:text-left text-4xl sm:text-2xl font-semibold mb-2">
                   About
                 </h3>
                 <p className="max-w-2xl text-[#FFFFFFCC] text-center sm:text-left text-base sm:text-sm leading-relaxed mb-8">
@@ -118,8 +124,7 @@ export default function AboutPage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-6 py-3 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer transition-all duration-300"
-                
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-5 py-2 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer transition-all duration-300"
               >
                 Discover More
                 <ArrowRight className="w-5 h-5" />

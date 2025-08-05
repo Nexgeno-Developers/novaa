@@ -9,25 +9,26 @@ import ModernAmenities from "@/components/ModernAmenities";
 import InvestmentPlans from "@/components/InvestmentPlans";
 import MasterplanSection from "@/components/MasterplanSection";
 import ContactForm from "@/components/ContactForm";
+import GatewaySection from "@/components/GatewaySection";
 
 export default function HeroSection() {
   return (
     <>
-    <section className="relative w-full min-h-screen overflow-hidden">
+    <section className="relative h-[910px] overflow-hidden">
       {/* Background Image */}
       <Image
         src="/images/project-details-hero.jpg"
         alt="project details background"
         fill
         priority
-        className="object-cover"
+        className="object-cover h-full"
       />
 
       {/* Dark overlay */}
       <div className="absolute bottom-0 w-full h-1/2 inset-x-0 z-0 bg-gradient-to-b from-bg-[#01292B00] to-[#01292B]" />
 
       {/* Text Overlay */}
-      <div className="font-cinzel absolute left-0 sm:absolute bottom-[10rem] p-5 md:bottom-[10rem] lg:bottom-10 sm:left-10 z-10 text-primary max-w-[90%]">
+     <div className="container mx-auto"> <div className="font-cinzel absolute left-0 sm:absolute bottom-[10rem] p-5 md:bottom-[10rem] lg:bottom-10 sm:left-10 z-10 text-primary max-w-[90%]">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -69,10 +70,11 @@ export default function HeroSection() {
             Get Brochure
             <ArrowRight className="w-5 h-5" />
           </motion.button>
-        </div>
+        </div></div>
 
        
     </section>
+    <GatewaySection />
     <ProjectHighlights />
     <Highlights />
     <ModernAmenities />

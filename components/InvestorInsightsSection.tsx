@@ -196,7 +196,7 @@ export default function InvestorInsightsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="font-josefin text-lg lg:text-xl text-[#FFFFFFE5] font-light leading-relaxed text-center lg:text-left md:pb-20 lg:pb-0 "
+                className="font-josefin text-md lg:text-[18px] text-[#FFFFFFE5] font-light leading-tight text-center lg:text-left md:pb-20 lg:pb-0 "
               >
                 Stay informed with trending stories, industry updates, and
                 thoughtful articles curated just for you.
