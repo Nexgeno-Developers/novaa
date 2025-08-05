@@ -74,7 +74,7 @@ export default function ContactUs() {
                 </h3>
                 <p className="text-[#01292B] font-light text-sm leading-[22px]">
                   is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum ha s been the industry's standard dummy
+                  Lorem Ipsum ha s been the industry&apos;s standard dummy
                 </p>
               </div>
             </div>
