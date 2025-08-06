@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
+import { useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 // --- Data for the explorer ---
 const explorerData = {
@@ -126,9 +129,16 @@ const containerVariants: Variants = {
   },
 };
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+const itemVariants : Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
 };
 
 const headingVariants: Variants = {
@@ -154,6 +164,14 @@ const PhuketPropertiesSection = () => {
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
 
   const currentData = explorerData[activeCategory];
+  const controls = useAnimation();
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [inView, controls]);
 
   return (
     <section className="relative overflow-hidden">
@@ -211,6 +229,9 @@ const PhuketPropertiesSection = () => {
 
             {/* Phuket Explorer Section */}
             <motion.div
+              ref={ref}
+              initial="hidden"
+              animate={controls}
               variants={itemVariants}
               className="space-y-2 lg:space-y-6 font-josefin text-center lg:text-left"
             >
