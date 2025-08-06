@@ -15,11 +15,11 @@ export default function Home() {
   return (
     <>
       <main className="relative w-full overflow-hidden">
-        {/* <HeroSection />
+        <HeroSection />
         <CuratedCollection />
         <AboutPage />
         <WhyInvestSection />
-        <PhuketPropertiesSection /> */}
+        <PhuketPropertiesSection />
         <NovaaAdvantageSection />
         <ClientSection />
         {/* <InvestSection /> */}
