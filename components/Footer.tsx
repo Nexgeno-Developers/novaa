@@ -8,7 +8,7 @@ import { ArrowRight, Phone, Mail, MessageCircle } from "lucide-react";
 export default function Footer() {
   return (
     <>
-      <footer className="relative w-full bg-[#000000D9] overflow-hidden  pb-10 pt-20">
+      <footer className="relative w-full bg-[#000000D9] overflow-hidden pt-10 pb-5 sm:pb-10 sm:pt-20">
         <div
           className="absolute inset-0 z-10 bg-cover bg-center"
           style={{
@@ -48,20 +48,19 @@ export default function Footer() {
         {/* Content */}
         <div className="container mx-auto relative z-40 flex flex-col justify-center items-center text-white px-4 sm:px-6 lg:px-8">
           {/* Main Hero Section */}
-          <div className=" text-center mb-16 max-w-5xl">
-            <h1 className="font-cinzel text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-normal">
+          <div className=" text-center mb-4 sm:mb-10 lg:mb-16 max-w-5xl">
+            <h1 className="font-cinzel text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-bold mb-4 leading-normal">
               YOUR DREAM HOME IN
             </h1>
             <h2
-              className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 
+              className="font-cinzel text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-bold mb-6 
                bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] 
                bg-clip-text text-transparent"
             >
               PHUKET AWAITS
             </h2>
             <p
-              className="font-josefin font-light
- text-lg sm:text-xl mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto"
+              className="font-josefin font-light text-xs xs:text-sm sm:text-base lg:text-lg mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto"
             >
               Live the island life you&apos;ve always imagined - serene,
               luxurious, and yours to own.
@@ -69,7 +68,7 @@ export default function Footer() {
 
             {/* CTA Button */}
             <div className="inline-block">
-              <button className="group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-8 py-4 rounded-full hover:bg-[#30303033] hover:text-[#ebd78d] transition-all duration-300 flex flex-col items-center gap-1 text-lg font-medium text-center">
+              <button className="group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-6 py-3 sm:px-8 sm:py-4 rounded-full hover:bg-[#30303033] hover:text-[#ebd78d] transition-all duration-300 flex flex-col items-center gap-1 text-sm sm:text-lg font-medium text-center">
                 <span>Explore</span>
                 <span>Your Future</span>
                 <span>Home</span>
@@ -83,10 +82,10 @@ export default function Footer() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* About Us */}
               <div className="lg:col-span-1">
-                <h3 className="text-[#CDB04E] text-xl font-bold mb-6">
+                <h3 className="text-[#CDB04E] text-sm sm:text-xl font-bold mb-2 sm:mb-6">
                   About Us
                 </h3>
-                <p className="text-[#FFFFFF] text-sm font-normal leading-loose">
+                <p className="text-[#FFFFFF] text-xs sm:text-sm font-normal leading-loose">
                   is simply dummy text of the printing and typesetting industry.
                   Lorem Ipsum has been the industry&apos;s standard dummy text
                   ever since the 1500s,
@@ -95,14 +94,14 @@ export default function Footer() {
 
               {/* Quick Links */}
               <div className="lg:col-span-1">
-                <h3 className="text-[#CDB04E] text-xl font-semibold mb-6">
+                <h3 className="text-[#CDB04E] text-sm sm:text-xl font-semibold mb-6">
                   Quick Links
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-2 sm:space-y-3">
                   <li>
                     <Link
                       href="#"
-                      className="text-gray-300 hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
+                      className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
                       Home
@@ -111,7 +110,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="#"
-                      className="text-gray-300 hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
+                      className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
                       Projects
@@ -120,7 +119,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="#"
-                      className="text-gray-300 hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
+                      className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
                       About Us
@@ -129,7 +128,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="#"
-                      className="text-gray-300 hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
+                      className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
                       Blogs
@@ -138,7 +137,7 @@ export default function Footer() {
                   <li>
                     <Link
                       href="#"
-                      className="text-gray-300 hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
+                      className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
                       Contact Us
@@ -151,42 +150,62 @@ export default function Footer() {
               <div className="lg:col-span-1">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-white text-2xl sm:text-4xl font-medium">
+                    <span className="text-white text-lg xs:text-xl sm:text-4xl font-medium">
                       +91 123456789
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-white text-2xl sm:text-4xl font-medium">
+                    <span className="text-white text-lg xs:text-xl sm:text-4xl font-medium">
                       Demo@gmail.com
                     </span>
                   </div>
-                  <h3 className="text-[#CDB04E] text-xl font-semibold mt-8 mb-4">
+                  <h3 className="text-[rgb(205,176,78)] text-sm sm:text-xl font-semibold mt-2 sm:mt-8 sm:mb-4 mb-0">
                     Follow on
                   </h3>
-                  <div className="flex gap-4">
+                  <div className="flex gap-2 sm:gap-4">
                     <Link
                       href="#"
                       className="w-10 h-10  rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
-                       <Image src={'/footer/whatsapp.svg'} width={20} height={20} alt="Twitter Logo" />
+                      <Image
+                        src={"/footer/whatsapp.svg"}
+                        width={20}
+                        height={20}
+                        alt="Twitter Logo"
+                      />
                     </Link>
                     <Link
                       href="#"
                       className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
-                       <Image src={'/footer/facebook.svg'} width={10} height={10} alt="Facebook Logo" />
+                      <Image
+                        src={"/footer/facebook.svg"}
+                        width={10}
+                        height={10}
+                        alt="Facebook Logo"
+                      />
                     </Link>
                     <Link
                       href="#"
                       className="w-10 h-10  rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
-                      <Image src={'/footer/insta-icon.svg'} width={20} height={20} alt="Instagram Logo" />
+                      <Image
+                        src={"/footer/insta-icon.svg"}
+                        width={20}
+                        height={20}
+                        alt="Instagram Logo"
+                      />
                     </Link>
                     <Link
                       href="#"
                       className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
                     >
-                     <Image src={'/footer/twitter.svg'} width={20} height={20} alt="Twitter Logo" />
+                      <Image
+                        src={"/footer/twitter.svg"}
+                        width={20}
+                        height={20}
+                        alt="Twitter Logo"
+                      />
                     </Link>
                   </div>
                 </div>
@@ -199,7 +218,7 @@ export default function Footer() {
             </div>
 
             {/* Copyright */}
-            <div className="mt-12 pt-8 border-t border-t-[#CDB04E80] text-center">
+            <div className="mt-2 pt-2 sm:mt-12 sm:pt-8 border-t border-t-[#CDB04E80] text-center">
               <p className="text-[#FFFFFFCC] text-sm">
                 Copyright &copy; Novaa Real Estate | Designed by NEXGENO
               </p>

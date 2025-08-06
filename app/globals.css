@@ -12,7 +12,6 @@
   --y: 10px; /* vertical offset (no percentage) */
   
   width: 400px;
-  height: 300px;
   aspect-ratio: 1;
   background: #fff;
   border-radius: var(--r);
@@ -33,6 +32,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --breakpoint-xs: 24rem;
   --font-cinzel: "Cinzel", "sans-serif"; 
   --font-josefin: "Josefin Sans", sans-serif;
 }

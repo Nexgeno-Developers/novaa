@@ -72,7 +72,7 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
           className="container mx-auto relative group rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
           <div
-            className="relative h-[500px] lg:h-[560px] overflow-hidden group cursor-pointer"
+            className="relative h-[450px] lg:h-[560px] overflow-hidden group cursor-pointer"
             onClick={() => router.push("/project-detail")}
           >
             {/* Background Image */}
@@ -101,14 +101,14 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
                   {property.price}
                 </span>
               </div>
-              {isLocationVisible === true ? (<div className="flex items-start justify-center gap-2 py-2 mb-3 w-full lg:w-[50%] rounded-[8px] bg-[#CDB04E1A]">
+              {isLocationVisible === true ? (<div className="flex items-center sm:items-start justify-start gap-2 py-2 px-2 mb-3 w-[50%] rounded-[8px] bg-[#CDB04E1A]">
                 <Image
                   src={"/icons/map-pin.svg"}
                   width={15}
                   height={15}
                   alt="Location Icon"
                 />
-                <p className="text-base leading-tight">
+                <p className="text-xs xs:text-sm sm:text-base leading-tight">
                   <span className="font-medium">
                     {property.location.split(",")[0]}
                   </span>
@@ -125,7 +125,7 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
                   <div className="w-1/2 bg-primary"></div>
                   <div className="w-1/2 bg-[#FFFFFF80]"></div>
                 </div>
-                <p className="text-xs lg:text-sm text-[#FFFFFF] pt-3 leading-normal">
+                <p className="text-[10px] xs:text-xs lg:text-sm text-[#FFFFFF] pt-3 leading-normal pb-4 sm:pb-0">
                   {property.description}
                 </p>
               </div>

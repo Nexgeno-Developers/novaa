@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
+import { useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import { Award, Shield, Eye, Users, TrendingUp, Building } from "lucide-react";
 import Image from "next/image";
+import { WaterEffectImage } from "./WaterEffectImage";
 
 const NovaaAdvantageSection = () => {
   const advantages = [
@@ -139,23 +141,23 @@ const NovaaAdvantageSection = () => {
   };
 
   return (
-    <section className="font-cinzel relative bg-secondary py-20 overflow-hidden">
+    <section className="font-cinzel relative bg-secondary py-10 lg:py-20 overflow-hidden">
       <div className="container mx-auto">
         {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10 lg:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl lg:text-[50px] font-normal text-[#303030] mb-4">
+          <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#303030] mb-4">
             THE NOVAA{" "}
-            <span className="text-5xl lg:text-[50px] font-bold bg-clip-text text-transparent bg-[#D4AF37]">
+            <span className="font-bold bg-clip-text text-transparent bg-[#D4AF37]">
               ADVANTAGE
             </span>
           </h2>
-          <p className="font-josefin text-[#303030] text-lg lg:text-xl mx-auto leading-relaxed">
+          <p className="font-josefin text-[#303030] text-xs xs:text-sm sm:text-base lg:text-xl mx-auto leading-relaxed px-4 lg:px-0">
             At Novaa, we redefine the investment experience by offering
             end-to-end solutions tailored for HNIs
           </p>
@@ -171,38 +173,20 @@ const NovaaAdvantageSection = () => {
         >
           {/* Central Circle */}
           <motion.div
-            className="relative mx-auto w-80 h-80 lg:w-96 lg:h-96 xl:w-[450px] xl:h-[450px]"
+            className="relative mx-auto w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 lg:w-96 lg:h-96 xl:w-[450px] xl:h-[450px]"
             variants={centerVariants}
           >
             {/* Outer Ring Border */}
-            <div className="relative w-80 h-80 lg:w-[420px] lg:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
+            <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 lg:w-[420px] lg:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
               {/* Background Circle with Image */}
+              {/* Background Circle with Water Effect */}
               <div className="w-full h-full rounded-full overflow-hidden shadow-2xl relative z-10">
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={"/advantage-section-images/background.png"}
-                    fill
-                    className="object-cover "
-                    alt="background"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-[#00000080]"></div>
-
-                {/* Center Logo/Icon */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-28 h-28 lg:w-50 lg:h-50 bg-transparent rounded-full flex items-center justify-center">
-                    <Image
-                      src={"/advantage-section-images/logo.png"}
-                      width={200}
-                      height={200}
-                      alt="icon"
-                    />
-                  </div>
-                </div>
-
-                {/* Overlay gradient (optional) */}
-                {/* <div className="absolute inset-0 bg-gradient-to-br from-transparent via-black/10 to-black/20"></div> */}
+                <WaterEffectImage
+                  backgroundSrc="/advantage-section-images/background.png"
+                  logoSrc="/advantage-section-images/logo.png"
+                  className="w-full h-full"
+                  alt="Advantage Section Background"
+                />
               </div>
             </div>
           </motion.div>
@@ -248,9 +232,9 @@ const NovaaAdvantageSection = () => {
         </motion.div>
 
         {/* Mobile Layout - 2 Cards Per Row */}
-        <div className="md:hidden mt-16">
+        <div className="md:hidden mt-10">
           <motion.div
-            className="grid grid-cols-2 gap-4"
+            className="grid grid-cols-1"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -259,27 +243,29 @@ const NovaaAdvantageSection = () => {
             {advantages.map((advantage, index) => (
               <motion.div
                 key={`mobile-${advantage.id}`}
-                className="bg-white rounded-xl p-4 shadow-lg"
+                className="bg-white rounded-xl p-2 m-2 shadow-lg"
                 variants={itemVariants}
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="font-josefin flex items-center flex-col space-x-4">
+                <div className="font-josefin flex items-center space-x-4">
                   <div className="flex items-center justify-between gap-4 py-2">
-                  <Image
-                    src={advantage.icon}
-                    width={40}
-                    height={40}
-                    alt="icon"
-                  />
-                  <h3 className="text-sm font-semibold text-gray-800">
-                    {advantage.title}
-                  </h3>
+                    <Image
+                      src={advantage.icon}
+                      width={40}
+                      height={40}
+                      alt="icon"
+                    />
+                    <div className="flex flex-col">
+                      <h3 className="text-sm font-semibold text-gray-800">
+                        {advantage.title}
+                      </h3>
+                      <p className=" font-josefin text-[10px] xs:text-xs text-gray-600 leading-relaxed">
+                        {advantage.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-                  <p className=" font-josefin text-xs text-gray-600 leading-relaxed">
-                    {advantage.description}
-                  </p>
               </motion.div>
             ))}
           </motion.div>

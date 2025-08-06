@@ -175,11 +175,11 @@ const PhuketPropertiesSection = () => {
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
-      <div className="relative z-20 container mx-auto  py-20">
-        <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+      <div className="relative z-20 container mx-auto py-10 lg:py-20">
+        <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-20 items-start">
           {/* Left Content */}
           <motion.div
-            className="space-y-8"
+            className="space-y-4 sm:space-y-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -187,12 +187,12 @@ const PhuketPropertiesSection = () => {
             {/* Main Heading */}
             <motion.div
               variants={headingVariants}
-              className="space-y-4 text-center lg:text-left "
+              className="space-y-2 sm:space-y-4 text-center lg:text-left "
             >
-              <h1 className="text-white text-2xl lg:text-3xl xl:text-4xl font-normal">
+              <h1 className="text-white text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-normal">
                 DISCOVER PRIME PROPERTIES
               </h1>
-              <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
+              <h2 className="text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
                 ACROSS PHUKET
               </h2>
             </motion.div>
@@ -200,7 +200,7 @@ const PhuketPropertiesSection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-md lg:text-lg font-light w-full px-5 sm:px-0 leading-snug lg:max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-xs xs:text-sm sm:text-md lg:text-lg font-light w-full px-5 sm:px-0 leading-snug lg:max-w-2xl"
             >
               Explore a Curated Selection of Luxury Residences . Whether
               you&#39;re seeking a beachfront retreat, an investment
@@ -212,12 +212,12 @@ const PhuketPropertiesSection = () => {
             {/* Phuket Explorer Section */}
             <motion.div
               variants={itemVariants}
-              className="space-y-6 font-josefin text-center lg:text-left"
+              className="space-y-2 lg:space-y-6 font-josefin text-center lg:text-left"
             >
-              <h3 className="text-white font-medium text-4xl">
+              <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
                 Phuket Explorer
               </h3>
-              <p className="text-[#FFFFFFE5] text-lg font-light border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0">
+              <p className="text-[#FFFFFFE5] text-xs xs:text-sm sm:text-base lg:text-lg font-light border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0">
                 Discover the beauty and development of Phuket Island
               </p>
 
@@ -230,7 +230,7 @@ const PhuketPropertiesSection = () => {
                     <button
                       key={categoryKey}
                       onClick={() => setActiveCategory(categoryKey)}
-                      className={`w-[80%] flex items-center space-x-4 p-4 rounded-[20px] border border-[#01292B] transition-all duration-300 group cursor-pointer ${
+                      className={`w-[70%] flex items-center space-x-4 p-2 xs:p-4 sm:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 group cursor-pointer ${
                         isActive
                           ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
                           : "bg-[#CDB04E33] text-[#CDB04E] hover:border-[#C3912F] hover:bg-opacity-30"
@@ -241,9 +241,15 @@ const PhuketPropertiesSection = () => {
                           isActive ? "text-background" : "text-background"
                         }`}
                       >
-                        <div className="flex items-center border-l-2 pl-2 border-l-background h-[35px]">
+                        <div
+                          className={`flex items-center border-l-2 ml-2 sm:ml-0 pl-4 sm:pl-2 ${
+                            isActive
+                              ? "border-l-background"
+                              : "border-l-primary"
+                          } h-[35px]`}
+                        >
                           <div
-                            className={`w-[35px] h-[35px] ${
+                            className={`w-[30px] h-[30px] sm:w-[35px] lg:w-[45px] sm:h-[35px] lg:h-[45px] ${
                               isActive ? "bg-background" : "bg-primary"
                             } mask mask-center mask-no-repeat`}
                             style={{
@@ -257,7 +263,7 @@ const PhuketPropertiesSection = () => {
                           />
                         </div>
                       </div>
-                      <span className="text-lg font-medium font-josefin">
+                      <span className="text-sm xs:text-md sm:text-xl lg:text-3xl font-medium font-josefin">
                         {explorerData[categoryKey].title.split(" ")[0]}
                       </span>
                     </button>
@@ -267,7 +273,10 @@ const PhuketPropertiesSection = () => {
             </motion.div>
 
             {/* Locations List */}
-            <motion.div variants={itemVariants} className="space-y-4 pt-4">
+            <motion.div
+              variants={itemVariants}
+              className="space-y-2 sm:space-y-4 pt-4"
+            >
               <AnimatePresence mode="wait">
                 <motion.h4
                   key={activeCategory + "-title"}
@@ -284,7 +293,7 @@ const PhuketPropertiesSection = () => {
                     alt="Map pin"
                     className="hover:cursor-pointer pt-2"
                   />
-                  <span className="pt-4 font-josefin text-3xl leading-relaxed">
+                  <span className="pt-4 font-josefin text-xl xs:text-2xl lg:text-3xl leading-relaxed">
                     {currentData.title}
                   </span>
                 </motion.h4>
@@ -308,9 +317,9 @@ const PhuketPropertiesSection = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                       >
-                        <div className="flex items-center w-[60%] my-2 rounded-4xl px-4 py-2 gap-2 border-[0.2px] border-[#FFFFFF] bg-[#CDB04E0D]">
-                          <div className="w-4 h-4 rounded-full bg-[#C3912F] transition-transform duration-300 group-hover:scale-105"></div>
-                          <p className="text-white font-josefin text-xl font-light transition-colors duration-300 group-hover:text-white">
+                        <div className="flex items-center w-[88%] my-2 rounded-4xl px-4 py-2 gap-4 border-[0.2px] border-[#CDB04E0D] bg-[#CDB04E0D]">
+                          <div className="h-2 w-2 sm:w-4 sm:h-4 rounded-full bg-[#C3912F] transition-transform duration-300 group-hover:scale-105"></div>
+                          <p className="text-white font-josefin text-xs xs:text-sm sm:text-lg lg:text-xl font-light transition-colors duration-300 group-hover:text-white">
                             {location.name}
                           </p>
                         </div>
@@ -323,9 +332,9 @@ const PhuketPropertiesSection = () => {
           </motion.div>
 
           {/* Right Side - Map */}
-          <div className="w-full sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
+          <div className="w-full h-[400px] xs:h-[500px] sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
             <motion.div
-              className="relative w-full max-w-xl h-full"
+              className="relative w-full max-w-md sm:max-w-lg md:max-w-xl h-full"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
@@ -333,8 +342,8 @@ const PhuketPropertiesSection = () => {
               <Image
                 src={"/images/map2.png"}
                 alt="map"
-                width={650}
-                height={450}
+                fill
+                className="object-contain"
               />
 
               {/* Map Pins */}
@@ -355,14 +364,14 @@ const PhuketPropertiesSection = () => {
                     exit="hidden"
                   >
                     {/* The Pin Icon */}
-                    <Image
-                      src={location.icon}
-                      width={20}
-                      height={20}
-                      alt="Map pin"
-                      className="hover:cursor-pointer"
-                    />
-
+                    <div className="relative w-[15px] h-[15px] sm:w-[20px] sm:h-[20px]">
+                      <Image
+                        src={location.icon}
+                        alt="Map pin"
+                        fill
+                        className="hover:cursor-pointer object-contain"
+                      />
+                    </div>
                     {/* Hover Image Card */}
                     <AnimatePresence>
                       {hoveredPin === location.name && (

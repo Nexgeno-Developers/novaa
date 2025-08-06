@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function HeroSection() {
   return (
-    <section className="relative h-[930px] overflow-hidden pt-20">
+    <section className="relative h-screen overflow-hidden pt-20">
       {/* Background Image */}
       <Image
         src="/images/hero.jpg"
@@ -21,12 +21,12 @@ export default function HeroSection() {
 
 
       {/* Text Overlay */}
-      <div className="container mx-auto font-cinzel absolute left-0 sm:absolute bottom-[10rem] p-5 sm:bottom-10 sm:left-10 z-10 text-white">
+      <div className="container mx-auto font-cinzel absolute left-0 bottom-5 xs:bottom-10 p-5 sm:bottom-10 sm:left-10 z-10 text-white">
         <motion.h2
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-[50px] sm:text-[60px] leading-[100%] tracking-[0%] font-cinzel font-normal"
+          className="text-[40px] xs:text-[50px] sm:text-[60px] leading-[100%] tracking-[0%] font-cinzel font-normal"
         >
           Experience Unparalleled
         </motion.h2>
@@ -34,7 +34,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="font-bold text-3xl md:text-5xl leading-[100%]  bg-gradient-to-tl from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent mt-2 font-cinzel"
+          className="font-bold text-2xl xs:text-3xl md:text-5xl leading-[100%]  bg-gradient-to-tl from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent mt-2 font-cinzel"
         >
           
           Luxury in Thailand

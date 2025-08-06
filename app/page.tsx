@@ -14,12 +14,12 @@ import Testimonials from "@/components/Testimonials";
 export default function Home() {
   return (
     <>
-      <main className="relative w-full min-h-screen overflow-hidden">
-        <HeroSection />
+      <main className="relative w-full overflow-hidden">
+        {/* <HeroSection />
         <CuratedCollection />
         <AboutPage />
         <WhyInvestSection />
-        <PhuketPropertiesSection />
+        <PhuketPropertiesSection /> */}
         <NovaaAdvantageSection />
         <ClientSection />
         {/* <InvestSection /> */}

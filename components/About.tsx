@@ -73,7 +73,7 @@ export default function AboutPage() {
       </div>
 
       {/* Content - Topmost layer (z-50) */}
-      <div className="container mx-auto py-20 relative z-50 flex flex-col justify-between sm:justify-center">
+      <div className="container mx-auto py-10 sm:py-20 relative z-50 flex flex-col justify-between sm:justify-center">
         {/* About Heading */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -82,10 +82,10 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center mb-16 lg:mb-24"
         >
-          <h1 className="font-josefin text-5xl sm:text-6xl lg:text-[80px] font-normal text-white mb-5">
+          <h1 className="font-josefin text-3xl xs:text-4xl sm:text-6xl lg:text-[80px] font-normal text-white mb-5">
             About
           </h1>
-          <h2 className="sm:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-8xl">
+          <h2 className="sm:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-7xl xs:text-8xl">
             NOVAA
           </h2>
         </motion.div>
@@ -102,10 +102,10 @@ export default function AboutPage() {
               className="flex flex-col sm:flex-row justify-between items-center bg-transparent  rounded-lg"
             >
               <div className="">
-                <h3 className="text-white text-center sm:text-left text-4xl sm:text-2xl font-semibold mb-2">
+                <h3 className="text-white text-center sm:text-left text-2xl xs:text-4xl sm:text-2xl font-semibold mb-2">
                   About
                 </h3>
-                <p className="max-w-2xl text-[#FFFFFFCC] text-center sm:text-left text-base sm:text-sm leading-relaxed mb-8">
+                <p className="max-w-2xl text-[#FFFFFFCC] text-center px-2 sm:px-0 sm:text-left text-[10px]  xs:text-xs sm:text-sm leading-relaxed mb-5 sm:mb-8">
                   is simply dummy text of the printing and typesetting industry.
                   Lorem Ipsum has been the industry&apos;s standard dummy text
                   ever since the 1500s, when an unknown printer took a galley of
@@ -124,10 +124,10 @@ export default function AboutPage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-5 py-2 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer transition-all duration-300"
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer text-xs xs:text-sm sm:text-base transition-all duration-300"
               >
                 Discover More
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </motion.button>
             </div>
           </div>

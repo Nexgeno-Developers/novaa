@@ -5,7 +5,6 @@ import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-
 type UseCarouselOptions = {
   autoplay?: boolean;
   delay?: number;
@@ -125,16 +124,16 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
     >
       <div className="relative flex justify-center items-center">
         {/* Card with inverted radius */}
-        <div className="inverted-radius bg-white rounded-[40px] p-8 h-full flex flex-col relative z-10 ">
+        <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
           <StarRating rating={testimonial.rating} />
-          <p className="text-[#303030CC] text-base leading-relaxed mb-8 flex-grow">
+          <p className="text-[#303030CC] text-xs xs:text-sm lg:text-base leading-relaxed mb-0 lg:mb-8 flex-grow">
             &quot;{testimonial.quote}&quot;
           </p>
           <p className="font-light">Demo</p>
         </div>
 
         {/* Avatar outside the mask */}
-        <div className="absolute sm:bottom-0 bottom-0 right-5 md:right-40 lg:right-0">
+        <div className="absolute sm:bottom-0 bottom-0 right-0 xs:right-0 md:right-40 lg:right-0">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
@@ -165,59 +164,63 @@ export default function EliteClientsTestimonials() {
   }, [emblaApi, onSelect]);
 
   return (
-    <div className="bg-secondary py-20">
-    <div className="container mx-auto">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-16 font-cinzel"
-      >
-        <h2 className="text-3xl lg:text-4xl font-normal text-[#01292B] mb-4 uppercase">
-          What Our <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
-        </h2>
-        <p className="font-josefin text-[#303030] text-md font-light">
-          Real stories from real people who trust us
-        </p>
-      </motion.div>
+    <div className="bg-secondary py-10 lg:py-20">
+      <div className="container mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10 lg:mb-16 font-cinzel"
+        >
+          <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase">
+            What Our{" "}
+            <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
+          </h2>
+          <p className="font-josefin text-[#303030] text-xs xs:text-sm sm:text-base lg:text-lg font-light">
+            Real stories from real people who trust us
+          </p>
+        </motion.div>
 
-      {/* Embla Carousel */}
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-6 sm:px-6">
-          {testimonials.map((testimonial, index) => (
-            <div
-              className="min-w-0 flex-[0_0_100%] lg:flex-[0_0_33.3333%] px-2"
-              key={testimonial.id}
-            >
-              <TestimonialCard testimonial={testimonial} isActive={index === selectedIndex} />
-            </div>
-          ))}
+        {/* Embla Carousel */}
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-2 lg:gap-6 sm:px-6">
+            {testimonials.map((testimonial, index) => (
+              <div
+                className="min-w-0 flex-[0_0_100%] lg:flex-[0_0_33.3333%] px-4 sm:px-2"
+                key={testimonial.id}
+              >
+                <TestimonialCard
+                  testimonial={testimonial}
+                  isActive={index === selectedIndex}
+                />
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex items-center justify-center gap-4 mt-10"
+        >
+          <button
+            onClick={scrollPrev}
+            className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
+          >
+            <ArrowLeft className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" />
+          </button>
+
+          <button
+            onClick={scrollNext}
+            className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
+          >
+            <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" />
+          </button>
+        </motion.div>
       </div>
-
-      {/* Navigation */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="flex items-center justify-center gap-4 mt-10"
-      >
-        <button
-          onClick={scrollPrev}
-          className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
-        >
-          <ArrowLeft className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
-        </button>
-
-        <button
-          onClick={scrollNext}
-          className="group flex items-center justify-center w-12 h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
-        >
-          <ArrowRight className="w-5 h-5 text-background group-hover:scale-110 transition-transform duration-200" />
-        </button>
-      </motion.div>
     </div>
-  </div>
   );
 }

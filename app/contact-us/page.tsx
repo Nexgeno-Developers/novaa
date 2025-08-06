@@ -5,8 +5,8 @@ export default function ContactUs() {
   return (
     <>
       <Breadcrumbs title="Contact Us" />
-      <section className="bg-[#FFFDF5] py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-[#FFFDF5] py-10 sm:py-20">
+        <div className="container mx-auto">
           {/* Top Info Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
             {/* Phone */}

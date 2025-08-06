@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative min-h-[110vh] md:min-h-[70vh] lg:h-[840px] overflow-hidden">
+    <section className="relative min-h-[60vh] md:min-h-[70vh] lg:h-[840px] overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}
@@ -95,17 +95,17 @@ const ClientTestimonialsSection = () => {
       />
 
       {/* Content */}
-      <div className="font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto py-20">
+      <div className="font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto py-10 lg:py-20">
         <div className="">
           {/* Header */}
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-4 sm:mb-6 lg:mb-16"
             variants={headingVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-normal text-white mb-6">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-normal text-white lg:mb-6">
               <span
                 className="font-bold bg-clip-text text-transparent uppercase"
                 style={{
@@ -118,14 +118,14 @@ const ClientTestimonialsSection = () => {
                 faq
               </span>
             </h2>
-            <p className="font-josefin font-light text-[#FFFFFFE5] text-lg leading-normal">
+            <p className="font-josefin font-light text-[#FFFFFFE5] text-xs xs:text-sm sm:text-base lg:text-lg leading-normal px-4 sm:px-0">
               Real feedback from the people who trust us with their goals.
             </p>
           </motion.div>
 
           {/* Testimonials Accordion */}
           <motion.div
-            className="space-y-4"
+            className="space-y-2 lg:space-y-4"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -134,7 +134,7 @@ const ClientTestimonialsSection = () => {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.id}
-                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden "
+                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden m-2 lg:m-0 "
                 variants={itemVariants}
                 whileHover={{
                   borderColor: "#e1c159",
@@ -142,14 +142,14 @@ const ClientTestimonialsSection = () => {
                 }}
               >
                 <motion.button
-                  className="w-full  p-6 text-left focus:outline-none"
+                  className="w-full p-4 lg:p-6 text-left focus:outline-none"
                   onClick={() => toggleExpanded(index)}
                   whileHover={{ backgroundColor: "rgba(212, 175, 55, 0.05)" }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-josefin text-[#C3912F] text-lg pr-4">
+                      <p className="font-josefin text-[#C3912F] text-xs xs:text-sm sm:text-base lg:text-lg pr-4">
                         {testimonial.preview}
                       </p>
                     </div>
@@ -159,9 +159,9 @@ const ClientTestimonialsSection = () => {
                       transition={{ duration: 0.3 }}
                     >
                       {expandedIndex === index ? (
-                        <ArrowUp className="w-6 h-6 text-[#C3912F] cursor-pointer" />
+                        <ArrowUp className="w-4 h-4 sm:w-6 sm:h-6 text-[#C3912F] cursor-pointer" />
                       ) : (
-                        <ArrowDown className="w-6 h-6 text-[#C3912F] cursor-pointer" />
+                        <ArrowDown className="w-4 h-4 sm:w-6 sm:h-6 text-[#C3912F] cursor-pointer" />
                       )}
                     </motion.div>
                   </div>
@@ -176,10 +176,10 @@ const ClientTestimonialsSection = () => {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-6 pt-2">
+                      <div className="px-4 pb-2 lg:px-6 lg:pb-6 pt-2">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.p
-                          className="font-josefin text-[#FFFFFF] text-base leading-normal font-light"
+                          className="font-josefin text-[#FFFFFF] text-[10px] xs:text-xs sm:text-sm text-base leading-normal font-light"
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.1, duration: 0.3 }}
