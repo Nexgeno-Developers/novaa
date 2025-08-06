@@ -96,13 +96,13 @@ const AnimatedTestimonials = ({
                 </div>
 
                 {/* Content below image */}
-                <div className="px-2 sm:px-4 pb-2 sm:pb-4">
+                <div className="px-4 sm:px-4 pb-2 sm:pb-4">
                   <h1 className="py-2 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
                     {testimonial.content}
                   </h1>
                   <p className="relative font-josefin pt-2 sm:pt-4 text-[10px] xs:text-xs sm:text-sm leading-normal text-[#303030] font-light">
                     {testimonial.quote}
-                    <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
+                    <span className="absolute top-0 left-5 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
                   </p>
                 </div>
               </div>

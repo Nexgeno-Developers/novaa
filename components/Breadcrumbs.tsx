@@ -24,7 +24,7 @@ export default function Breadcrumbs({ title }: BreadcrumbsProps) {
       {/* Content */}
       <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-white text-center pt-12  px-4">
         <h1
-          className={`${josefin.className} text-[62px] font-medium leading-[100%] w-[388px] h-[70px]`}
+          className={`${josefin.className} text-[62px] font-medium leading-[100%] w-2xs sm:w-[388px] h-[70px]`}
         >
           {title}
         </h1>

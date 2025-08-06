@@ -100,7 +100,7 @@ export default function Footer() {
                 <ul className="space-y-2 sm:space-y-3">
                   <li>
                     <Link
-                      href="#"
+                      href="/"
                       className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
@@ -109,7 +109,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/project"
                       className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
@@ -118,7 +118,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/about-us"
                       className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
@@ -127,16 +127,16 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/blog"
                       className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />
-                      Blogs
+                      Blog
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/contact-us"
                       className="text-gray-300 text-xs sm:text-base hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                     >
                       <ArrowRight className="w-4 h-4" color="gold" />

@@ -64,10 +64,10 @@ export default function ProjectHighlights() {
   return (
     <section className="bg-background text-white py-16 px-4 md:px-10 lg:px-20">
       <div className="font-cinzel max-w-6xl mx-auto text-center space-y-4">
-        <h2 className="text-2xl sm:text-3xl md:text-[40px] font-normal uppercase">
+        <h2 className="text-2xl sm:text-3xl md:text-[40px] font-normal uppercase text-center sm:text-left">
           Discover Tranquility at <span className="text-primary font-bold">Layan Verde, <div>Phuket</div></span>
         </h2>
-        <p className="font-josefin font-light max-w-5xl mx-auto text-sm md:text-base lowercase text-white leading-6">
+        <p className="font-josefin font-light max-w-5xl mx-auto text-sm md:text-base lowercase text-white leading-6 text-center sm:text-left">
           Layan Verde is a luxury condominium in Phuket, set in lush tropical greenery. Managed by top hospitality brands, it blends five-star living with natural serenity. Each unit features curated landscapes, wellness-focused design, and premium amenities.
         </p>
       </div>

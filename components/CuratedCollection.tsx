@@ -31,7 +31,7 @@ export default function CuratedCollection() {
         </div>
       </div>
       <div className="container mx-auto">
-        <div className="flex flex-col  px-5 sm:px-0 md:flex-row rounded-[20px] gap-6">
+        <div className="flex flex-col  px-5 xl:px-0 md:flex-row rounded-[20px] gap-6">
           <CollectionCard isLocationVisible={true} />
         </div>
       </div>

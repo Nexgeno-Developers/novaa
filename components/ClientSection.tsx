@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative min-h-[60vh] md:min-h-[70vh] lg:h-[840px] overflow-hidden">
+    <section className="relative h-[600px] sm:h-auto lg:h-[840px] overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}
@@ -134,7 +134,7 @@ const ClientTestimonialsSection = () => {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.id}
-                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden m-2 lg:m-0 "
+                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden m-2 lg:m-2 "
                 variants={itemVariants}
                 whileHover={{
                   borderColor: "#e1c159",
@@ -142,7 +142,7 @@ const ClientTestimonialsSection = () => {
                 }}
               >
                 <motion.button
-                  className="w-full p-4 lg:p-6 text-left focus:outline-none"
+                  className="w-full p-4 lg:p-6 cursor-pointer text-left focus:outline-none"
                   onClick={() => toggleExpanded(index)}
                   whileHover={{ backgroundColor: "rgba(212, 175, 55, 0.05)" }}
                   transition={{ duration: 0.3 }}

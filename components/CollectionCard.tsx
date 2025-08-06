@@ -72,7 +72,7 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
           className="container mx-auto relative group rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
           <div
-            className="relative h-[450px] lg:h-[560px] overflow-hidden group cursor-pointer"
+            className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"
             onClick={() => router.push("/project-detail")}
           >
             {/* Background Image */}
@@ -101,14 +101,16 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
                   {property.price}
                 </span>
               </div>
-              {isLocationVisible === true ? (<div className="flex items-center sm:items-start justify-start gap-2 py-2 px-2 mb-3 w-[50%] rounded-[8px] bg-[#CDB04E1A]">
-                <Image
+              {isLocationVisible === true ? (<div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[50%] md:w-[60%] xl:w-[50%] rounded-[8px] bg-[#CDB04E1A]">
+               <div className="relative w-[10px] h-[10px] xl:w-[15px] xl:h-[15px]" >
+               <Image
                   src={"/icons/map-pin.svg"}
-                  width={15}
-                  height={15}
+                  fill
                   alt="Location Icon"
+                  className="object-contain"
                 />
-                <p className="text-xs xs:text-sm sm:text-base leading-tight">
+               </div>
+                <p className="text-[10px] xl:text-base leading-tight">
                   <span className="font-medium">
                     {property.location.split(",")[0]}
                   </span>
@@ -125,7 +127,7 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
                   <div className="w-1/2 bg-primary"></div>
                   <div className="w-1/2 bg-[#FFFFFF80]"></div>
                 </div>
-                <p className="text-[10px] xs:text-xs lg:text-sm text-[#FFFFFF] pt-3 leading-normal pb-4 sm:pb-0">
+                <p className="text-[10px] xs:text-[10px] xl:text-sm text-[#FFFFFF] pt-3 leading-normal pb-4 xl:pb-0">
                   {property.description}
                 </p>
               </div>

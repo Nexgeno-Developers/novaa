@@ -133,7 +133,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
         </div>
 
         {/* Avatar outside the mask */}
-        <div className="absolute sm:bottom-0 bottom-0 right-0 xs:right-0 md:right-40 lg:right-0">
+        <div className="absolute sm:bottom-0 bottom-0 right-0 xs:right-0 md:right-0 lg:right-0 xl:right-0 ">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}

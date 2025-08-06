@@ -215,11 +215,11 @@ const GatewaySection = () => {
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
-      <div className="relative z-20 container mx-auto  py-20">
+      <div className="relative z-20 container mx-auto py-10 sm:py-20">
         <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           {/* Left Content */}
           <motion.div
-            className="space-y-8"
+            className="space-y-2 sm:space-y-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -227,11 +227,11 @@ const GatewaySection = () => {
             {/* Main Heading */}
             <motion.div
               variants={headingVariants}
-              className="space-y-4 text-center lg:text-left "
+              className="space-y-2 sm:space-y-4 text-center lg:text-left "
             >
-              <h1 className="text-white text-2xl lg:text-3xl xl:text-4xl font-normal uppercase leading-12">
+              <h1 className="text-white text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-normal uppercase sm:leading-12 px-4 sm:px-0">
                 A place to come home to and a location that{" "}
-                <span className="text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
+                <span className="text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
                   holds its value.
                 </span>
               </h1>
@@ -240,7 +240,7 @@ const GatewaySection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-md lg:text-lg font-light w-full px-5 sm:px-0 leading-snug lg:max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-xs xs:text-sm sm:text-md lg:text-lg font-light w-full px-5 sm:px-0 leading-snug lg:max-w-2xl"
             >
               Set between Layan and Bangtao, this address offers more than
               scenery. It brings you close to Phuket&apos;s most lived-in
@@ -253,7 +253,7 @@ const GatewaySection = () => {
               variants={itemVariants}
               className="space-y-6 font-josefin text-center lg:text-left"
             >
-              <h3 className="text-white font-medium text-4xl">
+              <h3 className="text-white font-medium text-md sm:text-xl text-4xl">
                 Your Gateway to Paradise
               </h3>
               <p className="text-[#FFFFFFE5] text-lg font-light border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0">
@@ -286,10 +286,10 @@ const GatewaySection = () => {
                         </div>
                       </div>
                      <div className="flex flex-col">
-                     <span className="text-xl font-normal font-josefin text-left">
+                     <span className="text-sm sm:text-xl font-normal font-josefin text-left">
                         {explorerData[categoryKey].title}
                       </span>
-                      <p className="text-lg font-light text-[#FFFFFFE5] font-josefin">{explorerData[categoryKey].description}</p>
+                      <p className="text-xs sm:text-lg font-light text-[#FFFFFFE5] font-josefin">{explorerData[categoryKey].description}</p>
                      </div>
                     </button>
                   );

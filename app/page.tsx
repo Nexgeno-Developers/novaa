@@ -14,7 +14,7 @@ import Testimonials from "@/components/Testimonials";
 export default function Home() {
   return (
     <>
-      <main className="relative w-full overflow-hidden">
+      <main className="relative overflow-hidden">
         <HeroSection />
         <CuratedCollection />
         <AboutPage />

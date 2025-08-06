@@ -5,13 +5,13 @@ export default function ContactUs() {
   return (
     <>
       <Breadcrumbs title="Contact Us" />
-      <section className="bg-[#FFFDF5] py-10 sm:py-20">
+      <section className="bg-[#FFFDF5] pt-10 sm:py-20">
         <div className="container mx-auto">
           {/* Top Info Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
             {/* Phone */}
-            <div className="flex items-center gap-4">
-              <div className="pl-6">
+            <div className="flex flex-col lg:flex-row items-center  gap-4">
+              <div className="sm:pl-6">
                 <div className="w-[77px] h-[77px] rounded-[50px] bg-[#CDB04E] flex items-center justify-center shrink-0">
                   <Image
                     src="/images/phonenumber.svg"
@@ -21,7 +21,7 @@ export default function ContactUs() {
                   />
                 </div>
               </div>
-              <div className="font-josefin max-w-[278px]">
+              <div className="font-josefin max-w-[278px] text-center lg:text-left">
                 <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
                   Phone Number
                 </h3>
@@ -35,8 +35,8 @@ export default function ContactUs() {
             </div>
 
             {/* Email */}
-            <div className=" flex items-center gap-4">
-              <div className="pl-6">
+            <div className=" flex flex-col lg:flex-row items-center gap-4">
+              <div className="sm:pl-6">
                 <div className="w-[77px] h-[77px] rounded-[50px] bg-[#CDB04E] flex items-center justify-center shrink-0">
                   <Image
                     src="/images/emailid.svg"
@@ -46,7 +46,7 @@ export default function ContactUs() {
                   />
                 </div>
               </div>
-              <div className="font-josefin max-w-[278px]">
+              <div className="font-josefin max-w-[200px] lg:max-w-[278px] text-center lg:text-left">
                 <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
                   Email ID
                 </h3>
@@ -57,8 +57,8 @@ export default function ContactUs() {
             </div>
 
             {/* Location */}
-            <div className="flex items-center gap-4">
-              <div className="pl-6">
+            <div className="flex flex-col lg:flex-row items-center gap-4">
+              <div className="sm:pl-6">
                 <div className="w-[77px] h-[77px] rounded-[50px] bg-[#CDB04E] flex items-center justify-center shrink-0">
                   <Image
                     src="/images/location1.svg"
@@ -68,7 +68,7 @@ export default function ContactUs() {
                   />
                 </div>
               </div>
-              <div className="font-josefin max-w-[278px]">
+              <div className="font-josefin max-w-[278px] text-center lg:text-left">
                 <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
                   Location
                 </h3>
@@ -79,119 +79,118 @@ export default function ContactUs() {
               </div>
             </div>
           </div>
+          <div className="container mx-auto">
+            <div className="container mx-auto relative flex flex-col sm:flex-row">
+              <div className="sm:rounded-[20px] overflow-hidden bg-[#01292B] flex flex-col sm:flex-row w-full">
+                {/* Map Section */}
+                <div className="w-full sm:w-[514px] h-[200px] xs:h-[300px] sm:h-[666px] relative">
+                  <Image
+                    src="/images/map.webp"
+                    alt="Map"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
 
-          <div className="container">
-            <div className="h-[666px] flex rounded-[20px] overflow-hidden bg-[#01292B]">
-              {/* Map Section -  514px width */}
-              <div className="w-[514px] h-full">
-                <Image
-                  src="/images/map.webp"
-                  alt="Map"
-                  width={514}
-                  height={666}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+                {/* Form Section */}
+                <div className="w-full sm:w-[746px] h-auto sm:h-[666px] px-4 xs:px-6 sm:px-12 pt-10 sm:pt-20 pb-10 flex flex-col justify-center rounded-[20px] bg-[#072D2C]">
+                  <h2 className="font-cinzel text-white text-lg xs:text-xl sm:text-[40px] text-center sm:text-left font-bold sm:mb-3">
+                    We Would Love To Hear <br />
+                    <span className="text-[#CDB04E]">From You</span>
+                  </h2>
 
-              {/* Form Section - fills remaining width (746px) */}
-              <div className="w-[746px] h-[666px] px-12 pt-20 pb-10 flex flex-col justify-center rounded-[20px] bg-[#072D2C]">
-                <h2 className="font-cinzel text-white text-[40px]  font-bold  mb-3">
-                  We Would Love To Hear <br />
-                  <span className="text-[#CDB04E] ">From You</span>
-                </h2>
+                  <p className="text-center sm:text-left not-visited:text-white font-josefin text-xs xs:text-base sm:text-lg pt-4 sm:pt-5 pb-4 sm:pb-5 font-light mb-6 max-w-full sm:max-w-[517px]">
+                    Feel free to reach out with any questions or feedback — we
+                    are here to help!
+                  </p>
 
-                <p className="text-white font-josefin text-[18px] pt-5 pb-5 font-light mb-6 max-w-[517px]">
-                  Feel free to reach out with any questions or feedback — we are
-                  here to help!
-                </p>
-                <div />
-                <form className="space-y-5 font-josefin text-[14px] ">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="font-josefin">
-                      <label
-                        htmlFor="name"
-                        className="text-primary block mb-1 font-normal"
-                      >
-                        Full Name
-                      </label>
-                      <input
-                        id="name"
-                        placeholder="Enter your full name"
-                        className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white  px-4 py-2 rounded"
-                      />
+                  <form className="space-y-4 font-josefin text-[14px]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label
+                          htmlFor="name"
+                          className="text-primary block mb-1 font-normal"
+                        >
+                          Full Name
+                        </label>
+                        <input
+                          id="name"
+                          placeholder="Enter your full name"
+                          className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white px-4 py-2 rounded"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="phone"
+                          className="text-primary block mb-1 font-normal"
+                        >
+                          Phone No
+                        </label>
+                        <input
+                          id="phone"
+                          placeholder="Enter your phone no"
+                          className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white px-4 py-2 rounded"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="text-primary block mb-1 font-normal"
-                      >
-                        Phone No
-                      </label>
-                      <input
-                        id="phone"
-                        placeholder="Enter your phone no"
-                        className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white px-4 py-2 rounded"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-primary block mb-1 font-normal">
+                          Country of Residence
+                        </label>
+                        <select
+                          className="w-full bg-transparent border border-[#FFFFFFCC] text-white px-4 py-2 rounded focus:bg-background"
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            Select your country
+                          </option>
+                          <option value="thailand">Thailand</option>
+                          <option value="uae">UAE</option>
+                          <option value="uk">UK</option>
+                          <option value="usa">USA</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-primary block mb-1 font-normal">
+                          Preferred Investment Location
+                        </label>
+                        <select
+                          className="w-full bg-transparent border border-[#FFFFFFCC] text-white px-4 py-2 rounded focus:bg-background"
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            Select your country
+                          </option>
+                          <option value="thailand">Thailand</option>
+                          <option value="uae">UAE</option>
+                          <option value="uk">UK</option>
+                          <option value="usa">USA</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div>
                       <label className="text-primary block mb-1 font-normal">
-                        Country of Residence
+                        Message (Optional)
                       </label>
-                      <select
-                        className="w-full bg-transparent border border-[#FFFFFFCC] text-white px-4 py-2 rounded focus:bg-background "
-                        defaultValue=""
-                      >
-                        <option value="" disabled>
-                          Select your country
-                        </option>
-                        <option value="thailand">Thailand</option>
-                        <option value="uae">UAE</option>
-                        <option value="uk">UK</option>
-                        <option value="usa">USA</option>
-                      </select>
+                      <textarea
+                        placeholder="Tell us about investment goals..."
+                        className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white px-4 py-2 rounded min-h-[96px]"
+                      />
                     </div>
-                    <div>
-                      <label className="text-primary block mb-1 font-normal">
-                        Preferred Investment Location
-                      </label>
-                      <select
-                        className="w-full bg-transparent border border-[#FFFFFFCC] text-white px-4 py-2 rounded focus:bg-background"
-                        defaultValue=""
+
+                    <div className="flex justify-center items-center sm:justify-end">
+                      <button
+                        type="submit"
+                        className="w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center sm:text-left"
                       >
-                        <option value="" disabled>
-                          Select your country
-                        </option>
-                        <option value="thailand">Thailand</option>
-                        <option value="uae">UAE</option>
-                        <option value="uk">UK</option>
-                        <option value="usa">USA</option>
-                      </select>
+                        Submit
+                      </button>
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="text-primary block mb-1 font-normal">
-                      Message (Optional)
-                    </label>
-                    <textarea
-                      placeholder="Tell us about investment goals..."
-                      className="w-full bg-transparent border border-[rgba(255,255,255,0.8)] text-white  px-4 py-2 rounded min-h-[96px]"
-                    />
-                  </div>
-
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      className="w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B];
- font-josefin font-semibold text-[14px] leading-[100%]"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </form>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

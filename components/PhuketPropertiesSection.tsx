@@ -128,7 +128,7 @@ const containerVariants: Variants = {
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
 const headingVariants: Variants = {
@@ -176,10 +176,10 @@ const PhuketPropertiesSection = () => {
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
       <div className="relative z-20 container mx-auto py-10 lg:py-20">
-        <div className="font-cinzel grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-20 items-start">
+        <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-20 items-start">
           {/* Left Content */}
           <motion.div
-            className="space-y-4 sm:space-y-8"
+            className="space-y-4 sm:space-y-8 "
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -187,7 +187,7 @@ const PhuketPropertiesSection = () => {
             {/* Main Heading */}
             <motion.div
               variants={headingVariants}
-              className="space-y-2 sm:space-y-4 text-center lg:text-left "
+              className="space-y-2 sm:space-y-4 text-center sm:text-left"
             >
               <h1 className="text-white text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-normal">
                 DISCOVER PRIME PROPERTIES
@@ -200,7 +200,7 @@ const PhuketPropertiesSection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center lg:text-left text-xs xs:text-sm sm:text-md lg:text-lg font-light w-full px-5 sm:px-0 leading-snug lg:max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-xs xs:text-sm sm:text-md lg:text-lg font-light w-full px-5 xl:px-0 leading-snug lg:max-w-2xl"
             >
               Explore a Curated Selection of Luxury Residences . Whether
               you&#39;re seeking a beachfront retreat, an investment
@@ -230,7 +230,7 @@ const PhuketPropertiesSection = () => {
                     <button
                       key={categoryKey}
                       onClick={() => setActiveCategory(categoryKey)}
-                      className={`w-[70%] flex items-center space-x-4 p-2 xs:p-4 sm:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 group cursor-pointer ${
+                      className={`w-[70%] flex items-center space-x-4 p-2 xs:p-4 xl:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 transform hover:translate-x-2 group cursor-pointer ${
                         isActive
                           ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
                           : "bg-[#CDB04E33] text-[#CDB04E] hover:border-[#C3912F] hover:bg-opacity-30"

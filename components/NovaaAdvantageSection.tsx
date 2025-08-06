@@ -177,7 +177,7 @@ const NovaaAdvantageSection = () => {
             variants={centerVariants}
           >
             {/* Outer Ring Border */}
-            <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 lg:w-[420px] lg:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
+            <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[380px] md:h-[380px] xl:w-[420px] xl:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
               {/* Background Circle with Image */}
               {/* Background Circle with Water Effect */}
               <div className="w-full h-full rounded-full overflow-hidden shadow-2xl relative z-10">
@@ -208,10 +208,10 @@ const NovaaAdvantageSection = () => {
                 >
                   {/* Content */}
                   <div className="font-josefin space-y-2 mx-4">
-                    <h3 className="text-sm lg:text-xl font-normal text-background">
+                    <h3 className="text-sm md:text-lg lg:text-xl font-normal text-background">
                       {advantage.title}
                     </h3>
-                    <p className="text-xs lg:text-base font-light text-[#303030] leading-relaxed">
+                    <p className="text-xs md:text-sm lg:text-base font-light text-[#303030] leading-relaxed">
                       {advantage.description}
                     </p>
                   </div>
@@ -231,7 +231,7 @@ const NovaaAdvantageSection = () => {
           })}
         </motion.div>
 
-        {/* Mobile Layout - 2 Cards Per Row */}
+        {/* Mobile Layout - 1 Cards Per Row */}
         <div className="md:hidden mt-10">
           <motion.div
             className="grid grid-cols-1"
@@ -245,8 +245,6 @@ const NovaaAdvantageSection = () => {
                 key={`mobile-${advantage.id}`}
                 className="bg-white rounded-xl p-2 m-2 shadow-lg"
                 variants={itemVariants}
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.3 }}
               >
                 <div className="font-josefin flex items-center space-x-4">
                   <div className="flex items-center justify-between gap-4 py-2">

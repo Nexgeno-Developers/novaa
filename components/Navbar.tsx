@@ -6,8 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -15,9 +17,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="absolute top-0 w-full h-15 sm:h-20 bg-background lg:bg-[#00000099] flex items-center justify-between text-white z-20">
+    <header className="absolute top-0 w-full h-15 xs:h-20 bg-background lg:bg-[#00000099] flex items-center justify-between text-white z-20">
       {/* Left: Logo */}
-      <div className="flex items-center justify-start lg:justify-center w-30 sm:w-32 md:w-50 lg:w-[40vh] bg-background h-full ml-2 lg:ml-0">
+      <div className="flex items-center justify-start xl:justify-center w-30 sm:w-32 md:w-50 xl:w-[40vh] bg-background h-full ml-2 lg:ml-0 cursor-pointer " onClick={() => {
+        router.push("/")
+      }}>
         <Image
           src={"/images/logo.png"}
           width={150}
@@ -28,7 +32,7 @@ export default function Navbar() {
       </div>
 
       {/* Middle: Desktop Navbar */}
-      <nav className="font-josefin text-lg font-normal hidden lg:flex items-center space-x-10 ml-auto mr-10">
+      <nav className="font-josefin text-lg font-normal hidden lg:flex items-center space-x-12 xl:space-x-10 ml-auto lg:mr-10">
         <Link
           href="/"
           className="hover:text-[#F0DE9C] transition-colors duration-300"
@@ -64,7 +68,7 @@ export default function Navbar() {
       </button>
 
       {/* Right: Contact Us Button - Hidden on mobile */}
-      <div className="hidden lg:flex items-center justify-center bg-[#00000033] w-[40vh] h-full px-4">
+      <div className="hidden lg:flex items-center justify-end xl:justify-center bg-[#00000033] xl:w-[40vh] h-full px-4">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -72,6 +76,9 @@ export default function Navbar() {
           style={{
             background:
               "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+          }}
+          onClick={() => {
+            router.replace("/contact-us")
           }}
         >
           Contact Us
@@ -126,6 +133,10 @@ export default function Navbar() {
                   background:
                     "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                 }}
+                onClick={() => {
+                  router.replace("/contact-us")
+                }}
+
               >
                 Contact Us
                 <ArrowRight className="w-5 h-5" />
