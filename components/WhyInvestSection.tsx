@@ -155,7 +155,7 @@ export default function WhyInvestSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="flex flex-wrap gap-2 sm:gap-4 h-full p-8 sm:p-0"
+            className="flex flex-wrap gap-2 sm:gap-4 h-full"
           >
             {/* Image 1 */}
             <motion.div
