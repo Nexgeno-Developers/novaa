@@ -78,8 +78,8 @@ export default function Footer() {
           </div>
 
           {/* Footer Content */}
-          <div className="w-full max-w-7xl bg-[#01292BCC] rounded-3xl p-8 sm:p-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className=" container mx-auto bg-[#01292BCC] rounded-3xl ">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8 sm:p-12">
               {/* About Us */}
               <div className="lg:col-span-1">
                 <h3 className="text-[#CDB04E] text-sm sm:text-xl font-bold mb-2 sm:mb-6">
@@ -218,7 +218,7 @@ export default function Footer() {
             </div>
 
             {/* Copyright */}
-            <div className="mt-2 pt-2 sm:mt-12 sm:pt-8 border-t border-t-[#CDB04E80] text-center">
+            <div className="mt-2 py-2 sm:mt-12 sm:py-8 border-t border-t-[#CDB04E80] text-center">
               <p className="text-[#FFFFFFCC] text-sm">
                 Copyright &copy; Novaa Real Estate | Designed by NEXGENO
               </p>
