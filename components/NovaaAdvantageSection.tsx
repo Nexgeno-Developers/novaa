@@ -71,7 +71,7 @@ const NovaaAdvantageSection = () => {
       case "top-left":
         return `${baseClasses} top-8 left-8 md:top-0 md:left-0 lg:top-0 lg:left-10`;
       case "top-right":
-        return `${baseClasses} top-8 right-8 md:top-0 md:-right-8 lg:top-0 lg:right-20`;
+        return `${baseClasses} top-8 right-8 md:top-0 md:-right-8 lg:top-0 lg:right-15`;
       case "left":
         return `${baseClasses} top-1/2 left-4 md:left-0 lg:left-[-10] transform -translate-y-1/2`;
       case "right":
