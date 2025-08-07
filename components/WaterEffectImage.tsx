@@ -61,7 +61,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
     context.fillStyle = 'rgba(0, 0, 0, 0.5)';
     context.fillRect(0, 0, width, height);
 
-    const logoSize = Math.min(width, height) * 0.3;
+    const logoSize = Math.min(width, height) * 0.4;
     const logoX = (width - logoSize) / 2;
     const logoY = (height - logoSize) / 2;
     context.drawImage(logoImage, logoX, logoY, logoSize, logoSize);

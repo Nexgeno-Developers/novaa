@@ -26,7 +26,7 @@ export default function Navbar() {
         >
           <Image
             src="/images/logo.png"
-            width={140}
+            width={190}
             height={60}
             alt="Logo"
             priority

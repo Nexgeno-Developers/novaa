@@ -122,7 +122,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       transition={{ duration: 0.5 }}
       className=""
     >
-      <div className="relative flex justify-center items-center">
+      <div className="relative flex justify-center items-center max-w-sm mx-auto overflow-hidden">
         {/* Card with inverted radius */}
         <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
           <StarRating rating={testimonial.rating} />
@@ -133,7 +133,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
         </div>
 
         {/* Avatar outside the mask */}
-        <div className="absolute sm:bottom-0 bottom-0 right-0 xs:right-0 md:right-0 lg:right-0 xl:right-0 ">
+        <div className="absolute  bottom-0 right-0">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
@@ -208,14 +208,14 @@ export default function EliteClientsTestimonials() {
         >
           <button
             onClick={scrollPrev}
-            className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
+            className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg cursor-pointer"
           >
             <ArrowLeft className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" />
           </button>
 
           <button
             onClick={scrollNext}
-            className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg"
+            className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg cursor-pointer"
           >
             <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" />
           </button>

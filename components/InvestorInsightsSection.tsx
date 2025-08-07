@@ -84,7 +84,7 @@ const AnimatedTestimonials = ({
               }}
               className="absolute inset-0 origin-bottom"
             >
-              <div className="relative h-full rounded-3xl bg-white overflow-hidden">
+              <div className="relative h-full rounded-3xl bg-white overflow-hidden cursor-pointer">
                 {/* Image Container with padding */}
                 <div className="p-4 pb-2">
                   <img

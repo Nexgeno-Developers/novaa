@@ -68,7 +68,7 @@ export default function Footer() {
 
             {/* CTA Button */}
             <div className="inline-block">
-              <button className="group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-6 py-3 sm:px-8 sm:py-4 rounded-full hover:bg-[#30303033] hover:text-[#ebd78d] transition-all duration-300 flex flex-col items-center gap-1 text-sm sm:text-lg font-medium text-center">
+              <button className="group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-6 py-3 sm:px-8 sm:py-4 rounded-full hover:bg-[#30303033] hover:text-[#ebd78d] transition-all duration-300 flex flex-col items-center gap-1 text-sm sm:text-lg font-medium text-center cursor-pointer">
                 <span>Explore</span>
                 <span>Your Future</span>
                 <span>Home</span>
@@ -155,7 +155,7 @@ export default function Footer() {
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-white text-lg xs:text-xl sm:text-4xl font-medium">
+                    <span className="text-white text-lg xs:text-xl sm:text-3xl font-medium">
                       Demo@gmail.com
                     </span>
                   </div>
