@@ -46,7 +46,7 @@ export default function Footer() {
         {/* <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" /> */}
 
         {/* Content */}
-        <div className="container mx-auto relative z-40 flex flex-col justify-center items-center text-white px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto relative z-40 flex flex-col justify-center items-center text-white ">
           {/* Main Hero Section */}
           <div className=" text-center mb-4 sm:mb-10 lg:mb-16 max-w-5xl">
             <h1 className="font-cinzel text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-bold mb-4 leading-normal">

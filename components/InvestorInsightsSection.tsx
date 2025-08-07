@@ -162,7 +162,7 @@ export default function InvestorInsightsSection() {
     <div className="bg-background relative overflow-hidden py-10 lg:py-20">
       <div className="absolute top-[15%] bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
 
-      <div className="container mx-auto  relative z-10 py-10 lg:py-16">
+      <div className="container mx-auto relative z-10 py-10 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-18 items-center my-10">
           {/* Left Content */}
           <motion.div
