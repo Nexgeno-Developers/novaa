@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAppSelector } from "@/redux/hooks";
@@ -9,23 +9,47 @@ import { RootState } from "@/redux";
 import { useRouter } from "next/navigation";
 
 interface CardProps {
-  isLocationVisible : boolean
+  isLocationVisible: boolean;
 }
 
-export default function CollectionCard({ isLocationVisible } : CardProps) {
+export default function CollectionCard({ isLocationVisible }: CardProps) {
   const router = useRouter();
 
   const { selectedRegion, allData } = useAppSelector(
     (state: RootState) => state.curated
   );
 
-  // const router = useRouter();
-
-  //   const tabs = ["Thailand", "UAE", "Europe"];
-
   const [currentImageIndex, setCurrentImageIndex] = useState<
     Record<string, number>
   >({});
+
+  const [preloadedImages, setPreloadedImages] = useState<
+    Record<string, boolean>
+  >({});
+
+  // Preload images when component mounts or data changes
+  useEffect(() => {
+    if (allData && allData[selectedRegion]) {
+      const preloadPromises = allData[selectedRegion].flatMap((property) =>
+        property.images.map((imageSrc) => {
+          return new Promise<void>((resolve) => {
+            const img = document.createElement('img');
+            img.onload = () => {
+              setPreloadedImages(prev => ({
+                ...prev,
+                [imageSrc]: true
+              }));
+              resolve();
+            };
+            img.onerror = () => resolve(); // Still resolve on error to prevent hanging
+            img.src = imageSrc;
+          });
+        })
+      );
+
+      Promise.all(preloadPromises);
+    }
+  }, [allData, selectedRegion]);
 
   const nextImage = (propertyId: number) => {
     const currentProperties = allData[selectedRegion];
@@ -69,65 +93,78 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.6 }}
-          className="container mx-auto relative group rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+          className="w-full relative group rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
         >
           <div
             className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"
             onClick={() => router.push("/project-detail")}
           >
-            {/* Background Image */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${property.id}-${currentImageIndex[property.id] || 0}`}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={property.images[currentImageIndex[property.id] || 0]}
-                  alt={property.name}
-                  fill
-                  className="object-cover h-full group-hover:scale-105 transition-transform duration-300"
-                />
-              </motion.div>
-            </AnimatePresence>
-            <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[#000000] to-[#00000000]"></div>
+            {/* Background Images - All images rendered but only current one visible */}
+            <div className="relative w-full h-full">
+              {property.images.map((imageSrc, imgIndex) => (
+                <div
+                  key={`${property.id}-${imgIndex}`}
+                  className={`absolute inset-0 transition-opacity duration-300 ${
+                    (currentImageIndex[property.id] || 0) === imgIndex 
+                      ? 'opacity-100' 
+                      : 'opacity-0'
+                  }`}
+                >
+                  <Image
+                    src={imageSrc}
+                    alt={`${property.name} - Image ${imgIndex + 1}`}
+                    fill
+                    className="object-cover h-full group-hover:scale-105 transition-all duration-300"
+                    priority={imgIndex === 0} // Only prioritize first image
+                    placeholder="empty" // Remove default placeholder
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Dark gradient overlay */}
+            <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-[#000000] to-[#00000000] z-10"></div>
 
             {/* Overlay Content at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 text-white p-4 lg:p-8">
+            <div className="absolute bottom-0 left-0 right-0 text-white p-4 lg:p-8 z-20">
               <div className="flex items-center gap-4 mb-2">
-                <h3 className="text-md md:text-lg lg:text-[22px] font-medium text-primary border-r-1 border-r-white pr-2 lg:pr-5">
+                <h3 className="text-lg lg:text-[22px] font-medium text-primary border-r-1 border-r-white pr-2 lg:pr-5">
                   {property.name}
                 </h3>
-                <span className="text-sm md:text-md lg:text-lg font-light text-white">
+                <span className="text-base lg:text-lg font-light text-white">
                   {property.price}
                 </span>
               </div>
-              {isLocationVisible === true ? (<div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[50%] md:w-[60%] xl:w-[50%] rounded-[8px] bg-[#CDB04E1A]">
-               <div className="relative w-[10px] h-[10px] xl:w-[15px] xl:h-[15px]" >
-               <Image
-                  src={"/icons/map-pin.svg"}
-                  fill
-                  alt="Location Icon"
-                  className="object-contain"
-                />
-               </div>
-                <p className="text-[10px] xl:text-base leading-tight">
-                  <span className="font-medium">
-                    {property.location.split(",")[0]}
-                  </span>
-                  {property.location.includes(",") && (
-                    <span className="font-light">
-                      ,{property.location.split(",").slice(1).join(",")}
+              
+              {isLocationVisible === true && (
+                <div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[60%] xl:w-[55%] rounded-[8px] bg-[#CDB04E1A]">
+                  <div className="relative w-[10px] h-[10px] xl:w-[15px] xl:h-[15px]">
+                    <Image
+                      src={"/icons/map-pin.svg"}
+                      fill
+                      alt="Location Icon"
+                      className="object-contain"
+                    />
+                  </div>
+                  <p className="text-base xl:text-lg leading-tight">
+                    <span className="font-medium">
+                      {property.location.split(",")[0]}
                     </span>
-                  )}
-                </p>
-              </div>) : ""}
+                    {property.location.includes(",") && (
+                      <span className="font-light">
+                        ,{property.location.split(",").slice(1).join(",")}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              )}
 
               <div className="relative">
                 <div className="absolute top-0 left-0 w-full h-[1px] flex">
                   <div className="w-1/2 bg-primary"></div>
                   <div className="w-1/2 bg-[#FFFFFF80]"></div>
                 </div>
-                <p className="text-[10px] xs:text-[10px] xl:text-sm text-[#FFFFFF] pt-3 leading-normal pb-4 xl:pb-0">
+                <p className="text-sm xl:text-base text-[#FFFFFF] pt-3 leading-normal pb-4 xl:pb-0">
                   {property.description}
                 </p>
               </div>
@@ -135,19 +172,19 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
 
             {/* Optional badge */}
             {property.badge && (
-              <div className="absolute font-josefin top-12 right-0 bg-[#D4AF37] text-background px-4 py-1 rounded-l-[20px] text-lg font-medium">
+              <div className="absolute font-josefin top-12 right-0 bg-[#D4AF37] text-background px-4 py-1 rounded-l-[20px] text-lg font-medium z-20">
                 {property.badge}
               </div>
             )}
 
             {/* Navigation Arrows */}
-            <div className="absolute inset-0 flex items-center justify-between p-4 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-between p-4 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation();
                   prevImage(property.id);
                 }}
-                className="cursor-pointer text-[#FFFFFFCC]"
+                className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -158,7 +195,7 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
                   e.stopPropagation();
                   nextImage(property.id);
                 }}
-                className="cursor-pointer text-[#FFFFFFCC]"
+                className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -167,7 +204,7 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
             </div>
 
             {/* Image Indicators */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">
               {property.images.map((_, imgIndex) => (
                 <button
                   key={imgIndex}
@@ -178,11 +215,11 @@ export default function CollectionCard({ isLocationVisible } : CardProps) {
                       [property.id]: imgIndex,
                     }));
                   }}
-                  className={`w-2 h-2 rounded-full ${
+                  className={`w-2 h-2 rounded-full transition-all duration-200 ${
                     (currentImageIndex[property.id] || 0) === imgIndex
                       ? "bg-primary border-1 border-amber-400 scale-125"
                       : "bg-white/50 hover:bg-white/75"
-                  } transition-all`}
+                  }`}
                 />
               ))}
             </div>

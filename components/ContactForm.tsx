@@ -76,7 +76,7 @@ const ContactForm = () => {
       <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
 
       {/* Content Container */}
-      <div className="relative inset-0 z-10 max-w-6xl mx-auto px-6 my-34 py-30 flex flex-col justify-center bg-[#01292BE5] backdrop-blur-xs h-[640px] rounded-2xl">
+      <div className="relative inset-0 z-10 container my-18 sm:my-34 py-15 sm:py-30 flex flex-col justify-center bg-[#01292BE5] backdrop-blur-xs h-[640px] rounded-[30px]">
         <motion.div
           initial="hidden"
           whileInView="visible"

@@ -122,18 +122,18 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       transition={{ duration: 0.5 }}
       className=""
     >
-      <div className="relative flex justify-center items-center max-w-sm mx-auto overflow-hidden">
+      <div className="relative flex justify-center items-center overflow-hidden">
         {/* Card with inverted radius */}
         <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
           <StarRating rating={testimonial.rating} />
-          <p className="text-[#303030CC] text-xs xs:text-sm lg:text-base leading-relaxed mb-0 lg:mb-8 flex-grow">
+          <p className="text-[#303030CC] text-base lg:text-lg leading-relaxed mb-0 lg:mb-8 flex-grow">
             &quot;{testimonial.quote}&quot;
           </p>
           <p className="font-light">Demo</p>
         </div>
 
         {/* Avatar outside the mask */}
-        <div className="absolute  bottom-0 right-0">
+        <div className="absolute  bottom-0 right-0 xl:right-5 2xl:right-15">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
@@ -165,7 +165,7 @@ export default function EliteClientsTestimonials() {
 
   return (
     <div className="bg-secondary py-10 lg:py-20">
-      <div className="container mx-auto">
+      <div className="container">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -173,21 +173,21 @@ export default function EliteClientsTestimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10 lg:mb-16 font-cinzel"
         >
-          <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase">
+          <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase">
             What Our{" "}
             <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
           </h2>
-          <p className="font-josefin text-[#303030] text-xs xs:text-sm sm:text-base lg:text-lg font-light">
+          <p className="font-josefin text-[#303030] text-base lg:text-lg font-light">
             Real stories from real people who trust us
           </p>
         </motion.div>
 
         {/* Embla Carousel */}
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-2 lg:gap-6 sm:px-6">
+          <div className="flex ">
             {testimonials.map((testimonial, index) => (
               <div
-                className="min-w-0 flex-[0_0_100%] lg:flex-[0_0_33.3333%] px-4 sm:px-2"
+                className="min-w-0 flex-[0_0_100%] lg:flex-[0_0_33.3333%]"
                 key={testimonial.id}
               >
                 <TestimonialCard

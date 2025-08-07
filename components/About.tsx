@@ -73,7 +73,7 @@ export default function AboutPage() {
       </div>
 
       {/* Content - Topmost layer (z-50) */}
-      <div className="container mx-auto py-10 sm:py-20 relative z-50 flex flex-col justify-between sm:justify-center">
+      <div className="container py-10 sm:py-20 relative z-50 flex flex-col justify-between sm:justify-center">
         {/* About Heading */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -90,8 +90,8 @@ export default function AboutPage() {
           </h2>
         </motion.div>
 
-        {/* Content Container */}
-        <div className="container mx-auto mt-60">
+        {/* Content */}
+        <div className=" mt-10 sm:mt-50">
           <div className="flex flex-col lg:flex-row justify-between items-center">
             {/* Left Column - About Text */}
             <motion.div
@@ -105,7 +105,7 @@ export default function AboutPage() {
                 <h3 className="text-white text-center sm:text-left text-2xl xs:text-4xl sm:text-2xl font-semibold mb-2">
                   About
                 </h3>
-                <p className="max-w-2xl text-[#FFFFFFCC] text-center px-2 sm:px-0 sm:text-left text-[10px]  xs:text-xs sm:text-sm leading-relaxed mb-5 sm:mb-8">
+                <p className="max-w-2xl text-[#FFFFFFCC] text-center sm:text-left text-base sm:text-lg leading-relaxed mb-5 sm:mb-8">
                   is simply dummy text of the printing and typesetting industry.
                   Lorem Ipsum has been the industry&apos;s standard dummy text
                   ever since the 1500s, when an unknown printer took a galley of
@@ -124,7 +124,7 @@ export default function AboutPage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer text-xs xs:text-sm sm:text-base transition-all duration-300"
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-md text-[#01292B] font-semibold shadow-lg cursor-pointer text-base sm:text-lg transition-all duration-300"
               >
                 Discover More
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />

@@ -89,23 +89,23 @@ const InvestmentPlans = () => {
       <div className="absolute inset-x-0 bottom-0 w-full h-1/4 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
       
       {/* Content Container */}
-      <div className="relative z-10 container mx-auto px-6 py-24 min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 py-10 sm:py-20 min-h-screen flex flex-col justify-center">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className="max-w-6xl mx-auto"
+          className="container"
         >
           {/* Header */}
           <motion.div 
             variants={itemVariants}
             className="text-center mb-16"
           >
-            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-[40px] font-light text-white mb-6">
+            <h2 className="font-cinzel text-2xl md:text-4xl lg:text-[40px] font-light text-white mb-6">
               LIMITED-TIME <span className="text-primary font-bold">INVESTMENT PLANS</span>
             </h2>
-            <p className="font-josefin font-light text-white text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+            <p className="font-josefin font-light text-white text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
               Secure high returns with exclusive, time-sensitive opportunities.
             </p>
           </motion.div>

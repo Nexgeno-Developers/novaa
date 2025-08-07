@@ -1,84 +1,92 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import Image from 'next/image'
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 const properties = [
   {
     id: 1,
-    defaultImage: '/images/projects/project-1.jpg',
-    hoverImage: '/images/projects/project-5.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-1.jpg",
+    hoverImage: "/images/projects/project-5.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 2,
-    defaultImage: '/images/projects/project-6.jpg',
-    hoverImage: '/images/projects/project-5.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-6.jpg",
+    hoverImage: "/images/projects/project-5.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 3,
-    defaultImage: '/images/projects/project-5.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-5.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 4,
-    defaultImage: '/images/projects/project-4.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-4.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 5,
-    defaultImage: '/images/projects/project-5.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-5.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 6,
-    defaultImage: '/images/projects/project-6.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-6.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 7,
-    defaultImage: '/images/projects/project-7.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-7.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 8,
-    defaultImage: '/images/projects/project-8.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-8.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
   {
     id: 9,
-    defaultImage: '/images/projects/project-9.jpg',
-    hoverImage: '/images/projects/project-1.jpg',
-    title: 'Dummy Dummy',
+    defaultImage: "/images/projects/project-9.jpg",
+    hoverImage: "/images/projects/project-1.jpg",
+    title: "Dummy Dummy",
   },
-]
+];
 
 export default function ProjectHighlights() {
   return (
-    <section className="bg-background text-white py-16 px-4 md:px-10 lg:px-20">
-      <div className="font-cinzel max-w-6xl mx-auto text-center space-y-4">
-        <h2 className="text-2xl sm:text-3xl md:text-[40px] font-normal uppercase text-center sm:text-left">
-          Discover Tranquility at <span className="text-primary font-bold">Layan Verde, <div>Phuket</div></span>
-        </h2>
-        <p className="font-josefin font-light max-w-5xl mx-auto text-sm md:text-base lowercase text-white leading-6 text-center sm:text-left">
-          Layan Verde is a luxury condominium in Phuket, set in lush tropical greenery. Managed by top hospitality brands, it blends five-star living with natural serenity. Each unit features curated landscapes, wellness-focused design, and premium amenities.
-        </p>
-      </div>
+    <section className="bg-background text-white py-10 sm:py-16">
+      <div className="container">
+        <div className="font-cinzel text-center space-y-4">
+          <h2 className="text-2xl sm:text-3xl md:text-[40px] font-normal uppercase text-center leading-relaxed">
+            Discover Tranquility at{" "}
+            <span className="text-primary font-bold">
+              Layan Verde, <div>Phuket</div>
+            </span>
+          </h2>
+          <p className="font-josefin font-light text-sm md:text-base lowercase text-white leading-6 text-center ">
+            Layan Verde is a luxury condominium in Phuket, set in lush tropical
+            greenery. Managed by top hospitality brands, it blends five-star
+            living with natural serenity. Each unit features curated landscapes,
+            wellness-focused design, and premium amenities.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-        {properties.map((property) => (
-          <HoverImageCard key={property.id} {...property} />
-        ))}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+          {properties.map((property) => (
+            <HoverImageCard key={property.id} {...property} />
+          ))}
+        </div>
       </div>
     </section>
-  )
+  );
 }
 
 const HoverImageCard = ({
@@ -86,9 +94,9 @@ const HoverImageCard = ({
   hoverImage,
   title,
 }: {
-  defaultImage: string
-  hoverImage: string
-  title: string
+  defaultImage: string;
+  hoverImage: string;
+  title: string;
 }) => {
   return (
     <motion.div
@@ -136,5 +144,5 @@ const HoverImageCard = ({
         <h3 className="text-white text-lg font-semibold">{title}</h3>
       </div>
     </motion.div>
-  )
-}
+  );
+};

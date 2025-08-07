@@ -43,7 +43,7 @@ const AnimatedTestimonials = ({
 
   const randomRotateY = () => {
     const value = toggle
-      ? Math.floor(-14 * 1) - 0 // -20
+      ? Math.floor(-12 * 1) - 0 // -20
       : Math.floor(11 * 1) + 0; // 20
 
     toggle = !toggle;
@@ -52,7 +52,7 @@ const AnimatedTestimonials = ({
 
   return (
     <div className="flex items-center justify-center">
-      <div className="relative  sm:h-[570px] w-[250px] h-[320px] xs:w-[300px] xs:h-[370px] sm:w-[500px] z-20">
+      <div className="relative  sm:h-[570px] w-[230px] h-[320px] xs:w-[300px] xs:h-[370px] sm:w-[500px] z-20">
         <AnimatePresence>
           {testimonials.map((testimonial, index) => (
             <motion.div
@@ -86,7 +86,7 @@ const AnimatedTestimonials = ({
             >
               <div className="relative h-full rounded-3xl bg-white overflow-hidden cursor-pointer">
                 {/* Image Container with padding */}
-                <div className="p-4 pb-2">
+                <div className="p-2 sm:p-4 pb-2">
                   <img
                     src={testimonial.src}
                     alt={testimonial.content}
@@ -96,7 +96,7 @@ const AnimatedTestimonials = ({
                 </div>
 
                 {/* Content below image */}
-                <div className="px-4 sm:px-4 pb-2 sm:pb-4">
+                <div className="px-2 sm:px-4 pb-2 sm:pb-4">
                   <h1 className="py-2 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
                     {testimonial.content}
                   </h1>
@@ -160,10 +160,10 @@ export default function InvestorInsightsSection() {
 
   return (
     <div className="bg-background relative overflow-hidden py-10 lg:py-20">
-      <div className="absolute top-[15%] bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
+      <div className="hidden sm:absolute top-[15%] bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
 
-      <div className="container mx-auto relative z-10 py-10 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-18 items-center my-10">
+      <div className="container relative z-10 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-18 items-center mb-10">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -176,11 +176,11 @@ export default function InvestorInsightsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="font-cinzel text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-light text-white leading-tight text-center lg:text-left mt-0 sm:mt-10 py-4 sm:py-0"
+                className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-light text-white leading-tight text-center lg:text-left mt-0 sm:mt-10"
               >
                 Insights for the{" "}
-                <h3
-                  className=" font-cinzel text-xl xs:text-2xl sm:text-3xl lg:text-[50px] font-bold mb-0 sm:mb-8 bg-clip-text text-transparent leading-tight "
+                <h1
+                  className=" font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-bold mb-0 sm:mb-8 bg-clip-text text-transparent leading-tight "
                   style={{
                     background:
                       "linear-gradient(99.93deg, #C3912F 6.79%, #F5E7A8 31.89%, #C3912F 59.78%)",
@@ -189,14 +189,14 @@ export default function InvestorInsightsSection() {
                   }}
                 >
                   Discerning Investor
-                </h3>
+                </h1>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="font-josefin text-xs xs:text-sm sm:text-base lg:text-lg  text-[#FFFFFFE5] font-light leading-tight text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
+                className="font-josefin text-base lg:text-lg  text-[#FFFFFFE5] font-light leading-tight text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
               >
                 Stay informed with trending stories, industry updates, and
                 thoughtful articles curated just for you.

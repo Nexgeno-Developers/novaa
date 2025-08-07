@@ -62,20 +62,20 @@ const Highlights = () => {
       <div className="absolute inset-x-0 bottom-0 w-full h-1/4 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
 
       {/* Content Container */}
-      <div className="relative z-10 container mx-auto px-6 py-24 min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 container py:10 sm:py-24 min-h-screen flex flex-col justify-center">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className="max-w-6xl mx-auto"
+          className=""
         >
           {/* Header */}
           <motion.div variants={itemVariants} className="mb-16">
-            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-[40px] font-normal text-white mb-6">
+            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-[40px] font-normal text-white mb-6 text-center sm:text-left">
               PROJECT <span className="text-primary font-bold">HIGHLIGHTS</span>
             </h2>
-            <p className="font-josefin text-white font-light text-sm md:text-base max-w-2xl leading-relaxed">
+            <p className="font-josefin text-white font-light text-sm md:text-base max-w-2xl leading-relaxed text-center sm:text-left">
               Is simply dummy text of the printing and typesetting industry.
               Lorem Ipsum has been the industry&apos;s standard dummy text ever since
               the 1500s.

@@ -79,7 +79,7 @@ export default function WhyInvestSection() {
 
   return (
     <section className="font-cinzel py-10 sm:py-16 lg:py-24 bg-secondary">
-      <div className="container mx-auto">
+      <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 xl:gap-16 items-start">
           {/* Left Column - Content */}
           <motion.div
@@ -105,7 +105,7 @@ export default function WhyInvestSection() {
             {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-black font-light text-xs xs:text-sm sm:text-base md:text-lg text-center xl:text-left leading-tight"
+              className="font-josefin text-black font-light text-base sm:text-lg text-center xl:text-left leading-tight"
             >
               Thailand&#39;s real estate market is a haven for HNIs seeking
               capital growth, passive income, and a luxurious lifestyle.
@@ -117,7 +117,7 @@ export default function WhyInvestSection() {
                 <motion.div
                   key={point.id}
                   variants={itemVariants}
-                  className="flex items-start gap-6 group py-2 px-2 lg:px-4 xl:px-0"
+                  className="flex items-start gap-6 group py-2"
                 >
                   {/* Icon Circle */}
                   <div className="flex-shrink-0 h-15 w-15 sm:w-20 sm:h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300">
@@ -132,8 +132,10 @@ export default function WhyInvestSection() {
 
                   {/* Content */}
                   <div className="flex-1 space-y-2 font-josefin">
-                    <h4 className="text-base xs:text-lg sm:text-xl font-normal text-[#01292B]">{point.title}</h4>
-                    <p className="text-[#303030] font-light text-xs xs:text-sm sm:text-md leading-relaxed">
+                    <h4 className="text-lg sm:text-xl font-normal text-[#01292B]">
+                      {point.title}
+                    </h4>
+                    <p className="text-[#303030] font-light text-base sm:text-lg leading-relaxed">
                       {point.description}
                     </p>
                     {/* {point.details && (
@@ -153,12 +155,12 @@ export default function WhyInvestSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="flex flex-wrap gap-5 h-full mx-4 sm:mx-5 lg:mx-0"
-            >
-            {/* Top Left - Image 1 (60%) */}
+            className="flex flex-wrap gap-2 sm:gap-4 h-full p-8 sm:p-0"
+          >
+            {/* Image 1 */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-110 basis-[50%] rounded-3xl overflow-hidden"
+              className="relative h-80 lg:h-110 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[54%] rounded-3xl overflow-hidden"
             >
               <Image
                 src={images[0]}
@@ -168,10 +170,10 @@ export default function WhyInvestSection() {
               />
             </motion.div>
 
-            {/* Top Right - Image 2 */}
+            {/* Image 2 */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-110 basis-[43%] xs:basis-[44%] sm:basis-[46%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-110 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[43%] rounded-3xl overflow-hidden shadow-lg"
             >
               <Image
                 src={images[1]}
@@ -181,10 +183,10 @@ export default function WhyInvestSection() {
               />
             </motion.div>
 
-            {/* Bottom Left - Image 3 (30%) */}
+            {/* Image 3 */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80  lg:h-90 basis-[60%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-90 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[60%] rounded-3xl overflow-hidden shadow-lg"
             >
               <Image
                 src={images[2]}
@@ -194,10 +196,10 @@ export default function WhyInvestSection() {
               />
             </motion.div>
 
-            {/* Bottom Right - Image 4 (60%) */}
+            {/* Image 4 */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-90 basis-[33%] xs:basis-[34%] sm:basis-[36%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-90 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[37%] rounded-3xl overflow-hidden shadow-lg"
             >
               <Image
                 src={images[3]}

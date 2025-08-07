@@ -20,7 +20,7 @@ export default function HeroSection() {
 
       {/* Text Overlay */}
       <div className="absolute bottom-6 sm:bottom-10 w-full z-10">
-        <div className="container mx-auto text-white font-cinzel">
+        <div className="container text-white font-cinzel">
           <motion.h2
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}

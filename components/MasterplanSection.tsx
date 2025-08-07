@@ -50,7 +50,7 @@ const MasterplanSection = () => {
 
   return (
     <section
-      className="relative w-full py-24"
+      className="relative w-full py-10 sm:py-24"
       style={{ backgroundColor: "#01292B" }}
     >
       {/* Content Container */}
@@ -93,7 +93,7 @@ const MasterplanSection = () => {
                   // --- ACTIVE TAB VIEW ---
                   <motion.div
                     style={{ backgroundImage: `url(${feature.imgSrc})` }}
-                    className="relative w-full h-[600px] bg-center bg-cover flex items-center justify-center"
+                    className="relative w-full h-[400px] sm:h-[600px] bg-center bg-cover flex items-center justify-center"
                     initial={{ opacity: 0.8 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
@@ -136,7 +136,7 @@ const MasterplanSection = () => {
                   </motion.div>
                 ) : (
                   // --- INACTIVE TAB VIEW ---
-                  <div className="relative group w-full h-[180px] flex items-center justify-center text-center bg-background hover:bg-[#024f53] transition-colors duration-300">
+                  <div className="relative group w-full h-[100px] sm:h-[180px] flex items-center justify-center text-center bg-background hover:bg-[#024f53] transition-colors duration-300">
                     {/* Background image revealed on hover */}
                     <div
                       style={{ backgroundImage: `url(${feature.imgSrc})` }}

@@ -193,7 +193,7 @@ const PhuketPropertiesSection = () => {
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
-      <div className="relative z-20 container mx-auto py-10 lg:py-20">
+      <div className="relative z-20 container py-10 lg:py-20">
         <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-20 items-start">
           {/* Left Content */}
           <motion.div
@@ -207,10 +207,10 @@ const PhuketPropertiesSection = () => {
               variants={headingVariants}
               className="space-y-2 sm:space-y-4 text-center sm:text-left"
             >
-              <h1 className="text-white text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-normal">
+              <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
                 DISCOVER PRIME PROPERTIES
               </h1>
-              <h2 className="text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
+              <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
                 ACROSS PHUKET
               </h2>
             </motion.div>
@@ -218,7 +218,7 @@ const PhuketPropertiesSection = () => {
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-xs xs:text-sm sm:text-md lg:text-lg font-light w-full px-5 xl:px-0 leading-snug lg:max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-base lg:text-lg font-light w-full leading-snug lg:max-w-2xl"
             >
               Explore a Curated Selection of Luxury Residences . Whether
               you&#39;re seeking a beachfront retreat, an investment
@@ -238,7 +238,7 @@ const PhuketPropertiesSection = () => {
               <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
                 Phuket Explorer
               </h3>
-              <p className="text-[#FFFFFFE5] text-xs xs:text-sm sm:text-base lg:text-lg font-light border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0">
+              <p className="text-[#FFFFFFE5] text-base lg:text-lg font-light border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center">
                 Discover the beauty and development of Phuket Island
               </p>
 
@@ -251,7 +251,7 @@ const PhuketPropertiesSection = () => {
                     <button
                       key={categoryKey}
                       onClick={() => setActiveCategory(categoryKey)}
-                      className={`w-[70%] flex items-center space-x-4 p-2 xs:p-4 xl:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 transform hover:translate-x-2 group cursor-pointer ${
+                      className={`w-full lg:w-[70%] flex items-center space-x-4 p-2 xs:p-4 xl:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 transform hover:translate-x-2 group cursor-pointer ${
                         isActive
                           ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
                           : "bg-[#CDB04E33] text-[#CDB04E] hover:border-[#C3912F] hover:bg-opacity-30"
@@ -284,7 +284,7 @@ const PhuketPropertiesSection = () => {
                           />
                         </div>
                       </div>
-                      <span className="text-sm xs:text-md sm:text-xl lg:text-3xl font-medium font-josefin">
+                      <span className="text-base sm:text-xl lg:text-3xl font-medium font-josefin">
                         {explorerData[categoryKey].title.split(" ")[0]}
                       </span>
                     </button>
@@ -305,7 +305,7 @@ const PhuketPropertiesSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
-                  className="border-t-[0.5px] border-b-white w-[80%] flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel mx-auto lg:mx-0 "
+                  className="border-t-[0.5px] border-b-white w-full lg:w-[80%] flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel "
                 >
                   <Image
                     src={"/icons/map-pin.svg"}
@@ -329,7 +329,7 @@ const PhuketPropertiesSection = () => {
                       transition: { staggerChildren: 0.05 },
                     }}
                     exit={{ opacity: 0 }}
-                    className="border-b-[0.5px] border-b-white w-[80%] pb-4 mx-auto lg:mx-0"
+                    className="border-b-[0.5px] border-b-white w-full lg:w-[80%] pb-4 "
                   >
                     {currentData.locations.map((location) => (
                       <motion.div
@@ -338,9 +338,9 @@ const PhuketPropertiesSection = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                       >
-                        <div className="flex items-center w-[88%] my-2 rounded-4xl px-4 py-2 gap-4 border-[0.2px] border-[#CDB04E0D] bg-[#CDB04E0D]">
+                        <div className="flex items-center w-full lg:w-[88%] my-2 rounded-4xl px-4 py-2 gap-4 border-[0.2px] border-[#CDB04E0D] bg-[#CDB04E0D]">
                           <div className="h-2 w-2 sm:w-4 sm:h-4 rounded-full bg-[#C3912F] transition-transform duration-300 group-hover:scale-105"></div>
-                          <p className="text-white font-josefin text-xs xs:text-sm sm:text-lg lg:text-xl font-light transition-colors duration-300 group-hover:text-white">
+                          <p className="text-white font-josefin text-base sm:text-lg lg:text-xl font-light transition-colors duration-300 group-hover:text-white">
                             {location.name}
                           </p>
                         </div>

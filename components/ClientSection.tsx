@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative h-[600px] sm:h-auto lg:h-[840px] overflow-hidden">
+    <section className="relative h-[760px] sm:h-auto lg:h-[840px] overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}
@@ -95,7 +95,7 @@ const ClientTestimonialsSection = () => {
       />
 
       {/* Content */}
-      <div className="font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto py-10 lg:py-20">
+      <div className="container font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-4xl py-10  lg:py-20">
         <div className="">
           {/* Header */}
           <motion.div
@@ -118,7 +118,7 @@ const ClientTestimonialsSection = () => {
                 faq
               </span>
             </h2>
-            <p className="font-josefin font-light text-[#FFFFFFE5] text-xs xs:text-sm sm:text-base lg:text-lg leading-normal px-4 sm:px-0">
+            <p className="font-josefin font-light text-[#FFFFFFE5] text-base lg:text-lg leading-normal px-4 sm:px-0">
               Real feedback from the people who trust us with their goals.
             </p>
           </motion.div>
@@ -134,7 +134,7 @@ const ClientTestimonialsSection = () => {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.id}
-                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden m-2 lg:m-2 "
+                className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden "
                 variants={itemVariants}
                 whileHover={{
                   borderColor: "#e1c159",
@@ -149,7 +149,7 @@ const ClientTestimonialsSection = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-josefin text-[#C3912F] text-xs xs:text-sm sm:text-base lg:text-lg pr-4">
+                      <p className="font-josefin text-[#C3912F] test-base lg:text-lg pr-4">
                         {testimonial.preview}
                       </p>
                     </div>
@@ -179,7 +179,7 @@ const ClientTestimonialsSection = () => {
                       <div className="px-4 pb-2 lg:px-6 lg:pb-6 pt-2">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.p
-                          className="font-josefin text-[#FFFFFF] text-[10px] xs:text-xs sm:text-sm text-base leading-normal font-light"
+                          className="font-josefin text-[#FFFFFF] text-sm lg:text-base leading-normal font-light"
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.1, duration: 0.3 }}
