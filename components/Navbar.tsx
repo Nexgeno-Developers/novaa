@@ -71,7 +71,7 @@ export default function Navbar() {
                 Blog
               </Link>
             </nav>
-            <div className="flex items-center bg-[#00000033] h-full relative z-10">
+            <div className="flex items-center h-full relative z-10">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
