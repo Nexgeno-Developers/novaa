@@ -47,7 +47,7 @@ export default function Navbar() {
             />
           </div>
 
-          <div className="hidden lg:flex items-center space-x-10 h-full">
+          <div className="hidden lg:flex items-center space-x-10 h-full 2xl:pr-40">
             <nav className="flex items-center space-x-10 font-josefin text-lg font-normal">
               <Link href="/" className="hover:text-[#F0DE9C] transition-colors">
                 Home
