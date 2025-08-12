@@ -196,7 +196,7 @@ const GatewaySection = () => {
   const currentData = explorerData[activeCategory];
 
   return (
-    <section className="relative overflow-hidden max-w-[1536px] mx-auto">
+    <section className="relative overflow-hidden  mx-auto">
       <Image
         src="/gateway-images/background.png"
         alt="Phuket Properties Section"

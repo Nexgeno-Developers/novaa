@@ -21,9 +21,9 @@ export default function CuratedCollection() {
               CURATED <span className="text-black font-normal">COLLECTION</span>
             </h2>
             <p className="font-josefin text-xs xs:text-sm sm:text-base leading-normal font-light text-[#303030] max-w-2xl mx-auto text-center lg:text-left">
-              Discover our exclusive portfolio of luxury homes in
-              Thailand&apos;s most prestigious locations, each offering
-              exceptional returns and unparalleled lifestyle experiences
+             Every property we list is handpicked, backed by deep research, developer due diligence, and real investment potential. If it&apos;s here, it&apos;s a home worth considering.
+
+            
             </p>
           </div>
 

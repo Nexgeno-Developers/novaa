@@ -107,10 +107,20 @@ export default function WhyInvestSection() {
               variants={itemVariants}
               className="font-josefin text-black font-light text-base sm:text-lg text-center xl:text-left leading-tight"
             >
-              Thailand&#39;s real estate market is a haven for HNIs seeking
-              capital growth, passive income, and a luxurious lifestyle.
-            </motion.p>
+             With tourism revenue at ฿497.5 billion in 2024, making Phuket Thailand&#39;s top-earning province and a real estate market growing 5–7% per year, now is the time to explore high-potential opportunities in coastal investment.
+            
 
+
+            </motion.p>
+ <motion.p
+              variants={itemVariants}
+              className="font-josefin text-black font-light text-base sm:text-lg text-center xl:text-left leading-tight"
+            >
+    
+             Phuket offers more than beachfront views,it delivers solid returns, high rental demand, and long-term stability in one of Asia&#39;s most dynamic coastal economies.
+
+
+            </motion.p>
             {/* Investment Points */}
             <motion.div variants={containerVariants} className="lg:space-y-6">
               {investmentPoints.map((point, index) => (
