@@ -67,9 +67,13 @@ body {
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --breakpoint-xs: 24rem;
+  
   --font-cinzel: "Cinzel", "sans-serif";
   --font-josefin: "Josefin Sans", sans-serif;
+}
+
+.letter-spacing { 
+  letter-spacing: '0.5%';
 }
 
 @theme inline {

@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative h-[760px] sm:h-auto lg:h-[840px] overflow-hidden">
+    <section className="relative h-[760px] sm:h-auto lg:h-[800px] overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}

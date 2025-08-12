@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 interface WaterEffectImageProps {
   backgroundSrc: string;
@@ -12,7 +12,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
   backgroundSrc,
   logoSrc,
   alt = "water effect image",
-  className = ""
+  className = "",
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -32,11 +32,10 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
     waterDamper: 0.99,
     displacementDamper: 0.15,
     luminanceDamper: 0.8,
-    randomDroplets: 4,
   };
 
   const handleImageLoad = () => {
-    setLoadedCount(prev => {
+    setLoadedCount((prev) => {
       const newCount = prev + 1;
       if (newCount >= 2) {
         setImagesLoaded(true);
@@ -51,20 +50,34 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
     const logoImage = logoRef.current;
 
     if (!canvas || !backgroundImage || !logoImage) return;
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     if (!context) return;
 
     const width = canvas.width;
     const height = canvas.height;
 
     context.drawImage(backgroundImage, 0, 0, width, height);
-    context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    context.fillStyle = "rgba(0, 0, 0, 0.5)";
     context.fillRect(0, 0, width, height);
 
-    const logoSize = Math.min(width, height) * 0.4;
-    const logoX = (width - logoSize) / 2;
-    const logoY = (height - logoSize) / 2;
-    context.drawImage(logoImage, logoX, logoY, logoSize, logoSize);
+    // Calculate logo dimensions to maintain aspect ratio
+    const logoAspectRatio = logoImage.naturalWidth / logoImage.naturalHeight;
+    const maxLogoSize = Math.min(width, height) * 0.5;
+
+    let logoWidth, logoHeight;
+    if (logoAspectRatio > 1) {
+      // Logo is wider than it is tall
+      logoWidth = maxLogoSize;
+      logoHeight = maxLogoSize / logoAspectRatio;
+    } else {
+      // Logo is taller than it is wide or square
+      logoHeight = maxLogoSize;
+      logoWidth = maxLogoSize * logoAspectRatio;
+    }
+
+    const logoX = (width - logoWidth) / 2;
+    const logoY = (height - logoHeight) / 2;
+    context.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
 
     imageDataSourceRef.current = context.getImageData(0, 0, width, height);
     imageDataTargetRef.current = context.getImageData(0, 0, width, height);
@@ -127,9 +140,18 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
     if (!imageDataSource || !imageDataTarget) return;
 
     cache2[x][y] =
-      ((cache1[x - 1][y] + cache1[x + 1][y] + cache1[x][y + 1] + cache1[x][y - 1] +
-        cache1[x - 1][y - 1] + cache1[x + 1][y + 1] + cache1[x - 1][y + 1] + cache1[x + 1][y - 1] +
-        cache1[x - 2][y] + cache1[x + 2][y] + cache1[x][y + 2] + cache1[x][y - 2]) /
+      ((cache1[x - 1][y] +
+        cache1[x + 1][y] +
+        cache1[x][y + 1] +
+        cache1[x][y - 1] +
+        cache1[x - 1][y - 1] +
+        cache1[x + 1][y + 1] +
+        cache1[x - 1][y + 1] +
+        cache1[x + 1][y - 1] +
+        cache1[x - 2][y] +
+        cache1[x + 2][y] +
+        cache1[x][y + 2] +
+        cache1[x][y - 2]) /
         6 -
         cache2[x][y]) *
       config.waterDamper;
@@ -168,19 +190,19 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     if (!context) return;
 
     const width = canvas.width;
     const height = canvas.height;
 
-    if (config.randomDroplets) {
-      dropletCounterRef.current++;
-      if (dropletCounterRef.current >= config.randomDroplets) {
-        setDroplet(Math.random() * width, Math.random() * height, 127);
-        dropletCounterRef.current = 0;
-      }
-    }
+    // if (config.randomDroplets) {
+    //   dropletCounterRef.current++;
+    //   if (dropletCounterRef.current >= config.randomDroplets) {
+    //     setDroplet(Math.random() * width, Math.random() * height, 127);
+    //     dropletCounterRef.current = 0;
+    //   }
+    // }
 
     for (let x = 2; x < width + 2; x++) {
       for (let y = 2; y < height + 2; y++) {
@@ -197,10 +219,15 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
 
   const startAnimation = () => {
     if (animationRef.current) clearInterval(animationRef.current);
-    animationRef.current = setInterval(tick, Math.floor(1000 / config.framerate));
+    animationRef.current = setInterval(
+      tick,
+      Math.floor(1000 / config.framerate)
+    );
   };
 
-  const handleCanvasInteraction = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+  const handleCanvasInteraction = (
+    event: React.MouseEvent<HTMLCanvasElement, MouseEvent>
+  ) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -264,7 +291,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
         onMouseMove={handleCanvasInteraction}
         onClick={handleCanvasInteraction}
         onMouseEnter={handleMouseEnter}
-        style={{ display: imagesLoaded ? 'block' : 'none' }}
+        style={{ display: imagesLoaded ? "block" : "none" }}
       />
 
       {!imagesLoaded && (

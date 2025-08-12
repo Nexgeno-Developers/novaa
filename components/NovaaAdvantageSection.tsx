@@ -69,17 +69,17 @@ const NovaaAdvantageSection = () => {
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-8 left-8 md:top-0 md:left-0 lg:top-0 lg:left-10`;
+        return `${baseClasses} top-8 left-8 md:top-0 md:left-0 lg:top-0 lg:left-8`;
       case "top-right":
-        return `${baseClasses} top-8 right-8 md:top-0 md:-right-8 lg:top-0 lg:right-15`;
+        return `${baseClasses} top-8 right-8 md:top-0 md:-right-8 lg:top-0 lg:right-8`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 md:left-0 lg:left-[-10] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:left-0 lg:left-[-2rem] transform -translate-y-1/2`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 md:-right-10 lg:right-[1rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-10 lg:right-[-2rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 md:bottom-0 lg:bottom-0 lg:left-[3rem]`;
+        return `${baseClasses} bottom-8 left-8 md:bottom-0 lg:bottom-0 lg:left-[2rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:-right-10 lg:bottom-0 lg:right-[5rem]`;
+        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:-right-10 lg:bottom-0 lg:right-[2rem]`;
       default:
         return baseClasses;
     }
@@ -173,7 +173,7 @@ const NovaaAdvantageSection = () => {
         >
           {/* Central Circle */}
           <motion.div
-            className="relative mx-auto w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 lg:w-96 lg:h-96 xl:w-[450px] xl:h-[450px]"
+            className="relative mx-auto w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 lg:w-96 lg:h-96 xl:w-[428px] xl:h-[428px]"
             variants={centerVariants}
           >
             {/* Outer Ring Border */}
