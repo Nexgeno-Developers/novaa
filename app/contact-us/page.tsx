@@ -73,8 +73,7 @@ export default function ContactUs() {
                   Location
                 </h3>
                 <p className="text-[#01292B] font-light text-sm leading-[22px]">
-                  is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum ha s been the industry&apos;s standard dummy
+                 Company address - Bandra West , Mumbai 
                 </p>
               </div>
             </div>
