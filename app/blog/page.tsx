@@ -37,7 +37,7 @@ export default function Blog() {
                       {img.text}
                     </h3>
                     <div className="w-full sm:w-3/4 h-px bg-[#CDB04E] my-2" />
-                    <p className="text-[14px] sm:text-base leading-[130%] font-light ">
+                    <p className="description-text">
                       {img.subtext}
                     </p>
                   </div>
@@ -68,7 +68,7 @@ export default function Blog() {
                       {img.text}
                     </h3>
                     <div className="w-full sm:w-3/4 h-px bg-[#CDB04E] my-2" />
-                    <p className="text-[14px] sm:text-base font-light ">
+                    <p className="description-text ">
                       {img.subtext}
                     </p>
                   </div>

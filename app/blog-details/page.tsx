@@ -10,7 +10,7 @@ export default function Blogdetails() {
         <div className="container">
           <div className=" flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-12">
             {/* Left Main Image */}
-            <div className="w-full lg:w-[876px] h-[300px] rounded-[20px] overflow-hidden">
+            <div className="w-full h-[300px] sm:h-[522px] rounded-[20px] overflow-hidden">
               <img
                 src="/images/img1.webp"
                 alt="Main Blog"
@@ -73,7 +73,7 @@ export default function Blogdetails() {
                 Maximizing ROI with Phuket Holiday Homes
               </h2>
 
-              <p className="font-josefin text-base sm:text-lg text-[#072D2C] font-light leading-[130%] mb-4">
+              <p className="font-josefin text-[#072D2C] description-text mb-4">
                 is simply dummy text of the printing and typesetting industry.
                 Lorem Ipsum has been the industry standard dummy text ever since
                 the 1500s, when an unknown printer took a galley of type and
@@ -92,7 +92,7 @@ export default function Blogdetails() {
                 </strong>
               </p>
 
-              <p className="text-[16px] sm:text-lg text-[#072D2C] font-light leading-[130%] mb-4">
+              <p className=" text-[#072D2C]  description-text mb-4">
                 is simply dummy text of the printing and typesetting industry.
                 Lorem Ipsum has been the industry standard dummy text ever since
                 the 1500s, when an unknown printer took a galley of type and
@@ -104,7 +104,7 @@ export default function Blogdetails() {
                 </strong>
               </p>
 
-              <p className="text-[16px] sm:text-lg text-[#072D2C] font-light leading-[130%] mb-4">
+              <p className="text-[#072D2C]  description-text mb-4">
                 is simply dummy text of the printing and typesetting industry.
                 Lorem Ipsum has been the industry standard dummy text ever since
                 the 1500s, when an unknown printer took a galley of type and
@@ -116,7 +116,7 @@ export default function Blogdetails() {
                 </strong>
               </p>
 
-              <p className="text-[16px] sm:text-lg text-[#072D2C] font-light leading-[130%] mb-4">
+              <p className=" text-[#072D2C] description-text mb-4">
                 is simply dummy text of the printing and typesetting industry.
                 Lorem Ipsum has been the industry standard dummy text ever since
                 the 1500s, when an unknown printer took a galley of type and
