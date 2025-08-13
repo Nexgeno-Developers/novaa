@@ -26,11 +26,11 @@ export default function ContactUs() {
                   Phone Number
                 </h3>
                 <p className="text-[#01292B] font-light text-sm leading-[22px]">
-                  +91 123456789
+                  +91 9867724223
                 </p>
-                <p className="text-[#01292B] font-light text-sm leading-[22px]">
-                  +91 123456789
-                </p>
+                {/* <p className="text-[#01292B] font-light text-sm leading-[22px]">
+                  +91 9867724223
+                </p> */}
               </div>
             </div>
 
@@ -51,7 +51,7 @@ export default function ContactUs() {
                   Email ID
                 </h3>
                 <p className="text-[#01292B] font-light text-sm leading-[22px]">
-                  demo@gmail.com
+                  karan@novaaglobal.com
                 </p>
               </div>
             </div>
@@ -73,8 +73,7 @@ export default function ContactUs() {
                   Location
                 </h3>
                 <p className="text-[#01292B] font-light text-sm leading-[22px]">
-                  is simply dummy text of the printing and typesetting industry.
-                  Lorem Ipsum ha s been the industry&apos;s standard dummy
+                 Company address - Bandra West , Mumbai 
                 </p>
               </div>
             </div>

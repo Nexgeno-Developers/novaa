@@ -151,12 +151,12 @@ export default function Footer() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <span className="text-white text-base sm:text-4xl font-medium">
-                      +91 123456789
+                      +91 9867724223
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-white text-lg sm:text-[24px] font-medium">
-                      Demo@gmail.com
+                     karan@novaaglobal.com
                     </span>
                   </div>
                   <h3 className="text-[rgb(205,176,78)] text-base sm:text-xl font-semibold mt-2 sm:mt-8 sm:mb-4 mb-0">
