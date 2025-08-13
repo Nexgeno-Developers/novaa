@@ -16,31 +16,31 @@ const explorerData = {
       {
         name: "Patong Beach",
         image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Patong+Beach",
-        coords: { top: "33%", left: "15%" },
+        coords: { top: "35%", left: "20%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Karon Beach",
         image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Karon+Beach",
-        coords: { top: "50%", left: "15%" },
+        coords: { top: "55%", left: "30%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Kata Beach",
         image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Kata+Beach",
-        coords: { top: "55%", left: "45%" },
+        coords: { top: "60%", left: "50%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Kamala Beach",
         image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Kamala+Beach",
-        coords: { top: "35%", left: "35%" },
+        coords: { top: "35%", left: "40%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Surin Beach",
         image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Surin+Beach",
-        coords: { top: "60%", left: "20%" },
+        coords: { top: "70%", left: "25%" },
         icon: "/icons/map-pin.svg",
       },
     ],
@@ -52,31 +52,31 @@ const explorerData = {
       {
         name: "Origin Project",
         image: "https://placehold.co/200x150/01292B/FFFFFF?text=Origin",
-        coords: { top: "33%", left: "15%" },
+        coords: { top: "35%", left: "20%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Banyan Tree Hub",
         image: "https://placehold.co/200x150/01292B/FFFFFF?text=Banyan",
-        coords: { top: "50%", left: "15%" },
+        coords: { top: "35%", left: "45%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Laguna Complex",
         image: "https://placehold.co/200x150/01292B/FFFFFF?text=Laguna",
-        coords: { top: "55%", left: "45%" },
+        coords: { top: "60%", left: "50%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Central Mall",
         image: "https://placehold.co/200x150/01292B/FFFFFF?text=Central",
-        coords: { top: "35%", left: "35%" },
+        coords: { top: "70%", left: "25%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Island Villas",
         image: "https://placehold.co/200x150/01292B/FFFFFF?text=Villas",
-        coords: { top: "60%", left: "20%" },
+        coords: { top: "50%", left: "25%" },
         icon: "/icons/map-pin.svg",
       },
     ],
@@ -88,13 +88,13 @@ const explorerData = {
       {
         name: "Phuket Town Hall",
         image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Town+Hall",
-        coords: { top: "33%", left: "15%" },
+        coords: { top: "35%", left: "20%" },
         icon: "/icons/map-pin.svg",
       },
       {
         name: "Tourism Authority",
         image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Tourism",
-        coords: { top: "50%", left: "15%" },
+        coords: { top: "55%", left: "25%" },
         icon: "/icons/map-pin.svg",
       },
       {
@@ -384,7 +384,7 @@ const PhuketPropertiesSection = () => {
                     exit="hidden"
                   >
                     {/* The Pin Icon */}
-                    <div className="relative w-[15px] h-[15px] sm:w-[20px] sm:h-[20px]">
+                    <div className="relative w-[15px] h-[15px] sm:w-[30px] sm:h-[30px]">
                       <Image
                         src={location.icon}
                         alt="Map pin"

@@ -69,9 +69,9 @@ const NovaaAdvantageSection = () => {
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-8 left-8 md:top-0 md:left-0 lg:top-0 lg:left-8`;
+        return `${baseClasses} top-6 left-8 md:top-0 md:left-0 lg:top-[-4] lg:left-8`;
       case "top-right":
-        return `${baseClasses} top-8 right-8 md:top-0 md:-right-8 lg:top-0 lg:right-8`;
+        return `${baseClasses} top-6 right-8 md:top-0 md:-right-8 lg:top-[-4] lg:right-8`;
       case "left":
         return `${baseClasses} top-1/2 left-4 md:left-0 lg:left-[-2rem] transform -translate-y-1/2`;
       case "right":
@@ -204,14 +204,14 @@ const NovaaAdvantageSection = () => {
                 <div
                   className={`${getContentPosition(
                     advantage.position
-                  )} hidden  sm:flex gap-4 font-josefin max-w-[250px] lg:max-w-sm space-x-4`}
+                  )} hidden  sm:flex gap-4 font-josefin max-w-[250px] lg:max-w-sm xl:max-w-[400px] space-x-2`}
                 >
                   {/* Content */}
                   <div className="font-josefin space-y-2">
                     <h3 className="text-sm md:text-lg lg:text-xl font-normal text-background">
                       {advantage.title}
                     </h3>
-                    <p className="text-xs md:text-sm lg:text-base font-light text-[#303030] leading-relaxed">
+                    <p className=" text-[#303030] description-text">
                       {advantage.description}
                     </p>
                   </div>
@@ -258,7 +258,7 @@ const NovaaAdvantageSection = () => {
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
                         {advantage.title}
                       </h3>
-                      <p className=" font-josefin text-base sm:text-lg text-gray-600 leading-relaxed">
+                      <p className=" font-josefin description-text text-[#303030]">
                         {advantage.description}
                       </p>
                     </div>

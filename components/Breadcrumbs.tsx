@@ -42,7 +42,7 @@ export default function Breadcrumbs({ title }: BreadcrumbsProps) {
             alt="Arrow icon"
             width={16}
             height={16}
-            className="mx-3"
+            className="mx-3 mb-1"
           />
 
           <span className="text-[16px] font-semibold text-white">

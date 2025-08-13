@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 type UseCarouselOptions = {
   autoplay?: boolean;
@@ -120,12 +121,22 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-    className=""
+      className=""
     >
       <div className="relative flex justify-center items-center overflow-hidden">
         {/* Card with inverted radius */}
         <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
-          <StarRating rating={testimonial.rating} />
+          <div className="flex pb-2">
+            {Array.from({ length: testimonial.rating }).map((_, index) => (
+              <Image
+                key={index}
+                src="/icons/star.svg"
+                width={18}
+                height={18}
+                alt="Star Icon"
+              />
+            ))}
+          </div>
           <p className="text-background description-text mb-0 lg:mb-8 flex-grow">
             &quot;{testimonial.quote}&quot;
           </p>
