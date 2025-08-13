@@ -142,7 +142,7 @@ const ClientTestimonialsSection = () => {
                 }}
               >
                 <motion.button
-                  className="w-full p-4 lg:p-6 cursor-pointer text-left focus:outline-none"
+                  className="w-full p-4 lg:p-5 cursor-pointer text-left focus:outline-none"
                   onClick={() => toggleExpanded(index)}
                   whileHover={{ backgroundColor: "rgba(212, 175, 55, 0.05)" }}
                   transition={{ duration: 0.3 }}
@@ -176,7 +176,7 @@ const ClientTestimonialsSection = () => {
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <div className="px-4 pb-2 lg:px-6 lg:pb-6 pt-2">
+                      <div className="px-4 pb-2 lg:px-6 lg:pb-6">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.p
                           className="font-josefin text-[#FFFFFF] description-text"

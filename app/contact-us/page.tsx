@@ -25,7 +25,7 @@ export default function ContactUs() {
                 <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
                   Phone Number
                 </h3>
-                <p className="text-[#01292B] font-light text-sm leading-[22px]">
+                <p className="text-[#01292B] description-text leading-[22px]">
                   +91 9867724223
                 </p>
                 {/* <p className="text-[#01292B] font-light text-sm leading-[22px]">
@@ -50,7 +50,7 @@ export default function ContactUs() {
                 <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
                   Email ID
                 </h3>
-                <p className="text-[#01292B] font-light text-sm leading-[22px]">
+                <p className="text-[#01292B] description-text">
                   karan@novaaglobal.com
                 </p>
               </div>
@@ -69,10 +69,10 @@ export default function ContactUs() {
                 </div>
               </div>
               <div className="font-josefin max-w-[278px] text-center lg:text-left">
-                <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
+                <h3 className="text-[#01292B] pt-6 text-[20px] font-bold leading-[20px] mb-1">
                   Location
                 </h3>
-                <p className="text-[#01292B] font-light text-sm leading-[22px]">
+                <p className="text-[#01292B] description-text">
                  Company address - Bandra West , Mumbai 
                 </p>
               </div>
@@ -91,13 +91,13 @@ export default function ContactUs() {
               </div>
 
               {/* Form Section */}
-              <div className="w-full sm:w-[746px] h-auto sm:h-[666px] px-4 xs:px-6 sm:px-12 pt-10 sm:pt-20 pb-10 flex flex-col justify-center rounded-[20px] bg-[#072D2C]">
+              <div className="w-full sm:w-[746px] h-auto sm:h-[666px] px-4 xs:px-6 sm:px-12 pt-10 sm:pt-15 pb-10 flex flex-col justify-center rounded-[20px] bg-[#072D2C]">
                 <h2 className="font-cinzel text-white text-lg xs:text-xl sm:text-[40px] text-center sm:text-left font-bold sm:mb-3">
                   We Would Love To Hear <br />
                   <span className="text-[#CDB04E]">From You</span>
                 </h2>
 
-                <p className="text-center sm:text-left not-visited:text-white font-josefin text-xs xs:text-base sm:text-lg  font-light mb-6 max-w-full sm:max-w-[517px]">
+                <p className="text-center sm:text-left text-white font-josefin description-text mb-6 max-w-full sm:max-w-[517px]">
                   Feel free to reach out with any questions or feedback — we are
                   here to help!
                 </p>
@@ -182,7 +182,7 @@ export default function ContactUs() {
                   <div className="flex justify-center items-center sm:justify-start">
                     <button
                       type="submit"
-                      className="w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center"
+                      className="w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer"
                     >
                       Submit
                     </button>

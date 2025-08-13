@@ -92,7 +92,7 @@ const ModernAmenities = () => {
   };
 
   return (
-    <section className="relative bg-background py-10 sm:py-24 overflow-hidden">
+    <section className="relative bg-background py-10 sm:py-20 overflow-hidden">
       <div className="relative z-10 container">
         <motion.div
           initial="hidden"
@@ -101,12 +101,12 @@ const ModernAmenities = () => {
           variants={containerVariants}
         >
           {/* Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-[40px] font-normal text-white mb-6">
+          <motion.div variants={itemVariants} className="text-center mb-4 sm:mb-16">
+            <h2 className="font-cinzel text-2xl md:text-4xl lg:text-[50px] font-normal text-white mb-6">
               MODERN AMENITIES FOR A{" "}
               <span className="text-primary font-bold">BALANCED LIFESTYLE</span>
             </h2>
-            <p className="font-josefin text-white text-base lg:text-large font-light max-w-3xl mx-auto leading-relaxed">
+            <p className="font-josefin text-white max-w-3xl mx-auto description-text">
               Thoughtfully designed spaces that promote wellness, comfort, and
               everyday ease.
             </p>
@@ -129,7 +129,7 @@ const ModernAmenities = () => {
                     >
                       {/* Image */}
                       <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                         style={{ backgroundImage: `url(${amenity.image})` }}
                       />
 
@@ -152,7 +152,7 @@ const ModernAmenities = () => {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-center items-center space-x-4 mt-12">
+            <div className="flex justify-center items-center space-x-4 mt-6 sm:mt-12">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}

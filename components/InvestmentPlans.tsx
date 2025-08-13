@@ -67,7 +67,7 @@ const InvestmentPlans = () => {
   }
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
@@ -100,12 +100,12 @@ const InvestmentPlans = () => {
           {/* Header */}
           <motion.div 
             variants={itemVariants}
-            className="text-center mb-16"
+            className="text-center mb-4 sm:mb-16"
           >
-            <h2 className="font-cinzel text-2xl md:text-4xl lg:text-[40px] font-light text-white mb-6">
+            <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-light text-white mb-6">
               LIMITED-TIME <span className="text-primary font-bold">INVESTMENT PLANS</span>
             </h2>
-            <p className="font-josefin font-light text-white text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="font-josefin text-white max-w-2xl mx-auto description-text">
               Secure high returns with exclusive, time-sensitive opportunities.
             </p>
           </motion.div>
@@ -117,15 +117,15 @@ const InvestmentPlans = () => {
           >
             {/* Table Header */}
             <div className="bg-primary grid grid-cols-12 md:grid-cols-12">
-              <div className="col-span-4 md:col-span-3 border-r p-6 border-yellow-600/30 flex flex-col sm:flex-row justify-between sm:justify-center items-center space-x-3">
+              <div className="col-span-4 md:col-span-3 border-r p-2 sm:p-6 border-yellow-600/30 flex flex-col sm:flex-row justify-center sm:justify-center items-center space-x-3">
                 <Image src={'/images/investment-plans/money.png'} width={20} height={20} alt="money icon" />
                 <h3 className="text-background text-center font-medium text-sm sm:text-2xl">Payment Plan</h3>
               </div>
-              <div className="col-span-4 md:col-span-6 p-6 border-r border-yellow-600/30 flex flex-col sm:flex-row justify-between sm:justify-center items-center space-x-3">
+              <div className="col-span-4 md:col-span-6 p-2 sm:p-6 border-r border-yellow-600/30 flex flex-col sm:flex-row justify-center sm:justify-center items-center space-x-3">
                 <Image src={'/images/investment-plans/return.png'} width={20} height={20} alt="money icon" />
                 <h3 className="text-background text-center font-medium text-sm sm:text-2xl">Guaranteed Return (Per Annum)</h3>
               </div>
-              <div className="col-span-4 md:col-span-3 p-6 flex flex-col sm:flex-row justify-between sm:justify-center items-center text-center space-x-3">
+              <div className="col-span-4 md:col-span-3 p-2 sm:p-6 flex flex-col sm:flex-row justify-center sm:justify-center items-center text-center space-x-3">
                 <Image src={'/images/investment-plans/calendar.png'} width={20} height={20} alt="money icon" />
                 <h3 className="text-background text-center font-medium text-sm sm:text-2xl">Return Start Date</h3>
               </div>
@@ -148,9 +148,9 @@ const InvestmentPlans = () => {
                 }`}
               >
                 {/* Payment Plan */}
-                <div className="col-span-4 md:col-span-3 p-6 border-r border-gray-200 flex justify-center items-center">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 rounded-full bg-background text-white flex items-center justify-center text-sm font-semibold">
+                <div className="col-span-4 md:col-span-3 p-2 sm:p-6 border-r border-gray-200 flex justify-center items-center">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
+                    <div className="w-8 h-8 rounded-full bg-background text-white flex items-center justify-center text-[10px] sm:text-sm font-semibold">
                       {String(plan.id).padStart(2, '0')}
                     </div>
                     <span className="text-background font-normal text-sm sm:text-[22px]">
@@ -160,14 +160,14 @@ const InvestmentPlans = () => {
                 </div>
 
                 {/* Guaranteed Return */}
-                <div className="col-span-4 md:col-span-6 p-6 border-r border-gray-200 flex justify-center items-center">
+                <div className="col-span-4 md:col-span-6 p-2 sm:p-6 border-r border-gray-200 flex justify-center items-center">
                   <span className="text-2xl md:text-[40px] font-normal text-background">
                     {plan.guaranteedReturn}
                   </span>
                 </div>
 
                 {/* Return Start Date */}
-                <div className="col-span-4 md:col-span-3 p-6 flex justify-center items-center">
+                <div className="col-span-4 md:col-span-3 p-2 sm:p-6flex justify-center items-center">
                   <span className="text-[#01292BCC] font-medium text-sm sm:text-base leading-relaxed">
                     {plan.returnStartDate}
                   </span>

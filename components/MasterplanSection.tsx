@@ -50,7 +50,7 @@ const MasterplanSection = () => {
 
   return (
     <section
-      className="relative w-full py-10 sm:py-24"
+      className="relative w-full sm:py-20"
       style={{ backgroundColor: "#01292B" }}
     >
       {/* Content Container */}
@@ -63,15 +63,15 @@ const MasterplanSection = () => {
           {/* Header */}
           <motion.div
             variants={itemVariants}
-            className="text-center mb-16 px-6"
+            className="text-center mb-4 sm:mb-16 px-6"
           >
-            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-[40px] font-normal text-white mb-4">
+            <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-4 px-4">
               A MASTERPLAN THAT BLENDS NATURE,{" "}
               <span className="text-primary font-bold">
                 WELLNESS &amp; HOSPITALITY
               </span>
             </h2>
-            <p className="font-josefin font-light text-white text-sm md:text-base max-w-4xl mx-auto leading-relaxed">
+            <p className="font-josefin text-white max-w-4xl mx-auto description-text">
               At Layan Verde, architecture and nature blend seamlessly. The
               master plan features luxury residences, hotel-managed units,
               lifestyle amenities, and lush green spaces — all designed for a

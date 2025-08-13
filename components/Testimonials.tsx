@@ -126,7 +126,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
         {/* Card with inverted radius */}
         <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
           <StarRating rating={testimonial.rating} />
-          <p className="text-[#303030CC] font-normal text-sm sm:text-base leading-snug mb-0 lg:mb-8 flex-grow">
+          <p className="text-background description-text mb-0 lg:mb-8 flex-grow">
             &quot;{testimonial.quote}&quot;
           </p>
           <p className="font-light">Demo</p>

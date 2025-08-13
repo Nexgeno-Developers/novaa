@@ -232,7 +232,7 @@ const GatewaySection = () => {
                 variants={headingVariants}
                 className="space-y-2 sm:space-y-4 text-center lg:text-left"
               >
-                <h1 className="text-white text-xl xs:text-2xl lg:text-3xl xl:text-[50px] font-normal uppercase leading-tight">
+                <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal uppercase">
                   A place to come home to
                   <br />
                   <span className="text-white">and a location that</span>
@@ -246,7 +246,7 @@ const GatewaySection = () => {
               {/* Description */}
               <motion.p
                 variants={itemVariants}
-                className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-xs xs:text-sm sm:text-md lg:text-lg font-light w-full leading-snug lg:max-w-2xl"
+                className="font-josefin text-[#FFFFFFE5] text-center sm:text-left description-text w-full lg:max-w-2xl"
               >
                 Set between Layan and Bangtao, this address offers more than
                 scenery. It brings you close to Phuket&apos;s most lived-in
@@ -259,10 +259,10 @@ const GatewaySection = () => {
                 variants={itemVariants}
                 className="space-y-6 font-josefin text-center lg:text-left"
               >
-                <h3 className="text-white font-medium text-md sm:text-xl text-4xl">
+                <h3 className="text-white font-medium text-lg lg:text-4xl">
                   Your Gateway to Paradise
                 </h3>
-                <p className="text-[#FFFFFFE5] text-lg font-light border-b-[0.5px] border-b-white w-full sm:w-[80%] pb-4 mx-auto lg:mx-0">
+                <p className="text-[#FFFFFFE5]  border-b-[0.5px] description-text border-b-white w-full sm:w-[80%] pb-4 mx-auto lg:mx-0">
                   Perfectly positioned where tropical elegance meets modern
                   convenience, discover a world of luxury at your doorstep.
                 </p>
@@ -276,7 +276,7 @@ const GatewaySection = () => {
                       <button
                         key={categoryKey}
                         onClick={() => setActiveCategory(categoryKey)}
-                        className={`w-full sm:w-[60%] flex items-center space-x-4 p-4 rounded-[20px] border border-[#CDB04E1A] transition-all duration-300 group cursor-pointer bg-[#CDB04E1A] text-[#CDB04E] hover:border-[#C3912F] ${
+                        className={`w-full sm:w-[62%] flex items-center space-x-4 p-3 rounded-[20px] border border-[#CDB04E1A] transition-all duration-300 group cursor-pointer bg-[#CDB04E1A] text-white hover:border-[#C3912F] ${
                           isActive
                             ? "bg-gradient-to-tr from-[#C3912F] to-[#F5E7A8] text-background"
                             : ""
@@ -284,12 +284,12 @@ const GatewaySection = () => {
                       >
                         <div className="flex items-center justify-center">
                           <div
-                            className={`flex items-center justify-center w-[50px] h-[50px] rounded-2xl bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background`}
+                            className={`flex items-center justify-center w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-2xl bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background`}
                           >
                             <Image
                               src={explorerData[categoryKey].icon}
-                              width={20}
-                              height={20}
+                              width={30}
+                              height={30}
                               alt=""
                             />
                           </div>
@@ -298,7 +298,7 @@ const GatewaySection = () => {
                           <span className="text-sm sm:text-xl font-normal font-josefin text-left">
                             {explorerData[categoryKey].title}
                           </span>
-                          <p className="text-xs sm:text-lg font-light text-[#FFFFFFE5] font-josefin">
+                          <p className="text-xs sm:text-lg font-light text-[#FFFFFFE5] font-josefin text-center sm:text-left">
                             {explorerData[categoryKey].description}
                           </p>
                         </div>

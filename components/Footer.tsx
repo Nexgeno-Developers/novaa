@@ -79,7 +79,7 @@ export default function Footer() {
 
           {/* Footer Content */}
           <div className=" container bg-[#01292BCC] rounded-3xl ">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8 sm:p-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-6 sm:p-12">
               {/* About Us */}
               <div className="lg:col-span-1">
                 <h3 className="text-[#CDB04E] text-base sm:text-lg font-bold mb-2 sm:mb-6">

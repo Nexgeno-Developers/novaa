@@ -100,7 +100,7 @@ const AnimatedTestimonials = ({
                   <h1 className="py-1 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
                     {testimonial.content}
                   </h1>
-                  <p className="relative font-josefin pt-2 sm:pt-3 description-text text-[#303030]">
+                  <p className="relative font-josefin pt-2 sm:pt-3 text-[10px] xs:text-sm sm:text-base text-[#303030]">
                     {testimonial.quote}
                     <span className="absolute top-0 left-0 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
                   </p>

@@ -62,16 +62,16 @@ const properties = [
 
 export default function ProjectHighlights() {
   return (
-    <section className="bg-background text-white py-10 sm:py-16">
+    <section className="bg-background text-white sm:py-16">
       <div className="container">
-        <div className="font-cinzel text-center space-y-4">
-          <h2 className="text-2xl sm:text-3xl md:text-[40px] font-normal uppercase text-center leading-relaxed">
+        <div className="font-cinzel text-center space-y-2  sm:space-y-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal uppercase text-center">
             Discover Tranquility at{" "}
             <span className="text-primary font-bold">
               Layan Verde, <div>Phuket</div>
             </span>
           </h2>
-          <p className="font-josefin font-light text-sm md:text-base lowercase text-white leading-6 text-center ">
+          <p className="font-josefin  lowercase text-white description-text text-center ">
             Layan Verde is a luxury condominium in Phuket, set in lush tropical
             greenery. Managed by top hospitality brands, it blends five-star
             living with natural serenity. Each unit features curated landscapes,
@@ -79,7 +79,7 @@ export default function ProjectHighlights() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mt-6 sm:mt-12">
           {properties.map((property) => (
             <HoverImageCard key={property.id} {...property} />
           ))}
@@ -106,7 +106,7 @@ const HoverImageCard = ({
       animate="rest"
     >
       <motion.div
-        className="w-full h-64 sm:h-72 md:h-80 bg-gradient-to-b from-[#00000000] to-[#000000];
+        className="w-full h-50 sm:h-72 md:h-80 bg-gradient-to-b from-[#00000000] to-[#000000];
 "
         variants={{
           rest: { opacity: 1 },

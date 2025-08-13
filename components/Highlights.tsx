@@ -40,7 +40,7 @@ const Highlights = () => {
   };
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
@@ -62,7 +62,7 @@ const Highlights = () => {
       <div className="absolute inset-x-0 bottom-0 w-full h-1/4 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
 
       {/* Content Container */}
-      <div className="relative z-10 container py:10 sm:py-24 min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 container py-10 sm:py-20 min-h-screen flex flex-col justify-center">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -71,11 +71,11 @@ const Highlights = () => {
           className=""
         >
           {/* Header */}
-          <motion.div variants={itemVariants} className="mb-16">
-            <h2 className="font-cinzel text-3xl md:text-4xl lg:text-[40px] font-normal text-white mb-6 text-center sm:text-left">
+          <motion.div variants={itemVariants} className=" mb-2 sm:mb-16">
+            <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-6 text-center sm:text-left">
               PROJECT <span className="text-primary font-bold">HIGHLIGHTS</span>
             </h2>
-            <p className="font-josefin text-white font-light text-sm md:text-base max-w-2xl leading-relaxed text-center sm:text-left">
+            <p className="font-josefin text-white description-text max-w-2xl text-center sm:text-left">
               Is simply dummy text of the printing and typesetting industry.
               Lorem Ipsum has been the industry&apos;s standard dummy text ever since
               the 1500s.
@@ -85,7 +85,7 @@ const Highlights = () => {
           {/* Highlights Grid */}
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8 lg:gap-12"
           >
             {highlights.map((highlight, index) => (
               <motion.div
