@@ -76,7 +76,7 @@ const ContactForm = () => {
       <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
 
       {/* Content Container */}
-      <div className="relative inset-0 z-10 container my-18 sm:my-34 py-15 sm:py-24 flex flex-col justify-center bg-[#01292BE5] backdrop-blur-xs h-[640px] rounded-[30px]">
+      <div className="relative inset-0 z-10 container my-18 sm:my-30 py-15 sm:py-24 flex flex-col justify-center bg-[#01292BE5] backdrop-blur-xs h-[640px] rounded-[30px]">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -85,7 +85,7 @@ const ContactForm = () => {
         >
           {/* Header */}
           <motion.div variants={itemVariants} className="text-center my-6 sm:my-12">
-            <h2 className="max-w-4xl mx-auto font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white pt-6 mb-2 sm:my-6">
+            <h2 className="max-w-4xl mx-auto font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white pt-6 mb-2 sm:mt-10">
               OWN A PIECE OF{" "}
               <span className="text-primary font-bold">PARADISE IN PHUKET</span>
             </h2>
