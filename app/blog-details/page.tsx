@@ -132,10 +132,7 @@ export default function Blogdetails() {
               </motion.div>
 
               {/* Custom Content Replacement */}
-              <motion.div
-                className="w-full py-5"
-                variants={itemVariants}
-              >
+              <motion.div className="w-full py-5" variants={itemVariants}>
                 <div className="max-w-[841px]">
                   <h2 className="font-cinzel text-2xl text-center sm:text-left sm:text-[35px] leading-[100%] text-[#01292B] font-bold mb-6">
                     {currentBlog.title}
@@ -143,41 +140,62 @@ export default function Blogdetails() {
 
                   <p className="font-josefin text-[#303030] text-center sm:text-left description-text mb-4">
                     is simply dummy text of the printing and typesetting
-                    industry. Lorem Ipsum has been the industry&apos;s standard dummy
-                    text ever since the 1500s, when an unknown printer took a
-                    galley of type and scrambled it to make a type specimen
-                    book. It has survived not only five centuries, but also the
-                    leap into is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry&apos;s
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book. It has survived not only five centuries,
-                    but also the leap into
+                    industry. Lorem Ipsum has been the industry&apos;s standard
+                    dummy text ever since the 1500s, when an unknown printer
+                    took a galley of type and scrambled it to make a type
+                    specimen book. It has survived not only five centuries, but
+                    also the leap into is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the
+                    industry&apos;s standard dummy text ever since the 1500s,
+                    when an unknown printer took a galley of type and scrambled
+                    it to make a type specimen book. It has survived not only
+                    five centuries, but also the leap into
                   </p>
 
                   <p className="text-[16px] text-center sm:text-left sm:text-lg text-[#303030] font-semibold leading-[130%] mb-4">
-                      is simply dummy text of the printing and typesetting
-                      industry.
+                    is simply dummy text of the printing and typesetting
+                    industry.
                   </p>
 
                   <p className="text-[#303030] text-center sm:text-left description-text mb-4">
-                  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived 
+                    is simply dummy text of the printing and typesetting
+                    industry. Lorem Ipsum has been the industry&apos;s standard
+                    dummy text ever since the 1500s, when an unknown printer
+                    took a galley of type and scrambled it to make a type
+                    specimen book. It has survived
                   </p>
 
                   <p className="text-[16px] text-center sm:text-left sm:text-lg text-[#303030] font-normal leading-[130%] mb-4">
-                    <strong>
-                    is simply dummy text of the printing and typesetting industry. 
-                    </strong>
+                    is simply dummy text of the printing and typesetting
+                    industry.
                   </p>
 
                   <p className="text-[#303030] text-center sm:text-left description-text mb-4">
-                  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived 
+                    is simply dummy text of the printing and typesetting
+                    industry. Lorem Ipsum has been the industry&apos;s standard
+                    dummy text ever since the 1500s, when an unknown printer
+                    took a galley of type and scrambled it to make a type
+                    specimen book. It has survived
                   </p>
                   <p className="text-[#303030] text-center sm:text-left description-text mb-4">
-                  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into 
+                    is simply dummy text of the printing and typesetting
+                    industry. Lorem Ipsum has been the industry&apos;s standard
+                    dummy text ever since the 1500s, when an unknown printer
+                    took a galley of type and scrambled it to make a type
+                    specimen book. It has survived not only five centuries, but
+                    also the leap into is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the
+                    industry&apos;s standard dummy text ever since the 1500s,
+                    when an unknown printer took a galley of type and scrambled
+                    it to make a type specimen book. It has survived not only
+                    five centuries, but also the leap into
                   </p>
                   <p className="text-[#303030] text-center sm:text-left description-text mb-4">
-                  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived 
+                    is simply dummy text of the printing and typesetting
+                    industry. Lorem Ipsum has been the industry&apos;s standard
+                    dummy text ever since the 1500s, when an unknown printer
+                    took a galley of type and scrambled it to make a type
+                    specimen book. It has survived
                   </p>
                 </div>
               </motion.div>
@@ -209,13 +227,14 @@ export default function Blogdetails() {
                     {recentBlogs.map((blog) => (
                       <motion.article
                         key={blog.id}
-                        className={`group cursor-pointer p-2 rounded-lg transition-all duration-300 ${
-                          currentBlogId === blog.id
-                            ? "bg-[#CDB04E]/10 border border-[#CDB04E]/30"
-                            : ""
-                        }`}
+                        className={`group cursor-pointer p-2 rounded-lg transition-all duration-300`}
+                        // ${
+                        //     currentBlogId === blog.id
+                        //     ? "bg-[#CDB04E]/10 border border-[#CDB04E]/30"
+                        //     : ""
+                        // }
                         variants={itemVariants}
-                        whileHover={{ x: 8 }}
+                        whileHover={{ x: 6 }}
                         onClick={() => handleBlogClick(blog.id)}
                       >
                         <div className="flex items-start gap-4">
