@@ -257,7 +257,7 @@ const GatewaySection = () => {
               {/* Phuket Explorer Section */}
               <motion.div
                 variants={itemVariants}
-                className="space-y-6 font-josefin text-center lg:text-left"
+                className="space-y-2 sm:space-y-6 font-josefin text-center lg:text-left"
               >
                 <h3 className="text-white font-medium text-lg lg:text-4xl">
                   Your Gateway to Paradise
@@ -298,7 +298,7 @@ const GatewaySection = () => {
                           <span className="text-sm sm:text-xl font-normal font-josefin text-left">
                             {explorerData[categoryKey].title}
                           </span>
-                          <p className="text-xs sm:text-lg font-light text-[#FFFFFFE5] font-josefin text-center sm:text-left">
+                          <p className="text-xs sm:text-lg font-light text-[#FFFFFFE5] font-josefin text-left">
                             {explorerData[categoryKey].description}
                           </p>
                         </div>
