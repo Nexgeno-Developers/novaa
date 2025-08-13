@@ -129,7 +129,7 @@ const containerVariants: Variants = {
   },
 };
 
-const itemVariants : Variants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
     opacity: 1,
@@ -194,6 +194,18 @@ const PhuketPropertiesSection = () => {
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
       <div className="relative z-20 container py-10 lg:py-20">
+        {/* Main Heading */}
+        <motion.div
+          variants={headingVariants}
+          className="font-cinzel  max-w-3xl space-y-2 sm:space-y-4 text-center sm:text-left"
+        >
+          <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
+            DISCOVER PRIME PROPERTIES
+          </h1>
+          <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent pb-5">
+            ACROSS PHUKET
+          </h2>
+        </motion.div>
         <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-20 items-start">
           {/* Left Content */}
           <motion.div
@@ -202,23 +214,10 @@ const PhuketPropertiesSection = () => {
             initial="hidden"
             animate="visible"
           >
-            {/* Main Heading */}
-            <motion.div
-              variants={headingVariants}
-              className="space-y-2 sm:space-y-4 text-center sm:text-left"
-            >
-              <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
-                DISCOVER PRIME PROPERTIES
-              </h1>
-              <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
-                ACROSS PHUKET
-              </h2>
-            </motion.div>
-
             {/* Description */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left text-base lg:text-lg font-light w-full leading-snug lg:max-w-2xl"
+              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left description-text w-full  lg:max-w-2xl"
             >
               Explore a Curated Selection of Luxury Residences . Whether
               you&#39;re seeking a beachfront retreat, an investment
@@ -233,12 +232,12 @@ const PhuketPropertiesSection = () => {
               initial="hidden"
               animate={controls}
               variants={itemVariants}
-              className="space-y-2 lg:space-y-6 font-josefin text-center lg:text-left"
+              className="space-y-2 lg:space-y-4 font-josefin text-center lg:text-left"
             >
               <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
                 Phuket Explorer
               </h3>
-              <p className="text-[#FFFFFFE5] text-base lg:text-lg font-light border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center">
+              <p className="text-[#FFFFFFE5] description-text border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center sm:text-left">
                 Discover the beauty and development of Phuket Island
               </p>
 

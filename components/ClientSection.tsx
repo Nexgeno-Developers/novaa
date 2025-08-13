@@ -149,7 +149,7 @@ const ClientTestimonialsSection = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-josefin text-[#C3912F] test-base lg:text-lg pr-4">
+                      <p className="font-josefin text-[#C3912F] test-lg lg:text-xl pr-4">
                         {testimonial.preview}
                       </p>
                     </div>
@@ -179,7 +179,7 @@ const ClientTestimonialsSection = () => {
                       <div className="px-4 pb-2 lg:px-6 lg:pb-6 pt-2">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.p
-                          className="font-josefin text-[#FFFFFF] text-sm lg:text-base leading-normal font-light"
+                          className="font-josefin text-[#FFFFFF] description-text"
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.1, duration: 0.3 }}

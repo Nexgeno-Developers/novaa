@@ -157,7 +157,7 @@ const NovaaAdvantageSection = () => {
               ADVANTAGE
             </span>
           </h2>
-          <p className="font-josefin text-[#303030] text-base lg:text-lg leading-relaxed text-center">
+          <p className="font-josefin text-[#303030] description-text  text-center">
             At Novaa, we redefine the investment experience by offering
             end-to-end solutions tailored for HNIs
           </p>

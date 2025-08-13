@@ -105,7 +105,7 @@ export default function WhyInvestSection() {
             {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-black description-text text-center xl:text-left "
+              className="font-josefin text-[#303030] description-text text-center xl:text-left "
             >
               With tourism revenue at 497.5 billion in 2024, making Phuket
               Thailand&#39;s top-earning province and a real estate market
@@ -114,7 +114,7 @@ export default function WhyInvestSection() {
             </motion.p>
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-black description-text text-center xl:text-left "
+              className="font-josefin text-[#303030] description-text text-center xl:text-left "
             >
               Phuket offers more than beachfront views,it delivers solid
               returns, high rental demand, and long-term stability in one of

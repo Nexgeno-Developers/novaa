@@ -97,12 +97,12 @@ const AnimatedTestimonials = ({
 
                 {/* Content below image */}
                 <div className="px-2 sm:px-4 pb-2 sm:pb-4">
-                  <h1 className="py-2 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
+                  <h1 className="py-1 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
                     {testimonial.content}
                   </h1>
-                  <p className="relative font-josefin pt-2 sm:pt-4 text-[10px] xs:text-xs sm:text-sm leading-normal text-[#303030] font-light">
+                  <p className="relative font-josefin pt-2 sm:pt-3 description-text text-[#303030]">
                     {testimonial.quote}
-                    <span className="absolute top-0 left-5 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
+                    <span className="absolute top-0 left-0 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
                   </p>
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function InvestorInsightsSection() {
   ];
 
   return (
-    <div className="bg-background relative overflow-hidden py-10 lg:py-20 min-h-screen">
+    <div className="bg-background relative overflow-hidden py-10 lg:py-20">
       {/* Background overlay - Made more visible for debugging */}
       <div className="absolute inset-0 sm:top-[15%] sm:bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-0" />
 
@@ -181,7 +181,7 @@ export default function InvestorInsightsSection() {
               >
                 Insights for the{" "}
                 <h1
-                  className=" font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-bold mb-0 sm:mb-8 bg-clip-text text-transparent leading-tight "
+                  className=" font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-bold mb-0 sm:mb-4 bg-clip-text text-transparent leading-tight "
                   style={{
                     background:
                       "linear-gradient(99.93deg, #C3912F 6.79%, #F5E7A8 31.89%, #C3912F 59.78%)",
@@ -197,7 +197,7 @@ export default function InvestorInsightsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="font-josefin text-base lg:text-lg  text-[#FFFFFFE5] font-light leading-tight text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
+                className="font-josefin description-text  text-[#FFFFFFE5] text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
               >
                 Stay informed with trending stories, industry updates, and
                 thoughtful articles curated just for you.

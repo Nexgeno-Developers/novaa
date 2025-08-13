@@ -60,7 +60,7 @@ export default function Footer() {
               PHUKET AWAITS
             </h2>
             <p
-              className="font-josefin font-light text-base lg:text-lg mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto"
+              className="font-josefin description-text mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto"
             >
               Live the island life you&apos;ve always imagined - serene,
               luxurious, and yours to own.
@@ -85,7 +85,7 @@ export default function Footer() {
                 <h3 className="text-[#CDB04E] text-base sm:text-lg font-bold mb-2 sm:mb-6">
                   About Us
                 </h3>
-                <p className="text-[#FFFFFF] text-base sm:text-lg font-normal leading-loose">
+                <p className="text-[#FFFFFF] description-text">
                   is simply dummy text of the printing and typesetting industry.
                   Lorem Ipsum has been the industry&apos;s standard dummy text
                   ever since the 1500s,
@@ -180,8 +180,8 @@ export default function Footer() {
                     >
                       <Image
                         src={"/footer/facebook.svg"}
-                        width={20}
-                        height={20}
+                        width={15}
+                        height={15}
                         alt="Facebook Logo"
                       />
                     </Link>

@@ -120,13 +120,13 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className=""
+    className=""
     >
       <div className="relative flex justify-center items-center overflow-hidden">
         {/* Card with inverted radius */}
         <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
           <StarRating rating={testimonial.rating} />
-          <p className="text-[#303030CC] text-base lg:text-lg leading-relaxed mb-0 lg:mb-8 flex-grow">
+          <p className="text-[#303030CC] font-normal text-sm sm:text-base leading-snug mb-0 lg:mb-8 flex-grow">
             &quot;{testimonial.quote}&quot;
           </p>
           <p className="font-light">Demo</p>
@@ -177,7 +177,7 @@ export default function EliteClientsTestimonials() {
             What Our{" "}
             <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
           </h2>
-          <p className="font-josefin text-[#303030] text-base lg:text-lg font-light">
+          <p className="font-josefin text-[#303030] description-text">
             Real stories from real people who trust us
           </p>
         </motion.div>
