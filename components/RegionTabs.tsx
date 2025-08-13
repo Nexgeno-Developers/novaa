@@ -26,13 +26,13 @@ export default function RegionTabs() {
             onClick={() => dispatch(setRegion(region))}
             disabled={isDisabled}
             variant="ghost"
-            className={`font-josefin cursor-pointer text-base sm:text-[22px] relative rounded-none px-5 sm:px-10 py-6 sm:py-8 font-medium transition border-y-2
+            className={`font-josefin cursor-pointer text-base sm:text-[22px] relative rounded-none px-5 sm:px-10 py-6 sm:py-8 font-medium  border-y-2 transition-colors duration-300
               ${
                 isActive
-                  ? "  border-background  text-[#01292B]"
+                  ? "  border-background  text-[#01292B] "
                   : " border-[#01292B80] border-y-[1.2px]  text-[#01292BCC]"
               }
-              hover:text-black`}
+              hover:text-[#D4AF37]`}
           >
             <span className="gap-2">
               {region}

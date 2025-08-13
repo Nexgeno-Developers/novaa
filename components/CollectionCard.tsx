@@ -164,7 +164,7 @@ export default function CollectionCard({ isLocationVisible }: CardProps) {
                   <div className="w-1/2 bg-primary"></div>
                   <div className="w-1/2 bg-[#FFFFFF80]"></div>
                 </div>
-                <p className="text-sm xl:text-base text-[#FFFFFF] pt-3 leading-normal pb-4 xl:pb-0">
+                <p className="description-text text-[#FFFFFF] pt-3 pb-4 xl:pb-2">
                   {property.description}
                 </p>
               </div>
@@ -172,7 +172,7 @@ export default function CollectionCard({ isLocationVisible }: CardProps) {
 
             {/* Optional badge */}
             {property.badge && (
-              <div className="absolute font-josefin top-12 right-0 bg-[#D4AF37] text-background px-4 py-1 rounded-l-[20px] text-lg font-medium z-20">
+              <div className="absolute font-josefin top-15 right-0 bg-[#D4AF37] text-background pl-5 pr-4 pt-2 pb-1 rounded-l-[20px] text-lg font-medium z-20">
                 {property.badge}
               </div>
             )}

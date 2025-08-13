@@ -82,7 +82,7 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="text-center mb-16 lg:mb-24"
         >
-          <h1 className="font-josefin text-3xl xs:text-4xl sm:text-6xl lg:text-[80px] font-normal text-white mb-5">
+          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white mb-5">
             About
           </h1>
           <h2 className="sm:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-7xl xs:text-8xl">
@@ -102,10 +102,7 @@ export default function AboutPage() {
               className="flex flex-col sm:flex-row justify-between items-center bg-transparent  rounded-lg"
             >
               <div className="">
-                <h3 className="text-white text-center sm:text-left text-2xl xs:text-4xl sm:text-2xl font-semibold mb-2">
-                  About
-                </h3>
-                <p className="max-w-2xl text-[#FFFFFFCC] text-center sm:text-left text-base sm:text-lg leading-relaxed mb-5 sm:mb-8">
+                <p className="max-w-2xl text-[#FFFFFFCC] text-center sm:text-left description-text mb-5 sm:mb-8">
                   is simply dummy text of the printing and typesetting industry.
                   Lorem Ipsum has been the industry&apos;s standard dummy text
                   ever since the 1500s, when an unknown printer took a galley of

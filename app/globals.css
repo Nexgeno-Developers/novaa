@@ -12,6 +12,19 @@ body {
   margin: 0 auto;
 }
 
+.description-text {
+  font-size: 1rem; /* text-base */
+  line-height: 24px; /* leading-[24px] */
+  font-weight: 300; /* font-light */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+  .description-text {
+    font-size: 1.125rem; /* text-lg */
+    line-height: 28px; /* leading-[28px] */
+  }
+}
+
 @utility container {
   padding-inline: 1rem;
   margin-inline: auto;

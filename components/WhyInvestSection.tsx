@@ -87,12 +87,12 @@ export default function WhyInvestSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="space-y-4 sm:space-y-8"
+            className="space-y-4 sm:space-y-6"
           >
             {/* Header */}
             <motion.div
               variants={itemVariants}
-              className=" md:space-y-3 text-center xl:text-left"
+              className=" md:space-y-2 text-center xl:text-left"
             >
               <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#303030]">
                 Why Invest in
@@ -105,21 +105,20 @@ export default function WhyInvestSection() {
             {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="font-josefin text-black font-light text-base sm:text-lg text-center xl:text-left leading-tight"
+              className="font-josefin text-black description-text text-center xl:text-left "
             >
-             With tourism revenue at ฿497.5 billion in 2024, making Phuket Thailand&#39;s top-earning province and a real estate market growing 5–7% per year, now is the time to explore high-potential opportunities in coastal investment.
-            
-
-
+              With tourism revenue at 497.5 billion in 2024, making Phuket
+              Thailand&#39;s top-earning province and a real estate market
+              growing 5-7% per year, now is the time to explore high-potential
+              opportunities in coastal investment.
             </motion.p>
- <motion.p
+            <motion.p
               variants={itemVariants}
-              className="font-josefin text-black font-light text-base sm:text-lg text-center xl:text-left leading-tight"
+              className="font-josefin text-black description-text text-center xl:text-left "
             >
-    
-             Phuket offers more than beachfront views,it delivers solid returns, high rental demand, and long-term stability in one of Asia&#39;s most dynamic coastal economies.
-
-
+              Phuket offers more than beachfront views,it delivers solid
+              returns, high rental demand, and long-term stability in one of
+              Asia&#39;s most dynamic coastal economies.
             </motion.p>
             {/* Investment Points */}
             <motion.div variants={containerVariants} className="lg:space-y-6">
@@ -145,7 +144,7 @@ export default function WhyInvestSection() {
                     <h4 className="text-lg sm:text-xl font-normal text-[#01292B]">
                       {point.title}
                     </h4>
-                    <p className="text-[#303030] font-light text-base sm:text-lg leading-relaxed">
+                    <p className="text-[#303030] description-text">
                       {point.description}
                     </p>
                     {/* {point.details && (
@@ -165,7 +164,7 @@ export default function WhyInvestSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="flex flex-wrap gap-2 sm:gap-4 h-full sm:py-8"
+            className="flex flex-wrap gap-2 sm:gap-4 h-full sm:py-10"
           >
             {/* Image 1 */}
             <motion.div
@@ -196,7 +195,7 @@ export default function WhyInvestSection() {
             {/* Image 3 */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-90 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[60%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-110 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[60%] rounded-3xl overflow-hidden shadow-lg"
             >
               <Image
                 src={images[2]}
@@ -209,7 +208,7 @@ export default function WhyInvestSection() {
             {/* Image 4 */}
             <motion.div
               variants={imageVariants}
-              className="relative h-80 lg:h-90 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[37%] rounded-3xl overflow-hidden shadow-lg"
+              className="relative h-80 lg:h-110 basis-[48.5%] sm:basis-[50%] md:basis-[50%] lg:basis-[37%] rounded-3xl overflow-hidden shadow-lg"
             >
               <Image
                 src={images[3]}

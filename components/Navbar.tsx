@@ -22,7 +22,7 @@ export default function Navbar() {
         {/* Left extended background */}
         <div
           className="absolute left-0 top-0 h-20 bg-background"
-          style={{ width: "calc((100vw - 1536px) / 2 + 400px)" }}
+          style={{ width: "calc((100vw - 1536px) / 2 + 340px)" }}
         ></div>
 
         {/* Right extended background */}
@@ -39,11 +39,11 @@ export default function Navbar() {
           >
             <Image
               src="/images/logo.png"
-              width={190}
+              width={155}
               height={60}
               alt="Logo"
               priority
-              className="w-[140px] sm:w-[190px] h-auto"
+              className="w-[140px] sm:w-[155px] h-auto pt-[7px]"
             />
           </div>
 
@@ -71,11 +71,11 @@ export default function Navbar() {
                 Blog
               </Link>
             </nav>
-            <div className="flex items-center h-full relative z-10">
+            <div className="flex items-center justify-center h-full relative z-10">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-6 py-2 rounded-md text-background font-semibold text-sm shadow-lg transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 pt-3 pb-2 rounded-md text-background font-semibold text-sm shadow-lg transition-all cursor-pointer"
                 style={{
                   background:
                     "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
@@ -83,7 +83,7 @@ export default function Navbar() {
                 onClick={() => router.replace("/contact-us")}
               >
                 Contact Us
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 pb-1" />
               </motion.button>
             </div>
           </div>
