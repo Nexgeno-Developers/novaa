@@ -19,10 +19,10 @@ const ProjectHeroSection = () => {
       
       {/* Content Container - Constrained to container width */}
       <div className="container relative h-full z-10">
-        <div className="relative h-full flex flex-col justify-end pb-10 sm:pb-20">
+        <div className="relative h-full flex flex-col justify-end pb-10">
           
           {/* Text Content */}
-          <div className="font-cinzel text-primary mb-6 sm:mb-10">
+          <div className="font-cinzel text-primary">
             <motion.h2
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}

@@ -79,7 +79,7 @@ const ClientTestimonialsSection = () => {
   };
 
   return (
-    <section className="relative h-[760px] sm:h-auto lg:h-[800px] overflow-hidden">
+    <section className="relative overflow-hidden">
       {/* Background Image Placeholder */}
       <div className="absolute inset-0 ">
         {/* You can replace this with your actual background image */}
@@ -99,7 +99,7 @@ const ClientTestimonialsSection = () => {
         <div className="">
           {/* Header */}
           <motion.div
-            className="text-center mb-4 sm:mb-6 lg:mb-16"
+            className="text-center mb-4 sm:mb-6 lg:mb-10"
             variants={headingVariants}
             initial="hidden"
             whileInView="visible"
@@ -118,9 +118,9 @@ const ClientTestimonialsSection = () => {
                 faq
               </span>
             </h2>
-            <p className="font-josefin font-light text-[#FFFFFFE5] text-base lg:text-lg leading-normal px-4 sm:px-0">
+            {/* <p className="font-josefin font-light text-[#FFFFFFE5] text-base lg:text-lg leading-normal px-4 sm:px-0">
               Real feedback from the people who trust us with their goals.
-            </p>
+            </p> */}
           </motion.div>
 
           {/* Testimonials Accordion */}

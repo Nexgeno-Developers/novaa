@@ -159,8 +159,9 @@ export default function InvestorInsightsSection() {
   ];
 
   return (
-    <div className="bg-background relative overflow-hidden py-10 lg:py-20">
-      <div className="hidden sm:absolute top-[15%] bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-10" />
+    <div className="bg-background relative overflow-hidden py-10 lg:py-20 min-h-screen">
+      {/* Background overlay - Made more visible for debugging */}
+      <div className="absolute inset-0 sm:top-[15%] sm:bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-0" />
 
       <div className="container relative z-10 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-18 items-center mb-10">
@@ -169,7 +170,7 @@ export default function InvestorInsightsSection() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-8 "
+            className="space-y-8"
           >
             <div className="space-y-4">
               <motion.h1
@@ -205,19 +206,12 @@ export default function InvestorInsightsSection() {
           </motion.div>
 
           {/* Right Content - Animated Cards */}
-          {/* <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            // transition={{ duration: 0.8, delay: 0.6 }}
-            className=""
-          > */}
           <div className="relative z-10">
             <AnimatedTestimonials
               testimonials={propertyInsights}
               autoplay={true}
             />
           </div>
-          {/* </motion.div> */}
         </div>
       </div>
     </div>
