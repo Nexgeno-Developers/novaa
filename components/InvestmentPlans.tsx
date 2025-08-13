@@ -89,7 +89,7 @@ const InvestmentPlans = () => {
       <div className="absolute inset-x-0 bottom-0 w-full h-1/4 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
       
       {/* Content Container */}
-      <div className="relative z-10 py-10 sm:py-20 min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 py-10 sm:py-20 flex flex-col justify-center">
         <motion.div
           initial="hidden"
           whileInView="visible"

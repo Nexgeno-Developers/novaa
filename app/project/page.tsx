@@ -32,9 +32,9 @@ export default function Project() {
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6">
-            <CollectionCard isLocationVisible={false} />
-            <CollectionCard isLocationVisible={false} />
-            <CollectionCard isLocationVisible={false} />
+            <CollectionCard isLocationVisible={true} />
+            <CollectionCard isLocationVisible={true} />
+            <CollectionCard isLocationVisible={true} />
           </div>
         </div>
       </section>

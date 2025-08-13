@@ -92,7 +92,7 @@ export default function ContactUs() {
 
               {/* Form Section */}
               <div className="w-full sm:w-[746px] h-auto sm:h-[666px] px-4 xs:px-6 sm:px-12 pt-10 sm:pt-15 pb-10 flex flex-col justify-center rounded-[20px] bg-[#072D2C]">
-                <h2 className="font-cinzel text-white text-lg xs:text-xl sm:text-[40px] text-center sm:text-left font-bold sm:mb-3">
+                <h2 className="font-cinzel text-white text-2xl sm:text-[40px] text-center sm:text-left font-bold sm:mb-3">
                   We Would Love To Hear <br />
                   <span className="text-[#CDB04E]">From You</span>
                 </h2>
@@ -102,7 +102,7 @@ export default function ContactUs() {
                   here to help!
                 </p>
 
-                <form className="space-y-4 sm:space-y-2 font-josefin text-[14px]">
+                <form className="space-y-4 sm:space-y-4 font-josefin text-[14px]">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label

@@ -188,7 +188,7 @@ export default function CollectionCard({ isLocationVisible }: CardProps) {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <ChevronLeft className="w-10 h-10 lg:w-15 lg:h-15 bg-transparent" />
+                <ChevronLeft className="w-[25px] h-[25px] lg:w-10 lg:h-10 bg-transparent" />
               </motion.button>
               <motion.button
                 onClick={(e) => {
@@ -199,7 +199,7 @@ export default function CollectionCard({ isLocationVisible }: CardProps) {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <ChevronRight className="w-10 h-10 lg:w-15 lg:h-15 bg-transparent" />
+                <ChevronRight className="w-[25px] h-[25px] lg:w-10 lg:h-10  bg-transparent" />
               </motion.button>
             </div>
 

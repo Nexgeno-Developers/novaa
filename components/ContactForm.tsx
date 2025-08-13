@@ -85,7 +85,7 @@ const ContactForm = () => {
         >
           {/* Header */}
           <motion.div variants={itemVariants} className="text-center my-6 sm:my-12">
-            <h2 className="max-w-4xl mx-auto font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-2 sm:mb-6">
+            <h2 className="max-w-4xl mx-auto font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white pt-6 mb-2 sm:my-6">
               OWN A PIECE OF{" "}
               <span className="text-primary font-bold">PARADISE IN PHUKET</span>
             </h2>

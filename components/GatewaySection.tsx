@@ -276,10 +276,10 @@ const GatewaySection = () => {
                       <button
                         key={categoryKey}
                         onClick={() => setActiveCategory(categoryKey)}
-                        className={`w-full sm:w-[62%] flex items-center space-x-4 p-3 rounded-[20px] border border-[#CDB04E1A] transition-all duration-300 group cursor-pointer bg-[#CDB04E1A] text-white hover:border-[#C3912F] ${
+                        className={`w-full sm:w-[62%] flex items-center space-x-4 p-3 rounded-[20px] border border-[#CDB04E1A] transition-all duration-300 group cursor-pointer bg-[#CDB04E1A]  hover:border-[#C3912F] ${
                           isActive
                             ? "bg-gradient-to-tr from-[#C3912F] to-[#F5E7A8] text-background"
-                            : ""
+                            : "text-white"
                         } hover:bg-opacity-30`}
                       >
                         <div className="flex items-center justify-center">
