@@ -1,5 +1,8 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs'
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
 
 const AdminSchema = new mongoose.Schema({
   email: String,
@@ -12,12 +15,13 @@ const Admin = mongoose.model('Admin', AdminSchema);
 
 async function createAdmin() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/novaa-cms');
+    console.log(process.env.MONGODB_URI)
+    await mongoose.connect(process.env.MONGODB_URI);
     
     const hashedPassword = await bcrypt.hash('admin123', 12);
     
     const admin = new Admin({
-      email: 'admin@novaa.com',
+      email: 'admin@nova.com',
       password: hashedPassword,
       name: 'Admin User',
       role: 'super_admin',
