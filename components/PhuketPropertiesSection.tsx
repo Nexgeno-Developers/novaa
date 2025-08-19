@@ -1,125 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
 import { useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
 
-// --- Data for the explorer ---
-const explorerData = {
-  beaches: {
-    title: "Beaches Locations",
-    icon: "/icons/beach.svg",
-    locations: [
-      {
-        name: "Patong Beach",
-        image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Patong+Beach",
-        coords: { top: "35%", left: "20%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Karon Beach",
-        image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Karon+Beach",
-        coords: { top: "55%", left: "30%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Kata Beach",
-        image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Kata+Beach",
-        coords: { top: "60%", left: "50%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Kamala Beach",
-        image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Kamala+Beach",
-        coords: { top: "35%", left: "40%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Surin Beach",
-        image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Surin+Beach",
-        coords: { top: "70%", left: "25%" },
-        icon: "/icons/map-pin.svg",
-      },
-    ],
-  },
-  projects: {
-    title: "Projects Locations",
-    icon: "/icons/project.svg",
-    locations: [
-      {
-        name: "Origin Project",
-        image: "https://placehold.co/200x150/01292B/FFFFFF?text=Origin",
-        coords: { top: "35%", left: "20%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Banyan Tree Hub",
-        image: "https://placehold.co/200x150/01292B/FFFFFF?text=Banyan",
-        coords: { top: "35%", left: "45%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Laguna Complex",
-        image: "https://placehold.co/200x150/01292B/FFFFFF?text=Laguna",
-        coords: { top: "60%", left: "50%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Central Mall",
-        image: "https://placehold.co/200x150/01292B/FFFFFF?text=Central",
-        coords: { top: "70%", left: "25%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Island Villas",
-        image: "https://placehold.co/200x150/01292B/FFFFFF?text=Villas",
-        coords: { top: "50%", left: "25%" },
-        icon: "/icons/map-pin.svg",
-      },
-    ],
-  },
-  alliance: {
-    title: "Government Alliance",
-    icon: "/icons/alliance.svg",
-    locations: [
-      {
-        name: "Phuket Town Hall",
-        image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Town+Hall",
-        coords: { top: "35%", left: "20%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Tourism Authority",
-        image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Tourism",
-        coords: { top: "55%", left: "25%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Marine Department",
-        image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Marine",
-        coords: { top: "55%", left: "45%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Tourism Authority",
-        image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Tourism",
-        coords: { top: "50%", left: "15%" },
-        icon: "/icons/map-pin.svg",
-      },
-      {
-        name: "Marine Department",
-        image: "https://placehold.co/200x150/5B21B6/FFFFFF?text=Marine",
-        coords: { top: "55%", left: "45%" },
-        icon: "/icons/map-pin.svg",
-      },
-    ],
-  },
-};
+// --- Types ---
+interface Location {
+  id: string;
+  name: string;
+  image: string;
+  coords: { top: string; left: string };
+  icon: string;
+}
 
-type Category = keyof typeof explorerData;
+interface Category {
+  id: string;
+  title: string;
+  icon: string;
+  locations: Location[];
+}
+
+interface PhuketPropertiesData {
+  mainHeading: string;
+  subHeading: string;
+  description: string;
+  explorerHeading: string;
+  explorerDescription: string;
+  categories: Category[];
+}
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -160,12 +70,37 @@ const mapPinVariants: Variants = {
 
 // --- Main Component ---
 const PhuketPropertiesSection = () => {
-  const [activeCategory, setActiveCategory] = useState<Category>("beaches");
+  const [activeCategory, setActiveCategory] = useState<string>("");
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
+  const [data, setData] = useState<PhuketPropertiesData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const currentData = explorerData[activeCategory];
   const controls = useAnimation();
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/cms/properties');
+        if (response.ok) {
+          const result = await response.json();
+          setData(result.data);
+          if (result.data?.categories?.length > 0) {
+            setActiveCategory(result.data.categories[0].id);
+          }
+        } else {
+          console.error('Failed to fetch properties data');
+        }
+      } catch (error) {
+        console.error('Error fetching properties data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (inView) {
@@ -173,17 +108,42 @@ const PhuketPropertiesSection = () => {
     }
   }, [inView, controls]);
 
+  // Show loading state
+  if (loading) {
+    return (
+      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </section>
+    );
+  }
+
+  // Show error state if no data
+  if (!data) {
+    return (
+      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
+        <div className="text-white text-xl">Failed to load properties data</div>
+      </section>
+    );
+  }
+
+  const currentCategory = data.categories.find(cat => cat.id === activeCategory);
+  
+  // Helper function to render HTML content safely
+  const createMarkup = (html: string) => {
+    return { __html: html };
+  };
+
   return (
     <section className="relative overflow-hidden">
       <Image
         src="/images/background.jpg"
         alt="Phuket Properties Section"
         fill
-        className="object-cover "
+        className="object-cover"
         priority
       />
       <div
-        className="absolute inset-0 z-0 "
+        className="absolute inset-0 z-0"
         style={{
           background:
             "linear-gradient(270deg, rgba(1, 41, 43, 0) -542.65%, #01292B 100%",
@@ -193,38 +153,35 @@ const PhuketPropertiesSection = () => {
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
+      
       <div className="relative z-20 container py-10 lg:py-20">
         {/* Main Heading */}
         <motion.div
           variants={headingVariants}
-          className="font-cinzel  max-w-3xl space-y-2 sm:space-y-4 text-center sm:text-left"
+          className="font-cinzel max-w-3xl space-y-2 sm:space-y-4 text-center sm:text-left"
         >
           <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
-            DISCOVER PRIME PROPERTIES
+            {data.mainHeading}
           </h1>
           <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent pb-5">
-            ACROSS PHUKET
+            {data.subHeading}
           </h2>
         </motion.div>
+
         <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-20 items-start">
           {/* Left Content */}
           <motion.div
-            className="space-y-4 sm:space-y-8 "
+            className="space-y-4 sm:space-y-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             {/* Description */}
-            <motion.p
+            <motion.div
               variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left description-text w-full  lg:max-w-2xl"
-            >
-              Explore a Curated Selection of Luxury Residences . Whether
-              you&#39;re seeking a beachfront retreat, an investment
-              opportunity, or a peaceful escape amidst nature, these
-              developments represent the best of lifestyle and location in
-              Phuket.
-            </motion.p>
+              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left description-text w-full lg:max-w-2xl"
+              dangerouslySetInnerHTML={createMarkup(data.description)}
+            />
 
             {/* Phuket Explorer Section */}
             <motion.div
@@ -235,21 +192,21 @@ const PhuketPropertiesSection = () => {
               className="space-y-2 lg:space-y-4 font-josefin text-center lg:text-left"
             >
               <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
-                Phuket Explorer
+                {data.explorerHeading}
               </h3>
-              <p className="text-[#FFFFFFE5] description-text border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center sm:text-left">
-                Discover the beauty and development of Phuket Island
-              </p>
+              <div 
+                className="text-[#FFFFFFE5] description-text border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center sm:text-left"
+                dangerouslySetInnerHTML={createMarkup(data.explorerDescription)}
+              />
 
               {/* Category Buttons */}
               <div className="space-y-3 flex flex-col items-center lg:items-start">
-                {Object.keys(explorerData).map((key) => {
-                  const categoryKey = key as Category;
-                  const isActive = activeCategory === categoryKey;
+                {data.categories.map((category) => {
+                  const isActive = activeCategory === category.id;
                   return (
                     <button
-                      key={categoryKey}
-                      onClick={() => setActiveCategory(categoryKey)}
+                      key={category.id}
+                      onClick={() => setActiveCategory(category.id)}
                       className={`w-full lg:w-[70%] flex items-center space-x-4 p-2 xs:p-4 xl:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 transform hover:translate-x-2 group cursor-pointer ${
                         isActive
                           ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
@@ -273,8 +230,8 @@ const PhuketPropertiesSection = () => {
                               isActive ? "bg-background" : "bg-primary"
                             } mask mask-center mask-no-repeat`}
                             style={{
-                              WebkitMaskImage: `url(${explorerData[categoryKey].icon})`,
-                              maskImage: `url(${explorerData[categoryKey].icon})`,
+                              WebkitMaskImage: `url(${category.icon})`,
+                              maskImage: `url(${category.icon})`,
                               WebkitMaskSize: "contain",
                               maskSize: "contain",
                               WebkitMaskRepeat: "no-repeat",
@@ -284,7 +241,7 @@ const PhuketPropertiesSection = () => {
                         </div>
                       </div>
                       <span className="text-base sm:text-xl lg:text-3xl font-medium font-josefin">
-                        {explorerData[categoryKey].title.split(" ")[0]}
+                        {category.title.split(" ")[0]}
                       </span>
                     </button>
                   );
@@ -304,7 +261,7 @@ const PhuketPropertiesSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
-                  className="border-t-[0.5px] border-b-white w-full lg:w-[80%] flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel "
+                  className="border-t-[0.5px] border-b-white w-full lg:w-[80%] flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel"
                 >
                   <Image
                     src={"/icons/map-pin.svg"}
@@ -314,10 +271,11 @@ const PhuketPropertiesSection = () => {
                     className="hover:cursor-pointer pt-2"
                   />
                   <span className="pt-4 font-josefin text-xl xs:text-2xl lg:text-3xl leading-relaxed">
-                    {currentData.title}
+                    {currentCategory?.title}
                   </span>
                 </motion.h4>
               </AnimatePresence>
+              
               <div className="space-y-3">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -328,12 +286,12 @@ const PhuketPropertiesSection = () => {
                       transition: { staggerChildren: 0.05 },
                     }}
                     exit={{ opacity: 0 }}
-                    className="border-b-[0.5px] border-b-white w-full lg:w-[80%] pb-4 "
+                    className="border-b-[0.5px] border-b-white w-full lg:w-[80%] pb-4"
                   >
-                    {currentData.locations.map((location) => (
+                    {currentCategory?.locations.map((location) => (
                       <motion.div
-                        key={location.name}
-                        className=" flex items-center justify-center lg:justify-start space-x-3 group"
+                        key={location.id}
+                        className="flex items-center justify-center lg:justify-start space-x-3 group"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                       >
@@ -350,7 +308,6 @@ const PhuketPropertiesSection = () => {
               </div>
             </motion.div>
           </motion.div>
-
           {/* Right Side - Map */}
           <div className="w-full h-[400px] xs:h-[500px] sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
             <motion.div
@@ -368,15 +325,15 @@ const PhuketPropertiesSection = () => {
 
               {/* Map Pins */}
               <AnimatePresence>
-                {currentData.locations.map((location) => (
+                {currentCategory?.locations.map((location) => (
                   <motion.div
-                    key={location.name}
+                    key={location.id}
                     className="absolute transform -translate-x-1/2 -translate-y-1/2"
                     style={{
                       top: location.coords.top,
                       left: location.coords.left,
                     }}
-                    onMouseEnter={() => setHoveredPin(location.name)}
+                    onMouseEnter={() => setHoveredPin(location.id)}
                     onMouseLeave={() => setHoveredPin(null)}
                     variants={mapPinVariants}
                     initial="hidden"
@@ -394,9 +351,9 @@ const PhuketPropertiesSection = () => {
                     </div>
                     {/* Hover Image Card */}
                     <AnimatePresence>
-                      {hoveredPin === location.name && (
+                      {hoveredPin === location.id && (
                         <motion.div
-                          className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-30 bg-white rounded-xl  overflow-hidden border border-background"
+                          className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-30 bg-white rounded-xl overflow-hidden border border-background"
                           initial={{ opacity: 0, y: 10, scale: 0.9 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.9 }}

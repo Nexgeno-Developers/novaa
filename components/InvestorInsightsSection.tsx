@@ -1,14 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
 
 type Testimonial = {
+  _id?: string;
   quote: string;
   content: string;
   designation: string;
   src: string;
+  order: number;
+};
+
+type InvestorInsightsContent = {
+  mainTitle: string;
+  highlightedTitle: string;
+  description: string;
+};
+
+type InvestorInsightsData = {
+  content: InvestorInsightsContent;
+  testimonials: Testimonial[];
+  isActive: boolean;
 };
 
 const AnimatedTestimonials = ({
@@ -50,13 +63,21 @@ const AnimatedTestimonials = ({
     return value;
   };
 
+  if (!testimonials || testimonials.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[400px] text-white/50">
+        No testimonials available
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center">
       <div className="relative  sm:h-[570px] w-[230px] h-[320px] xs:w-[300px] xs:h-[370px] sm:w-[500px] z-20">
         <AnimatePresence>
           {testimonials.map((testimonial, index) => (
             <motion.div
-              key={testimonial.src}
+              key={testimonial._id || index}
               onClick={handleNext}
               initial={{
                 opacity: 0,
@@ -100,10 +121,13 @@ const AnimatedTestimonials = ({
                   <h1 className="py-1 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
                     {testimonial.content}
                   </h1>
-                  <p className="relative font-josefin pt-2 sm:pt-3 text-[10px] xs:text-sm sm:text-base text-[#303030]">
-                    {testimonial.quote}
+                  <div className="relative font-josefin pt-2 sm:pt-3 text-[10px] xs:text-sm sm:text-base text-[#303030]">
+                    <div 
+                      dangerouslySetInnerHTML={{ __html: testimonial.quote }} 
+                      className="prose prose-sm max-w-none"
+                    />
                     <span className="absolute top-0 left-0 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
-                  </p>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -115,48 +139,77 @@ const AnimatedTestimonials = ({
 };
 
 export default function InvestorInsightsSection() {
-  const propertyInsights = [
-    {
-      quote:
-        "Luxury residential properties in 2024 with heavy property demand averaging 25% increase while rental yields in prime areas reached 7.8%, making it a new destination for HNIs.",
-      content:
-        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-      designation: "2024 Market Analysis",
-      src: "/images/invest-three.png",
-    },
-    {
-      quote:
-        "Commercial real estate opportunities showing 15% growth in Q3 2024, with office spaces in prime locations commanding premium rents.",
-      content:
-        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-      designation: "Q3 2024 Report",
-      src: "/images/invest-four.png",
-    },
-    {
-      quote:
-        "Sustainable developments and green building initiatives are driving new investment patterns with 20% higher appreciation rates.",
-      content:
-        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-      designation: "Green Investment Trends",
-      src: "/images/invest-three.png",
-    },
-    {
-      quote:
-        "Smart city developments and infrastructure projects are creating new opportunities for forward-thinking investors.",
-      content:
-        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-      designation: "Future Development",
-      src: "/images/invest-two.png",
-    },
-    {
-      quote:
-        "Residential townships with integrated amenities showing consistent 12% annual growth in tier-2 cities across India.",
-      content:
-        "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-      designation: "Growth Markets",
-      src: "/images/invest-one.png",
-    },
-  ];
+  const [investorData, setInvestorData] = useState<InvestorInsightsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchInvestorInsights = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/cms/investor-insights');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch investor insights');
+        }
+        
+        const data = await response.json();
+        setInvestorData(data);
+      } catch (err) {
+        console.error('Error fetching investor insights:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        
+        // Fallback to default data if API fails
+        setInvestorData({
+          content: {
+            mainTitle: "Insights for the",
+            highlightedTitle: "Discerning Investor",
+            description: "Stay informed with trending stories, industry updates, and thoughtful articles curated just for you."
+          },
+          testimonials: [
+            {
+              quote: "Luxury residential properties in 2024 with heavy property demand averaging 25% increase while rental yields in prime areas reached 7.8%, making it a new destination for HNIs.",
+              content: "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
+              designation: "2024 Market Analysis",
+              src: "/images/invest-three.png",
+              order: 1
+            },
+            {
+              quote: "Commercial real estate opportunities showing 15% growth in Q3 2024, with office spaces in prime locations commanding premium rents.",
+              content: "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors", 
+              designation: "Q3 2024 Report",
+              src: "/images/invest-four.png",
+              order: 2
+            }
+          ],
+          isActive: true
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInvestorInsights();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-background relative overflow-hidden py-10 lg:py-20">
+        <div className="container relative z-10 lg:py-16">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!investorData || !investorData.isActive) {
+    return null; // Don't render if data is not active
+  }
+
+  // Sort testimonials by order
+  const sortedTestimonials = [...investorData.testimonials].sort((a, b) => a.order - b.order);
 
   return (
     <div className="bg-background relative overflow-hidden py-10 lg:py-20">
@@ -179,8 +232,8 @@ export default function InvestorInsightsSection() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-light text-white leading-tight text-center lg:text-left mt-0 sm:mt-10"
               >
-                Insights for the{" "}
-                <h1
+                {investorData.content.mainTitle}{" "}
+                <p
                   className=" font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-bold mb-0 sm:mb-4 bg-clip-text text-transparent leading-tight "
                   style={{
                     background:
@@ -189,26 +242,24 @@ export default function InvestorInsightsSection() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  Discerning Investor
-                </h1>
+                  {investorData.content.highlightedTitle}
+                </p>
               </motion.h1>
 
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="font-josefin description-text  text-[#FFFFFFE5] text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
-              >
-                Stay informed with trending stories, industry updates, and
-                thoughtful articles curated just for you.
-              </motion.p>
+                className="font-josefin description-text text-[#FFFFFFE5] text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
+                dangerouslySetInnerHTML={{ __html: investorData.content.description }}
+              />
             </div>
           </motion.div>
 
           {/* Right Content - Animated Cards */}
           <div className="relative z-10">
             <AnimatedTestimonials
-              testimonials={propertyInsights}
+              testimonials={sortedTestimonials}
               autoplay={true}
             />
           </div>

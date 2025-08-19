@@ -1,9 +1,33 @@
 import { configureStore } from '@reduxjs/toolkit'
 import curatedReducer from './slices/collectionSlice'
+import authReducer from './slices/authSlice';
+import navbarReducer from './slices/navbarSlice'
+import homeReducer from './slices/homeSlice';
+import mediaReducer from './slices/mediaSlice'
+import aboutReducer from './slices/aboutSlice'
+import whyInvestReducer from './slices/whyInvestSlice'
+import propertiesReducer from './slices/propertiesSlice'
+import advantageReducer from './slices/advantageSlice'
+import faqReducer from './slices/faqslice'
+import testimonialReducer from './slices/testimonialsSlice'
+import investorReducer from './slices/investorInsightsSlice'
+
 
 export const store = configureStore({
   reducer: {
-    curated: curatedReducer
+    curated: curatedReducer,
+    auth: authReducer,
+    navbar: navbarReducer,
+    home: homeReducer,
+    media : mediaReducer,
+    about : aboutReducer,
+    whyInvest : whyInvestReducer,
+    properties : propertiesReducer,
+    advantage : advantageReducer,
+    faq: faqReducer,
+    testimonials:testimonialReducer,
+    investor:investorReducer
+
   }
 })
 

@@ -36,6 +36,8 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
 
   const handleImageLoad = () => {
     setLoadedCount((prev) => {
+      console.log("Prev" , prev);``
+      console.log(loadedCount);
       const newCount = prev + 1;
       if (newCount >= 2) {
         setImagesLoaded(true);
@@ -272,7 +274,8 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
         alt=""
         onLoad={handleImageLoad}
         className="hidden"
-        crossOrigin="anonymous"
+          crossOrigin="anonymous"
+
       />
       <img
         ref={logoRef}
@@ -280,7 +283,8 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
         alt=""
         onLoad={handleImageLoad}
         className="hidden"
-        crossOrigin="anonymous"
+          crossOrigin="anonymous"
+
       />
 
       <canvas
