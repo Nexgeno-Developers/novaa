@@ -5,12 +5,16 @@ interface WaterEffectImageProps {
   backgroundSrc: string;
   logoSrc: string;
   alt?: string;
+  width:number;
+  height:number;
   className?: string;
 }
 
 export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
   backgroundSrc,
   logoSrc,
+  width,
+  height,
   alt = "water effect image",
   className = "",
 }) => {
@@ -289,8 +293,8 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
 
       <canvas
         ref={canvasRef}
-        width={400}
-        height={400}
+        width={width}
+        height={height}
         className="w-full h-full rounded-full cursor-pointer shadow-2xl"
         onMouseMove={handleCanvasInteraction}
         onClick={handleCanvasInteraction}

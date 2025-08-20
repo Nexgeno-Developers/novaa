@@ -87,8 +87,8 @@ const fontSizes = [
   { value: "text-2xl", label: "2XL" },
   { value: "text-3xl", label: "3XL" },
   { value: "text-4xl", label: "4XL" },
-  { value: "text-5xl", label: "5XL" },
-  { value: "text-6xl", label: "6XL" },
+  { value: "text-[50px]", label: "50px" },
+  { value: "text-[60px]", label: "60px" },
 ];
 
 const gradientOptions = [
@@ -131,8 +131,8 @@ export default function HomePageManager() {
     overlayColor: "#01292B",
     titleFontFamily: "font-cinzel",
     subtitleFontFamily: "font-cinzel",
-    titleFontSize: "text-3xl md:text-5xl",
-    subtitleFontSize: "text-xl md:text-3xl",
+    titleFontSize: "text-2xl md:text-[50px]",
+    subtitleFontSize: "text-2xl md:text-[50px]",
     titleGradient: "none",
     subtitleGradient: "none",
   });
@@ -169,9 +169,9 @@ export default function HomePageManager() {
             subtitleFontFamily:
               data.heroSection.subtitleFontFamily || "font-cinzel",
             titleFontSize:
-              data.heroSection.titleFontSize || "text-3xl md:text-5xl",
+              data.heroSection.titleFontSize || "text-2xl md:text-[50px]",
             subtitleFontSize:
-              data.heroSection.subtitleFontSize || "text-xl md:text-3xl",
+              data.heroSection.subtitleFontSize || "text-2xl md:text-[50px]",
             titleGradient: data.heroSection.titleGradient || "none",
             subtitleGradient: data.heroSection.subtitleGradient || "none",
           });
@@ -262,7 +262,7 @@ export default function HomePageManager() {
     const newWord: HighlightedWord = {
       word: "",
       style: {
-        color: "#3B82F6",
+        color: "#01292B",
         fontWeight: "bold",
         fontFamily: "font-cinzel",
         fontSize: "inherit",
@@ -388,6 +388,7 @@ export default function HomePageManager() {
             className="flex items-center space-x-2 bg-secondary text-background cursor-pointer"
           >
             <Eye className="h-4 w-4" />
+
             <span>{previewMode ? "Edit Mode" : "Preview"}</span>
           </Button>
 
@@ -415,7 +416,7 @@ export default function HomePageManager() {
       )}
 
       {previewMode ? (
-        <Card>
+        <Card className="py-6">
           <CardHeader>
             <CardTitle>Live Preview</CardTitle>
           </CardHeader>
@@ -498,7 +499,7 @@ export default function HomePageManager() {
           </TabsList>
 
           <TabsContent value="media" className="space-y-6">
-            <Card>
+            <Card className="py-6">
               <CardHeader>
                 <CardTitle>Background Media</CardTitle>
                 <CardDescription>
@@ -628,7 +629,7 @@ export default function HomePageManager() {
           </TabsContent>
 
           <TabsContent value="content" className="space-y-6">
-            <Card>
+            <Card className="py-6">
               <CardHeader>
                 <CardTitle>Hero Content</CardTitle>
                 <CardDescription>
@@ -690,7 +691,7 @@ export default function HomePageManager() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue/>
                         </SelectTrigger>
                         <SelectContent>
                           {fontSizes.map((size) => (
@@ -698,11 +699,11 @@ export default function HomePageManager() {
                               {size.label}
                             </SelectItem>
                           ))}
-                          <SelectItem value="text-3xl md:text-5xl">
-                            Responsive 3XL-5XL
+                          <SelectItem value="text-2xl md:text-[50px]">
+                            Responsive 2XL-50PX
                           </SelectItem>
-                          <SelectItem value="text-4xl md:text-6xl">
-                            Responsive 4XL-6XL
+                           <SelectItem value="text-3xl md:text-[60px]">
+                            Responsive 3XL-60PX
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -797,11 +798,11 @@ export default function HomePageManager() {
                               {size.label}
                             </SelectItem>
                           ))}
-                          <SelectItem value="text-xl md:text-3xl">
-                            Responsive XL-3XL
+                          <SelectItem value="text-2xl md:text-[50px]">
+                            Responsive 2XL-50PX
                           </SelectItem>
-                          <SelectItem value="text-2xl md:text-4xl">
-                            Responsive 2XL-4XL
+                          <SelectItem value="text-3xl md:text-[60px]">
+                            Responsive 3XL-60PX
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -862,7 +863,7 @@ export default function HomePageManager() {
           </TabsContent>
 
           <TabsContent value="highlights" className="space-y-6">
-            <Card>
+            <Card className="py-6">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle>Text Highlights</CardTitle>
@@ -885,6 +886,7 @@ export default function HomePageManager() {
                       <h4 className="font-medium">Highlight #{index + 1}</h4>
                       <Button
                         variant="outline"
+                        className="text-background cursor-pointer bg-gray-200"
                         size="sm"
                         onClick={() => removeHighlightedWord(index)}
                       >
@@ -1152,7 +1154,7 @@ export default function HomePageManager() {
           </TabsContent>
 
           <TabsContent value="cta" className="space-y-6">
-            <Card>
+            <Card className="py-6">
               <CardHeader>
                 <CardTitle>Call to Action Button</CardTitle>
                 <CardDescription>

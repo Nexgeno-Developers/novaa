@@ -56,7 +56,7 @@ const {scrollYProgress} = useScroll(
 );
 
   // Re-enabled animations
-  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -165]);
+  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -155]);
   const novaOpacity = useTransform(scrollYProgress, [0.1, 0.35], [0, 1]);
 
   if (isLoading) {

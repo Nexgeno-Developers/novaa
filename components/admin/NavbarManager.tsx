@@ -229,10 +229,7 @@ export default function NavbarManager() {
   };
 
   const handleDeleteItem = async (itemId: string) => {
-    // Replaced window.confirm with a simple check for this example.
-    // Consider implementing a custom modal for confirmations.
-    if (!window.confirm("Are you sure you want to delete this item?")) return;
-
+    toast.success("Navbar Items deleted successfully")
     const updatedItems = items.filter((item) => item._id !== itemId);
     dispatch(updateNavbarItems(updatedItems));
     await dispatch(updateNavbar({ items: updatedItems }) as any);
@@ -292,7 +289,7 @@ export default function NavbarManager() {
       )}
 
       {/* Logo Management */}
-      <Card>
+      <Card className="py-6">
         <CardHeader>
           <CardTitle>Logo</CardTitle>
           <CardDescription>Upload and manage your website logo</CardDescription>
@@ -329,7 +326,7 @@ export default function NavbarManager() {
       </Card>
 
       {/* Navigation Items */}
-      <Card>
+      <Card className="py-6">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Navigation Items</CardTitle>

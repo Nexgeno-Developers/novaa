@@ -19,6 +19,8 @@ export async function GET() {
         faqs: [
           { question: "What is the first question?", answer: "<p>This is the answer to the first question.</p>", order: 0 },
           { question: "What is the second question?", answer: "<p>This is the answer to the second question.</p>", order: 1 },
+          { question: "What is the second question?", answer: "<p>This is the answer to the second question.</p>", order: 2 },
+          { question: "What is the second question?", answer: "<p>This is the answer to the second question.</p>", order: 3 },
         ],
       }).save();
     }

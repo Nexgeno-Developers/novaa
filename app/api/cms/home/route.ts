@@ -15,11 +15,11 @@ export async function GET() {
         heroSection: {
           mediaType: 'image',
           mediaUrl: '/images/hero.jpg',
-          title: 'Experience Unparalleled Luxury in Thailand',
-          subtitle: 'Your Premier Destination for Luxury Properties',
+          title: 'Experience Unparalleled',
+          subtitle: 'Luxury in Thailand',
           highlightedWords: [
             { 
-              word: 'Luxury', 
+              word: 'Luxury in Thailand', 
               style: { 
                 color: '#C3912F',
                 fontWeight: 'bold',

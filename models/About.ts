@@ -17,7 +17,7 @@ export interface IAbout extends Document {
 const AboutSchema: Schema = new Schema({
   title: { type: String, default: 'About' },
   showSubtitle: { type: Boolean, default: true },
-  description: { type: String, default: 'is simply dummy text of the printing and typesetting indust random text for testing' },
+  description: { type: String, default: 'is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing is simply dummy text of the printing and typesetting indust random text for testing' },
   buttonText: { type: String, default: 'Discover More' },
   buttonUrl: { type: String, default: '/about-us' },
     bgType: { type: String, enum: ['image', 'video'], default: 'image' },

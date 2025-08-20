@@ -1,7 +1,17 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import mongoose, { Document, Model } from "mongoose";
 
-const AdminSchema = new mongoose.Schema({
+
+export interface Admin extends Document {
+  _id: mongoose.Types.ObjectId;
+  email: string;
+  password: string;
+  name: string;
+  role: "super_admin" | "admin";
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
+
+const AdminSchema = new mongoose.Schema<Admin>({
   email: {
     type: String,
     required: true,
@@ -34,4 +44,4 @@ AdminSchema.methods.comparePassword = async function(candidatePassword: string) 
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-export default mongoose.models.Admin || mongoose.model('Admin', AdminSchema);
+export const Admin: Model<Admin> = mongoose.models.Admin || mongoose.model<Admin>("Admin", AdminSchema);

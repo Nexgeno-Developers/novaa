@@ -1,11 +1,12 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { Admin } from '@/models/Admin';
+import { SignJWT, jwtVerify , JWTPayload} from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
 // Sign a new JWT token
-export async function signToken(payload: any) {
+export async function signToken(payload: JWTPayload) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
@@ -28,11 +29,11 @@ export function getTokenFromRequest(request: NextRequest) {
 }
 
 // Create auth response with cookie
-export function createAuthResponse(token: string, user: any) {
+export function createAuthResponse(token: string, user : Admin) {
   const response = NextResponse.json({
     success: true,
     user: {
-      id: user._id,
+      id: user._id.toString(),
       email: user.email,
       name: user.name,
       role: user.role,

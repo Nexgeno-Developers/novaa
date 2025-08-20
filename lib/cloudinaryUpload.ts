@@ -42,6 +42,13 @@ export interface CloudinarySearchResult {
   next_cursor?: string;
 }
 
+export type SearchFilesParams = {
+  query?: string;
+  resourceType?: "image" | "video";
+  maxResults?: number;   // default 20
+  nextCursor?: string;
+};
+
 export class CloudinaryService {
   private folder = "cms-media-novaa"; // Folder to organize uploads
 
@@ -107,72 +114,64 @@ export class CloudinaryService {
       return false;
     }
   }
+async searchFiles(
+  query?: string,
+  resourceType?: "image" | "video",
+  maxResults: number = 20,
+  nextCursor?: string
+): Promise<CloudinarySearchResult> {
+  try {
+    console.log("Search params:", { query, resourceType, maxResults, nextCursor });
+    
+    let searchExpression = `folder:${this.folder}`;
 
-  async searchFiles(
-    query?: string,
-    resourceType?: "image" | "video",
-    maxResults: number = 20,
-    nextCursor?: string
-  ): Promise<CloudinarySearchResult> {
-    try {
-      console.log("Search params:", { query, resourceType, maxResults, nextCursor });
-      
-      // Start with base folder search
-      let searchExpression = `folder:${this.folder}`;
-
-      // Add resource type filter if specified
-      if (resourceType) {
-        searchExpression += ` AND resource_type:${resourceType}`;
-      }
-
-      // FIXED: Proper query search using filename pattern
-      if (query && query.trim()) {
-        // Search in the filename part of public_id (after the folder)
-        // Use wildcard pattern for partial matches
-        searchExpression += ` AND filename:*${query.trim()}*`;
-      }
-
-      console.log("Final search expression:", searchExpression);
-
-      const searchParams: any = {
-        expression: searchExpression,
-        sort_by: [["created_at", "desc"]],
-        max_results: maxResults,
-      };
-
-      // Add cursor for pagination
-      if (nextCursor) {
-        searchParams.next_cursor = nextCursor;
-      }
-
-      const searchResult = await cloudinary.search
-        .expression(searchExpression)
-        .sort_by("created_at", "desc")
-        .max_results(maxResults)
-        .next_cursor(nextCursor)
-        .execute();
-      
-      console.log("Cloudinary search result:", {
-        totalFound: searchResult.total_count,
-        resourcesCount: searchResult.resources?.length,
-        hasNextCursor: !!searchResult.next_cursor
-      });
-
-      return {
-        resources: searchResult.resources || [],
-        total_count: searchResult.total_count || 0,
-        time: searchResult.time || 0,
-        next_cursor: searchResult.next_cursor,
-      };
-    } catch (error) {
-      console.error("Cloudinary search error:", error);
-      return {
-        resources: [],
-        total_count: 0,
-        time: 0,
-      };
+    if (resourceType) {
+      searchExpression += ` AND resource_type:${resourceType}`;
     }
+
+    if (query && query.trim()) {
+      searchExpression += ` AND filename:*${query.trim()}*`;
+    }
+
+    console.log("Final search expression:", searchExpression);
+
+    const searchParams: {
+      expression: string;
+      sort_by: [string, "asc" | "desc"][];
+      max_results: number;
+      next_cursor?: string;
+    } = {
+      expression: searchExpression,
+      sort_by: [["created_at", "desc"]],
+      max_results: maxResults,
+    };
+
+    if (nextCursor) {
+      searchParams.next_cursor = nextCursor;
+    }
+
+    const searchResult = await cloudinary.search
+      .expression(searchExpression)
+      .sort_by("created_at", "desc")
+      .max_results(maxResults)
+      .next_cursor(nextCursor)
+      .execute();
+
+    return {
+      resources: searchResult.resources || [],
+      total_count: searchResult.total_count || 0,
+      time: searchResult.time || 0,
+      next_cursor: searchResult.next_cursor,
+    };
+  } catch (error) {
+    console.error("Cloudinary search error:", error);
+    return {
+      resources: [],
+      total_count: 0,
+      time: 0,
+    };
   }
+}
 
   // Alternative search method if filename search doesn't work well
   async searchFilesAlternative(
@@ -203,7 +202,7 @@ export class CloudinaryService {
       // If query provided, filter results locally
       if (query && query.trim()) {
         const queryLower = query.trim().toLowerCase();
-        filteredResources = filteredResources.filter(resource => {
+        filteredResources = filteredResources.filter((resource: { public_id: string; }) => {
           const filename = resource.public_id.split('/').pop() || '';
           return filename.toLowerCase().includes(queryLower);
         });

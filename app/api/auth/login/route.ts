@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Admin from '@/models/Admin';
+import { Admin } from '@/models/Admin';
 import { signToken, createAuthResponse } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
     }
     
     const isValidPassword = await admin.comparePassword(password);
+    console.log(isValidPassword);
     if (!isValidPassword) {
       return Response.json({ message: 'Invalid credentials' }, { status: 401 });
     }
