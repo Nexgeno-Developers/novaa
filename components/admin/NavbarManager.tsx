@@ -42,7 +42,7 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-``;
+import { useAppDispatch } from "@/redux/hooks";
 
 interface NavbarItem {
   _id?: string;
@@ -83,7 +83,7 @@ function DraggableItem({
       }),
       dropTargetForElements({
         element: el,
-        getData: ({ input, element }: any) => {
+        getData: ({ input, element }) => {
           const data = { index, _id: item._id };
           // Attaches the closest edge to the data, used for showing a drop indicator
           return attachClosestEdge(data, {
@@ -92,7 +92,10 @@ function DraggableItem({
             allowedEdges: ["top", "bottom"],
           });
         },
-        onDragEnter: (args: any) => setClosestEdge(args.self.data.closestEdge),
+        onDragEnter: (args) => {
+          const closestEdge = args.self.data.closestEdge as Edge | null;
+          setClosestEdge(closestEdge);
+        },
         onDragLeave: () => setClosestEdge(null),
         onDrop: () => setClosestEdge(null),
       })
@@ -122,7 +125,7 @@ function DraggableItem({
 }
 
 export default function NavbarManager() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { logo, items, loading, error } = useSelector(
     (state: RootState) => state.navbar
   );
@@ -132,7 +135,7 @@ export default function NavbarManager() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchNavbar() as any);
+    dispatch(fetchNavbar());
   }, [dispatch]);
 
   // Main useEffect for handling drag-and-drop logic
@@ -155,12 +158,12 @@ export default function NavbarManager() {
       }));
 
       dispatch(updateNavbarItems(updatedItems));
-      await dispatch(updateNavbar({ items: updatedItems }) as any);
+      await dispatch(updateNavbar({ items: updatedItems }));
     };
 
     // Monitor for drops on elements
     return monitorForElements({
-      onDrop(args: any) {
+      onDrop(args) {
         const { location, source } = args;
         const startIndex = source.data.index as number;
 
@@ -214,7 +217,7 @@ export default function NavbarManager() {
       }
 
       dispatch(updateNavbarItems(updatedItems));
-      await dispatch(updateNavbar({ items: updatedItems }) as any);
+      await dispatch(updateNavbar({ items: updatedItems }));
 
       toast.success(editingItem._id ? "Item updated" : "New item added");
 
@@ -229,10 +232,10 @@ export default function NavbarManager() {
   };
 
   const handleDeleteItem = async (itemId: string) => {
-    toast.success("Navbar Items deleted successfully")
+    toast.success("Navbar Items deleted successfully");
     const updatedItems = items.filter((item) => item._id !== itemId);
     dispatch(updateNavbarItems(updatedItems));
-    await dispatch(updateNavbar({ items: updatedItems }) as any);
+    await dispatch(updateNavbar({ items: updatedItems }));
   };
 
   const handleLogoUpload = async () => {
@@ -251,7 +254,7 @@ export default function NavbarManager() {
 
       if (result.success) {
         const newLogo = { url: result.url, alt: "Novaa Real Estate Logo" };
-        await dispatch(updateNavbar({ logo: newLogo }) as any);
+        await dispatch(updateNavbar({ logo: newLogo }));
         setLogoFile(null);
         toast.success("Logo uploaded successfully");
       } else {
@@ -273,7 +276,7 @@ export default function NavbarManager() {
     );
   }
 
-  console.log("Editing Item" , editingItem);
+  console.log("Editing Item", editingItem);
 
   return (
     <div className="space-y-6">
@@ -391,10 +394,9 @@ export default function NavbarManager() {
           setEditingItem(null);
           setShowAddForm(false);
         }}
-
       >
         <DialogContent className="bg-background text-primary border-background">
-          <DialogHeader>  
+          <DialogHeader>
             <DialogTitle>
               {editingItem?._id ? "Edit Item" : "Add New Item"}
             </DialogTitle>
@@ -415,7 +417,6 @@ export default function NavbarManager() {
                 className="no-selection-highlight"
                 placeholder="e.g., Home, About, Contact"
               />
-              
             </div>
 
             <div>

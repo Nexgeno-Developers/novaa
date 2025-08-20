@@ -241,7 +241,7 @@ const InvestorInsightsManager: React.FC = () => {
     }
   };
 
-  const handleDragEnd = async (result: any) => {
+  const handleDragEnd = async (result: { destination: { index: number; }; source: { index: number; }; }) => {
     if (!result.destination || !data?.testimonials) return;
 
     const items = Array.from(data.testimonials);

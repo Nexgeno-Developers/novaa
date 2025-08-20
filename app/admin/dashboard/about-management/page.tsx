@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, FormEvent, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '@/redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux';
 import { fetchMedia, setQuery, setType, resetMedia, MediaItem } from '@/redux/slices/mediaSlice';
 import { 
   fetchAboutData, 
@@ -42,6 +42,7 @@ import {
 
 // Custom Editor Component
 import RichTextEditor from '@/components/admin/Editor';
+import { useAppDispatch } from '@/redux/hooks';
 
 interface MediaSelectButtonProps {
   value: string;
@@ -348,7 +349,7 @@ function MediaSelect({
 }
 
 export default function AboutManagementPage() {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { data: aboutData, loading, saving, error, lastSaved } = useSelector((state: RootState) => state.about);
   const { items: mediaItems, loading: mediaLoading } = useSelector((state: RootState) => state.media);
 
@@ -366,7 +367,7 @@ export default function AboutManagementPage() {
     }
   }, [error, dispatch]);
 
-  const handleFieldChange = (field: keyof AboutData, value: any) => {
+  const handleFieldChange = (field: keyof AboutData, value: string | boolean) => {
     dispatch(updateField({ field, value }));
   };
 

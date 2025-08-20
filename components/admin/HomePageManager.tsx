@@ -190,7 +190,7 @@ export default function HomePageManager() {
       setSaving(true);
       setError(null);
 
-      let updatedData = { ...heroData };
+      const updatedData = { ...heroData };
 
       // Upload media file if selected
       if (mediaFile) {
@@ -377,7 +377,7 @@ export default function HomePageManager() {
             Home Page Management
           </h1>
           <p className="text-gray-600">
-            Manage your website's hero section and content
+            Manage your website&apos;s hero section and content
           </p>
         </div>
 

@@ -118,11 +118,11 @@ const PropertiesManagerRedux = () => {
     setHasUnsavedChanges(true);
   };
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: { destination: { index: number; }; source: { index: number; }; }) => {
     if (!result.destination) return;
 
     const categoryId = activeCategory;
-    const category = data?.categories.find(cat => cat.id === categoryId);
+    const category = data?.categories.find((cat: { id: string; }) => cat.id === categoryId);
     if (!category) return;
 
     const newLocations = Array.from(category.locations);
@@ -161,7 +161,7 @@ const PropertiesManagerRedux = () => {
   };
 
   const getCurrentCategory = () => {
-    return data?.categories.find(cat => cat.id === activeCategory);
+    return data?.categories.find((cat: { id: string; }) => cat.id === activeCategory);
   };
 
   if (loading && !data) {
