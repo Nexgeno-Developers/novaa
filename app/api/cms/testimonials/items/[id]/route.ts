@@ -3,7 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Testimonials from '@/models/Testimonials';
 
-export async function PUT(request : NextRequest, { params } : any) {
+interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
+export async function PUT(request : NextRequest, { params } : RouteParams) {
   try {
     await dbConnect();
     const testimonialData = await request.json();
@@ -27,7 +33,7 @@ export async function PUT(request : NextRequest, { params } : any) {
       );
     }
 
-    const testimonialIndex = testimonials.testimonials.findIndex(t => t.id === id);
+    const testimonialIndex = testimonials.testimonials.findIndex((t: { id: string; }) => t.id === id);
     
     if (testimonialIndex === -1) {
       return NextResponse.json(
@@ -61,7 +67,7 @@ export async function PUT(request : NextRequest, { params } : any) {
   }
 }
 
-export async function DELETE(request : NextRequest, { params } : any) {
+export async function DELETE(request : NextRequest, { params } : RouteParams) {
   try {
     await dbConnect();
     const { id } = params;
@@ -75,7 +81,7 @@ export async function DELETE(request : NextRequest, { params } : any) {
       );
     }
 
-    const testimonialIndex = testimonials.testimonials.findIndex(t => t.id === id);
+    const testimonialIndex = testimonials.testimonials.findIndex((t: { id: string; }) => t.id === id);
     
     if (testimonialIndex === -1) {
       return NextResponse.json(

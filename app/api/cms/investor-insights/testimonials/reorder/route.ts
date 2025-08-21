@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       testimonials: investorInsights.testimonials
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error reordering testimonials:', error);
     return NextResponse.json(
       { error: 'Failed to reorder testimonials' },

@@ -61,7 +61,7 @@ export async function GET() {
     }
 
     return NextResponse.json(investorInsights);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching investor insights:', error);
     return NextResponse.json(
       { error: 'Failed to fetch investor insights' },
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     const investorInsights = await InvestorInsights.create(body);
     return NextResponse.json(investorInsights);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating investor insights:', error);
     return NextResponse.json(
       { error: 'Failed to create investor insights' },

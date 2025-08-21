@@ -2,23 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux';
 import { login, clearError, verifyAuth } from '@/redux/slices/authSlice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { loading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // Check if already authenticated
-    dispatch(verifyAuth() as any);
+    dispatch(verifyAuth());
   }, [dispatch]);
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export default function AdminLogin() {
     dispatch(clearError());
     
     try {
-      await dispatch(login(credentials) as any).unwrap();
+      await dispatch(login(credentials)).unwrap();
       router.push('/admin/dashboard');
     } catch (error) {
       // Error handled by Redux

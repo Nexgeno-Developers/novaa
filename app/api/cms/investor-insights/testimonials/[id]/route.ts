@@ -22,7 +22,7 @@ export async function PUT(
     }
 
     const testimonialIndex = investorInsights.testimonials.findIndex(
-      (t: any) => t._id.toString() === id
+      (t: { _id: { toString: () => string; }; }) => t._id.toString() === id
     );
 
     if (testimonialIndex === -1) {
@@ -37,7 +37,7 @@ export async function PUT(
     await investorInsights.save();
 
     return NextResponse.json(investorInsights.testimonials[testimonialIndex]);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating testimonial:', error);
     return NextResponse.json(
       { error: 'Failed to update testimonial' },
@@ -64,7 +64,7 @@ export async function DELETE(
     }
 
     const testimonialIndex = investorInsights.testimonials.findIndex(
-      (t: any) => t._id.toString() === id
+      (t: { _id: { toString: () => string; }; }) => t._id.toString() === id
     );
 
     if (testimonialIndex === -1) {
@@ -79,7 +79,7 @@ export async function DELETE(
     await investorInsights.save();
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error deleting testimonial:', error);
     return NextResponse.json(
       { error: 'Failed to delete testimonial' },

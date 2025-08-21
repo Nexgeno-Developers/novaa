@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     await investorInsights.save();
 
     return NextResponse.json(newTestimonial);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error adding testimonial:', error);
     return NextResponse.json(
       { error: 'Failed to add testimonial' },

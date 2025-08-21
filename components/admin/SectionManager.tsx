@@ -98,10 +98,10 @@ export default function SectionManager() {
     }
   };
 
-  const handleSectionUpdate = (updatedSection: any) => {
-    setHasUnsavedChanges(true);
-    // The actual update will be handled by the specific section manager
-  };
+  // const handleSectionUpdate = () => {
+  //   setHasUnsavedChanges(true);
+  //   // The actual update will be handled by the specific section manager
+  // };
 
   const pageTitle = pageSlug?.charAt(0).toUpperCase() + pageSlug?.slice(1).replace('-', ' ') || 'Page';
   const sectionTitle = currentSection?.name || sectionSlug?.charAt(0).toUpperCase() + sectionSlug?.slice(1).replace('-', ' ') || 'Section';
@@ -337,7 +337,7 @@ export default function SectionManager() {
         <Alert className="border-orange-200 bg-orange-50">
           <AlertCircle className="h-4 w-4 text-orange-600" />
           <AlertDescription className="text-orange-800">
-            You have unsaved changes. Don't forget to save your work!
+            You have unsaved changes. Don&apos;t forget to save your work!
           </AlertDescription>
         </Alert>
       )}

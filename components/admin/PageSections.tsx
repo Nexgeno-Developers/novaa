@@ -369,7 +369,7 @@ export default function PageSectionsList() {
                 No sections found
               </div>
               <p className="text-muted-foreground text-sm mb-4">
-                This page doesn't have any configured sections yet
+                This page doesn&apos;t have any configured sections yet
               </p>
               <Button className="text-background">
                 <Plus className="h-4 w-4 mr-2" />

@@ -34,7 +34,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       content: investorInsights.content
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating investor insights content:', error);
     return NextResponse.json(
       { error: 'Failed to update content' },

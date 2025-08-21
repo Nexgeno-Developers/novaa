@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux';
 import { verifyAuth } from '@/redux/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 export default function DashboardLayout({
   children,
@@ -14,12 +13,12 @@ export default function DashboardLayout({
 
   
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
-    dispatch(verifyAuth() as any);
+    dispatch(verifyAuth());
   }, [dispatch]);
 
   useEffect(() => {

@@ -41,8 +41,10 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true, data: updatedData });
-  } catch (error: any) {
+  } catch (error : unknown) {
     console.error("POST WhyInvest Error:", error);
-    return NextResponse.json({ success: false, message: error.message || 'Server error' }, { status: 500 });
+      const err = error as Error; // cast safely
+
+    return NextResponse.json({ success: false, message: err.message || 'Server error' }, { status: 500 });
   }
 }

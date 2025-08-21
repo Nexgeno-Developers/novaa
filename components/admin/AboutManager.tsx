@@ -504,7 +504,7 @@ export default function AboutManagementPage() {
                     onCheckedChange={(checked) => handleFieldChange('showSubtitle', checked)}
                   />
                   <Label htmlFor="showSubtitle" className="text-sm font-medium text-gray-700">
-                    Show "NOVAA" Subtitle
+                    Show &apos;NOVAA&apos; Subtitle
                   </Label>
                 </div>
               </div>

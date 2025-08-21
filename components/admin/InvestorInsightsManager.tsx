@@ -63,8 +63,7 @@ import { toast } from "sonner";
 import RichTextEditor from "@/components/admin/Editor";
 import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
 
-interface TestimonialFormData extends Omit<ITestimonial, "_id"> {}
-
+type TestimonialFormData = Omit<ITestimonial, "_id">;
 interface CloudinaryImage {
   secure_url: string;
 }

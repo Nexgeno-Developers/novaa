@@ -2,17 +2,16 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux';
 import { verifyAuth } from '@/redux/slices/authSlice';
+import { useAppDispatch , useAppSelector } from '@/redux/hooks';
 
 export default function AdminPage() {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(verifyAuth() as any);
+    dispatch(verifyAuth());
   }, [dispatch]);
 
   useEffect(() => {

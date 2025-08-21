@@ -43,7 +43,7 @@ export async function PUT(request: NextRequest) {
     }
     
     // Update each section's order
-    const updatePromises = sections.map((section: any) =>
+    const updatePromises = sections.map((section) =>
       Section.findByIdAndUpdate(section._id, { order: section.order })
     );
     

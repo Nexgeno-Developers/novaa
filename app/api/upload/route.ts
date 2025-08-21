@@ -2,14 +2,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { FileUploadService } from '@/lib/fileUpload';
-import { addMediaItem } from '@/redux/slices/mediaSlice';
-import { useAppDispatch } from '@/redux/hooks';
 
 const uploadService = new FileUploadService();
 
 export async function POST(request: NextRequest) {
-
-  const dispatch = useAppDispatch();
   try {
     // Verify admin authentication
     const token = getTokenFromRequest(request);
