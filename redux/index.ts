@@ -11,6 +11,7 @@ import advantageReducer from './slices/advantageSlice'
 import faqReducer from './slices/faqslice'
 import testimonialReducer from './slices/testimonialsSlice'
 import investorReducer from './slices/investorInsightsSlice'
+import pageReducer from './slices/pageSlice'
 
 
 export const store = configureStore({
@@ -26,7 +27,9 @@ export const store = configureStore({
     advantage : advantageReducer,
     faq: faqReducer,
     testimonials:testimonialReducer,
-    investor:investorReducer
+    investor:investorReducer,
+      pages: pageReducer,
+
 
   }
 })

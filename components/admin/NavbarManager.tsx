@@ -1,36 +1,32 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, ReactNode } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux";
+import { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux';
 import {
   fetchNavbar,
   updateNavbar,
   updateNavbarItems,
-} from "@/redux/slices/navbarSlice";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, GripVertical, Upload, Save } from "lucide-react";
-
-import { toast } from "sonner";
+} from '@/redux/slices/navbarSlice';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Edit, Trash2, GripVertical, Upload, Save } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useAppDispatch } from '@/redux/hooks';
 
-// Imports for @atlaskit/pragmatic-drag-and-drop
+// Drag and drop imports
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import {
   draggable,
@@ -42,7 +38,6 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { useAppDispatch } from "@/redux/hooks";
 
 interface NavbarItem {
   _id?: string;
@@ -52,15 +47,17 @@ interface NavbarItem {
   isActive: boolean;
 }
 
-// A dedicated component for each draggable item to encapsulate D&D logic
-function DraggableItem({
+// Draggable component for navbar items
+function DraggableNavItem({
   item,
   index,
-  children,
+  onEdit,
+  onDelete,
 }: {
   item: NavbarItem;
   index: number;
-  children: ReactNode;
+  onEdit: (item: NavbarItem) => void;
+  onDelete: (id: string) => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -70,7 +67,6 @@ function DraggableItem({
     const el = ref.current;
     if (!el) return;
 
-    // This combines the draggable and drop target functionality for the item
     return combine(
       draggable({
         element: el,
@@ -85,7 +81,6 @@ function DraggableItem({
         element: el,
         getData: ({ input, element }) => {
           const data = { index, _id: item._id };
-          // Attaches the closest edge to the data, used for showing a drop indicator
           return attachClosestEdge(data, {
             input,
             element,
@@ -107,18 +102,48 @@ function DraggableItem({
       {/* Drop Indicator */}
       {closestEdge && (
         <div
-          className={`absolute left-2 right-2 h-1 bg-blue-600 rounded-full ${
+          className={`absolute left-2 right-2 h-1 bg-blue-600 rounded-full z-10 ${
             closestEdge === "top" ? "-top-1" : "-bottom-1"
           }`}
         />
       )}
+
       {/* Item Content */}
       <div
-        className={`transition-opacity ${
+        className={`flex items-center space-x-4 p-4 border rounded-lg bg-white cursor-grab transition-opacity ${
           dragging ? "opacity-40" : "opacity-100"
         }`}
       >
-        {children}
+        <GripVertical className="h-4 w-4 text-gray-400" />
+
+        <div className="flex-1">
+          <div className="flex items-center space-x-2">
+            <span className="font-medium">{item.label}</span>
+            {!item.isActive && (
+              <Badge variant="secondary">Inactive</Badge>
+            )}
+          </div>
+          <span className="text-sm text-gray-500">{item.href}</span>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-primary text-background cursor-pointer"
+            onClick={() => onEdit(item)}
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-red-500 hover:bg-red-600 text-white cursor-pointer"
+            onClick={() => onDelete(item._id!)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -129,19 +154,20 @@ export default function NavbarManager() {
   const { logo, items, loading, error } = useSelector(
     (state: RootState) => state.navbar
   );
+  
   const [editingItem, setEditingItem] = useState<NavbarItem | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Fetch navbar data on component mount
   useEffect(() => {
     dispatch(fetchNavbar());
   }, [dispatch]);
 
-  // Main useEffect for handling drag-and-drop logic
+  // Handle drag and drop reordering
   useEffect(() => {
-    // This function reorders the items in the state and dispatches the update
-    const reorderAndSave = async ({
+    const reorderItems = async ({
       startIndex,
       finishIndex,
     }: {
@@ -157,17 +183,23 @@ export default function NavbarManager() {
         order: index + 1,
       }));
 
+      // Update Redux state immediately for smooth UI
       dispatch(updateNavbarItems(updatedItems));
-      await dispatch(updateNavbar({ items: updatedItems }));
+      
+      // Then sync with backend
+      try {
+        await dispatch(updateNavbar({ items: updatedItems })).unwrap();
+      } catch (error) {
+        toast.error('Failed to save reorder');
+        console.error('Reorder error:', error);
+      }
     };
 
-    // Monitor for drops on elements
     return monitorForElements({
       onDrop(args) {
         const { location, source } = args;
         const startIndex = source.data.index as number;
 
-        // If not dropping on a valid target, do nothing
         if (!location.current.dropTargets.length) {
           return;
         }
@@ -183,7 +215,9 @@ export default function NavbarManager() {
           axis: "vertical",
         });
 
-        reorderAndSave({ startIndex, finishIndex });
+        if (startIndex !== finishIndex) {
+          reorderItems({ startIndex, finishIndex });
+        }
       },
     });
   }, [items, dispatch]);
@@ -200,24 +234,29 @@ export default function NavbarManager() {
   };
 
   const handleSaveItem = async () => {
-    if (!editingItem) return;
+    if (!editingItem || !editingItem.label || !editingItem.href) return;
 
     setSaving(true);
     try {
       let updatedItems;
       if (editingItem._id) {
+        // Editing existing item
         updatedItems = items.map((item) =>
           item._id === editingItem._id ? editingItem : item
         );
       } else {
+        // Adding new item
         updatedItems = [
           ...items,
           { ...editingItem, _id: Date.now().toString() },
         ];
       }
 
+      // Update Redux state
       dispatch(updateNavbarItems(updatedItems));
-      await dispatch(updateNavbar({ items: updatedItems }));
+      
+      // Sync with backend
+      await dispatch(updateNavbar({ items: updatedItems })).unwrap();
 
       toast.success(editingItem._id ? "Item updated" : "New item added");
 
@@ -225,17 +264,27 @@ export default function NavbarManager() {
       setShowAddForm(false);
     } catch (error) {
       toast.error("Failed to save item");
-      console.error(error);
+      console.error('Save error:', error);
     } finally {
       setSaving(false);
     }
   };
 
   const handleDeleteItem = async (itemId: string) => {
-    toast.success("Navbar Items deleted successfully");
-    const updatedItems = items.filter((item) => item._id !== itemId);
-    dispatch(updateNavbarItems(updatedItems));
-    await dispatch(updateNavbar({ items: updatedItems }));
+    try {
+      const updatedItems = items.filter((item) => item._id !== itemId);
+      
+      // Update Redux state
+      dispatch(updateNavbarItems(updatedItems));
+      
+      // Sync with backend
+      await dispatch(updateNavbar({ items: updatedItems })).unwrap();
+      
+      toast.success("Navigation item deleted");
+    } catch (error) {
+      toast.error("Failed to delete item");
+      console.error('Delete error:', error);
+    }
   };
 
   const handleLogoUpload = async () => {
@@ -253,8 +302,8 @@ export default function NavbarManager() {
       const result = await response.json();
 
       if (result.success) {
-        const newLogo = { url: result.url, alt: "Novaa Real Estate Logo" };
-        await dispatch(updateNavbar({ logo: newLogo }));
+        const newLogo = { url: result.url, alt: "Logo" };
+        await dispatch(updateNavbar({ logo: newLogo })).unwrap();
         setLogoFile(null);
         toast.success("Logo uploaded successfully");
       } else {
@@ -262,21 +311,34 @@ export default function NavbarManager() {
       }
     } catch (error) {
       toast.error("Failed to upload logo");
-      console.error(error);
+      console.error('Upload error:', error);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleLogoChange = async (field: 'url' | 'alt', value: string) => {
+    try {
+      const updatedLogo = {
+        ...logo,
+        [field]: value
+      };
+      
+      await dispatch(updateNavbar({ logo: updatedLogo })).unwrap();
+    } catch (error) {
+      toast.error(`Failed to update logo ${field}`);
+      console.error('Logo update error:', error);
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span className="ml-3 text-muted-foreground">Loading navbar...</span>
       </div>
     );
   }
-
-  console.log("Editing Item", editingItem);
 
   return (
     <div className="space-y-6">
@@ -292,13 +354,13 @@ export default function NavbarManager() {
       )}
 
       {/* Logo Management */}
-      <Card className="py-6">
+      <Card className='py-6'>
         <CardHeader>
-          <CardTitle>Logo</CardTitle>
-          <CardDescription>Upload and manage your website logo</CardDescription>
+          <CardTitle>Logo Settings</CardTitle>
+          <CardDescription>Manage your website logo and branding</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {logo && (
+          {logo && logo.url && (
             <div className="flex items-center space-x-4">
               <img
                 src={logo.url}
@@ -309,32 +371,56 @@ export default function NavbarManager() {
             </div>
           )}
 
-          <div className="flex items-center space-x-4">
-            <Input
-              type="file"
-              accept="image/*"
-              className="text-background"
-              onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
-            />
-            <Button
-              onClick={handleLogoUpload}
-              disabled={!logoFile || saving}
-              className="flex items-center space-x-2 text-background hover:cursor-pointer"
-            >
-              <Upload className="h-4 w-4" />
-              <span>Upload</span>
-            </Button>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="logo-url">Logo URL</Label>
+              <Input
+                id="logo-url"
+                value={logo?.url || ''}
+                onChange={(e) => handleLogoChange('url', e.target.value)}
+                placeholder="https://example.com/logo.png"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="logo-alt">Logo Alt Text</Label>
+              <Input
+                id="logo-alt"
+                value={logo?.alt || ''}
+                onChange={(e) => handleLogoChange('alt', e.target.value)}
+                placeholder="Your Company Logo"
+              />
+            </div>
+          </div>
+
+          <div className="pt-4">
+            <Label>Upload New Logo</Label>
+            <div className="flex items-center space-x-4 mt-2">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+              />
+              <Button
+                onClick={handleLogoUpload}
+                disabled={!logoFile || saving}
+                className="flex items-center space-x-2 text-background"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Upload</span>
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Navigation Items */}
-      <Card className="py-6">
+      <Card className='py-6'>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Navigation Items</CardTitle>
             <CardDescription>
-              Manage your website navigation menu
+              Manage your website navigation menu. Drag to reorder items.
             </CardDescription>
           </div>
           <Button
@@ -346,44 +432,27 @@ export default function NavbarManager() {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {items.map((item, index) => (
-              <DraggableItem key={item._id || index} item={item} index={index}>
-                <div className="flex items-center space-x-4 p-4 border rounded-lg bg-white cursor-grab">
-                  <GripVertical className="h-4 w-4 text-gray-400" />
-
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-medium">{item.label}</span>
-                      {!item.isActive && (
-                        <Badge variant="secondary">Inactive</Badge>
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-500">{item.href}</span>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-primary text-background cursor-pointer"
-                      onClick={() => setEditingItem(item)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-[#FF0800] hover:bg-[#E23D28] cursor-pointer"
-                      onClick={() => handleDeleteItem(item._id!)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </DraggableItem>
-            ))}
-          </div>
+          {items.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">No navigation items yet</p>
+              <Button onClick={handleAddItem} className="text-background">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Item
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {items.map((item, index) => (
+                <DraggableNavItem
+                  key={item._id || index}
+                  item={item}
+                  index={index}
+                  onEdit={setEditingItem}
+                  onDelete={handleDeleteItem}
+                />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -398,15 +467,15 @@ export default function NavbarManager() {
         <DialogContent className="bg-background text-primary border-background">
           <DialogHeader>
             <DialogTitle>
-              {editingItem?._id ? "Edit Item" : "Add New Item"}
+              {editingItem?._id ? "Edit Navigation Item" : "Add New Navigation Item"}
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-500 pb-2">
+              <Label className="block text-sm font-medium text-gray-700 pb-2">
                 Label
-              </label>
+              </Label>
               <Input
                 value={editingItem?.label || ""}
                 onChange={(e) =>
@@ -414,15 +483,14 @@ export default function NavbarManager() {
                     prev ? { ...prev, label: e.target.value } : null
                   )
                 }
-                className="no-selection-highlight"
                 placeholder="e.g., Home, About, Contact"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-500">
+              <Label className="block text-sm font-medium text-gray-700 pb-2">
                 URL
-              </label>
+              </Label>
               <Input
                 value={editingItem?.href || ""}
                 onChange={(e) =>
@@ -435,34 +503,32 @@ export default function NavbarManager() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id={`is-active-checkbox-${editingItem?._id || "new"}`}
+              <Switch
+                id={`is-active-${editingItem?._id || 'new'}`}
                 checked={editingItem?.isActive || false}
-                onChange={(e) =>
+                onCheckedChange={(checked) =>
                   setEditingItem((prev) =>
-                    prev ? { ...prev, isActive: e.target.checked } : null
+                    prev ? { ...prev, isActive: checked } : null
                   )
                 }
-                className="rounded"
               />
-              <label
-                htmlFor={`is-active-checkbox-${editingItem?._id || "new"}`}
-                className="text-sm text-gray-500"
+              <Label
+                htmlFor={`is-active-${editingItem?._id || 'new'}`}
+                className="text-sm text-gray-700"
               >
-                Active
-              </label>
+                Active (visible in navigation)
+              </Label>
             </div>
           </div>
 
           <DialogFooter className="flex space-x-2 mt-4">
             <Button
               onClick={handleSaveItem}
-              disabled={saving}
+              disabled={saving || !editingItem?.label || !editingItem?.href}
               className="bg-primary text-background cursor-pointer"
             >
               <Save className="h-4 w-4 mr-2" />
-              {saving ? "Saving..." : "Save"}
+              {saving ? "Saving..." : "Save Item"}
             </Button>
             <Button
               variant="outline"
