@@ -16,10 +16,16 @@ const nextConfig: NextConfig = {
         pathname: "/dh5twxeqi/**", // Match your specific Cloudinary path
       },
       {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/dofyqpsar/**", // Match your specific Cloudinary path
+      },
+      {
         protocol: "http",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/dh5twxeqi/**", // Match your specific Cloudinary path
+        pathname: "/dofyqpsar/**", // Match your specific Cloudinary path
       },
     ],
   },
