@@ -56,7 +56,7 @@ export default function Dashboard() {
           const Icon = action.icon;
           return (
             <Link key={action.title} href={action.href}>
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer py-6">
                 <CardHeader className="pb-3">
                   <div className={`inline-flex p-2 rounded-lg ${action.color} w-fit`}>
                     <Icon className="h-5 w-5 text-white" />
@@ -73,7 +73,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className='py-6'>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
@@ -101,7 +101,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className='py-6'>
           <CardHeader>
             <CardTitle>System Status</CardTitle>
           </CardHeader>
