@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import {
   Card,
   CardContent,
@@ -228,7 +228,7 @@ const TestimonialsManager: React.FC = () => {
     });
   };
 
-  const handleDragEnd = async (result: { destination: { index: number; }; source: { index: number; }; }) => {
+  const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
     const items = Array.from(testimonials);

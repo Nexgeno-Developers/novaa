@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     // Set order to be the next number
     const nextOrder = investorInsights.testimonials.length > 0 
-      ? Math.max(...investorInsights.testimonials.map(t => t.order)) + 1 
+      ? Math.max(...investorInsights.testimonials.map((t: { order: number; }) => t.order)) + 1 
       : 1;
 
     const newTestimonial = {

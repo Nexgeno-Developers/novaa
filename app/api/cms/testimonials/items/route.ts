@@ -1,5 +1,5 @@
 // app/api/cms/testimonials/items/route.js
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Testimonials from '@/models/Testimonials';
 import { v4 as uuidv4 } from 'uuid';
@@ -33,7 +33,7 @@ export async function POST(request : NextRequest) {
 
     // Get next order number
     const maxOrder = testimonials.testimonials.length > 0 
-      ? Math.max(...testimonials.testimonials.map(t => t.order))
+      ? Math.max(...testimonials.testimonials.map((t: { order: number; }) => t.order))
       : -1;
 
     const newTestimonial = {

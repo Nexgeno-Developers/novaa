@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import InvestorInsights from '@/models/InvestorInsights';
-
-// Define type for params
+// Define an interface for the expected route parameters
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  id: string;
 }
-
-export async function PUT(  request: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<RouteParams> } 
+) {
   try {
     await connectDB();
     const testimonialData = await request.json();
-    const { id } = params;
+    const { id } = await context.params; // Destructure id from params
 
     const investorInsights = await InvestorInsights.findOne({ isActive: true });
 
@@ -25,7 +24,7 @@ export async function PUT(  request: NextRequest, { params }: RouteParams) {
     }
 
     const testimonialIndex = investorInsights.testimonials.findIndex(
-      (t: { _id: { toString: () => string; }; }) => t._id.toString() === id
+      (t: { _id: { toString: () => string } }) => t._id.toString() === id
     );
 
     if (testimonialIndex === -1) {
@@ -35,8 +34,12 @@ export async function PUT(  request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Update the testimonial
-    Object.assign(investorInsights.testimonials[testimonialIndex], testimonialData);
+    // Update the testimonial by merging new data
+    investorInsights.testimonials[testimonialIndex] = {
+      ...investorInsights.testimonials[testimonialIndex].toObject(),
+      ...testimonialData,
+    };
+
     await investorInsights.save();
 
     return NextResponse.json(investorInsights.testimonials[testimonialIndex]);
@@ -51,11 +54,11 @@ export async function PUT(  request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<RouteParams>  }
 ) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = await context.params;
 
     const investorInsights = await InvestorInsights.findOne({ isActive: true });
 
@@ -67,7 +70,7 @@ export async function DELETE(
     }
 
     const testimonialIndex = investorInsights.testimonials.findIndex(
-      (t: { _id: { toString: () => string; }; }) => t._id.toString() === id
+      (t: { _id: { toString: () => string } }) => t._id.toString() === id
     );
 
     if (testimonialIndex === -1) {
@@ -81,7 +84,7 @@ export async function DELETE(
     investorInsights.testimonials.splice(testimonialIndex, 1);
     await investorInsights.save();
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: "Testimonial deleted successfully." });
   } catch (error) {
     console.error('Error deleting testimonial:', error);
     return NextResponse.json(

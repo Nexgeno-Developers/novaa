@@ -1,18 +1,26 @@
 // app/admin/properties-manager/page.tsx (Redux Version)
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Save, Plus, Trash2, GripVertical, RefreshCw, Sparkles, Images } from 'lucide-react';
-import { toast } from 'sonner';
-import RichTextEditor from '@/components/admin/Editor';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Save,
+  Plus,
+  Trash2,
+  GripVertical,
+  RefreshCw,
+  Sparkles,
+  Images,
+} from "lucide-react";
+import { toast } from "sonner";
+import RichTextEditor from "@/components/admin/Editor";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import {
   fetchPropertiesData,
   savePropertiesData,
@@ -30,7 +38,7 @@ import {
   selectPropertiesData,
   selectPropertiesLoading,
   selectPropertiesError,
-} from '@/redux/slices/propertiesSlice';
+} from "@/redux/slices/propertiesSlice";
 
 interface Location {
   id: string;
@@ -40,14 +48,22 @@ interface Location {
   icon: string;
 }
 
+interface Category {
+  id: string;
+  title: string;
+  icon: string;
+}
+
 const PropertiesManagerRedux = () => {
   const dispatch = useAppDispatch();
   const data = useAppSelector(selectPropertiesData);
   const loading = useAppSelector(selectPropertiesLoading);
   const error = useAppSelector(selectPropertiesError);
-  
-  const [activeCategory, setActiveCategory] = useState<string>('');
+
+  const [activeCategory, setActiveCategory] = useState<string>("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const categories: Category[] = data?.categories ?? [];
 
   // Fetch data on component mount
   useEffect(() => {
@@ -71,22 +87,23 @@ const PropertiesManagerRedux = () => {
 
   const handleSave = async () => {
     if (!data) return;
-    
-    try {
-      await dispatch(savePropertiesData({
-        mainHeading: data.mainHeading,
-        subHeading: data.subHeading,
-        description: data.description,
-        explorerHeading: data.explorerHeading,
-        explorerDescription: data.explorerDescription,
-        categories: data.categories,
-      })).unwrap();
-      
-      setHasUnsavedChanges(false);
-      toast.success('Properties data saved successfully!');
-    } catch (error) {
-           toast.error('Failed to save properties data.');
 
+    try {
+      await dispatch(
+        savePropertiesData({
+          mainHeading: data.mainHeading,
+          subHeading: data.subHeading,
+          description: data.description,
+          explorerHeading: data.explorerHeading,
+          explorerDescription: data.explorerDescription,
+          categories: data.categories,
+        })
+      ).unwrap();
+
+      setHasUnsavedChanges(false);
+      toast.success("Properties data saved successfully!");
+    } catch (error) {
+      toast.error("Failed to save properties data.");
     }
   };
 
@@ -98,17 +115,21 @@ const PropertiesManagerRedux = () => {
   const handleAddLocation = (categoryId: string) => {
     const newLocation: Location = {
       id: Date.now().toString(),
-      name: 'New Location',
-      image: 'https://placehold.co/200x150/C3912F/FFFFFF?text=New+Location',
-      coords: { top: '50%', left: '50%' },
-      icon: '/icons/map-pin.svg'
+      name: "New Location",
+      image: "https://placehold.co/200x150/C3912F/FFFFFF?text=New+Location",
+      coords: { top: "50%", left: "50%" },
+      icon: "/icons/map-pin.svg",
     };
 
     dispatch(addLocation({ categoryId, location: newLocation }));
     setHasUnsavedChanges(true);
   };
 
-  const handleUpdateLocation = (categoryId: string, locationId: string, updates: Partial<Location>) => {
+  const handleUpdateLocation = (
+    categoryId: string,
+    locationId: string,
+    updates: Partial<Location>
+  ) => {
     dispatch(updateLocation({ categoryId, locationId, updates }));
     setHasUnsavedChanges(true);
   };
@@ -118,11 +139,13 @@ const PropertiesManagerRedux = () => {
     setHasUnsavedChanges(true);
   };
 
-  const handleDragEnd = (result: { destination: { index: number; }; source: { index: number; }; }) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     const categoryId = activeCategory;
-    const category = data?.categories.find((cat: { id: string; }) => cat.id === categoryId);
+    const category = data?.categories.find(
+      (cat: { id: string }) => cat.id === categoryId
+    );
     if (!category) return;
 
     const newLocations = Array.from(category.locations);
@@ -135,21 +158,21 @@ const PropertiesManagerRedux = () => {
 
   const handleFieldUpdate = (field: string, value: string) => {
     setHasUnsavedChanges(true);
-    
+
     switch (field) {
-      case 'mainHeading':
+      case "mainHeading":
         dispatch(updateMainHeading(value));
         break;
-      case 'subHeading':
+      case "subHeading":
         dispatch(updateSubHeading(value));
         break;
-      case 'description':
+      case "description":
         dispatch(updateDescription(value));
         break;
-      case 'explorerHeading':
+      case "explorerHeading":
         dispatch(updateExplorerHeading(value));
         break;
-      case 'explorerDescription':
+      case "explorerDescription":
         dispatch(updateExplorerDescription(value));
         break;
     }
@@ -161,7 +184,9 @@ const PropertiesManagerRedux = () => {
   };
 
   const getCurrentCategory = () => {
-    return data?.categories.find((cat: { id: string; }) => cat.id === activeCategory);
+    return data?.categories.find(
+      (cat: { id: string }) => cat.id === activeCategory
+    );
   };
 
   if (loading && !data) {
@@ -187,117 +212,144 @@ const PropertiesManagerRedux = () => {
           )}
         </div>
         <div className="flex space-x-2">
-          <Button 
-            onClick={handleRefresh} 
+          <Button
+            onClick={handleRefresh}
             disabled={loading}
-            className='bg-primary text-background cursor-pointer '
+            className="bg-primary text-background cursor-pointer "
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={loading || !hasUnsavedChanges}
-            className='bg-primary text-background cursor-pointer'
+            className="bg-primary text-background cursor-pointer"
           >
             <Save className="w-4 h-4 mr-2" />
-            {loading ? 'Saving...' : 'Save Changes'}
+            {loading ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="content" className="space-y-6">
         <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
-              <TabsTrigger 
-                value="content" 
-                className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background  data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span className="font-medium">Content Management</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="map"
-                className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-              >
-                <Images className="w-4 h-4" />
-                <span className="font-medium">Map Management</span>
-              </TabsTrigger>
-            </TabsList>
+          <TabsTrigger
+            value="content"
+            className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background  data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span className="font-medium">Content Management</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="map"
+            className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
+          >
+            <Images className="w-4 h-4" />
+            <span className="font-medium">Map Management</span>
+          </TabsTrigger>
+        </TabsList>
 
         <TabsContent value="content" className="space-y-6">
-          <Card className='py-6'>
+          <Card className="py-6">
             <CardHeader>
               <CardTitle>Main Section Content</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="mainHeading" className='pb-2'>Main Heading</Label>
+                <Label htmlFor="mainHeading" className="pb-2">
+                  Main Heading
+                </Label>
                 <Input
                   id="mainHeading"
-                  value={data?.mainHeading || ''}
-                  onChange={(e) => handleFieldUpdate('mainHeading', e.target.value)}
+                  value={data?.mainHeading || ""}
+                  onChange={(e) =>
+                    handleFieldUpdate("mainHeading", e.target.value)
+                  }
                   placeholder="DISCOVER PRIME PROPERTIES"
                 />
               </div>
 
               <div>
-                <Label htmlFor="subHeading" className='pb-2'>Sub Heading</Label>
+                <Label htmlFor="subHeading" className="pb-2">
+                  Sub Heading
+                </Label>
                 <Input
                   id="subHeading"
-                  value={data?.subHeading || ''}
-                  onChange={(e) => handleFieldUpdate('subHeading', e.target.value)}
+                  value={data?.subHeading || ""}
+                  onChange={(e) =>
+                    handleFieldUpdate("subHeading", e.target.value)
+                  }
                   placeholder="ACROSS PHUKET"
                 />
               </div>
 
               <div>
-                <Label htmlFor="description" className='pb-2'>Description</Label>
+                <Label htmlFor="description" className="pb-2">
+                  Description
+                </Label>
                 <RichTextEditor
-                  value={data?.description || ''}
-                  onEditorChange={(content) => handleFieldUpdate('description', content)}
+                  value={data?.description || ""}
+                  onEditorChange={(content) =>
+                    handleFieldUpdate("description", content)
+                  }
                 />
               </div>
             </CardContent>
           </Card>
 
-          <Card className='py-6'>
+          <Card className="py-6">
             <CardHeader>
               <CardTitle>Phuket Explorer Section</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="explorerHeading" className='pb-2'>Explorer Heading</Label>
+                <Label htmlFor="explorerHeading" className="pb-2">
+                  Explorer Heading
+                </Label>
                 <Input
                   id="explorerHeading"
-                  value={data?.explorerHeading || ''}
-                  onChange={(e) => handleFieldUpdate('explorerHeading', e.target.value)}
+                  value={data?.explorerHeading || ""}
+                  onChange={(e) =>
+                    handleFieldUpdate("explorerHeading", e.target.value)
+                  }
                   placeholder="Phuket Explorer"
                 />
               </div>
 
               <div>
-                <Label htmlFor="explorerDescription" className='pb-2'>Explorer Description</Label>
+                <Label htmlFor="explorerDescription" className="pb-2">
+                  Explorer Description
+                </Label>
                 <RichTextEditor
-                  value={data?.explorerDescription || ''}
-                  onEditorChange={(content) => handleFieldUpdate('explorerDescription', content)}
+                  value={data?.explorerDescription || ""}
+                  onEditorChange={(content) =>
+                    handleFieldUpdate("explorerDescription", content)
+                  }
                 />
               </div>
             </CardContent>
           </Card>
 
-          <Card className='py-6'>
+          <Card className="py-6">
             <CardHeader>
               <CardTitle>Category Buttons</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {data?.categories.map((category) => (
-                <div key={category.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                  <Badge className='text-background'>{category.id}</Badge>
+              {categories.map((category: Category) => (
+                <div
+                  key={category.id}
+                  className="flex items-center space-x-4 p-4 border rounded-lg"
+                >
+                  <Badge className="text-background">{category.id}</Badge>
                   <div className="flex-1">
-                    <Label className='pb-2'>Button Title</Label>
+                    <Label className="pb-2">Button Title</Label>
                     <Input
                       value={category.title}
-                      onChange={(e) => handleCategoryTitleUpdate(category.id, e.target.value)}
+                      onChange={(e) =>
+                        handleCategoryTitleUpdate(category.id, e.target.value)
+                      }
                       placeholder="Category Title"
                     />
                   </div>
@@ -311,7 +363,7 @@ const PropertiesManagerRedux = () => {
         </TabsContent>
 
         <TabsContent value="map" className="space-y-6">
-          <Card className='py-6'>
+          <Card className="py-6">
             <CardHeader>
               <CardTitle>Map Location Management</CardTitle>
             </CardHeader>
@@ -319,16 +371,20 @@ const PropertiesManagerRedux = () => {
               <div className="mb-4">
                 <Label>Select Category</Label>
                 <div className="flex space-x-2 mt-2">
-                  {data?.categories.map((category) => (
+                  {categories.map((category : Category) => (
                     <Button
                       key={category.id}
-                      variant={activeCategory === category.id ? "default" : "outline"}
+                      variant={
+                        activeCategory === category.id ? "default" : "outline"
+                      }
                       onClick={() => setActiveCategory(category.id)}
-                      className={`text-sm cursor-pointer ${activeCategory === category.id ? "bg-primary text-background" : 
-                        "bg-gray-200"
+                      className={`text-sm cursor-pointer ${
+                        activeCategory === category.id
+                          ? "bg-primary text-background"
+                          : "bg-gray-200"
                       } `}
                     >
-                      {category.title.split(' ')[0]}
+                      {category.title.split(" ")[0]}
                     </Button>
                   ))}
                 </div>
@@ -343,7 +399,7 @@ const PropertiesManagerRedux = () => {
                     <Button
                       onClick={() => handleAddLocation(activeCategory)}
                       size="sm"
-                      className='bg-primary text-background cursor-pointer'
+                      className="bg-primary text-background cursor-pointer"
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Location
@@ -358,104 +414,138 @@ const PropertiesManagerRedux = () => {
                           ref={provided.innerRef}
                           className="space-y-2"
                         >
-                          {getCurrentCategory()?.locations.map((location, index) => (
-                            <Draggable
-                              key={location.id}
-                              draggableId={location.id}
-                              index={index}
-                            >
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  className="p-4 border rounded-lg bg-white"
-                                >
-                                  <div className="flex items-center space-x-4">
-                                    <div
-                                      {...provided.dragHandleProps}
-                                      className="cursor-grab hover:cursor-grabbing"
-                                    >
-                                      <GripVertical className="w-4 h-4 text-gray-400" />
+                          {getCurrentCategory()?.locations.map(
+                            (location : Location, index : number) => (
+                              <Draggable
+                                key={location.id}
+                                draggableId={location.id}
+                                index={index}
+                              >
+                                {(provided) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    className="p-4 border rounded-lg bg-white"
+                                  >
+                                    <div className="flex items-center space-x-4">
+                                      <div
+                                        {...provided.dragHandleProps}
+                                        className="cursor-grab hover:cursor-grabbing"
+                                      >
+                                        <GripVertical className="w-4 h-4 text-gray-400" />
+                                      </div>
+
+                                      <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div>
+                                          <Label>Name</Label>
+                                          <Input
+                                            value={location.name}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                { name: e.target.value }
+                                              )
+                                            }
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <Label>Image URL</Label>
+                                          <Input
+                                            value={location.image}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                { image: e.target.value }
+                                              )
+                                            }
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <Label>Top Position (%)</Label>
+                                          <Input
+                                            value={location.coords.top.replace(
+                                              "%",
+                                              ""
+                                            )}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                {
+                                                  coords: {
+                                                    ...location.coords,
+                                                    top: `${e.target.value}%`,
+                                                  },
+                                                }
+                                              )
+                                            }
+                                            placeholder="50"
+                                          />
+                                        </div>
+
+                                        <div>
+                                          <Label>Left Position (%)</Label>
+                                          <Input
+                                            value={location.coords.left.replace(
+                                              "%",
+                                              ""
+                                            )}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                {
+                                                  coords: {
+                                                    ...location.coords,
+                                                    left: `${e.target.value}%`,
+                                                  },
+                                                }
+                                              )
+                                            }
+                                            placeholder="50"
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleDeleteLocation(
+                                            activeCategory,
+                                            location.id
+                                          )
+                                        }
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </Button>
                                     </div>
-                                    
-                                    <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
-                                      <div>
-                                        <Label>Name</Label>
-                                        <Input
-                                          value={location.name}
-                                          onChange={(e) => handleUpdateLocation(
-                                            activeCategory,
-                                            location.id,
-                                            { name: e.target.value }
-                                          )}
-                                        />
-                                      </div>
-                                      
-                                      <div>
-                                        <Label>Image URL</Label>
-                                        <Input
-                                          value={location.image}
-                                          onChange={(e) => handleUpdateLocation(
-                                            activeCategory,
-                                            location.id,
-                                            { image: e.target.value }
-                                          )}
-                                        />
-                                      </div>
-                                      
-                                      <div>
-                                        <Label>Top Position (%)</Label>
-                                        <Input
-                                          value={location.coords.top.replace('%', '')}
-                                          onChange={(e) => handleUpdateLocation(
-                                            activeCategory,
-                                            location.id,
-                                            { coords: { ...location.coords, top: `${e.target.value}%` } }
-                                          )}
-                                          placeholder="50"
-                                        />
-                                      </div>
-                                      
-                                      <div>
-                                        <Label>Left Position (%)</Label>
-                                        <Input
-                                          value={location.coords.left.replace('%', '')}
-                                          onChange={(e) => handleUpdateLocation(
-                                            activeCategory,
-                                            location.id,
-                                            { coords: { ...location.coords, left: `${e.target.value}%` } }
-                                          )}
-                                          placeholder="50"
+
+                                    <div className="mt-4 p-2 bg-gray-50 rounded text-sm">
+                                      <strong>Preview Position:</strong> Top:{" "}
+                                      {location.coords.top}, Left:{" "}
+                                      {location.coords.left}
+                                      <div className="mt-2">
+                                        <img
+                                          src={location.image}
+                                          alt={location.name}
+                                          className="w-20 h-15 object-cover rounded border"
+                                          onError={(e) => {
+                                            e.currentTarget.src =
+                                              "https://placehold.co/80x60/gray/white?text=No+Image";
+                                          }}
                                         />
                                       </div>
                                     </div>
-                                    
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() => handleDeleteLocation(activeCategory, location.id)}
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </Button>
                                   </div>
-                                  
-                                  <div className="mt-4 p-2 bg-gray-50 rounded text-sm">
-                                    <strong>Preview Position:</strong> Top: {location.coords.top}, Left: {location.coords.left}
-                                    <div className="mt-2">
-                                      <img 
-                                        src={location.image} 
-                                        alt={location.name}
-                                        className="w-20 h-15 object-cover rounded border"
-                                        onError={(e) => {
-                                          e.currentTarget.src = 'https://placehold.co/80x60/gray/white?text=No+Image';
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
+                                )}
+                              </Draggable>
+                            )
+                          )}
                           {provided.placeholder}
                         </div>
                       )}
@@ -465,7 +555,7 @@ const PropertiesManagerRedux = () => {
               )}
             </CardContent>
           </Card>
-          
+
           {/* Map Preview Section */}
           <Card>
             <CardHeader>
@@ -478,9 +568,9 @@ const PropertiesManagerRedux = () => {
                   alt="Phuket Map"
                   className="w-full h-full object-contain"
                 />
-                
+
                 {/* Preview pins for current category */}
-                {getCurrentCategory()?.locations.map((location) => (
+                {getCurrentCategory()?.locations.map((location : Location) => (
                   <div
                     key={location.id}
                     className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
@@ -490,8 +580,7 @@ const PropertiesManagerRedux = () => {
                     }}
                     title={location.name}
                   >
-                    <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg group-hover:scale-125 transition-transform">
-                    </div>
+                    <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-lg group-hover:scale-125 transition-transform"></div>
                     <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                       {location.name}
                     </div>
@@ -499,8 +588,9 @@ const PropertiesManagerRedux = () => {
                 ))}
               </div>
               <p className="text-sm text-gray-600 mt-2">
-                This preview shows the current positions of locations for the selected category.
-                Drag and drop locations in the management section above to reorder them.
+                This preview shows the current positions of locations for the
+                selected category. Drag and drop locations in the management
+                section above to reorder them.
               </p>
             </CardContent>
           </Card>

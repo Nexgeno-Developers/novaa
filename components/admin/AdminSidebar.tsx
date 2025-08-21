@@ -15,6 +15,7 @@ import {
 interface AdminSidebarProps {
   collapsed: boolean;
   onToggle: (collapsed: boolean) => void;
+  isMobile? : boolean
 }
 
 const navigation = [

@@ -3,12 +3,17 @@ import connectDB from '@/lib/mongodb';
 import Section from '@/models/Section';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 
+interface RouteParams {
+  pageSlug : string;
+  sectionSlug : string
+}
+
 // GET - Fetch a specific section
-export async function GET(request: NextRequest, { params }: { params: { pageSlug: string; sectionSlug: string } }) {
+export async function GET(request: NextRequest, context: { params: Promise<RouteParams>  } ) {
   try {
     await connectDB();
     
-    const { pageSlug, sectionSlug } = await params;
+    const { pageSlug, sectionSlug } = await context.params;
     
     const section = await Section.findOne({ pageSlug, slug: sectionSlug });
     
@@ -24,7 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: { pageSlug
 }
 
 // PUT - Update a specific section (admin only)
-export async function PUT(request: NextRequest, { params }: { params: { pageSlug: string; sectionSlug: string } }) {
+export async function PUT(request: NextRequest, context: { params: Promise<RouteParams>  }  ) {
   try {
     await connectDB();
     
@@ -34,7 +39,7 @@ export async function PUT(request: NextRequest, { params }: { params: { pageSlug
       return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
     
-    const { pageSlug, sectionSlug } = params;
+    const { pageSlug, sectionSlug } = await context.params;
     const updateData = await request.json();
     
     const section = await Section.findOneAndUpdate(
@@ -58,7 +63,7 @@ export async function PUT(request: NextRequest, { params }: { params: { pageSlug
 }
 
 // DELETE - Delete a specific section (admin only)
-export async function DELETE(request: NextRequest, { params }: { params: { pageSlug: string; sectionSlug: string } }) {
+export async function DELETE(request: NextRequest, context : {params : Promise<RouteParams>}) {
   try {
     await connectDB();
     
@@ -68,7 +73,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { pageS
       return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
     
-    const { pageSlug, sectionSlug } = params;
+    const { pageSlug, sectionSlug } = await context.params;
     
     const section = await Section.findOneAndDelete({ pageSlug, slug: sectionSlug });
     

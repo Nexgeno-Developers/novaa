@@ -4,16 +4,14 @@ import dbConnect from '@/lib/mongodb';
 import Testimonials from '@/models/Testimonials';
 
 interface RouteParams {
-  params: {
     id: string;
-  };
 }
 
-export async function PUT(request : NextRequest, { params } : RouteParams) {
+export async function PUT(request : NextRequest, context : {params : Promise<RouteParams>}) {
   try {
     await dbConnect();
     const testimonialData = await request.json();
-    const { id } = params;
+    const { id } = await context.params;
     
     const { name, role, rating, quote, avatar } = testimonialData;
     
@@ -67,10 +65,10 @@ export async function PUT(request : NextRequest, { params } : RouteParams) {
   }
 }
 
-export async function DELETE(request : NextRequest, { params } : RouteParams) {
+export async function DELETE(request : NextRequest, context : {params : Promise<RouteParams>}) {
   try {
     await dbConnect();
-    const { id } = params;
+    const { id } = await context.params;
 
     const testimonials = await Testimonials.findOne({ sectionId: 'testimonials-section' });
     

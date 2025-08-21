@@ -89,7 +89,7 @@ export async function GET() {
 
     // Sort testimonials by order
     if (testimonials.testimonials) {
-      testimonials.testimonials.sort((a, b) => a.order - b.order);
+      testimonials.testimonials.sort((a: { order: number; }, b: { order: number; }) => a.order - b.order);
     }
 
     return NextResponse.json({

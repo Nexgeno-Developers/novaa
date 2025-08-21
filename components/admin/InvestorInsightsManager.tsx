@@ -16,7 +16,7 @@ import {
   ITestimonial,
   IInvestorInsightsContent,
 } from "@/redux/slices/investorInsightsSlice";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable , DropResult } from "@hello-pangea/dnd";
 
 // Import shadcn components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -240,7 +240,7 @@ const InvestorInsightsManager: React.FC = () => {
     }
   };
 
-  const handleDragEnd = async (result: { destination: { index: number; }; source: { index: number; }; }) => {
+  const handleDragEnd = async (result: DropResult) => {
     if (!result.destination || !data?.testimonials) return;
 
     const items = Array.from(data.testimonials);
@@ -448,7 +448,7 @@ const InvestorInsightsManager: React.FC = () => {
                             .map((testimonial, index) => (
                               <Draggable
                                 key={testimonial._id}
-                                draggableId={testimonial._id}
+                                draggableId={testimonial._id as string}
                                 index={index}
                               >
                                 {(provided, snapshot) => (

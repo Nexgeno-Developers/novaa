@@ -5,6 +5,7 @@ import { RootState } from '@/redux';
 import { logout } from '@/redux/slices/authSlice';
 import { Menu, Bell, User, LogOut } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { useAppDispatch } from '@/redux/hooks';
 
 interface AdminHeaderProps {
   sidebarCollapsed?: boolean;
@@ -16,7 +17,7 @@ export default function AdminHeader({
   onSidebarToggle 
 }: AdminHeaderProps) {
   const { user } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
