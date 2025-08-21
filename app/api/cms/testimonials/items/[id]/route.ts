@@ -13,7 +13,7 @@ export async function PUT(request : NextRequest, { params } : RouteParams) {
   try {
     await dbConnect();
     const testimonialData = await request.json();
-    const { id } = await params;
+    const { id } = params;
     
     const { name, role, rating, quote, avatar } = testimonialData;
     
