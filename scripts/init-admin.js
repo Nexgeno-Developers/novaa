@@ -18,7 +18,7 @@ async function createAdmin() {
     console.log(process.env.MONGODB_URI)
     await mongoose.connect(process.env.MONGODB_URI);
     
-    const hashedPassword = await bcrypt.hash('admin123', 12);
+    const hashedPassword = await bcrypt.hash('nova@8989', 12);
     
     const admin = new Admin({
       email: 'admin@nova.com',
@@ -29,8 +29,8 @@ async function createAdmin() {
     
     await admin.save();
     console.log('Admin user created successfully!');
-    console.log('Email: admin@novaa.com');
-    console.log('Password: admin123');
+    console.log('Email: admin@nova.com');
+    console.log('Password: nova@8989');
     
     await mongoose.disconnect();
   } catch (error) {

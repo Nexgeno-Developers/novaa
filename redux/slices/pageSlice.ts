@@ -1,69 +1,58 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-
-export interface Page {
-  _id: string;
-  title: string;
-  slug: string;
-  description: string;
-  status: 'active' | 'inactive';
-  template: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  keywords?: string[];
-  createdAt: string;
-  updatedAt: string;
-}
+import type { RootState } from '../';
 
 export interface Section {
   _id: string;
   name: string;
   slug: string;
-  pageSlug: string;
-  order: number;
-  status: 'active' | 'inactive';
   type: string;
+  order: number;
+  pageSlug: string;
   component: string;
-  content: any;
+  status: 'active' | 'inactive';
   settings: {
-    backgroundColor: string;
-    textColor: string;
-    padding: string;
-    margin: string;
     isVisible: boolean;
+    [key: string]: any;
   };
-  seo: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
+  content?: {
+    [key: string]: any;
   };
   createdAt: string;
   updatedAt: string;
 }
 
-interface PagesState {
+export interface Page {
+  _id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PageState {
   pages: Page[];
-  currentPage: Page | null;
   sections: Section[];
   currentSection: Section | null;
   loading: boolean;
   sectionsLoading: boolean;
   sectionLoading: boolean;
-  error: string | null;
   searchTerm: string;
   statusFilter: 'all' | 'active' | 'inactive';
+  error: string | null;
 }
 
-const initialState: PagesState = {
+const initialState: PageState = {
   pages: [],
-  currentPage: null,
   sections: [],
   currentSection: null,
   loading: false,
   sectionsLoading: false,
   sectionLoading: false,
-  error: null,
   searchTerm: '',
   statusFilter: 'all',
+  error: null,
 };
 
 // Async thunks
@@ -71,15 +60,40 @@ export const fetchPages = createAsyncThunk(
   'pages/fetchPages',
   async (_, { rejectWithValue }) => {
     try {
+      console.log('🚀 fetchPages thunk started');
+      
       const response = await fetch('/api/cms/pages', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
+        cache: 'no-store', // Ensure fresh data
       });
+      
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response ok:', response.ok);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch pages');
+        const errorText = await response.text();
+        console.error('❌ Response not ok:', errorText);
+        
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please login');
+        }
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
-      return await response.json();
+      
+      const data = await response.json();
+      console.log('✅ fetchPages success, data length:', data.length);
+      console.log('✅ fetchPages data sample:', data.slice(0, 2));
+      
+      return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      console.error('💥 Fetch pages error:', error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch pages'
+      );
     }
   }
 );
@@ -88,62 +102,101 @@ export const fetchPageSections = createAsyncThunk(
   'pages/fetchPageSections',
   async (pageSlug: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/cms/sections?pageSlug=${pageSlug}`, {
+      const response = await fetch(`/api/cms/sections?pageSlug=${encodeURIComponent(pageSlug)}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
       });
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch sections');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      
+      const data = await response.json();
+      return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      console.error('Fetch sections error:', error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch sections'
+      );
     }
   }
 );
 
 export const fetchSection = createAsyncThunk(
   'pages/fetchSection',
-  async ({ pageSlug, sectionSlug }: { pageSlug: string; sectionSlug: string }, { rejectWithValue }) => {
+  async (
+    { pageSlug, sectionSlug }: { pageSlug: string; sectionSlug: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await fetch(`/api/cms/sections/${pageSlug}/${sectionSlug}`, {
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `/api/cms/sections/${encodeURIComponent(pageSlug)}/${encodeURIComponent(sectionSlug)}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        }
+      );
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch section');
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      
+      const data = await response.json();
+      return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      console.error('Fetch section error:', error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch section'
+      );
     }
   }
 );
 
 export const updateSection = createAsyncThunk(
   'pages/updateSection',
-  async ({ 
-    pageSlug, 
-    sectionSlug, 
-    data 
-  }: { 
-    pageSlug: string; 
-    sectionSlug: string; 
-    data: Partial<Section> 
-  }, { rejectWithValue }) => {
+  async (
+    {
+      pageSlug,
+      sectionSlug,
+      data,
+    }: {
+      pageSlug: string;
+      sectionSlug: string;
+      data: Partial<Section>;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await fetch(`/api/cms/sections/${pageSlug}/${sectionSlug}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `/api/cms/sections/${encodeURIComponent(pageSlug)}/${encodeURIComponent(sectionSlug)}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify(data),
+        }
+      );
+      
       if (!response.ok) {
-        throw new Error('Failed to update section');
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please login');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      
+      const updatedSection = await response.json();
+      return updatedSection;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      console.error('Update section error:', error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to update section'
+      );
     }
   }
 );
@@ -160,12 +213,52 @@ export const updateSectionsOrder = createAsyncThunk(
         credentials: 'include',
         body: JSON.stringify({ sections }),
       });
+      
       if (!response.ok) {
-        throw new Error('Failed to update sections order');
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please login');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      
+      const updatedSections = await response.json();
+      return updatedSections;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      console.error('Update sections order error:', error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to update sections order'
+      );
+    }
+  }
+);
+
+export const createPage = createAsyncThunk(
+  'pages/createPage',
+  async (pageData: Omit<Page, '_id' | 'createdAt' | 'updatedAt'>, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/cms/pages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(pageData),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Unauthorized - Please login');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const newPage = await response.json();
+      return newPage;
+    } catch (error) {
+      console.error('Create page error:', error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to create page'
+      );
     }
   }
 );
@@ -180,15 +273,14 @@ const pagesSlice = createSlice({
     setStatusFilter: (state, action: PayloadAction<'all' | 'active' | 'inactive'>) => {
       state.statusFilter = action.payload;
     },
-    clearCurrentPage: (state) => {
-      state.currentPage = null;
-      state.sections = [];
-    },
     clearCurrentSection: (state) => {
       state.currentSection = null;
     },
     updateSections: (state, action: PayloadAction<Section[]>) => {
       state.sections = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -201,11 +293,13 @@ const pagesSlice = createSlice({
       .addCase(fetchPages.fulfilled, (state, action) => {
         state.loading = false;
         state.pages = action.payload;
+        state.error = null;
       })
       .addCase(fetchPages.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Fetch page sections
       .addCase(fetchPageSections.pending, (state) => {
         state.sectionsLoading = true;
@@ -214,17 +308,14 @@ const pagesSlice = createSlice({
       .addCase(fetchPageSections.fulfilled, (state, action) => {
         state.sectionsLoading = false;
         state.sections = action.payload;
-        // Set current page based on first section's pageSlug
-        if (action.payload.length > 0) {
-          const pageSlug = action.payload[0].pageSlug;
-          state.currentPage = state.pages.find(p => p.slug === pageSlug) || null;
-        }
+        state.error = null;
       })
       .addCase(fetchPageSections.rejected, (state, action) => {
         state.sectionsLoading = false;
         state.error = action.payload as string;
       })
-      // Fetch section
+      
+      // Fetch single section
       .addCase(fetchSection.pending, (state) => {
         state.sectionLoading = true;
         state.error = null;
@@ -232,54 +323,75 @@ const pagesSlice = createSlice({
       .addCase(fetchSection.fulfilled, (state, action) => {
         state.sectionLoading = false;
         state.currentSection = action.payload;
+        state.error = null;
       })
       .addCase(fetchSection.rejected, (state, action) => {
         state.sectionLoading = false;
         state.error = action.payload as string;
       })
+      
       // Update section
       .addCase(updateSection.fulfilled, (state, action) => {
         state.currentSection = action.payload;
-        // Update section in sections array
+        // Also update in sections array if present
         const index = state.sections.findIndex(s => s._id === action.payload._id);
         if (index !== -1) {
           state.sections[index] = action.payload;
         }
       })
+      
       // Update sections order
       .addCase(updateSectionsOrder.fulfilled, (state, action) => {
         state.sections = action.payload;
+      })
+      
+      // Create page
+      .addCase(createPage.fulfilled, (state, action) => {
+        state.pages.unshift(action.payload);
       });
   },
 });
 
-export const { 
-  setSearchTerm, 
-  setStatusFilter, 
-  clearCurrentPage, 
+export const {
+  setSearchTerm,
+  setStatusFilter,
   clearCurrentSection,
   updateSections,
+  clearError,
 } = pagesSlice.actions;
 
 // Selectors
-export const selectFilteredPages = (state: { pages: PagesState }) => {
+export const selectPages = (state: RootState) => state.pages.pages;
+export const selectSections = (state: RootState) => state.pages.sections;
+export const selectCurrentSection = (state: RootState) => state.pages.currentSection;
+export const selectPagesLoading = (state: RootState) => state.pages.loading;
+export const selectSectionsLoading = (state: RootState) => state.pages.sectionsLoading;
+export const selectSectionLoading = (state: RootState) => state.pages.sectionLoading;
+export const selectSearchTerm = (state: RootState) => state.pages.searchTerm;
+export const selectStatusFilter = (state: RootState) => state.pages.statusFilter;
+export const selectError = (state: RootState) => state.pages.error;
+
+export const selectFilteredPages = (state: RootState) => {
   const { pages, searchTerm, statusFilter } = state.pages;
   
-  return pages.filter(page => {
-    const matchesSearch = page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         page.slug.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || page.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
+  let filtered = pages;
+  
+  // Filter by search term
+  if (searchTerm) {
+    filtered = filtered.filter(
+      page =>
+        page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        page.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (page.description && page.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }
+  
+  // Filter by status
+  if (statusFilter !== 'all') {
+    filtered = filtered.filter(page => page.status === statusFilter);
+  }
+  
+  return filtered;
 };
-
-export const selectPagesLoading = (state: { pages: PagesState }) => state.pages.loading;
-export const selectSectionsLoading = (state: { pages: PagesState }) => state.pages.sectionsLoading;
-export const selectSectionLoading = (state: { pages: PagesState }) => state.pages.sectionLoading;
-export const selectSearchTerm = (state: { pages: PagesState }) => state.pages.searchTerm;
-export const selectCurrentPage = (state: { pages: PagesState }) => state.pages.currentPage;
-export const selectSections = (state: { pages: PagesState }) => state.pages.sections;
-export const selectCurrentSection = (state: { pages: PagesState }) => state.pages.currentSection;
 
 export default pagesSlice.reducer;
