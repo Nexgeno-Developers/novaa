@@ -9,7 +9,7 @@ export async function PUT(
 ) {
   try {
     await connectDB();
-    const { id } = await params;
+    const { id } = params;
     const testimonialData = await request.json();
 
     const investorInsights = await InvestorInsights.findOne({ isActive: true });
