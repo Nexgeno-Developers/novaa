@@ -124,11 +124,13 @@ export default function MediaManagement() {
           method: "POST",
           body: formData,
         });
+        console.log("Respone after upload" , response)
 
         const result = await response.json();
+        console.log("Result after upload" , result)
 
         if (result.success) {
-          dispatch(addMediaItem(result.data));
+          dispatch(addMediaItem(result));
           successCount++;
         } else {
           errorCount++;
@@ -229,7 +231,7 @@ export default function MediaManagement() {
   // Filter items based on current type
   const filteredMedia = items.filter((file) => {
     if (type === "all") return true;
-    return file.resource_type === type;
+    return file?.resource_type === type;
   });
 
   // Calculate stats from current items

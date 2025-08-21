@@ -3,22 +3,28 @@ import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 import Section from '@/models/Section';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
-import { defaultAboutSections, defaultContactSections, defaultHomeSections } from '@/app/admin/layout';
+import { defaultAboutSections, defaultContactSections, defaultHomeSections } from '@/lib/defaultPages';
+import { initializeDefaultPages } from '@/lib/defaultPages';
 
-
-// GET - Fetch all pages (admin only)
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    
-    // Verify admin authentication
     const token = getTokenFromRequest(request);
     if (!token || !verifyToken(token)) {
       return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    
-    const pages = await Page.find().sort({ createdAt: -1 });
-    
+
+    let pages = await Page.find().sort({ createdAt: -1 });
+
+    // console.log("Pages" , pages) 
+
+    // If no pages exist, initialize them here
+    if (pages.length === 0) {
+      console.log("No pages found, initializing defaults...");
+      await initializeDefaultPages();
+      pages = await Page.find().sort({ createdAt: -1 });
+    }
+
     return Response.json(pages);
   } catch (error) {
     console.error('Pages fetch error:', error);
@@ -49,7 +55,8 @@ export async function POST(request: NextRequest) {
         pageSlug: page.slug,
       }));
       
-      await Section.insertMany(sections);
+      const inserted = await Section.insertMany(sections);
+      console.log("Inserted home section " , inserted.length)
     }
 
     if(page.slug === 'about-us') {

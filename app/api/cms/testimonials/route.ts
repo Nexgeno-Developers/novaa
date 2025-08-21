@@ -40,7 +40,7 @@ const defaultTestimonials = [
     rating: 5,
     quote:
       "Novaa’s expertise gave me full confidence. Seamless process from start to finish. — Ms. Olivia Martinez, Investor, Spain",
-    avatar: "/testimonials/image-four.png",
+    avatar: "/testimonials/image-one.png",
     demo: "Demo",
     order: 4,
   },
@@ -50,7 +50,7 @@ const defaultTestimonials = [
     rating: 5,
     quote:
       "Owning property in Phuket was my dream. Novaa made it reality with zero hassle. — Mr. Alexander Ivanov, Entrepreneur, Russia",
-    avatar: "/testimonials/image-five.png",
+    avatar: "/testimonials/image-three.png",
     demo: "Demo",
     order: 5,
   },
@@ -60,7 +60,7 @@ const defaultTestimonials = [
     rating: 5,
     quote:
       "Fantastic rental returns, outstanding service. Novaa is unmatched in property investment. — Ms. Sarah Lee, Investor, Hong Kong",
-    avatar: "/testimonials/image-six.png",
+    avatar: "/testimonials/image-two.png",
     demo: "Demo",
     order: 6,
   },

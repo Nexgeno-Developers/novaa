@@ -60,7 +60,7 @@ export const fetchPages = createAsyncThunk(
   'pages/fetchPages',
   async (_, { rejectWithValue }) => {
     try {
-      console.log('🚀 fetchPages thunk started');
+      console.log('fetchPages thunk started');
       
       const response = await fetch('/api/cms/pages', {
         method: 'GET',
@@ -71,12 +71,12 @@ export const fetchPages = createAsyncThunk(
         cache: 'no-store', // Ensure fresh data
       });
       
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response ok:', response.ok);
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
       
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Response not ok:', errorText);
+        console.error('Response not ok:', errorText);
         
         if (response.status === 401) {
           throw new Error('Unauthorized - Please login');
@@ -85,8 +85,8 @@ export const fetchPages = createAsyncThunk(
       }
       
       const data = await response.json();
-      console.log('✅ fetchPages success, data length:', data.length);
-      console.log('✅ fetchPages data sample:', data.slice(0, 2));
+      console.log('fetchPages success, data length:', data.length);
+      console.log('fetchPages data sample:', data.slice(0, 2));
       
       return data;
     } catch (error) {
@@ -114,6 +114,7 @@ export const fetchPageSections = createAsyncThunk(
       }
       
       const data = await response.json();
+      console.log("DAta " ,data);
       return data;
     } catch (error) {
       console.error('Fetch sections error:', error);

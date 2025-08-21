@@ -24,10 +24,9 @@ const SectionSchema = new mongoose.Schema({
     default: 'active',
   },
   type: {
-    type: String,
-    enum: ['navbar', 'hero', 'about', 'services', 'properties', 'testimonials', 'faq', 'footer', 'contact','project' ,'blog','why-invest', 'investor-insights'],
-    required: true,
-  },
+  type: String,
+  required: true,
+},
   component: {
     type: String,
     required: true,
