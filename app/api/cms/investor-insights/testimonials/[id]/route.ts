@@ -1,4 +1,3 @@
-// app/api/cms/investor-insights/testimonials/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import InvestorInsights from '@/models/InvestorInsights';
@@ -10,15 +9,11 @@ interface RouteParams {
   };
 }
 
-
-export async function PUT(
-  request: NextRequest,
-  { params }: RouteParams
-) {
+export async function PUT(  request: NextRequest, { params }: RouteParams) {
   try {
     await connectDB();
-    const { id } = params;
     const testimonialData = await request.json();
+    const { id } = params;
 
     const investorInsights = await InvestorInsights.findOne({ isActive: true });
 
