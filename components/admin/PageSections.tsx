@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, ReactNode } from "react";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { ArrowLeft, Edit, Settings, MoreVertical, GripVertical, Plus, Eye } from "lucide-react";
+import { ArrowLeft, Edit, MoreVertical, GripVertical, Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,16 +47,18 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import CuratedCollection from "../CuratedCollection";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 // Draggable component for each section row
 function DraggableSection({
   section,
   index,
+  isDraggable, // New prop to control draggable behavior
   children,
 }: {
   section: Section;
   index: number;
+  isDraggable: boolean;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLTableRowElement | null>(null);
@@ -65,7 +67,8 @@ function DraggableSection({
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    // Only make the element draggable if the isDraggable prop is true
+    if (!el || !isDraggable) return;
 
     return combine(
       draggable({
@@ -95,21 +98,26 @@ function DraggableSection({
         onDrop: () => setClosestEdge(null),
       })
     );
-  }, [index, section._id]);
+  }, [index, section._id, isDraggable]); // Add isDraggable to dependency array
+
+  // Conditionally apply classes for draggable items
+  const draggableClasses = isDraggable
+    ? "cursor-grab active:cursor-grabbing"
+    : "bg-gray-50";
 
   return (
     <TableRow
       ref={ref}
       className={`relative transition-opacity ${
         dragging ? "opacity-40" : "opacity-100"
-      } hover:bg-gray-50 cursor-grab active:cursor-grabbing`}
+      } hover:bg-gray-50 ${draggableClasses}`}
     >
-      {/* Drop Indicator */}
-      {closestEdge && (
+      {/* Drop Indicator - only show for draggable items */}
+      {isDraggable && closestEdge && (
         <td
-          colSpan={6}
+          colSpan={7} // Adjusted colSpan to cover all cells
           className={`absolute left-0 right-0 h-1 bg-blue-600 z-10 ${
-            closestEdge === "top" ? "-top-1" : "-bottom-1"
+            closestEdge === "top" ? "-top-0.5" : "bottom-0"
           }`}
         />
       )}
@@ -120,13 +128,15 @@ function DraggableSection({
 
 export default function PageSectionsList() {
   const params = useParams();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const pageSlug = params?.slug as string;
-  const sections = useSelector(selectSections);
-  const loading = useSelector(selectSectionsLoading);
+  const sections = useAppSelector(selectSections);
+  const loading = useAppSelector(selectSectionsLoading);
   const [error, setError] = useState<string | null>(null);
 
+  console.log("Sections" , sections)
   useEffect(() => {
+    console.log(pageSlug)
     if (pageSlug) {
       dispatch(fetchPageSections(pageSlug));
     }
@@ -168,6 +178,9 @@ export default function PageSectionsList() {
     return monitorForElements({
       onDrop(args) {
         const { location, source } = args;
+        // source.data._id will be undefined for non-draggable items, preventing drops
+        if (!source.data._id) return;
+
         const startIndex = source.data.index as number;
 
         if (!location.current.dropTargets.length) {
@@ -197,7 +210,7 @@ export default function PageSectionsList() {
     "Page";
 
   const getSectionIcon = (type: string) => {
-    const icons = {
+    const icons: { [key: string]: string } = {
       navbar: "🧭",
       hero: "🎯",
       curatedCollection : "🏝️",
@@ -211,7 +224,7 @@ export default function PageSectionsList() {
       "why-invest": "📈",
       "investor-insights": "💡",
     };
-    return icons[type as keyof typeof icons] || "📄";
+    return icons[type] || "📄";
   };
 
   const formatDate = (dateString: string) => {
@@ -283,82 +296,81 @@ export default function PageSectionsList() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sections.map((section, index) => (
-                  <DraggableSection
-                    key={section._id}
-                    section={section}
-                    index={index}
-                  >
-                    <TableCell>
-                      <GripVertical className="h-4 w-4 text-gray-400" />
-                    </TableCell>
-                    <TableCell className="font-medium text-center">
-                      <Badge variant="outline" className="text-background w-8 h-6 flex items-center justify-center">
-                        {section.order}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <span className="text-lg">{getSectionIcon(section.type)}</span>
-                        <div>
-                          <div className="font-medium">{section.name}</div>
-                          {/* <div className="text-sm text-muted-foreground">
-                            /{section.slug}
-                          </div> */}
+                {sections.map((section, index) => {
+                  // Determine if the current section should be draggable
+                  const isDraggable = section.type !== 'navbar' && section.type !== 'footer';
+                  
+                  return (
+                    <DraggableSection
+                      key={section._id}
+                      section={section}
+                      index={index}
+                      isDraggable={isDraggable} // Pass the prop
+                    >
+                      <TableCell>
+                        {/* Only show the grip icon for draggable items */}
+                        {isDraggable ? (
+                          <GripVertical className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <div className="w-4 h-4" /> // Placeholder for alignment
+                        )}
+                      </TableCell>
+                      <TableCell className="font-medium text-center">
+                        <Badge variant="outline" className="text-background w-8 h-6 flex items-center justify-center">
+                          {section.order}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <span className="text-lg">{getSectionIcon(section.type)}</span>
+                          <div>
+                            <div className="font-medium">{section.name}</div>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="capitalize text-background">
-                        {section.type.replace('-', ' ')}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          section.status === "active" ? "default" : "secondary"
-                        }
-                        className={section.status === 'active' ? 'bg-green-100 text-green-800 hover:bg-green-100' : ''}
-                      >
-                        {section.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {formatDate(section.updatedAt)}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="cursor-pointer">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/admin/pages/${pageSlug}/${section.slug}`}
-                              className="flex items-center cursor-pointer"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit Section
-                            </Link>
-                          </DropdownMenuItem>
-                          {/* <DropdownMenuItem className="cursor-pointer">
-                            <Eye className="h-4 w-4 mr-2" />
-                            Preview
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="cursor-pointer">
-                            <Settings className="h-4 w-4 mr-2" />
-                            Settings
-                          </DropdownMenuItem> */}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </DraggableSection>
-                ))}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="capitalize text-background">
+                          {section.type.replace('-', ' ')}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            section.status === "active" ? "default" : "secondary"
+                          }
+                          className={section.status === 'active' ? 'bg-green-100 text-green-800 hover:bg-green-100' : ''}
+                        >
+                          {section.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {formatDate(section.updatedAt)}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="cursor-pointer">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
+                              <Link
+                                href={`/admin/pages/${pageSlug}/${section.slug}`}
+                                className="flex items-center cursor-pointer"
+                              >
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit Section
+                              </Link>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </DraggableSection>
+                  );
+                })}
               </TableBody>
             </Table>
           )}

@@ -24,34 +24,69 @@ export const defaultHomeSections = [
   { name: 'Investor Insights Section', slug: 'investor-insights', type: 'investor-insights', order: 10, component: 'InvestorInsightsSection' },
   { name: 'Footer Section', slug: 'footer', type: 'footer', order: 11, component: 'FooterSection' },
 ];
+export const defaultAboutSections = [
+  { name: 'Bread Crumb', slug: 'bread-crumb', type: 'breadCrumb', order: 1, component: 'BreadCrumb' },
+  { name: 'Our Story', slug: 'our story', type: 'story', order: 2, component: 'OurStory' },
+];
+export const defaultContactSections = [
+  { name: 'Bread Crumb', slug: 'bread-crumb', type: 'breadCrumb', order: 1, component: 'BreadCrumb' },
+  { name: 'Info Section', slug: 'info', type: 'info', order: 2, component: 'InfoSection' },
+  { name: 'Our Story', slug: 'our story', type: 'story', order: 3, component: 'ContactForm' },
+];
+
 async function initializeDefaultPages() {
-  try {
-    await connectDB();
-    
-    const existingPages = await Page.countDocuments();
-    
-    if (existingPages === 0) {
-      const defaultPages = [
-        { title: 'Home', slug: 'home', description: 'Homepage of the website' },
-        {title : 'Projects' , slug : 'project' , description : 'Projects pages'},
-        { title: 'About Us', slug: 'about-us', description: 'About us page' },
-        { title: 'Properties', slug: 'properties', description: 'Properties listing page' },
-        { title: 'Blog', slug: 'blog', description: 'Blog page' },
-        { title: 'Contact Us', slug: 'contact-us', description: 'Contact us page' },
-      ];
+    try {
+      await connectDB();
+      
+      const existingPages = await Page.countDocuments();
+
+      console.log(existingPages);
+      
+      if (existingPages === 0) {
+        const defaultHomePages = [
+          { title: 'Home', slug: 'home', description: 'Homepage of the website' },
+          {title : 'Projects' , slug : 'project' , description : 'Projects pages'},
+          { title: 'About Us', slug: 'about-us', description: 'About us page' },
+          { title: 'Properties', slug: 'properties', description: 'Properties listing page' },
+          { title: 'Blog', slug: 'blog', description: 'Blog page' },
+          { title: 'Contact Us', slug: 'contact-us', description: 'Contact us page' },
+        ];
       
       // Create pages
-      const createdPages = await Page.insertMany(defaultPages);
+      const createdPages = await Page.insertMany(defaultHomePages);
       
       // Create sections for home page
       const homePage = createdPages.find(p => p.slug === 'home');
+      const aboutPage = createdPages.find(p => p.slug === "about-us");
+      const contactPage = createdPages.find(p => p.slug === 'contact-us');
+        console.log(homePage)
+        console.log(aboutPage)
+        console.log(contactPage)
       if (homePage) {
-        const sections = defaultHomeSections.map(section => ({
+        const homeSections = defaultHomeSections.map(section => ({
           ...section,
           pageSlug: homePage.slug,
         }));
         
-        await Section.insertMany(sections);
+        await Section.insertMany(homeSections);
+
+      }
+
+      if(aboutPage) {
+        const aboutSections = defaultAboutSections.map(section => ({
+          ...section,
+          pageSlug : aboutPage.slug
+        }))
+
+        await Section.insertMany(aboutSections);
+      }
+      if(contactPage) {
+        const contactSection = defaultContactSections.map(section => ({
+          ...section,
+          pageSlug : contactPage.slug
+        }))
+
+        await Section.insertMany(contactSection);
       }
     }
   } catch (error) {
@@ -71,7 +106,8 @@ export default async function AdminLayoutPage({
   children: React.ReactNode;
 }) {
       // Initialize default pages on server side
-    await initializeDefaultPages();
+  const response = await initializeDefaultPages();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(josefin_sans.className)}>

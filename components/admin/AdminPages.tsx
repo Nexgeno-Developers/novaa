@@ -32,13 +32,13 @@ export default function AdminPagesList() {
     dispatch(setStatusFilter(value as 'all' | 'active' | 'inactive'));
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString('en-US', {
+  //     year: 'numeric',
+  //     month: 'short',
+  //     day: 'numeric',
+  //   });
+  // };
 
   return (
     <div className="space-y-6">
@@ -90,17 +90,17 @@ export default function AdminPagesList() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gray-100 hover:bg-gray-100/80">
-                  <TableHead className="w-[80px] text-gray-900 font-semibold">Sr. No.</TableHead>
+                  <TableHead className=" text-gray-900 font-semibold">Sr. No.</TableHead>
                   <TableHead className="text-gray-900 font-semibold">Page</TableHead>
                   <TableHead className="text-gray-900 font-semibold">Status</TableHead>
-                  <TableHead className="text-gray-900 font-semibold">Last Modified</TableHead>
+                  {/* <TableHead className="text-gray-900 font-semibold">Last Modified</TableHead> */}
                   <TableHead className="w-[100px] text-gray-900 font-semibold">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {pages.map((page, index) => (
                   <TableRow key={page._id} className="hover:bg-gray-50">
-                    <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableCell  className="font-medium">{index + 1}</TableCell>
                     <TableCell>
                       <div>
                         <div className="font-medium">{page.title}</div>
@@ -118,9 +118,9 @@ export default function AdminPagesList() {
                         {page.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
+                    {/* <TableCell className="text-muted-foreground">
                       {formatDate(page.updatedAt)}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -137,10 +137,10 @@ export default function AdminPagesList() {
                               Manage Sections
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer">
+                          {/* <DropdownMenuItem className="cursor-pointer">
                             <Eye className="h-4 w-4 mr-2" />
                             Preview Page
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

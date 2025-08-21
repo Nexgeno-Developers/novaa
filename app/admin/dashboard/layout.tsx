@@ -41,11 +41,6 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className={`transition-all duration-300 ${
-        sidebarCollapsed 
-          ? 'lg:ml-16' // Collapsed sidebar width
-          : 'lg:ml-64' // Expanded sidebar width
-      }`}>
         {/* <AdminHeader 
           sidebarCollapsed={sidebarCollapsed}
           onSidebarToggle={setSidebarCollapsed}
@@ -56,6 +51,5 @@ export default function DashboardLayout({
           </div>
         </main>
       </div>
-    </div>
   );
 }

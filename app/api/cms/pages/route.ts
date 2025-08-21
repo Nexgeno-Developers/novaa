@@ -3,7 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 import Section from '@/models/Section';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
-import { defaultHomeSections } from '@/app/admin/layout';
+import { defaultAboutSections, defaultContactSections, defaultHomeSections } from '@/app/admin/layout';
 
 
 // GET - Fetch all pages (admin only)
@@ -45,6 +45,24 @@ export async function POST(request: NextRequest) {
     // If it's a home page, create default sections
     if (page.slug === 'home') {
       const sections = defaultHomeSections.map(section => ({
+        ...section,
+        pageSlug: page.slug,
+      }));
+      
+      await Section.insertMany(sections);
+    }
+
+    if(page.slug === 'about-us') {
+      const sections = defaultAboutSections.map(section => ({
+        ...section,
+        pageSlug: page.slug,
+      }));
+      
+      await Section.insertMany(sections);
+    }
+
+    if(page.slug === 'contact-us') {
+      const sections = defaultContactSections.map(section => ({
         ...section,
         pageSlug: page.slug,
       }));
