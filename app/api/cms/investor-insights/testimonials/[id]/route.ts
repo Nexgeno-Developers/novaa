@@ -3,9 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import InvestorInsights from '@/models/InvestorInsights';
 
+// Define type for params
+interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
+
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     await connectDB();
