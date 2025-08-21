@@ -71,7 +71,7 @@ const {scrollYProgress} = useScroll(
   return (
     <motion.section ref={containerRef} className="relative overflow-hidden">
       {/* === CONDITIONAL BACKGROUND: VIDEO === */}
-      {data.bgType === "video" && data.bgVideo && (
+      {data?.bgType === "video" && data.bgVideo && (
         <div className="absolute inset-0 z-10">
           <video
             src={data.bgVideo}
@@ -85,9 +85,9 @@ const {scrollYProgress} = useScroll(
       )}
 
       {/* === CONDITIONAL BACKGROUND: IMAGES === */}
-      {data.bgType === "image" && (
+      {data?.bgType === "image" && (
         <>
-          {data.bgImage1 && (
+          {data?.bgImage1 && (
             <div className="absolute inset-0 z-10">
               <Image
                 src={data.bgImage1}
@@ -98,7 +98,7 @@ const {scrollYProgress} = useScroll(
               />
             </div>
           )}
-          {data.bgImage2 && (
+          {data?.bgImage2 && (
             <div className="absolute inset-0 z-40">
               <Image
                 src={data.bgImage2}
