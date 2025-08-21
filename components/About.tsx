@@ -36,6 +36,7 @@ export default function AboutPage() {
         const res = await fetch(`/api/cms/about`);
         if (!res.ok) throw new Error("Failed to fetch data");
         const jsonResponse = await res.json();
+        console.log(jsonResponse)
         setData(jsonResponse.data);
       } catch (error) {
         console.error("Error fetching About Us data:", error);
@@ -56,7 +57,7 @@ const {scrollYProgress} = useScroll(
 );
 
   // Re-enabled animations
-  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -155]);
+  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -165]);
   const novaOpacity = useTransform(scrollYProgress, [0.1, 0.35], [0, 1]);
 
   if (isLoading) {
