@@ -9,7 +9,8 @@ import {
   Home,
   FileText,
   UserCircle,
-  Image
+  Image,
+  ClipboardList
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -33,6 +34,11 @@ const navigation = [
     name: 'Media',
     href: '/admin/media',
     icon: Image,
+  },
+  {
+    name: 'Breadcrumb',
+    href: '/admin/breadcrumb',
+    icon: ClipboardList,
   },
 ];
 

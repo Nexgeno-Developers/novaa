@@ -1,25 +1,26 @@
-"use client";
-
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import CollectionCard from "@/components/CollectionCard";
-
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setRegion } from "@/redux/slices/collectionSlice";
 import RegionTabs from "@/components/RegionTabs";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { getBreadcrumbData } from '@/lib/data/getBreadcrumbData';
 
-const regions = ["Thailand", "UAE", "Europe"];
-
-export default function Project() {
-  const dispatch = useAppDispatch();
-  const selectedRegion = useAppSelector(
-    (state) => state.curated.selectedRegion
-  );
+export default async function Project() {
+   const breadcrumbData = await getBreadcrumbData('project');
+    // In case data is null
+     if (!breadcrumbData) {
+        // You could render a fallback or nothing at all
+        return <div>Error loading page header.</div>;
+    }
 
   return (
     <>
-      <Breadcrumbs title="Project" />
+       {breadcrumbData && (
+              <Breadcrumbs
+                title={breadcrumbData.title}
+                description={breadcrumbData.description}
+                backgroundImageUrl={breadcrumbData.backgroundImageUrl}
+                pageName="Project"
+              />
+            )}{" "}
 
       <section className="py-10 sm:py-20 bg-[#fffef8]">
         <div className="container">

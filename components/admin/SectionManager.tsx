@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ArrowLeft, Save, Eye, Settings, AlertCircle, ArrowRight, ArrowBigRightDash, ArrowRightToLine, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Input } from '@/components/ui/input';
+// import { Label } from '@/components/ui/label';
+// import { Textarea } from '@/components/ui/textarea';
+// import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -36,6 +36,7 @@ import TestimonialsManager from '@/components/admin/TestimonialsManager';
 import AdvantageManager from '@/components/admin/AdvantageManager';
 import FaqManager from '@/components/admin/FaqManager';
 import InvestorInsightsManager from '@/components/admin/InvestorInsightsManager'
+import BreadcrumbManagerPage from '@/components/admin/BreadcrumbManager';
 // import DefaultSectionManager from './section-managers/DefaultSectionManager';
 
 export default function SectionManager() {
@@ -146,7 +147,11 @@ export default function SectionManager() {
       case 'investor-insights':
         return <InvestorInsightsManager />;
       case 'advantages':
-        return <AdvantageManager /> 
+        return <AdvantageManager />
+      case 'breadCrumbAbout':
+        return <BreadcrumbManagerPage />
+      case 'breadCrumbContact' : 
+        return <BreadcrumbManagerPage />
       // default:
       //   return <DefaultSectionManager section={currentSection} onUpdate={handleSectionUpdate} />;
     }

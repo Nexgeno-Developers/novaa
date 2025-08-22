@@ -1,10 +1,24 @@
 import Image from "next/image";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { getBreadcrumbData } from '@/lib/data/getBreadcrumbData';
 
-export default function ContactUs() {
+export default async function ContactUs() {
+ const breadcrumbData = await getBreadcrumbData('contact-us');
+    // In case data is null
+     if (!breadcrumbData) {
+        // You could render a fallback or nothing at all
+        return <div>Error loading page header.</div>;
+    }
   return (
     <>
-      <Breadcrumbs title="Contact Us" />
+      {breadcrumbData && (
+        <Breadcrumbs
+          title={breadcrumbData.title}
+          description={breadcrumbData.description}
+          backgroundImageUrl={breadcrumbData.backgroundImageUrl}
+          pageName="Contact Us"
+        />
+      )}{" "}
       <section className="bg-[#FFFDF5] pt-10 sm:py-20">
         <div className="container">
           {/* Top Info Section */}
@@ -73,7 +87,7 @@ export default function ContactUs() {
                   Location
                 </h3>
                 <p className="text-[#01292B] description-text">
-                 Company address - Bandra West , Mumbai 
+                  Company address - Bandra West , Mumbai
                 </p>
               </div>
             </div>

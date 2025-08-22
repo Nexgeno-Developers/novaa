@@ -1,9 +1,24 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { getBreadcrumbData } from '@/lib/data/getBreadcrumbData'; // The new function
 
-export default function AboutUs() {
+export default async function AboutUs() {
+    const breadcrumbData = await getBreadcrumbData('about-us');
+    // In case data is null
+     if (!breadcrumbData) {
+        // You could render a fallback or nothing at all
+        return <div>Error loading page header.</div>;
+    }
+
   return (
     <>
-      <Breadcrumbs title="About Us" />
+      {breadcrumbData && (
+        <Breadcrumbs
+          title={breadcrumbData.title}
+          description={breadcrumbData.description}
+          backgroundImageUrl={breadcrumbData.backgroundImageUrl}
+          pageName="About Us"
+        />
+      )}
       <section className="bg-[#FAF4EB] py-10 sm:py-20 text-center ">
         <div className="container">
           {/* Our Story Heading */}

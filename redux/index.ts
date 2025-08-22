@@ -12,6 +12,7 @@ import faqReducer from './slices/faqslice'
 import testimonialReducer from './slices/testimonialsSlice'
 import investorReducer from './slices/investorInsightsSlice'
 import pageReducer from './slices/pageSlice'
+import breadcrumbReducer from './slices/breadcrumbSlice'
 
 
 export const store = configureStore({
@@ -29,6 +30,8 @@ export const store = configureStore({
     testimonials:testimonialReducer,
     investor:investorReducer,
       pages: pageReducer,
+          breadcrumb: breadcrumbReducer,
+
 
 
   }
