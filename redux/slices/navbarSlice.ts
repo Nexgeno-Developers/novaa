@@ -9,7 +9,7 @@ interface NavbarItem {
 }
 
 interface NavbarState {
-  logo: { url: string; alt: string } | null;
+  logo: { url: string } | null;
   items: NavbarItem[];
   loading: boolean;
   error: string | null;
@@ -47,7 +47,7 @@ const navbarSlice = createSlice({
       state.items = action.payload;
     },
     updateLogo: (state, action) => {
-      state.logo = action.payload;
+      state.logo = {url : action.payload.url};
     },
   },
   extraReducers: (builder) => {

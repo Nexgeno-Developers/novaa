@@ -21,8 +21,9 @@ const NavbarItemSchema = new mongoose.Schema({
 
 const NavbarSchema = new mongoose.Schema({
   logo: {
-    url: String,
-    alt: String,
+    url: { type: String, required: true },
+        alt: { type: String }, // optional, not required
+
   },
   items: [NavbarItemSchema],
 }, {

@@ -33,6 +33,7 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import MediaSelectButton from "./MediaSelectButton";
 
 interface HighlightedWord {
   word: string;
@@ -500,132 +501,90 @@ export default function HomePageManager() {
 
           <TabsContent value="media" className="space-y-6">
             <Card className="py-6">
-              <CardHeader>
-                <CardTitle>Background Media</CardTitle>
-                <CardDescription>
-                  Upload image or video for hero section background
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Media Type
-                  </label>
-                  <Select
-                    value={heroData.mediaType}
-                    onValueChange={(value: "image" | "video") =>
-                      updateHeroData({ mediaType: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="image">Image</SelectItem>
-                      <SelectItem value="video">Video</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+  <CardHeader>
+    <CardTitle>Background Media</CardTitle>
+    <CardDescription>
+      Select an image or video for the hero section background from your media
+      library.
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="space-y-8">
+    {/* --- Media Type Selection --- */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Media Type
+      </label>
+      <Select
+        value={heroData.mediaType}
+        onValueChange={(value: "image" | "video") => {
+          // Clear the URL when changing type to prevent mismatches
+          updateHeroData({ mediaType: value, mediaUrl: "" });
+        }}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Select media type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="image">Image</SelectItem>
+          <SelectItem value="video">Video</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
 
-                {heroData.mediaUrl && (
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Current Media
-                    </label>
-                    {heroData.mediaType === "video" ? (
-                      <video
-                        src={heroData.mediaUrl}
-                        controls
-                        className="w-full max-w-md h-48 object-cover rounded-lg border"
-                      />
-                    ) : (
-                      <img
-                        src={heroData.mediaUrl}
-                        alt="Current hero background"
-                        className="w-full max-w-md h-48 object-cover rounded-lg border"
-                        onError={(e) => {
-                          console.error("Image load error:", e);
-                          const target = e.target as HTMLImageElement;
-                          target.src = "/images/hero.jpg"; // Fallback image
-                        }}
-                      />
-                    )}
-                  </div>
-                )}
+    <div>
+      <MediaSelectButton
+        label={`Background ${
+          heroData.mediaType === "video" ? "Video" : "Image"
+        }`}
+        mediaType={heroData.mediaType}
+        value={heroData.mediaUrl}
+        onSelect={(url: string) => updateHeroData({ mediaUrl: url })}
+        placeholder={`Choose a background ${heroData.mediaType}`}
+      />
+    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Upload New{" "}
-                    {heroData.mediaType === "video" ? "Video" : "Image"}
-                  </label>
-                  <div className="flex items-center space-x-4">
-                    <Input
-                      type="file"
-                      accept={
-                        heroData.mediaType === "video" ? "video/*" : "image/*"
-                      }
-                      onChange={(e) =>
-                        setMediaFile(e.target.files?.[0] || null)
-                      }
-                    />
-                    {mediaFile && (
-                      <Badge
-                        variant="secondary"
-                        className="flex items-center space-x-1"
-                      >
-                        <span>Ready to upload: {mediaFile.name}</span>
-                      </Badge>
-                    )}
-                  </div>
-                </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Overlay Color
+        </label>
+        <div className="flex items-center space-x-2">
+          <Input
+            type="color"
+            value={heroData.overlayColor || "#000000"}
+            onChange={(e) => updateHeroData({ overlayColor: e.target.value })}
+            className="w-12 h-10 p-1 rounded cursor-pointer border-gray-300"
+          />
+          <Input
+            value={heroData.overlayColor || "#000000"}
+            onChange={(e) => updateHeroData({ overlayColor: e.target.value })}
+            placeholder="#01292B"
+            className="flex-1"
+          />
+        </div>
+      </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Overlay Color
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        type="color"
-                        value={heroData.overlayColor}
-                        onChange={(e) =>
-                          updateHeroData({ overlayColor: e.target.value })
-                        }
-                        className="w-12 h-10 p-1 rounded cursor-pointer"
-                      />
-                      <Input
-                        value={heroData.overlayColor}
-                        onChange={(e) =>
-                          updateHeroData({ overlayColor: e.target.value })
-                        }
-                        placeholder="#01292B"
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Overlay Opacity (
-                      {Math.round(heroData.overlayOpacity * 100)}%)
-                    </label>
-                    <Input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.1"
-                      value={heroData.overlayOpacity}
-                      onChange={(e) =>
-                        updateHeroData({
-                          overlayOpacity: parseFloat(e.target.value),
-                        })
-                      }
-                      className="cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Overlay Opacity ({Math.round((heroData.overlayOpacity || 0) * 100)}%)
+        </label>
+        <Input
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          value={heroData.overlayOpacity || 0}
+          onChange={(e) =>
+            updateHeroData({
+              overlayOpacity: parseFloat(e.target.value),
+            })
+          }
+          className="cursor-pointer"
+        />
+      </div>
+    </div>
+  </CardContent>
+</Card>
           </TabsContent>
 
           <TabsContent value="content" className="space-y-6">

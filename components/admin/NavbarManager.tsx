@@ -1,30 +1,37 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux';
+import { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux";
 import {
   fetchNavbar,
+  updateLogo,
   updateNavbar,
   updateNavbarItems,
-} from '@/redux/slices/navbarSlice';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, GripVertical, Upload, Save } from 'lucide-react';
-import { toast } from 'sonner';
+} from "@/redux/slices/navbarSlice";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Edit, Trash2, GripVertical, Upload, Save } from "lucide-react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAppDispatch } from '@/redux/hooks';
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAppDispatch } from "@/redux/hooks";
 
 // Drag and drop imports
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -38,6 +45,7 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { AdvancedMediaSelector } from "./AdvancedMediaSelector";
 
 interface NavbarItem {
   _id?: string;
@@ -119,9 +127,7 @@ function DraggableNavItem({
         <div className="flex-1">
           <div className="flex items-center space-x-2">
             <span className="font-medium">{item.label}</span>
-            {!item.isActive && (
-              <Badge variant="secondary">Inactive</Badge>
-            )}
+            {!item.isActive && <Badge variant="secondary">Inactive</Badge>}
           </div>
           <span className="text-sm text-gray-500">{item.href}</span>
         </div>
@@ -154,11 +160,12 @@ export default function NavbarManager() {
   const { logo, items, loading, error } = useSelector(
     (state: RootState) => state.navbar
   );
-  
+
   const [editingItem, setEditingItem] = useState<NavbarItem | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+  // const [logo setLogo] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [isLogoSelectorOpen, setIsLogoSelectorOpen] = useState(false);
 
   // Fetch navbar data on component mount
   useEffect(() => {
@@ -185,13 +192,13 @@ export default function NavbarManager() {
 
       // Update Redux state immediately for smooth UI
       dispatch(updateNavbarItems(updatedItems));
-      
+
       // Then sync with backend
       try {
         await dispatch(updateNavbar({ items: updatedItems })).unwrap();
       } catch (error) {
-        toast.error('Failed to save reorder');
-        console.error('Reorder error:', error);
+        toast.error("Failed to save reorder");
+        console.error("Reorder error:", error);
       }
     };
 
@@ -254,7 +261,7 @@ export default function NavbarManager() {
 
       // Update Redux state
       dispatch(updateNavbarItems(updatedItems));
-      
+
       // Sync with backend
       await dispatch(updateNavbar({ items: updatedItems })).unwrap();
 
@@ -264,7 +271,7 @@ export default function NavbarManager() {
       setShowAddForm(false);
     } catch (error) {
       toast.error("Failed to save item");
-      console.error('Save error:', error);
+      console.error("Save error:", error);
     } finally {
       setSaving(false);
     }
@@ -273,63 +280,74 @@ export default function NavbarManager() {
   const handleDeleteItem = async (itemId: string) => {
     try {
       const updatedItems = items.filter((item) => item._id !== itemId);
-      
+
       // Update Redux state
       dispatch(updateNavbarItems(updatedItems));
-      
+
       // Sync with backend
       await dispatch(updateNavbar({ items: updatedItems })).unwrap();
-      
+
       toast.success("Navigation item deleted");
     } catch (error) {
       toast.error("Failed to delete item");
-      console.error('Delete error:', error);
+      console.error("Delete error:", error);
     }
   };
 
-  const handleLogoUpload = async () => {
-    if (!logoFile) return;
-
-    setSaving(true);
+  // ✅ Advanced Media Selector logo update
+  const handleLogoSelect = async (media: { url: string; alt?: string }) => {
     try {
-      const formData = new FormData();
-      formData.append("file", logoFile);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await response.json();
-
-      if (result.success) {
-        const newLogo = { url: result.url, alt: "Logo" };
-        await dispatch(updateNavbar({ logo: newLogo })).unwrap();
-        setLogoFile(null);
-        toast.success("Logo uploaded successfully");
-      } else {
-        toast.error("Logo upload failed");
-      }
+      await dispatch(updateNavbar({ logo: media })).unwrap();
+      toast.success("Logo updated successfully");
     } catch (error) {
-      toast.error("Failed to upload logo");
-      console.error('Upload error:', error);
-    } finally {
-      setSaving(false);
+      toast.error("Failed to update logo");
+      console.error("Logo update error:", error);
     }
   };
 
-  const handleLogoChange = async (field: 'url' | 'alt', value: string) => {
-    try {
-      const updatedLogo = {
-        ...logo,
-        [field]: value
-      };
-      
-      await dispatch(updateNavbar({ logo: updatedLogo })).unwrap();
-    } catch (error) {
-      toast.error(`Failed to update logo ${field}`);
-      console.error('Logo update error:', error);
-    }
-  };
+  // const handleLogoUpload = async () => {
+  //   if (!logoFile) return;
+
+  //   setSaving(true);
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("file", logoFile);
+
+  //     const response = await fetch("/api/upload", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+  //     const result = await response.json();
+
+  //     if (result.success) {
+  //       const newLogo = { url: result.url, alt: "Logo" };
+  //       await dispatch(updateNavbar({ logo: newLogo })).unwrap();
+  //       setLogoFile(null);
+  //       toast.success("Logo uploaded successfully");
+  //     } else {
+  //       toast.error("Logo upload failed");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to upload logo");
+  //     console.error('Upload error:', error);
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
+
+  // const handleLogoChange = async (field: 'url' | 'alt', value: string) => {
+  //   try {
+  //     const updatedLogo = {
+  //       ...logo,
+  //       [field]: value
+  //     };
+
+  //     await dispatch(updateNavbar({ logo: updatedLogo })).unwrap();
+  //   } catch (error) {
+  //     toast.error(`Failed to update logo ${field}`);
+  //     console.error('Logo update error:', error);
+  //   }
+  // };
 
   if (loading) {
     return (
@@ -354,68 +372,56 @@ export default function NavbarManager() {
       )}
 
       {/* Logo Management */}
-      <Card className='py-6'>
+      <Card className="py-6">
         <CardHeader>
           <CardTitle>Logo Settings</CardTitle>
-          <CardDescription>Manage your website logo and branding</CardDescription>
+          <CardDescription>
+            Manage your website logo and branding
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Show current logo */}
           {logo && logo.url && (
             <div className="flex items-center space-x-4">
               <img
                 src={logo.url}
-                alt={logo.alt}
+                alt="Current Logo"
                 className="h-12 w-auto border rounded"
               />
               <span className="text-sm text-gray-600">Current logo</span>
             </div>
           )}
 
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="logo-url">Logo URL</Label>
-              <Input
-                id="logo-url"
-                value={logo?.url || ''}
-                onChange={(e) => handleLogoChange('url', e.target.value)}
-                placeholder="https://example.com/logo.png"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="logo-alt">Logo Alt Text</Label>
-              <Input
-                id="logo-alt"
-                value={logo?.alt || ''}
-                onChange={(e) => handleLogoChange('alt', e.target.value)}
-                placeholder="Your Company Logo"
-              />
-            </div>
-          </div>
-
+          {/* Button to open Advanced Media Selector */}
           <div className="pt-4">
-            <Label>Upload New Logo</Label>
+            <Label>Select Logo</Label>
             <div className="flex items-center space-x-4 mt-2">
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
-              />
               <Button
-                onClick={handleLogoUpload}
-                disabled={!logoFile || saving}
-                className="flex items-center space-x-2 text-background"
+                onClick={() => setIsLogoSelectorOpen(true)}
+                className="flex items-center space-x-2 text-background cursor-pointer"
               >
                 <Upload className="h-4 w-4" />
-                <span>Upload</span>
+                <span>Choose from Media</span>
               </Button>
             </div>
           </div>
+
+          {/* Advanced Media Selector */}
+          <AdvancedMediaSelector
+            isOpen={isLogoSelectorOpen}
+            onOpenChange={setIsLogoSelectorOpen}
+            onSelect={(media) => {
+              dispatch(updateNavbar({ logo: { url: media.secure_url } }));
+            }}
+            mediaType="image"
+            title="Select Logo"
+            selectedValue={logo?.url}
+          />
         </CardContent>
       </Card>
 
       {/* Navigation Items */}
-      <Card className='py-6'>
+      <Card className="py-6">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Navigation Items</CardTitle>
@@ -434,7 +440,9 @@ export default function NavbarManager() {
         <CardContent>
           {items.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No navigation items yet</p>
+              <p className="text-muted-foreground mb-4">
+                No navigation items yet
+              </p>
               <Button onClick={handleAddItem} className="text-background">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Your First Item
@@ -467,7 +475,9 @@ export default function NavbarManager() {
         <DialogContent className="bg-background text-primary border-background">
           <DialogHeader>
             <DialogTitle>
-              {editingItem?._id ? "Edit Navigation Item" : "Add New Navigation Item"}
+              {editingItem?._id
+                ? "Edit Navigation Item"
+                : "Add New Navigation Item"}
             </DialogTitle>
           </DialogHeader>
 
@@ -504,7 +514,7 @@ export default function NavbarManager() {
 
             <div className="flex items-center space-x-2">
               <Switch
-                id={`is-active-${editingItem?._id || 'new'}`}
+                id={`is-active-${editingItem?._id || "new"}`}
                 checked={editingItem?.isActive || false}
                 onCheckedChange={(checked) =>
                   setEditingItem((prev) =>
@@ -513,7 +523,7 @@ export default function NavbarManager() {
                 }
               />
               <Label
-                htmlFor={`is-active-${editingItem?._id || 'new'}`}
+                htmlFor={`is-active-${editingItem?._id || "new"}`}
                 className="text-sm text-gray-700"
               >
                 Active (visible in navigation)
