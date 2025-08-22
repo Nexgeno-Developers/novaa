@@ -126,6 +126,8 @@ export default function SectionManager() {
   const renderSectionManager = () => {
     if (!currentSection) return null;
 
+    // console.log("Current Section", currentSection);
+
     switch (currentSection.type) {
       case 'navbar':
         return <NavbarManager />;

@@ -205,7 +205,7 @@ export function AdvancedMediaSelector({
                 <div className="flex items-center space-x-2 mt-1">
                   <Badge
                     variant={item.resource_type === 'image' ? 'default' : 'secondary'}
-                    className="text-xs"
+                    className="text-xs text-background bg-gray-200"
                   >
                     {item.resource_type}
                   </Badge>
@@ -235,7 +235,7 @@ export function AdvancedMediaSelector({
 
     return (
       <Card 
-        className={`group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
+        className={` group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
           isSelected ? 'ring-2 ring-primary' : ''
         }`}
         onClick={() => handleItemSelect(item)}
@@ -291,7 +291,7 @@ export function AdvancedMediaSelector({
             <div className="flex items-center justify-between">
               <Badge
                 variant={item.resource_type === 'image' ? 'default' : 'secondary'}
-                className="text-xs"
+                className="text-xs bg-gray-200 text-primary"
               >
                 {item.resource_type}
               </Badge>
@@ -324,6 +324,7 @@ export function AdvancedMediaSelector({
                 <Button
                   variant="outline"
                   size="sm"
+                  className='bg-gray-300 cursor-pointer'
                   onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
                 >
                   {viewMode === 'grid' ? (
@@ -336,6 +337,7 @@ export function AdvancedMediaSelector({
                 <Button
                   variant="outline"
                   size="sm"
+                  className='bg-gray-300 cursor-pointer'
                   onClick={() => {
                     dispatch(resetMedia());
                     dispatch(fetchMedia({ limit: 100, reset: true }));
@@ -348,7 +350,8 @@ export function AdvancedMediaSelector({
             </div>
           </DialogHeader>
 
-          <div className="px-6 pb-4">
+          <div className="px-6 
+pb-4">
             {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="relative flex-1">
@@ -406,12 +409,11 @@ export function AdvancedMediaSelector({
           </div>
 
           {/* Media Grid/List */}
-          <ScrollArea className="h-96 px-6">
+          <ScrollArea className="h-96 px-4">
             {loading && filteredMedia.length === 0 ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
-                  <span className="text-sm text-gray-600">Loading media...</span>
+                  {/* <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" /> */}
                 </div>
               </div>
             ) : filteredMedia.length === 0 ? (
@@ -428,7 +430,7 @@ export function AdvancedMediaSelector({
               <div
                 className={
                   viewMode === 'grid'
-                    ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2"
                     : "space-y-2"
                 }
               >
@@ -445,10 +447,11 @@ export function AdvancedMediaSelector({
                   onClick={handleLoadMore}
                   disabled={loading}
                   variant="outline"
+                  className='bg-gray-200'
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Loading...
                     </>
                   ) : (
@@ -461,13 +464,14 @@ export function AdvancedMediaSelector({
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between p-6 border-t">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-background">
               {filteredMedia.length} file{filteredMedia.length !== 1 ? 's' : ''} available
             </div>
 
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
+                className='bg-gray-200 cursor-pointer'
                 onClick={() => onOpenChange(false)}
               >
                 Cancel
@@ -539,6 +543,7 @@ export function AdvancedMediaSelector({
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <Button
                   variant="outline"
+                  className='bg-primary text-background hover:bg-primary/90 cursor-pointer '
                   onClick={() => setPreviewItem(null)}
                 >
                   Close
@@ -548,7 +553,7 @@ export function AdvancedMediaSelector({
                     handleItemSelect(previewItem);
                     setPreviewItem(null);
                   }}
-                  className="bg-primary text-white hover:bg-primary/90"
+                  className="bg-primary text-background hover:bg-primary/90 cursor-pointer "
                 >
                   {isItemSelected(previewItem) ? 'Selected' : 'Select This File'}
                 </Button>
