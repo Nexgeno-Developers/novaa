@@ -1,14 +1,14 @@
 import Image from "next/image";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { getBreadcrumbData } from '@/lib/data/getBreadcrumbData';
+import Breadcrumbs from "@/components/client/Breadcrumbs";
+import { getBreadcrumbData } from "@/lib/data/getBreadcrumbData";
 
 export default async function ContactUs() {
- const breadcrumbData = await getBreadcrumbData('contact-us');
-    // In case data is null
-     if (!breadcrumbData) {
-        // You could render a fallback or nothing at all
-        return <div>Error loading page header.</div>;
-    }
+  const breadcrumbData = await getBreadcrumbData("contact-us");
+  // In case data is null
+  if (!breadcrumbData) {
+    // You could render a fallback or nothing at all
+    return <div>Error loading page header.</div>;
+  }
   return (
     <>
       {breadcrumbData && (

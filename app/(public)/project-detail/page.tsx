@@ -1,13 +1,13 @@
 "use client";
 
-import ProjectHighlights from "@/components/ProjectHighlights";
-import Highlights from "@/components/Highlights";
-import ModernAmenities from "@/components/ModernAmenities";
-import InvestmentPlans from "@/components/InvestmentPlans";
-import MasterplanSection from "@/components/MasterplanSection";
-import ContactForm from "@/components/ContactForm";
-import GatewaySection from "@/components/GatewaySection";
-import ProjectHeroSection from "@/components/ProjectHeroSection";
+import ProjectHighlights from "@/components/client/ProjectHighlights";
+import Highlights from "@/components/client/Highlights";
+import ModernAmenities from "@/components/client/ModernAmenities";
+import InvestmentPlans from "@/components/client/InvestmentPlans";
+import MasterplanSection from "@/components/client/MasterplanSection";
+import ContactForm from "@/components/client/ContactForm";
+import GatewaySection from "@/components/client/GatewaySection";
+import ProjectHeroSection from "@/components/client/ProjectHeroSection";
 
 export default function HeroSection() {
   return (

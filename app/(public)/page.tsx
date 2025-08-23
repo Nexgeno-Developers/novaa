@@ -1,15 +1,15 @@
 import connectDB from '@/lib/mongodb';
 import Section from '@/models/Section';
 
-import CuratedCollection from "@/components/CuratedCollection";
-import HeroSection from "@/components/HeroSection";
-import AboutPage from "@/components/About";
-import WhyInvestSection from "@/components/WhyInvestSection";
-import PhuketPropertiesSection from "@/components/PhuketPropertiesSection";
-import NovaaAdvantageSection from "@/components/NovaaAdvantageSection";
-import FaqSection from "@/components/FaqSection";
-import InvestorInsightsSection from "@/components/InvestorInsightsSection";
-import Testimonials from "@/components/Testimonials";
+import CuratedCollection from "@/components/client/CuratedCollection";
+import HeroSection from "@/components/client/HeroSection";
+import AboutPage from "@/components/client/About";
+import WhyInvestSection from "@/components/client/WhyInvestSection";
+import PhuketPropertiesSection from "@/components/client/PhuketPropertiesSection";
+import NovaaAdvantageSection from "@/components/client/NovaaAdvantageSection";
+import FaqSection from "@/components/client/FaqSection";
+import InvestorInsightsSection from "@/components/client/InvestorInsightsSection";
+import Testimonials from "@/components/client/Testimonials";
 
 interface SectionContent {
   [key: string]: unknown; 

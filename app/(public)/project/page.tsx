@@ -1,27 +1,26 @@
-import CollectionCard from "@/components/CollectionCard";
-import RegionTabs from "@/components/RegionTabs";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import { getBreadcrumbData } from '@/lib/data/getBreadcrumbData';
+import CollectionCard from "@/components/client/CollectionCard";
+import RegionTabs from "@/components/client/RegionTabs";
+import Breadcrumbs from "@/components/client/Breadcrumbs";
+import { getBreadcrumbData } from "@/lib/data/getBreadcrumbData";
 
 export default async function Project() {
-   const breadcrumbData = await getBreadcrumbData('project');
-    // In case data is null
-     if (!breadcrumbData) {
-        // You could render a fallback or nothing at all
-        return <div>Error loading page header.</div>;
-    }
+  const breadcrumbData = await getBreadcrumbData("project");
+  // In case data is null
+  if (!breadcrumbData) {
+    // You could render a fallback or nothing at all
+    return <div>Error loading page header.</div>;
+  }
 
   return (
     <>
-       {breadcrumbData && (
-              <Breadcrumbs
-                title={breadcrumbData.title}
-                description={breadcrumbData.description}
-                backgroundImageUrl={breadcrumbData.backgroundImageUrl}
-                pageName="Project"
-              />
-            )}{" "}
-
+      {breadcrumbData && (
+        <Breadcrumbs
+          title={breadcrumbData.title}
+          description={breadcrumbData.description}
+          backgroundImageUrl={breadcrumbData.backgroundImageUrl}
+          pageName="Project"
+        />
+      )}{" "}
       <section className="py-10 sm:py-20 bg-[#fffef8]">
         <div className="container">
           <div className="flex flex-col sm:flex-row justify-around items-center">

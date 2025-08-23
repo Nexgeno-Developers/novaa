@@ -31,7 +31,7 @@ export const defaultHomeSections = [
 ];
 export const defaultAboutSections = [
   { name: 'Bread Crumb', slug: 'bread-crumb-about', type: 'breadCrumbAbout', order: 1, component: 'BreadCrumb' },
-  { name: 'Our Story', slug: 'our story', type: 'story', order: 2, component: 'OurStory' },
+  { name: 'Our Story', slug: 'our-story', type: 'story', order: 2, component: 'OurStory' },
 ];
 export const defaultContactSections = [
   { name: 'Bread Crumb', slug: 'bread-crumb-contact', type: 'breadCrumbContact', order: 1, component: 'BreadCrumb' },

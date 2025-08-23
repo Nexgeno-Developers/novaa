@@ -1,5 +1,5 @@
 import { getBreadcrumbData } from "@/lib/data/getBreadcrumbData";
-import BlogDetailClient from "@/components/BlogDetailClient";
+import BlogDetailClient from "@/components/client/BlogDetailClient";
 
 export default async function BlogDetailPage() {
   const breadcrumbData = await getBreadcrumbData("blog-detail");

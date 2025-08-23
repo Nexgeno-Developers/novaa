@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Loader from "@/components/Loader";
+import Loader from "@/components/client/Loader";
 import {
   Card,
   CardContent,

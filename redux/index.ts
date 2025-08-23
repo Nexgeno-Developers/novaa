@@ -13,6 +13,8 @@ import testimonialReducer from './slices/testimonialsSlice'
 import investorReducer from './slices/investorInsightsSlice'
 import pageReducer from './slices/pageSlice'
 import breadcrumbReducer from './slices/breadcrumbSlice'
+import infoSectionReducer from './slices/ourStorySlice'
+import footerReducer from './slices/footerSlice'
 
 
 export const store = configureStore({
@@ -31,6 +33,8 @@ export const store = configureStore({
     investor:investorReducer,
       pages: pageReducer,
           breadcrumb: breadcrumbReducer,
+          infoSection : infoSectionReducer,
+          footer : footerReducer
 
 
 

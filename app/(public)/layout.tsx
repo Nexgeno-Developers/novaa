@@ -1,16 +1,19 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/client/Navbar";
+import Footer from "@/components/client/Footer";
+import { getFooterData } from '@/lib/data/getFooterData';
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+    const footerData = await getFooterData();
+
   return (
     <>
       <Navbar />
       {children}
-      <Footer />
+      {footerData && <Footer data={footerData} />}
     </>
   );
 }
