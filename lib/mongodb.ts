@@ -2,13 +2,12 @@ import mongoose, { Mongoose } from "mongoose";
 
 const uri = process.env.MONGODB_URI as string;
 
-// if (!uri) {
-//   throw new Error("Please add your Mongo URI to .env.local");
-// }
+if (!uri) {
+  throw new Error("Please add your Mongo URI to .env.local");
+}
 
 // Extend global type for mongoose cache
 declare global {
-  // eslint-disable-next-line no-var
   var mongooseCache:
     | { conn: Mongoose | null; promise: Promise<Mongoose> | null }
     | undefined;
