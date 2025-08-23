@@ -38,6 +38,7 @@ import FaqManager from '@/components/admin/FaqManager';
 import InvestorInsightsManager from '@/components/admin/InvestorInsightsManager'
 import BreadcrumbManagerPage from '@/components/admin/BreadcrumbManager';
 import OurStoryManager from '@/components/admin/OurStoryManager';
+import ContactManager from '@/components/admin/ContactManager';
 // import DefaultSectionManager from './section-managers/DefaultSectionManager';
 
 export default function SectionManager() {
@@ -155,6 +156,8 @@ export default function SectionManager() {
         return <BreadcrumbManagerPage />
       case 'story' :
         return <OurStoryManager />
+      case 'contact' : 
+        return <ContactManager />
       // default:
       //   return <DefaultSectionManager section={currentSection} onUpdate={handleSectionUpdate} />;
     }

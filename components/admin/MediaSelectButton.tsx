@@ -1,7 +1,9 @@
+"use client";
+
 import React, { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux"; // adjust path
-import {MediaItem} from '@/redux/slices/mediaSlice'
+import { RootState } from "@/redux"; // adjust path if needed
+import { MediaItem } from "@/redux/slices/mediaSlice";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -26,11 +28,13 @@ const MediaSelectButton = ({
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
-  
-  const { items: mediaItems, status } = useSelector((state: RootState) => state.media);
+
+  const { items: mediaItems, status } = useSelector(
+    (state: RootState) => state.media
+  );
 
   const selectedMedia = useMemo(
-    () => mediaItems.find((item) => item.secure_url === value),
+    () => mediaItems.find((item) => item.secure_url === value || item.url === value),
     [mediaItems, value]
   );
 
@@ -44,26 +48,16 @@ const MediaSelectButton = ({
     return `${fileName}.${format}`;
   };
 
-  const handleImageLoad = () => {
-    setImageLoading(false);
-  };
+  // Detect local default images (so we don’t keep “Loading…” forever)
+  const isLocalDefault =
+    value?.startsWith("/images/") ||
+    value?.startsWith("/static/") ||
+    value?.startsWith("/assets/");
 
-  const handleImageError = () => {
-    setImageLoading(false);
-  };
-
-  const handlePreviewLoad = () => {
-    setPreviewLoading(false);
-  };
-
-  const handlePreviewError = () => {
-    setPreviewLoading(false);
-  };
-
-  // Show loading if media is still being fetched
-  const isMediaLoading = status === 'loading';
-  // Show loading if we have a value but haven't found the media item yet
-  const isResolvingMedia = value && !selectedMedia && !isMediaLoading;
+  const isMediaLoading = status === "loading";
+  // Fix: only resolve if not local default and not yet matched in items
+  const isResolvingMedia =
+    !!value && !isLocalDefault && !selectedMedia && isMediaLoading;
 
   return (
     <>
@@ -90,7 +84,7 @@ const MediaSelectButton = ({
                   <p className="text-xs text-gray-400">Please wait</p>
                 </div>
               </div>
-            ) : selectedMedia ? (
+            ) : selectedMedia || isLocalDefault ? (
               <div className="flex items-center gap-3 w-full">
                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
                   {imageLoading && (
@@ -100,13 +94,13 @@ const MediaSelectButton = ({
                   )}
                   {mediaType === "image" ? (
                     <img
-                      src={selectedMedia.secure_url}
+                      src={selectedMedia?.secure_url || value}
                       alt="Selected"
                       className="w-full h-full object-cover"
-                      onLoad={handleImageLoad}
-                      onError={handleImageError}
+                      onLoad={() => setImageLoading(false)}
+                      onError={() => setImageLoading(false)}
                       onLoadStart={() => setImageLoading(true)}
-                      style={{ display: imageLoading ? 'none' : 'block' }}
+                      style={{ display: imageLoading ? "none" : "block" }}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -116,15 +110,19 @@ const MediaSelectButton = ({
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-sm truncate">
-                    {formatFileName(
-                      selectedMedia.public_id,
-                      selectedMedia.format
-                    )}
+                    {selectedMedia
+                      ? formatFileName(
+                          selectedMedia.public_id,
+                          selectedMedia.format
+                        )
+                      : value.split("/").pop()}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {(selectedMedia.bytes / 1024 / 1024).toFixed(2)} MB •{" "}
-                    {selectedMedia.format.toUpperCase()}
-                  </p>
+                  {selectedMedia && (
+                    <p className="text-xs text-gray-500">
+                      {(selectedMedia.bytes / 1024 / 1024).toFixed(2)} MB •{" "}
+                      {selectedMedia.format.toUpperCase()}
+                    </p>
+                  )}
                 </div>
               </div>
             ) : (
@@ -140,7 +138,7 @@ const MediaSelectButton = ({
           </Button>
 
           {/* Clear selection button */}
-          {selectedMedia && !isMediaLoading && (
+          {(selectedMedia || isLocalDefault) && !isMediaLoading && (
             <Button
               type="button"
               variant="ghost"
@@ -154,7 +152,7 @@ const MediaSelectButton = ({
           )}
 
           {/* Preview */}
-          {selectedMedia && !isMediaLoading && (
+          {(selectedMedia || isLocalDefault) && !isMediaLoading && (
             <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
               {previewLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
@@ -164,30 +162,30 @@ const MediaSelectButton = ({
                   </div>
                 </div>
               )}
-              
+
               {mediaType === "image" ? (
                 <img
-                  src={selectedMedia.secure_url}
+                  src={selectedMedia?.secure_url || value}
                   alt="Preview"
                   className="w-full h-full object-cover"
-                  onLoad={handlePreviewLoad}
-                  onError={handlePreviewError}
+                  onLoad={() => setPreviewLoading(false)}
+                  onError={() => setPreviewLoading(false)}
                   onLoadStart={() => setPreviewLoading(true)}
-                  style={{ display: previewLoading ? 'none' : 'block' }}
+                  style={{ display: previewLoading ? "none" : "block" }}
                 />
               ) : (
                 <video
-                  src={selectedMedia.secure_url}
+                  src={selectedMedia?.secure_url || value}
                   className="w-full h-full object-cover"
                   muted
-                  onLoadedData={handlePreviewLoad}
-                  onError={handlePreviewError}
+                  onLoadedData={() => setPreviewLoading(false)}
+                  onError={() => setPreviewLoading(false)}
                   onLoadStart={() => setPreviewLoading(true)}
-                  style={{ display: previewLoading ? 'none' : 'block' }}
+                  style={{ display: previewLoading ? "none" : "block" }}
                 />
               )}
-              
-              {!previewLoading && (
+
+              {!previewLoading && selectedMedia && (
                 <div className="absolute top-2 right-2">
                   <Badge variant="secondary" className="text-xs">
                     {selectedMedia.format.toUpperCase()}
@@ -197,7 +195,7 @@ const MediaSelectButton = ({
             </div>
           )}
 
-          {/* Loading state for preview when media is being resolved */}
+          {/* Loading preview while resolving media */}
           {isResolvingMedia && (
             <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
               <div className="text-center">

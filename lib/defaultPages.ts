@@ -30,13 +30,10 @@ export const defaultHomeSections = [
   { name: 'Footer Section', slug: 'footer', type: 'footer', order: 11, component: 'FooterSection' },
 ];
 export const defaultAboutSections = [
-  { name: 'Bread Crumb', slug: 'bread-crumb-about', type: 'breadCrumbAbout', order: 1, component: 'BreadCrumb' },
   { name: 'Our Story', slug: 'our-story', type: 'story', order: 2, component: 'OurStory' },
 ];
 export const defaultContactSections = [
-  { name: 'Bread Crumb', slug: 'bread-crumb-contact', type: 'breadCrumbContact', order: 1, component: 'BreadCrumb' },
-  { name: 'Info Section', slug: 'info', type: 'info', order: 2, component: 'InfoSection' },
-  { name: 'Our Story', slug: 'our story', type: 'story', order: 3, component: 'ContactForm' },
+  { name: 'Contact Section', slug: 'contact', type: 'contact', order: 1, component: 'ContactSection' },
 ];
 export const defaultProjectSection = [
   { name: 'Bread Crumb', slug: 'bread-crumb-project', type: 'breadCrumbProject', order: 1, component: 'BreadCrumb' },
