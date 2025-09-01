@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
 import { Bell, Search, User, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,10 +16,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { logout } from '@/redux/slices/authSlice'; // Import logout action
+import { RootState } from '@/redux';
+import { useAppDispatch } from '@/redux/hooks';
+import { toast } from 'sonner';
 
 export default function AdminHeader() {
-const pathname = usePathname();
+  const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Get user info from Redux state
+  const { user, loading } = useSelector((state: RootState) => state.auth);
 
   // Get page title from pathname
   const getPageTitle = () => {
@@ -35,7 +45,7 @@ const pathname = usePathname();
   // Get breadcrumbs
   const getBreadcrumbs = () => {
     const segments = pathname.split('/').filter(Boolean);
-    const breadcrumbs = [];
+    const breadcrumbs: { label: string; path: string; isLast: boolean; }[] = [];
     
     let currentPath = '';
     segments.forEach((segment, index) => {
@@ -50,6 +60,17 @@ const pathname = usePathname();
     });
     
     return breadcrumbs;
+  };
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      toast.success('Logged out successfully');
+      router.push('/admin/login'); // Redirect to login page
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to logout');
+    }
   };
 
   const breadcrumbs = getBreadcrumbs();
@@ -135,16 +156,20 @@ const pathname = usePathname();
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
               <Avatar className="h-9 w-9">
                 <AvatarImage src="/avatars/admin.jpg" alt="Admin" />
-                <AvatarFallback>AD</AvatarFallback>
+                <AvatarFallback>
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'AD'}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">Admin User</p>
+                <p className="text-sm font-medium leading-none">
+                  {user?.name || 'Admin User'}
+                </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  admin@novaa.com
+                  {user?.email || 'admin@novaa.com'}
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -158,9 +183,9 @@ const pathname = usePathname();
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} disabled={loading}>
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+              <span>{loading ? 'Logging out...' : 'Log out'}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -4,6 +4,7 @@ import Page from "@/models/Page";
 import Section from "@/models/Section";
 import { getTokenFromRequest, verifyToken } from "@/lib/auth";
 import { Subtitles } from "lucide-react";
+import BlogCategory from "@/models/BlogCategory";
 
 // POST - Seed default pages and sections (admin only)
 export async function POST(request: NextRequest) {
@@ -709,51 +710,141 @@ export async function POST(request: NextRequest) {
       // Add more contact-us sections as needed...
     ];
 
-     const projectPageSections = [
-  {
-    name: "Breadcrumb",
-    slug: "breadcrumb",
-    type: "breadcrumb",
-    component: "BreadcrumbManager",
-    order: 1,
-    pageSlug: "project",
-    status: "active",
-    settings: {
-      isVisible: true,
-      backgroundColor: "transparent",
-      padding: "20px 0",
-      margin: "0",
-    },
-    content: {
-      title: "Our Projects",
-      description: "Discover our amazing portfolio of luxury properties and investment opportunities.",
-      backgroundImageUrl: "/images/bg1.webp",
-    },
-  },
-  {
-    name: "Project Content",
-    slug: "project-content",
-    type: "project", // This matches your sectionComponentMap
-    component: "ProjectManager", // You can name this whatever you want for admin display
-    order: 2,
-    pageSlug: "project",
-    status: "active",
-    settings: {
-      isVisible: true,
-      backgroundColor: "#fffef8",
-      padding: "40px 0 80px 0", // py-10 sm:py-20
-      margin: "0",
-    },
-    content: {
-      // You can add any configuration options here if needed
-      displayMode: "grid",
-      isLocationVisible: true,
-      showRegionTabs: true,
-      // Add any other project-specific settings you might want to manage from CMS
-    },
-  },
-  // Add more Project sections as needed...
-];
+    const projectPageSections = [
+      {
+        name: "Breadcrumb",
+        slug: "breadcrumb",
+        type: "breadcrumb",
+        component: "BreadcrumbManager",
+        order: 1,
+        pageSlug: "project",
+        status: "active",
+        settings: {
+          isVisible: true,
+          backgroundColor: "transparent",
+          padding: "20px 0",
+          margin: "0",
+        },
+        content: {
+          title: "Our Projects",
+          description:
+            "Discover our amazing portfolio of luxury properties and investment opportunities.",
+          backgroundImageUrl: "/images/bg1.webp",
+        },
+      },
+      {
+        name: "Project Content",
+        slug: "project-content",
+        type: "project", // This matches your sectionComponentMap
+        component: "ProjectManager", // You can name this whatever you want for admin display
+        order: 2,
+        pageSlug: "project",
+        status: "active",
+        settings: {
+          isVisible: true,
+          backgroundColor: "#fffef8",
+          padding: "40px 0 80px 0", // py-10 sm:py-20
+          margin: "0",
+        },
+        content: {
+          // You can add any configuration options here if needed
+          displayMode: "grid",
+          isLocationVisible: true,
+          showRegionTabs: true,
+          // Add any other project-specific settings you might want to manage from CMS
+        },
+      },
+      // Add more Project sections as needed...
+    ];
+
+    const blogPageSections = [
+      {
+        name: "Breadcrumb",
+        slug: "breadcrumb",
+        type: "breadcrumb",
+        component: "BreadcrumbManager",
+        order: 1,
+        pageSlug: "blog",
+        status: "active",
+        settings: {
+          isVisible: true,
+          backgroundColor: "transparent",
+          padding: "20px 0",
+          margin: "0",
+        },
+        content: {
+          title: "Our Blog",
+          description:
+            "Stay updated with the latest real estate insights, investment tips, and market trends from our experts.",
+          backgroundImageUrl: "/images/bg1.webp",
+        },
+      },
+      {
+        name: "Blog Content",
+        slug: "blog-content",
+        type: "blog",
+        component: "BlogSectionManager",
+        order: 2,
+        pageSlug: "blog",
+        status: "active",
+        settings: {
+          isVisible: true,
+          backgroundColor: "#F8F6ED",
+          padding: "40px 0 80px 0",
+          margin: "0",
+        },
+        content: {
+          title: "Latest Insights",
+          description:
+            "Discover expert insights on real estate investment, market trends, and property management strategies.",
+          showCategories: true,
+          maxBlogs: 6,
+          displayMode: "grid",
+          showReadMore: true,
+        },
+      },
+    ];
+
+    // Sample blog categories data
+    const defaultBlogCategories = [
+      {
+        title: "Real Estate Investment",
+        slug: "real-estate-investment",
+        description:
+          "Expert tips and strategies for successful real estate investments",
+        isActive: true,
+        order: 1,
+      },
+      {
+        title: "Market Trends",
+        slug: "market-trends",
+        description: "Latest trends and analysis of real estate markets",
+        isActive: true,
+        order: 2,
+      },
+      {
+        title: "Property Management",
+        slug: "property-management",
+        description: "Best practices for managing and maintaining properties",
+        isActive: true,
+        order: 3,
+      },
+      {
+        title: "Location Guides",
+        slug: "location-guides",
+        description:
+          "Comprehensive guides about different investment locations",
+        isActive: true,
+        order: 4,
+      },
+      {
+        title: "Phuket Properties",
+        slug: "phuket-properties",
+        description: "Insights specifically about Phuket real estate market",
+        isActive: true,
+        order: 5,
+      },
+    ];
 
     // Create pages if they don't exist
     const createdPages = [];
@@ -806,7 +897,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-     // Create Project Sections if they dont exist
+    // Create Project Sections if they dont exist
     for (const sectionData of projectPageSections) {
       const existingSection = await Section.findOne({
         pageSlug: sectionData.pageSlug,
@@ -819,11 +910,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // CREATE BLOG SECTIONS - Add this new section
+    for (const sectionData of blogPageSections) {
+      const existingSection = await Section.findOne({
+        pageSlug: sectionData.pageSlug,
+        slug: sectionData.slug,
+      });
+      if (!existingSection) {
+        const section = new Section(sectionData);
+        await section.save();
+        createdSections.push(section);
+      }
+    }
+
+    // CREATE BLOG CATEGORIES - Add this new section
+    const createdCategories = [];
+    for (const categoryData of defaultBlogCategories) {
+      const existingCategory = await BlogCategory.findOne({
+        slug: categoryData.slug,
+      });
+      if (!existingCategory) {
+        const category = new BlogCategory(categoryData);
+        await category.save();
+        createdCategories.push(category);
+      }
+    }
+
     return Response.json({
       message: "Default data seeded successfully",
       created: {
         pages: createdPages.length,
         sections: createdSections.length,
+        blogCategories: createdCategories.length,
       },
     });
   } catch (error) {

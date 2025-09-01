@@ -2,13 +2,14 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Project from '@/models/Project';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }>  }) {
   try {
     await connectDB();
+    const {id} = await params;
     const { name, price, images, location, description, badge, category, categoryName, isActive, order } = await request.json();
     
     const project = await Project.findByIdAndUpdate(
-      params.id,
+      id,
       { name, price, images, location, description, badge, category, categoryName, isActive, order },
       { new: true }
     ).populate('category');
@@ -23,10 +24,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }>  }) {
   try {
     await connectDB();
-    const project = await Project.findByIdAndDelete(params.id);
+    const {id} = await params
+    const project = await Project.findByIdAndDelete(id);
     
     if (!project) {
       return NextResponse.json({ success: false, error: 'Project not found' }, { status: 404 });

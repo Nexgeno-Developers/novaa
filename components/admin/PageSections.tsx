@@ -63,6 +63,7 @@ import CuratedCollectionManager from "@/components/admin/CuratedCollectionManage
 import BreadcrumbManager from "@/components/admin/BreadcrumbManager";
 import OurStoryManager from "@/components/admin/OurStoryManager";
 import ContactManager from "@/components/admin/ContactManager";
+import BlogSectionManager from "@/components/admin/BlogSectionManager";
 
 interface PageSectionsProps {
   pageSlug: string;
@@ -82,7 +83,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   advantage: NovaaAdvantagesManager,
   faq: FaqManager,
   testimonials: TestimonialsManager,
-  "insights": InvestorInsightsManager,
+  insights: InvestorInsightsManager,
 
   // About US Manager
   breadcrumb: BreadcrumbManager,
@@ -91,6 +92,8 @@ const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   // Contact Us Manager
   contact: ContactManager,
 
+  // Blog Manager
+  blog: BlogSectionManager, // You'll need to create this component
 };
 
 export default function PageSections({ pageSlug }: PageSectionsProps) {

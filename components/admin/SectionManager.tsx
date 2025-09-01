@@ -139,17 +139,17 @@ export default function SectionManager() {
       case 'about':
         return <AboutManager />;
       case 'properties' : 
-        return <PropertiesManager />;
-      case 'why-invest':
-        return <WhyInvestManager />;
-      case 'testimonials':
-        return <TestimonialsManager />;
-      case 'faq':
-        return <FaqManager />;
-      case 'investor-insights':
-        return <InvestorInsightsManager />;
-      case 'advantages':
-        return <AdvantageManager />
+      //   return <PropertiesManager />;
+      // case 'why-invest':
+      //   return <WhyInvestManager />;
+      // case 'testimonials':
+      //   return <TestimonialsManager />;
+      // case 'faq':
+      //   return <FaqManager />;
+      // case 'investor-insights':
+      //   return <InvestorInsightsManager />;
+      // case 'advantages':
+      //   return <AdvantageManager />
       case 'breadCrumbAbout':
         return <BreadcrumbManagerPage />
       case 'breadCrumbContact' : 
@@ -157,7 +157,7 @@ export default function SectionManager() {
       case 'story' :
         return <OurStoryManager />
       case 'contact' : 
-        return <ContactManager />
+        // return <ContactManager />
       // default:
       //   return <DefaultSectionManager section={currentSection} onUpdate={handleSectionUpdate} />;
     }

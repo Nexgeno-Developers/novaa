@@ -25,6 +25,13 @@ import {
   ChevronRight as ChevronRightIcon,
   Tag,
   ListCollapse,
+  BookOpen,
+  Briefcase,
+  FolderTree,
+  LayoutPanelLeft,
+  PanelsTopLeft,
+  Navigation,
+  Columns3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -67,13 +74,37 @@ const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/admin/dashboard", icon: Home },
   { name: "Pages", href: "/admin/pages", icon: FileText },
 
+ {
+  name: "Layout Management",
+  href: "#",
+  icon: PanelsTopLeft, // good overall layout/structure icon
+  children: [
+    { name: "Navigation Bar", href: "/admin/navbar", icon: Navigation }, 
+    { name: "Footer Section", href: "/admin/footer", icon: Columns3 },
+  ],
+},
+  // Blog Management Section
   {
-    name: "Layout",
+    name: "Blog Management",
     href: "#",
-    icon: Layout,
+    icon: BookOpen, // You'll need to import BookOpen from lucide-react
     children: [
-      { name: "Navbar", href: "/admin/navbar", icon: Layout },
-      { name: "Footer", href: "/admin/footer", icon: Layout },
+      { name: "Blog Categories", href: "/admin/blog-categories", icon: Tag },
+      { name: "Blogs", href: "/admin/blogs", icon: FileText },
+    ],
+  },
+  // Project Management Section,
+  {
+    name: "Project Management",
+    href: "#",
+    icon: Briefcase, // import { Briefcase } from "lucide-react"
+    children: [
+      {
+        name: "Project Categories",
+        href: "/admin/categories",
+        icon: FolderTree,
+      },
+      { name: "Projects", href: "/admin/projects", icon: LayoutPanelLeft },
     ],
   },
   { name: "Media Library", href: "/admin/media", icon: Image },
@@ -81,16 +112,6 @@ const navigation: NavigationItem[] = [
     name: "Curated Collection",
     href: "/admin/curated-collection",
     icon: ListCollapse, // Use your preferred icon
-  },
-  {
-    name: "Categories",
-    href: "/admin/categories",
-    icon: Tag,
-  },
-  {
-    name: "Projects",
-    href: "/admin/projects",
-    icon: Building,
   },
   {
     name: "Enquiries",

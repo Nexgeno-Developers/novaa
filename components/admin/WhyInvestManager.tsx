@@ -212,7 +212,7 @@ export default function WhyInvestManager({
                   </CardHeader>
                   <CardContent className="relative space-y-6 p-8">
                     <div className="grid gap-6">
-                      {localData.investmentPoints.map((point, index) => (
+                      {localData.investmentPoints.map(({point , index} : {point : any , index : any}) => (
                         <div 
                           key={index} 
                           className="group/point relative p-6 border-2 border-slate-200/60 dark:border-slate-600/60 rounded-2xl bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-700/80 dark:to-slate-800/80 backdrop-blur-sm hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300"

@@ -515,7 +515,7 @@ export default function ProjectsManager() {
                             variant="ghost"
                             size="sm"
                             className="text-background"
-                            onClick={() => openEditDialog(project)}
+                            onClick={() => openEditDialog(project as any)}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>

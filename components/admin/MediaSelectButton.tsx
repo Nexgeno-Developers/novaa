@@ -62,7 +62,7 @@ const MediaSelectButton = ({
   return (
     <>
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-gray-700">{label}</Label>
+        <Label className="text-sm font-medium text-gray-300">{label}</Label>
 
         <div className="space-y-3">
           <Button
@@ -70,7 +70,7 @@ const MediaSelectButton = ({
             variant="outline"
             onClick={() => setSelectorOpen(true)}
             disabled={isMediaLoading}
-            className="w-full justify-start h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors"
+            className="w-full justify-start h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
             {isMediaLoading || isResolvingMedia ? (
               <div className="flex items-center gap-3 w-full">
