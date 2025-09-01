@@ -12,17 +12,13 @@ type Testimonial = {
   order: number;
 };
 
-type InvestorInsightsContent = {
-  mainTitle: string;
-  highlightedTitle: string;
-  description: string;
-};
-
-type InvestorInsightsData = {
-  content: InvestorInsightsContent;
-  testimonials: Testimonial[];
-  isActive: boolean;
-};
+interface InvestorInsightsSectionProps {
+  mainTitle?: string;
+  highlightedTitle?: string;
+  description?: string;
+  testimonials?: Testimonial[];
+  [key: string]: unknown;
+}
 
 const AnimatedTestimonials = ({
   testimonials,
@@ -66,7 +62,7 @@ const AnimatedTestimonials = ({
   if (!testimonials || testimonials.length === 0) {
     return (
       <div className="flex items-center justify-center h-[400px] text-white/50">
-        No testimonials available
+        No insights available
       </div>
     );
   }
@@ -138,82 +134,49 @@ const AnimatedTestimonials = ({
   );
 };
 
-export default function InvestorInsightsSection() {
-  const [investorData, setInvestorData] = useState<InvestorInsightsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function InvestorInsightsSection({ 
+  mainTitle = "Insights for the",
+  highlightedTitle = "Discerning Investor",
+  description = "Stay informed with trending stories, industry updates, and thoughtful articles curated just for you.",
+  testimonials = [],
+  ...props 
+}: InvestorInsightsSectionProps) {
 
-  useEffect(() => {
-    const fetchInvestorInsights = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/cms/investor-insights');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch investor insights');
-        }
-        
-        const data = await response.json();
-        setInvestorData(data);
-      } catch (err) {
-        console.error('Error fetching investor insights:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
-        
-        // Fallback to default data if API fails
-        setInvestorData({
-          content: {
-            mainTitle: "Insights for the",
-            highlightedTitle: "Discerning Investor",
-            description: "Stay informed with trending stories, industry updates, and thoughtful articles curated just for you."
-          },
-          testimonials: [
-            {
-              quote: "Luxury residential properties in 2024 with heavy property demand averaging 25% increase while rental yields in prime areas reached 7.8%, making it a new destination for HNIs.",
-              content: "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors",
-              designation: "2024 Market Analysis",
-              src: "/images/invest-three.png",
-              order: 1
-            },
-            {
-              quote: "Commercial real estate opportunities showing 15% growth in Q3 2024, with office spaces in prime locations commanding premium rents.",
-              content: "Phuket Tourism Market Report 2024: Real Numbers for Savvy Investors", 
-              designation: "Q3 2024 Report",
-              src: "/images/invest-four.png",
-              order: 2
-            }
-          ],
-          isActive: true
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInvestorInsights();
-  }, []);
-
-  if (loading) {
+  // Show empty state
+  if (!testimonials || testimonials.length === 0) {
     return (
       <div className="bg-background relative overflow-hidden py-10 lg:py-20">
         <div className="container relative z-10 lg:py-16">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+          <div className="text-center">
+            <h1 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-light text-white leading-tight mb-4">
+              {mainTitle}{" "}
+              <span
+                className="font-bold bg-clip-text text-transparent"
+                style={{
+                  background: "linear-gradient(99.93deg, #C3912F 6.79%, #F5E7A8 31.89%, #C3912F 59.78%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {highlightedTitle}
+              </span>
+            </h1>
+            <div className="font-josefin description-text text-[#FFFFFFE5] mb-8">
+              {description}
+            </div>
+            <p className="text-white/50">No insights available at the moment.</p>
           </div>
         </div>
       </div>
     );
   }
 
-  if (!investorData || !investorData.isActive) {
-    return null; // Don't render if data is not active
-  }
-
   // Sort testimonials by order
-  const sortedTestimonials = [...investorData.testimonials].sort((a, b) => a.order - b.order);
+  const sortedTestimonials = [...testimonials].sort((a, b) => a.order - b.order);
 
   return (
     <div className="bg-background relative overflow-hidden py-10 lg:py-20">
-      {/* Background overlay - Made more visible for debugging */}
+      {/* Background overlay */}
       <div className="absolute inset-0 sm:top-[15%] sm:bottom-[15%] md:top-[10%] md:bottom-[10%] lg:top-[20%] lg:bottom-[20%] left-0 right-0 bg-[#CDB04E0D] z-0" />
 
       <div className="container relative z-10 lg:py-16">
@@ -232,7 +195,7 @@ export default function InvestorInsightsSection() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-light text-white leading-tight text-center lg:text-left mt-0 sm:mt-10"
               >
-                {investorData.content.mainTitle}{" "}
+                {mainTitle}{" "}
                 <p
                   className=" font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-bold mb-0 sm:mb-4 bg-clip-text text-transparent leading-tight "
                   style={{
@@ -242,7 +205,7 @@ export default function InvestorInsightsSection() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  {investorData.content.highlightedTitle}
+                  {highlightedTitle}
                 </p>
               </motion.h1>
 
@@ -251,7 +214,7 @@ export default function InvestorInsightsSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="font-josefin description-text text-[#FFFFFFE5] text-center lg:text-left md:pb-20 lg:pb-0 px-4 sm:px-0"
-                dangerouslySetInnerHTML={{ __html: investorData.content.description }}
+                dangerouslySetInnerHTML={{ __html: description }}
               />
             </div>
           </motion.div>

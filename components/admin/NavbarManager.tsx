@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAppDispatch } from "@/redux/hooks";
+import BaseSectionManager from "./BaseSectionManager";
 
 // Drag and drop imports
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -56,6 +57,12 @@ interface NavbarItem {
 interface NavbarState {
     logo: { url: string; alt?: string } | null;
     items: NavbarItem[];
+}
+
+interface NavbarManagerProps {
+  section?: any; // Section data from parent
+  onChange?: (changes: any) => void; // Callback to parent
+  showSaveButton?: boolean; // Whether to show individual save button
 }
 
 // Draggable component remains the same as your original code
@@ -95,8 +102,11 @@ function DraggableNavItem({ item, index, onEdit, onDelete }: { item: NavbarItem;
   );
 }
 
-
-export default function NavbarManager() {
+export default function NavbarManager({ 
+  section, 
+  onChange, 
+  showSaveButton = true 
+}: NavbarManagerProps) {
   const dispatch = useAppDispatch();
   const { logo: initialLogo, items: initialItems, loading, error } = useSelector(
     (state: RootState) => state.navbar
@@ -119,6 +129,15 @@ export default function NavbarManager() {
     // This effect runs when the initial data from Redux arrives
     setLocalNavbarState({ logo: initialLogo, items: initialItems });
   }, [initialLogo, initialItems]);
+
+  // Notify parent of changes if onChange is provided
+  useEffect(() => {
+    if (onChange && (JSON.stringify({ logo: initialLogo, items: initialItems }) !== JSON.stringify(localNavbarState))) {
+      onChange({
+        content: localNavbarState
+      });
+    }
+  }, [localNavbarState, initialLogo, initialItems, onChange]);
 
   // Check if there are any unsaved changes
   const hasChanges = JSON.stringify({ logo: initialLogo, items: initialItems }) !== JSON.stringify(localNavbarState);
@@ -181,11 +200,10 @@ export default function NavbarManager() {
     toast.info("Item marked for deletion");
   };
 
-  // ✅ New global save function
+  // Individual save function (only if showSaveButton is true)
   const handleSaveChanges = async () => {
     setSaving(true);
     try {
-      // Send the entire local state to the backend
       await dispatch(updateNavbar(localNavbarState)).unwrap();
       toast.success("Navbar updated successfully!");
     } catch (err) {
@@ -196,7 +214,7 @@ export default function NavbarManager() {
     }
   };
 
-  // ✅ New discard changes function
+  // Discard changes function
   const handleDiscardChanges = () => {
     setLocalNavbarState({ logo: initialLogo, items: initialItems });
     toast.info("Changes have been discarded.");
@@ -211,28 +229,8 @@ export default function NavbarManager() {
     );
   }
 
-  return (
+  const navbarContent = (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-            <h1 className="text-2xl font-bold text-gray-900">Navbar Management</h1>
-            <p className="text-gray-600">Manage your website navigation and logo</p>
-        </div>
-        {/* ✅ Global Save/Discard Buttons */}
-        {hasChanges && (
-            <div className="flex items-center space-x-2">
-                <Button variant="outline" onClick={handleDiscardChanges}>
-                    <XCircle className="h-4 w-4 mr-2" />
-                    Discard
-                </Button>
-                <Button onClick={handleSaveChanges} disabled={saving}>
-                    <Save className="h-4 w-4 mr-2" />
-                    {saving ? "Saving..." : "Save Changes"}
-                </Button>
-            </div>
-        )}
-      </div>
-
       {error && (<Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>)}
 
       {/* Logo Management */}
@@ -258,9 +256,8 @@ export default function NavbarManager() {
             isOpen={isLogoSelectorOpen}
             onOpenChange={setIsLogoSelectorOpen}
             onSelect={(media) => {
-              // Modify local state, not dispatch
               setLocalNavbarState(prevState => ({ ...prevState, logo: { url: media.secure_url } }));
-              setIsLogoSelectorOpen(false); // Close modal on select
+              setIsLogoSelectorOpen(false);
             }}
             mediaType="image"
             title="Select Logo"
@@ -318,6 +315,47 @@ export default function NavbarManager() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+
+  // If used within a section manager (with section prop), wrap with BaseSectionManager
+  if (section) {
+    return (
+      <BaseSectionManager
+        section={section}
+        onChange={onChange || (() => {})}
+        showSaveButton={showSaveButton}
+        title="Navbar Management"
+        description="Manage your website navigation and logo"
+      >
+        {navbarContent}
+      </BaseSectionManager>
+    );
+  }
+
+  // Standalone usage (original layout with global controls)
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+            <h1 className="text-2xl font-bold text-gray-900">Navbar Management</h1>
+            <p className="text-gray-600">Manage your website navigation and logo</p>
+        </div>
+        {/* Global Save/Discard Buttons - Only show for standalone usage */}
+        {hasChanges && showSaveButton && (
+            <div className="flex items-center space-x-2">
+                <Button variant="outline" onClick={handleDiscardChanges}>
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Discard
+                </Button>
+                <Button onClick={handleSaveChanges} disabled={saving}>
+                    <Save className="h-4 w-4 mr-2" />
+                    {saving ? "Saving..." : "Save Changes"}
+                </Button>
+            </div>
+        )}
+      </div>
+      {navbarContent}
     </div>
   );
 }

@@ -1,41 +1,82 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux";
-import {
-  fetchContactData,
-  updateContactData,
-  setContactData,
-  setContactDetail,
-} from "@/redux/slices/contactSlice";
-import Editor from "@/components/admin/Editor"
+import Editor from "@/components/admin/Editor";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner"; // Using sonner for notifications
-import MediaSelectorButton from "@/components/admin/MediaSelectButton"; // Adjust import path
-import { Loader2 } from "lucide-react";
+import MediaSelectorButton from "@/components/admin/MediaSelectButton";
+import type { Section } from "@/redux/slices/pageSlice";
 
-const ContactManager: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { data, loading, error } = useSelector(
-    (state: RootState) => state.contact
-  );
-  
-  const [isSaving, setIsSaving] = useState(false);
+interface ContactManagerProps {
+  section: Section;
+  onChange: (changes: any) => void;
+  showSaveButton?: boolean;
+}
 
+interface ContactDetail {
+  _id?: string;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface ContactData {
+  details: ContactDetail[];
+  formTitle: string;
+  formDescription: string;
+  mapImage: string;
+}
+
+const ContactManager: React.FC<ContactManagerProps> = ({
+  section,
+  onChange,
+  showSaveButton = false,
+}) => {
+  const [localData, setLocalData] = useState<ContactData>({
+    details: [
+      { icon: "", title: "", description: "" },
+      { icon: "", title: "", description: "" },
+      { icon: "", title: "", description: "" },
+    ],
+    formTitle: "",
+    formDescription: "",
+    mapImage: "",
+  });
+
+  // Initialize local data from section content
   useEffect(() => {
-    dispatch(fetchContactData());
-  }, [dispatch]);
+    if (section?.content) {
+      setLocalData({
+        details: section.content.details || [
+          { icon: "", title: "", description: "" },
+          { icon: "", title: "", description: "" },
+          { icon: "", title: "", description: "" },
+        ],
+        formTitle: section.content.formTitle || "",
+        formDescription: section.content.formDescription || "",
+        mapImage: section.content.mapImage || "",
+      });
+    }
+  }, [section]);
+
+  // Handle local changes and notify parent
+  const handleDataChange = (newData: Partial<ContactData>) => {
+    const updatedData = { ...localData, ...newData };
+    setLocalData(updatedData);
+    
+    // Notify parent component of changes
+    onChange({
+      content: updatedData,
+    });
+  };
 
   const handleFormTitleChange = (content: string) => {
-    dispatch(setContactData({ formTitle: content }));
+    handleDataChange({ formTitle: content });
   };
 
   const handleFormDescriptionChange = (content: string) => {
-    dispatch(setContactData({ formDescription: content }));
+    handleDataChange({ formDescription: content });
   };
 
   const handleDetailChange = (
@@ -43,70 +84,66 @@ const ContactManager: React.FC = () => {
     field: "title" | "description",
     value: string
   ) => {
-    dispatch(setContactDetail({ index, field, value }));
+    const updatedDetails = [...localData.details];
+    updatedDetails[index] = { ...updatedDetails[index], [field]: value };
+    handleDataChange({ details: updatedDetails });
   };
 
   const handleIconSelect = (index: number, url: string) => {
-    dispatch(setContactDetail({ index, field: "icon", value: url }));
+    const updatedDetails = [...localData.details];
+    updatedDetails[index] = { ...updatedDetails[index], icon: url };
+    handleDataChange({ details: updatedDetails });
   };
 
   const handleMapImageSelect = (url: string) => {
-    dispatch(setContactData({ mapImage: url }));
+    handleDataChange({ mapImage: url });
   };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    const promise = dispatch(updateContactData(data)).unwrap();
-
-    toast.promise(promise, {
-      loading: "Saving changes...",
-      success: "Contact page updated successfully!",
-      error: "Failed to update contact page.",
-    });
-
-    try {
-      await promise;
-    } catch (err) {
-      console.error("Failed to save:", err);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  if (loading && !data.details.length) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">Error: {error}</div>;
-  }
 
   return (
-    <div className="space-y-6 p-4">
-
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Contact Details Section</h1>
-        <Button size={"lg"} onClick={handleSave} disabled={isSaving} className='text-background cursor-pointer'>
-          {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Save Changes
-        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">Contact Details Section</h1>
+          <p className="text-muted-foreground">
+            Manage contact details, form content, and map image
+          </p>
+        </div>
       </div>
+
+      {/* Contact Details */}
       <Card className="py-6">
+        <CardHeader>
+          <CardTitle>Contact Details</CardTitle>
+        </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {data.details.map((detail, index) => (
+          {localData.details.map((detail, index) => (
             <div
               key={detail._id || index}
               className="space-y-4 p-4 border rounded-lg"
             >
-              <Label>Icon {index + 1}</Label>
-              <div className="flex items-center gap-4">
-                <MediaSelectorButton
-                  label="Select Icon"
-                  mediaType="image"
-                  value={detail.icon}
-                  onSelect={(url: string) => handleIconSelect(index, url)}
-                />
+              <Label>Contact Detail {index + 1}</Label>
+              
+              {/* Icon Selection */}
+              <div className="space-y-2">
+                <Label>Icon</Label>
+                <div className="flex items-center gap-4">
+                  {detail.icon && (
+                    <img
+                      src={detail.icon}
+                      alt={`Icon ${index + 1}`}
+                      className="w-8 h-8 object-contain"
+                    />
+                  )}
+                  <MediaSelectorButton
+                    label="Select Icon"
+                    mediaType="image"
+                    value={detail.icon}
+                    onSelect={(url: string) => handleIconSelect(index, url)}
+                  />
+                </div>
               </div>
+
+              {/* Title */}
               <div>
                 <Label htmlFor={`detail-title-${index}`}>Title</Label>
                 <Input
@@ -115,8 +152,11 @@ const ContactManager: React.FC = () => {
                   onChange={(e) =>
                     handleDetailChange(index, "title", e.target.value)
                   }
+                  placeholder="Enter title"
                 />
               </div>
+
+              {/* Description */}
               <div>
                 <Label htmlFor={`detail-desc-${index}`}>Description</Label>
                 <Input
@@ -125,6 +165,7 @@ const ContactManager: React.FC = () => {
                   onChange={(e) =>
                     handleDetailChange(index, "description", e.target.value)
                   }
+                  placeholder="Enter description"
                 />
               </div>
             </div>
@@ -132,44 +173,47 @@ const ContactManager: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Contact Form Section */}
       <Card className="py-6">
         <CardHeader>
           <CardTitle>Contact Form Section</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Map Image */}
           <div>
             <Label>Map Image</Label>
             <div className="flex flex-col items-start gap-4 mt-2">
-              <img
-                src={data.mapImage}
-                alt="Map"
-                className="w-48 h-auto rounded-md bg-gray-200"
-              />
+              {localData.mapImage && (
+                <img
+                  src={localData.mapImage}
+                  alt="Map"
+                  className="w-48 h-auto rounded-md bg-gray-200"
+                />
+              )}
               <MediaSelectorButton
                 label="Select Map Image"
                 mediaType="image"
-                value={data.mapImage}
+                value={localData.mapImage}
                 onSelect={handleMapImageSelect}
               />
             </div>
           </div>
+
+          {/* Form Title */}
           <div>
             <Label>Form Title</Label>
             <Editor
-              value={data.formTitle || ""}
-              onEditorChange={(content) =>
-                dispatch(setContactData({ formTitle: content }))
-              }
+              value={localData.formTitle || ""}
+              onEditorChange={handleFormTitleChange}
             />
           </div>
+
+          {/* Form Description */}
           <div>
             <Label>Form Description</Label>
-
             <Editor
-              value={data.formDescription || ""}
-              onEditorChange={(content) =>
-                dispatch(setContactData({ formDescription: content }))
-              }
+              value={localData.formDescription || ""}
+              onEditorChange={handleFormDescriptionChange}
             />
           </div>
         </CardContent>

@@ -23,18 +23,18 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const cursor = searchParams.get('cursor') || undefined;
 
-    console.log('API received params:', { query, type, limit, cursor });
+    // console.log('API received params:', { query, type, limit, cursor });
 
     // Use alternative search method for better query handling
     const result = query 
       ? await cloudinaryService.searchFilesAlternative(query, type, limit, cursor)
       : await cloudinaryService.searchFiles(undefined, type, limit, cursor);
 
-    console.log("API sending result:", {
-      resourceCount: result.resources.length,
-      totalCount: result.total_count,
-      hasNextCursor: !!result.next_cursor
-    });
+    // console.log("API sending result:", {
+    //   resourceCount: result.resources.length,
+    //   totalCount: result.total_count,
+    //   hasNextCursor: !!result.next_cursor
+    // });
 
     return NextResponse.json({
       success: true,

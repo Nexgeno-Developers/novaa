@@ -1,14 +1,13 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'sonner';
-import { v4 as uuidv4 } from 'uuid'; // Keep uuid for client-side keys
-
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid"; // Keep uuid for client-side keys
 
 // Define the types for our state
 interface FaqItem {
   _id: string;
   question: string;
   answer: string;
-    order: number;
+  order: number;
 }
 
 interface FaqState {
@@ -18,60 +17,63 @@ interface FaqState {
     backgroundImage: string;
     faqs: FaqItem[];
   } | null;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: FaqState = {
   data: null,
-  status: 'idle',
+  status: "idle",
   error: null,
 };
 
 // Async Thunk for fetching data from the API
-export const fetchFaqData = createAsyncThunk(
-  'faq/fetchData',
-  async () => {
-    const response = await fetch('/api/cms/faq');
-    if (!response.ok) {
-      throw new Error('Failed to fetch FAQ data');
-    }
-    return await response.json();
+export const fetchFaqData = createAsyncThunk("faq/fetchData", async () => {
+  const response = await fetch("/api/cms/faq");
+  if (!response.ok) {
+    throw new Error("Failed to fetch FAQ data");
   }
-);
+  return await response.json();
+});
 
 // Async Thunk for saving data to the API
 export const saveFaqData = createAsyncThunk(
-  'faq/saveData',
-  async (data: FaqState['data']) => {
-    const response = await fetch('/api/cms/faq', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+  "faq/saveData",
+  async (data: FaqState["data"]) => {
+    const response = await fetch("/api/cms/faq", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      throw new Error('Failed to save FAQ changes');
+      throw new Error("Failed to save FAQ changes");
     }
     return await response.json();
   }
 );
 
 const faqSlice = createSlice({
-  name: 'faq',
+  name: "faq",
   initialState,
   reducers: {
     // Reducers for synchronous (instant) state updates
-    updateMainField: (state, action: PayloadAction<{ field: 'title' | 'description' | 'backgroundImage'; value: string }>) => {
+    updateMainField: (
+      state,
+      action: PayloadAction<{
+        field: "title" | "description" | "backgroundImage";
+        value: string;
+      }>
+    ) => {
       if (state.data) {
         state.data[action.payload.field] = action.payload.value;
       }
     },
-     addFaqItem: (state) => {
+    addFaqItem: (state) => {
       if (state.data) {
         const newFaq: FaqItem = {
           _id: uuidv4(),
-          question: 'New Question',
-          answer: '<p>New answer.</p>',
+          question: "New Question",
+          answer: "<p>New answer.</p>",
           order: state.data.faqs.length,
         };
         state.data.faqs.push(newFaq);
@@ -87,7 +89,14 @@ const faqSlice = createSlice({
         });
       }
     },
-    updateFaqItem: (state, action: PayloadAction<{ index: number; field: 'question' | 'answer'; value: string }>) => {
+    updateFaqItem: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        field: "question" | "answer";
+        value: string;
+      }>
+    ) => {
       if (state.data) {
         const { index, field, value } = action.payload;
         state.data.faqs[index][field] = value;
@@ -103,46 +112,46 @@ const faqSlice = createSlice({
         }));
         state.data.faqs = updatedFaqs;
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
       // Fetch Data states
       .addCase(fetchFaqData.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchFaqData.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.data = action.payload;
       })
       .addCase(fetchFaqData.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Something went wrong';
+        state.status = "failed";
+        state.error = action.error.message || "Something went wrong";
         toast.error("Error fetching FAQ data!");
       })
       // Save Data states
       .addCase(saveFaqData.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(saveFaqData.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.data = action.payload;
         toast.success("FAQ changes saved successfully!");
       })
       .addCase(saveFaqData.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || 'Something went wrong';
+        state.status = "failed";
+        state.error = action.error.message || "Something went wrong";
         toast.error("Error saving FAQ changes!");
       });
   },
 });
 
-export const { 
-  updateMainField, 
-  addFaqItem, 
-  removeFaqItem, 
+export const {
+  updateMainField,
+  addFaqItem,
+  removeFaqItem,
   updateFaqItem,
-  reorderFaqs
+  reorderFaqs,
 } = faqSlice.actions;
 
 export default faqSlice.reducer;

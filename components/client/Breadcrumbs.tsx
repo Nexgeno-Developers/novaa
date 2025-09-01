@@ -1,10 +1,9 @@
-// components/Breadcrumbs.tsx (Updated)
 "use client";
 
 import Image from "next/image";
 import { Josefin_Sans } from "next/font/google";
 import Link from "next/link";
-import parse from 'html-react-parser'; // You'll need to install this: npm install html-react-parser
+import parse from 'html-react-parser'; 
 
 const josefin = Josefin_Sans({
   weight: "500",
@@ -16,10 +15,20 @@ interface BreadcrumbsProps {
   title: string;
   description: string;
   backgroundImageUrl: string;
-  pageName: string; // The name for the current page link, e.g., "About Us"
+  pageSlug: string;
 }
 
-export default function Breadcrumbs({ title, description, backgroundImageUrl, pageName }: BreadcrumbsProps) {
+// Helper: convert "contact-us" > "Contact Us"
+function formatSlug(slug?: string) {
+  if (!slug) return "";
+  return slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+
+export default function Breadcrumbs({ title, description, backgroundImageUrl, pageSlug }: BreadcrumbsProps) {
+  const pageName = formatSlug(pageSlug)
   return (
     <section className="relative w-full h-[438px]">
       {/* Dynamic background image */}
@@ -58,7 +67,7 @@ export default function Breadcrumbs({ title, description, backgroundImageUrl, pa
           />
           {/* Dynamic Page Name */}
           <span className="text-[16px] font-semibold text-white">
-            {pageName.toUpperCase()}
+            {pageName}
           </span>
         </div>
       </div>

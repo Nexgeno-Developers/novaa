@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
-// --- Types ---
 interface Location {
   id: string;
   name: string;
@@ -22,13 +21,14 @@ interface Category {
   locations: Location[];
 }
 
-interface PhuketPropertiesData {
-  mainHeading: string;
-  subHeading: string;
-  description: string;
-  explorerHeading: string;
-  explorerDescription: string;
-  categories: Category[];
+interface PhuketPropertiesSectionProps {
+  mainHeading?: string;
+  subHeading?: string;
+  description?: string;
+  explorerHeading?: string;
+  explorerDescription?: string;
+  categories?: Category[];
+  [key: string]: unknown;
 }
 
 const containerVariants: Variants = {
@@ -68,39 +68,27 @@ const mapPinVariants: Variants = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
 };
 
-// --- Main Component ---
-const PhuketPropertiesSection = () => {
+export default function PhuketPropertiesSection({
+  mainHeading = "DISCOVER",
+  subHeading = "PHUKET PROPERTIES",
+  description = "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
+  explorerHeading = "PHUKET EXPLORER",
+  explorerDescription = "<p>Navigate through different property categories and locations.</p>",
+  categories = [],
+  ...props
+}: PhuketPropertiesSectionProps) {
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
-  const [data, setData] = useState<PhuketPropertiesData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const controls = useAnimation();
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.3 });
 
-  // Fetch data from API
+  // Set initial active category when categories change
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/cms/properties');
-        if (response.ok) {
-          const result = await response.json();
-          setData(result.data);
-          if (result.data?.categories?.length > 0) {
-            setActiveCategory(result.data.categories[0].id);
-          }
-        } else {
-          console.error('Failed to fetch properties data');
-        }
-      } catch (error) {
-        console.error('Error fetching properties data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    if (categories.length > 0 && !activeCategory) {
+      setActiveCategory(categories[0].id);
+    }
+  }, [categories, activeCategory]);
 
   useEffect(() => {
     if (inView) {
@@ -108,25 +96,12 @@ const PhuketPropertiesSection = () => {
     }
   }, [inView, controls]);
 
-  // Show loading state
-  if (loading) {
-    return (
-      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </section>
-    );
+  // If no categories, don't render the section
+  if (categories.length === 0) {
+    return null;
   }
 
-  // Show error state if no data
-  if (!data) {
-    return (
-      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl">Failed to load properties data</div>
-      </section>
-    );
-  }
-
-  const currentCategory = data.categories.find(cat => cat.id === activeCategory);
+  const currentCategory = categories.find(cat => cat.id === activeCategory);
   
   // Helper function to render HTML content safely
   const createMarkup = (html: string) => {
@@ -161,10 +136,10 @@ const PhuketPropertiesSection = () => {
           className="font-cinzel max-w-3xl space-y-2 sm:space-y-4 text-center sm:text-left"
         >
           <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
-            {data.mainHeading}
+            {mainHeading}
           </h1>
           <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent pb-5">
-            {data.subHeading}
+            {subHeading}
           </h2>
         </motion.div>
 
@@ -180,7 +155,7 @@ const PhuketPropertiesSection = () => {
             <motion.div
               variants={itemVariants}
               className="font-josefin text-[#FFFFFFE5] text-center sm:text-left description-text w-full lg:max-w-2xl"
-              dangerouslySetInnerHTML={createMarkup(data.description)}
+              dangerouslySetInnerHTML={createMarkup(description)}
             />
 
             {/* Phuket Explorer Section */}
@@ -192,16 +167,16 @@ const PhuketPropertiesSection = () => {
               className="space-y-2 lg:space-y-4 font-josefin text-center lg:text-left"
             >
               <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
-                {data.explorerHeading}
+                {explorerHeading}
               </h3>
               <div 
                 className="text-[#FFFFFFE5] description-text border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center sm:text-left"
-                dangerouslySetInnerHTML={createMarkup(data.explorerDescription)}
+                dangerouslySetInnerHTML={createMarkup(explorerDescription)}
               />
 
               {/* Category Buttons */}
               <div className="space-y-3 flex flex-col items-center lg:items-start">
-                {data.categories.map((category) => {
+                {categories.map((category) => {
                   const isActive = activeCategory === category.id;
                   return (
                     <button
@@ -308,6 +283,7 @@ const PhuketPropertiesSection = () => {
               </div>
             </motion.div>
           </motion.div>
+          
           {/* Right Side - Map */}
           <div className="w-full h-[400px] xs:h-[500px] sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
             <motion.div
@@ -380,5 +356,3 @@ const PhuketPropertiesSection = () => {
     </section>
   );
 };
-
-export default PhuketPropertiesSection;

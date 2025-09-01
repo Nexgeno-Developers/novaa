@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
-import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
-import Image from "next/image";
 
-interface Testimonial {
+interface TestimonialData {
   id: string;
   name: string;
   role: string;
@@ -17,12 +16,11 @@ interface Testimonial {
   isActive: boolean;
 }
 
-interface TestimonialsData {
-  content: {
-    title: string;
-    description: string;
-  };
-  testimonials: Testimonial[];
+interface TestimonialsSectionProps {
+  title?: string;
+  description?: string;
+  testimonials?: TestimonialData[];
+  [key: string]: unknown;
 }
 
 interface Rating {
@@ -51,7 +49,7 @@ const StarRating = ({ rating }: Rating) => {
 };
 
 type TestimonialCardProps = {
-  testimonial: Testimonial;
+  testimonial: TestimonialData;
   isActive: boolean;
 };
 
@@ -69,11 +67,14 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
           <div className="flex pb-2">
             <StarRating rating={testimonial.rating} />
           </div>
-          <div 
+          <div
             className="text-background description-text mb-0 lg:mb-8 flex-grow"
             dangerouslySetInnerHTML={{ __html: testimonial.quote }}
           />
-          <p className="font-light">Demo</p>
+          <p
+            className="font-light"
+            dangerouslySetInnerHTML={{ __html: testimonial.name }}
+          ></p>
         </div>
 
         {/* Avatar outside the mask */}
@@ -89,38 +90,14 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
   );
 };
 
-export default function EliteClientsTestimonials() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree : true });
+export function EliteClientsTestimonials({
+  title = "What Our <span class='text-[#D4AF37] font-bold'>Elite Clients Say</span>",
+  description = "Real stories from real people who trust us",
+  testimonials = [],
+  ...props
+}: TestimonialsSectionProps) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [testimonialsData, setTestimonialsData] = useState<TestimonialsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch testimonials data
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/cms/testimonials');
-        if (!response.ok) {
-          throw new Error('Failed to fetch testimonials');
-        }
-        const data = await response.json();
-        if (data.success) {
-          setTestimonialsData(data.data);
-        } else {
-          throw new Error(data.error || 'Failed to load testimonials');
-        }
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load testimonials');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTestimonials();
-  }, []);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -136,73 +113,24 @@ export default function EliteClientsTestimonials() {
     onSelect();
   }, [emblaApi, onSelect]);
 
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="bg-secondary py-10 lg:py-20">
-        <div className="container">
-          <div className="text-center">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-300 rounded mx-auto mb-4 w-64"></div>
-              <div className="h-4 bg-gray-300 rounded mx-auto mb-8 w-48"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white rounded-[40px] p-6 h-60">
-                    <div className="animate-pulse space-y-4">
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <div key={star} className="w-4 h-4 bg-gray-300 rounded"></div>
-                        ))}
-                      </div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-gray-300 rounded"></div>
-                        <div className="h-4 bg-gray-300 rounded"></div>
-                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <div className="bg-secondary py-10 lg:py-20">
-        <div className="container">
-          <div className="text-center">
-            <p className="text-red-600 mb-4">Error loading testimonials: {error}</p>
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Show empty state
-  if (!testimonialsData || !testimonialsData.testimonials || testimonialsData.testimonials.length === 0) {
+  if (!testimonials || testimonials.length === 0) {
     return (
       <div className="bg-secondary py-10 lg:py-20">
         <div className="container">
           <div className="text-center">
             <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase font-cinzel">
               What Our{" "}
-              <span className="text-[#D4AF37] font-bold">Elite Clients Say</span>
+              <span className="text-[#D4AF37] font-bold">
+                Elite Clients Say
+              </span>
             </h2>
             <p className="font-josefin text-[#303030] description-text mb-8">
               Real stories from real people who trust us
             </p>
-            <p className="text-gray-500">No testimonials available at the moment.</p>
+            <p className="text-gray-500">
+              No testimonials available at the moment.
+            </p>
           </div>
         </div>
       </div>
@@ -210,8 +138,8 @@ export default function EliteClientsTestimonials() {
   }
 
   // Filter active testimonials and sort by order
-  const activeTestimonials = testimonialsData.testimonials
-    .filter(testimonial => testimonial.isActive)
+  const activeTestimonials = testimonials
+    .filter((testimonial) => testimonial.isActive)
     .sort((a, b) => a.order - b.order);
 
   return (
@@ -225,11 +153,11 @@ export default function EliteClientsTestimonials() {
           className="text-center mb-10 lg:mb-16 font-cinzel"
         >
           <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase">
-            <div dangerouslySetInnerHTML={{ __html: testimonialsData.content.title }} />
+            <div dangerouslySetInnerHTML={{ __html: title }} />
           </h2>
-          <div 
+          <div
             className="font-josefin text-[#303030] description-text"
-            dangerouslySetInnerHTML={{ __html: testimonialsData.content.description }}
+            dangerouslySetInnerHTML={{ __html: description }}
           />
         </motion.div>
 

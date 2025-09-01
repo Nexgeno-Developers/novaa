@@ -1,43 +1,54 @@
-import CollectionCard from "@/components/client/CollectionCard";
-import RegionTabs from "@/components/client/RegionTabs";
-import Breadcrumbs from "@/components/client/Breadcrumbs";
-import { getBreadcrumbData } from "@/lib/data/getBreadcrumbData";
+import connectDB from '@/lib/mongodb';
+import Section from '@/models/Section';
+import BreadcrumbsSection from '@/components/client/BreadcrumbsSection';
+import ProjectSection from '@/components/client/ProjectSection';
 
-export default async function Project() {
-  const breadcrumbData = await getBreadcrumbData("project");
-  // In case data is null
-  if (!breadcrumbData) {
-    // You could render a fallback or nothing at all
-    return <div>Error loading page header.</div>;
+const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
+  breadcrumb: BreadcrumbsSection,
+  project: ProjectSection, // This maps to the "project" type our seed data
+  // Add more project section components as needed
+};
+
+async function getProjectPageData() {
+  try {
+    await connectDB();
+
+    // Fetch all active sections for the 'project' page and sort them by order
+    const sections = await Section.find({ 
+      pageSlug: 'project', 
+      status: 'active',
+      'settings.isVisible': true  // Only fetch visible sections
+    })
+      .sort({ order: 1 })
+      .lean();
+
+    return sections;
+  } catch (error) {
+    console.error("Failed to fetch project page data:", error);
+    return [];
+  }
+}
+
+export default async function ProjectPage() {
+  const sections = await getProjectPageData();
+
+  console.log("Project Sections:", sections);
+
+  if (!sections || sections.length === 0) {
+    return (
+      <main className="flex items-center justify-center h-screen">
+        <p>Project content is not configured yet.</p>
+      </main>
+    );
   }
 
   return (
-    <>
-      {breadcrumbData && (
-        <Breadcrumbs
-          title={breadcrumbData.title}
-          description={breadcrumbData.description}
-          backgroundImageUrl={breadcrumbData.backgroundImageUrl}
-          pageName="Project"
-        />
-      )}{" "}
-      <section className="py-10 sm:py-20 bg-[#fffef8]">
-        <div className="container">
-          <div className="flex flex-col sm:flex-row justify-around items-center">
-            {/* Region Tabs */}
-            <div className="flex justify-center items-center sm:mb-10 gap-6 py-2 sm:py-3 px-8">
-              <RegionTabs />
-            </div>
-          </div>
-
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 bg-white rounded-3xl gap-6">
-            <CollectionCard isLocationVisible={true} />
-            <CollectionCard isLocationVisible={true} />
-            <CollectionCard isLocationVisible={true} />
-          </div>
-        </div>
-      </section>
-    </>
+    <main className="relative">
+      {sections.map(section => {
+        const Component = sectionComponentMap[section.type] || sectionComponentMap[section.slug];
+        // If a component is found, render it. Otherwise, render nothing.
+        return Component ? <Component key={section._id} {...section.content} pageSlug={section.pageSlug} /> : null;
+      })}
+    </main>
   );
 }

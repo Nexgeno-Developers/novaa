@@ -1,5 +1,5 @@
-import PageSectionsList from '@/components/admin/PageSections';
+import PageSlugPage from '@/components/admin/PageSlugPage';
 
-export default function PageSectionsPage() {
-  return <PageSectionsList />;
+export default function Page() {
+  return <PageSlugPage />;
 }

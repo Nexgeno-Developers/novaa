@@ -9,49 +9,56 @@ const SectionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  pageSlug: {
+  type: {
     type: String,
     required: true,
   },
   order: {
     type: Number,
     required: true,
-    default: 1,
+    default: 0,
+  },
+  pageSlug: {
+    type: String,
+    required: true,
+  },
+  component: {
+    type: String,
+    required: true,
   },
   status: {
     type: String,
     enum: ['active', 'inactive'],
     default: 'active',
   },
-  type: {
-  type: String,
-  required: true,
-},
-  component: {
-    type: String,
-    required: true,
+  settings: {
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
+    backgroundColor: String,
+    padding: String,
+    margin: String,
+    customCSS: String,
+    animation: String,
   },
   content: {
     type: mongoose.Schema.Types.Mixed,
     default: {},
   },
-  settings: {
-    backgroundColor: { type: String, default: '#ffffff' },
-    textColor: { type: String, default: '#000000' },
-    padding: { type: String, default: '60px' },
-    margin: { type: String, default: '20px' },
-    isVisible: { type: Boolean, default: true },
-  },
-  seo: {
-    metaTitle: String,
-    metaDescription: String,
-    keywords: [String],
-  },
 }, {
   timestamps: true,
 });
 
-// Compound index for unique sections per page
+// Compound index for page sections
+SectionSchema.index({ pageSlug: 1, order: 1 });
 SectionSchema.index({ pageSlug: 1, slug: 1 }, { unique: true });
+
+// Ensure slug is lowercase and URL-friendly
+SectionSchema.pre('save', function() {
+  if (this.isModified('slug')) {
+    this.slug = this.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+  }
+});
 
 export default mongoose.models.Section || mongoose.model('Section', SectionSchema);

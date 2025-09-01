@@ -15,6 +15,8 @@ import {
   RefreshCw,
   Save,
   Image as ImageIcon,
+  Images,
+  Sparkles,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -36,19 +38,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import RichTextEditor from "@/components/admin/Editor";
-import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
+import MediaSelectButton from "@/components/admin/MediaSelectButton";
+import BaseSectionManager from "@/components/admin/BaseSectionManager";
 import Image from "next/image";
 
-const NovaaAdvantagesManager = () => {
+interface NovaaAdvantageManagerProps {
+  section: any; // Required
+  onChange: (changes: any) => void; // Required
+  showSaveButton?: boolean;
+}
+
+const NovaaAdvantageManagerContent = ({
+  onChange,
+  showSaveButton = true,
+}: {
+  onChange?: (changes: any) => void;
+  showSaveButton?: boolean;
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, status } = useSelector((state: RootState) => state.advantage);
 
-  // Local state for media selector
-  const [isSelectorOpen, setSelectorOpen] = useState(false);
-  const [mediaTarget, setMediaTarget] = useState<{
-    type: string;
-    index?: number;
-  } | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [originalData, setOriginalData] = useState(null);
 
   useEffect(() => {
     if (status === "idle") {
@@ -56,9 +67,29 @@ const NovaaAdvantagesManager = () => {
     }
   }, [status, dispatch]);
 
+  // Store original data for comparison
+  useEffect(() => {
+    if (data && !originalData) {
+      setOriginalData(JSON.parse(JSON.stringify(data)));
+    }
+  }, [data, originalData]);
+
+  // Notify parent of changes
+  useEffect(() => {
+    if (onChange && data && originalData && hasUnsavedChanges) {
+      const hasChanges = JSON.stringify(data) !== JSON.stringify(originalData);
+      if (hasChanges) {
+        setHasUnsavedChanges(true);
+        onChange({ content: data });
+      }
+    }
+  }, [data, originalData]);
+
   const handleSaveChanges = () => {
     if (data) {
       dispatch(saveNovaaAdvantageData(data));
+      setOriginalData(JSON.parse(JSON.stringify(data)));
+      setHasUnsavedChanges(false);
     }
   };
 
@@ -72,32 +103,16 @@ const NovaaAdvantagesManager = () => {
 
   const handleRefresh = () => {
     dispatch(fetchNovaaAdvantageData());
+    setHasUnsavedChanges(false);
+    setOriginalData(null);
   };
 
-  const openMediaSelector = (type: string, index?: number) => {
-    setMediaTarget({ type, index });
-    setSelectorOpen(true);
+  const handleBackgroundImageSelect = (imageUrl: string) => {
+    dispatch(updateMainField({ field: "backgroundImage", value: imageUrl }));
   };
 
-  const handleImageSelect = (media: { secure_url: string }) => {
-    console.log("Media", media);
-    if (!mediaTarget) return;
-
-    const { type, index } = mediaTarget;
-    if (type === "bg") {
-      dispatch(
-        updateMainField({ field: "backgroundImage", value: media.secure_url })
-      );
-    } else if (type === "logo") {
-      dispatch(
-        updateMainField({ field: "logoImage", value: media.secure_url })
-      );
-    } else if (type === "icon" && index !== undefined) {
-      dispatch(
-        updateAdvantageItem({ index, field: "icon", value: media.secure_url })
-      );
-    }
-    setSelectorOpen(false);
+  const handleLogoImageSelect = (imageUrl: string) => {
+    dispatch(updateMainField({ field: "logoImage", value: imageUrl }));
   };
 
   if (status === "loading" && !data)
@@ -106,55 +121,61 @@ const NovaaAdvantagesManager = () => {
     return <div className="p-8">Could not load data. Try refreshing.</div>;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
-      <AdvancedMediaSelector
-        isOpen={isSelectorOpen}
-        onOpenChange={setSelectorOpen}
-        onSelect={handleImageSelect}
-        mediaType="image"
-        title="Select an Image"
-        selectedValue={
-          mediaTarget?.type === "bg"
-            ? data.backgroundImage
-            : mediaTarget?.type === "logo"
-            ? data.logoImage
-            : mediaTarget?.type === "icon" && mediaTarget.index !== undefined
-            ? data.advantages[mediaTarget.index].icon
-            : undefined
-        }
-      />
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Novaa Advantage Manager
-        </h1>
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={handleRefresh}
-            disabled={status === "loading"}
-            className="bg-primary text-background cursor-pointer "
-          >
-            <RefreshCw
-              className={`w-4 h-4 mr-2 ${
-                status === "loading" ? "animate-spin" : ""
-              }`}
-            />
-            Refresh
-          </Button>
-          <Button
-            onClick={handleSaveChanges}
-            className="bg-primary text-background cursor-pointer"
-            disabled={status === "loading"}
-          >
-            <Save className="h-4 w-4 mr-2" />
-            {status === "loading" ? "Saving..." : "Save Changes"}
-          </Button>
+    <div className="space-y-6">
+      {/* Header - only show in standalone mode */}
+      {showSaveButton && (
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Nova Advantage Manager
+            </h1>
+            {hasUnsavedChanges && (
+              <p className="text-sm text-orange-600 mt-1">
+                You have unsaved changes
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleRefresh}
+              disabled={status === "loading"}
+              className="bg-primary text-background cursor-pointer"
+            >
+              <RefreshCw
+                className={`w-4 h-4 mr-2 ${
+                  status === "loading" ? "animate-spin" : ""
+                }`}
+              />
+              Refresh
+            </Button>
+            <Button
+              onClick={handleSaveChanges}
+              className="bg-primary text-background cursor-pointer"
+              disabled={status === "loading" || !hasUnsavedChanges}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              {status === "loading" ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <Tabs defaultValue="content">
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="images">Center Image</TabsTrigger>
+        <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
+          <TabsTrigger
+            value="content"
+            className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span className="font-medium">Content</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="images"
+            className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
+          >
+            <Images className="w-4 h-4" />
+            <span className="font-medium">Center Image</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="content" className="mt-4">
@@ -246,7 +267,6 @@ const NovaaAdvantagesManager = () => {
                               <div className="flex-grow space-y-4">
                                 <div className="space-y-2">
                                   <Label>Title</Label>
-
                                   <Input
                                     value={item.title}
                                     onChange={(e) =>
@@ -277,14 +297,6 @@ const NovaaAdvantagesManager = () => {
                                   />
                                 </div>
                               </div>
-                              {/* <div className=`"flex flex-col items-center gap-2">
-                                <Label>Icon</Label>
-                                <div className="w-20 h-20 rounded-md border flex items-center justify-center bg-gray-50 overflow-hidden">
-                                  <Image src={item.icon} alt={item.title} width={80} height={80} className="object-contain" />
-                                </div>
-                                <Button variant="outline" size="sm" onClick={() => openMediaSelector('icon', index)}>Change</Button>
-                                <Button variant="destructive" size="icon" onClick={() => dispatch(removeAdvantageItem(index))}><Trash2 className="h-4 w-4" /></Button>
-                              </div> */}
                             </div>
                           )}
                         </Draggable>
@@ -319,13 +331,12 @@ const NovaaAdvantagesManager = () => {
                     <ImageIcon className="h-16 w-16 text-gray-300" />
                   )}
                 </div>
-                <Button
-                  className="w-full text-primary cursor-pointer"
-                  variant="outline"
-                  onClick={() => openMediaSelector("bg")}
-                >
-                  Select Background Image
-                </Button>
+                <MediaSelectButton
+                  label="Select Background Image"
+                  mediaType="image"
+                  value={data.backgroundImage}
+                  onSelect={handleBackgroundImageSelect}
+                />
               </div>
               <div className="space-y-3">
                 <Label className="text-lg font-medium">Center Logo Image</Label>
@@ -342,13 +353,12 @@ const NovaaAdvantagesManager = () => {
                     <ImageIcon className="h-16 w-16 text-gray-300" />
                   )}
                 </div>
-                <Button
-                  className="w-full text-primary cursor-pointer"
-                  variant="outline"
-                  onClick={() => openMediaSelector("logo")}
-                >
-                  Select Logo Image
-                </Button>
+                <MediaSelectButton
+                  label="Select Logo Image"
+                  mediaType="image"
+                  value={data.logoImage}
+                  onSelect={handleLogoImageSelect}
+                />
               </div>
             </CardContent>
           </Card>
@@ -358,4 +368,35 @@ const NovaaAdvantagesManager = () => {
   );
 };
 
-export default NovaaAdvantagesManager;
+// Main component - Global save mode only
+export default function NovaaAdvantageManager({
+  section,
+  onChange,
+  showSaveButton = false,
+}: NovaaAdvantageManagerProps) {
+  // Require section prop for global save mode
+  if (!section || !onChange) {
+    return (
+      <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed">
+        <p className="text-gray-600">
+          This manager can only be used within the global page management system.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <BaseSectionManager
+      section={section}
+      onChange={onChange}
+      showSaveButton={showSaveButton}
+      title="Nova Advantage"
+      description="Manage advantage section content and images"
+    >
+      <NovaaAdvantageManagerContent 
+        onChange={onChange}
+        showSaveButton={false} 
+      />
+    </BaseSectionManager>
+  );
+}

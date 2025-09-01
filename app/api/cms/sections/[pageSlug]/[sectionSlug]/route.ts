@@ -3,19 +3,20 @@ import connectDB from '@/lib/mongodb';
 import Section from '@/models/Section';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 
-interface RouteParams {
-  pageSlug : string;
-  sectionSlug : string
-}
-
-// GET - Fetch a specific section
-export async function GET(request: NextRequest, context: { params: Promise<RouteParams>  } ) {
+// GET - Fetch specific section (admin only)
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { pageSlug: string; sectionSlug: string } }
+) {
   try {
     await connectDB();
     
-    const { pageSlug, sectionSlug } = await context.params;
+    const { pageSlug, sectionSlug } = params;
     
-    const section = await Section.findOne({ pageSlug, slug: sectionSlug });
+    const section = await Section.findOne({
+      pageSlug: decodeURIComponent(pageSlug),
+      slug: decodeURIComponent(sectionSlug)
+    }).lean();
     
     if (!section) {
       return Response.json({ message: 'Section not found' }, { status: 404 });
@@ -28,8 +29,11 @@ export async function GET(request: NextRequest, context: { params: Promise<Route
   }
 }
 
-// PUT - Update a specific section (admin only)
-export async function PUT(request: NextRequest, context: { params: Promise<RouteParams>  }  ) {
+// PUT - Update specific section (admin only)
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { pageSlug: string; sectionSlug: string } }
+) {
   try {
     await connectDB();
     
@@ -38,16 +42,16 @@ export async function PUT(request: NextRequest, context: { params: Promise<Route
     if (!token || !verifyToken(token)) {
       return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    
-    const { pageSlug, sectionSlug } = await context.params;
+
+    const { pageSlug, sectionSlug } = params;
     const updateData = await request.json();
     
     const section = await Section.findOneAndUpdate(
-      { pageSlug, slug: sectionSlug },
-      { 
-        ...updateData,
-        updatedAt: new Date(),
+      {
+        pageSlug: decodeURIComponent(pageSlug),
+        slug: decodeURIComponent(sectionSlug)
       },
+      updateData,
       { new: true }
     );
     
@@ -62,8 +66,11 @@ export async function PUT(request: NextRequest, context: { params: Promise<Route
   }
 }
 
-// DELETE - Delete a specific section (admin only)
-export async function DELETE(request: NextRequest, context : {params : Promise<RouteParams>}) {
+// DELETE - Delete specific section (admin only)
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { pageSlug: string; sectionSlug: string } }
+) {
   try {
     await connectDB();
     
@@ -72,10 +79,13 @@ export async function DELETE(request: NextRequest, context : {params : Promise<R
     if (!token || !verifyToken(token)) {
       return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
+
+    const { pageSlug, sectionSlug } = params;
     
-    const { pageSlug, sectionSlug } = await context.params;
-    
-    const section = await Section.findOneAndDelete({ pageSlug, slug: sectionSlug });
+    const section = await Section.findOneAndDelete({
+      pageSlug: decodeURIComponent(pageSlug),
+      slug: decodeURIComponent(sectionSlug)
+    });
     
     if (!section) {
       return Response.json({ message: 'Section not found' }, { status: 404 });

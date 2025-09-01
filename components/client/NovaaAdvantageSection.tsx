@@ -1,12 +1,10 @@
-// components/public/NovaaAdvantageSection.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
-import { WaterEffectImage } from "./WaterEffectImage"; // Assuming this is in the same folder
+import { WaterEffectImage } from "./WaterEffectImage";
 
-// Types matching the backend model
 interface AdvantageItem {
   _id: string;
   title: string;
@@ -15,13 +13,14 @@ interface AdvantageItem {
   order: number;
 }
 
-interface AdvantageData {
-  title: string;
-  highlightedTitle: string;
-  description: string;
-  backgroundImage: string;
-  logoImage: string;
-  advantages: AdvantageItem[];
+interface NovaaAdvantageSectionProps {
+  title?: string;
+  highlightedTitle?: string;
+  description?: string;
+  backgroundImage?: string;
+  logoImage?: string;
+  advantages?: AdvantageItem[];
+  [key: string]: unknown;
 }
 
 // These layout properties are static and based on order, not from the DB
@@ -34,49 +33,32 @@ const layoutProperties = [
   { position: "bottom-right" },
 ];
 
-const NovaaAdvantageSection = () => {
-  const [data, setData] = useState<AdvantageData | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function NovaaAdvantageSection({
+  title = "THE",
+  highlightedTitle = "NOVAA ADVANTAGE",
+  description = "<p>Discover what makes NOVAA your premier choice for luxury real estate in Thailand.</p>",
+  backgroundImage = "/images/advantage-bg.jpg",
+  logoImage = "/images/novaa-logo.png",
+  advantages = [],
+  ...props
+}: NovaaAdvantageSectionProps) {
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/cms/advantage");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const fetchedData = await response.json();
-        // Sort advantages by the order field from the DB
-        fetchedData.advantages.sort(
-          (a: AdvantageItem, b: AdvantageItem) => a.order - b.order
-        );
-        setData(fetchedData);
-      } catch (error) {
-        console.error("Failed to fetch advantage section data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Helper functions remain the same
+  // Helper functions for positioning
   const getPositionClasses = (position: string) => {
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-6 left-8 md:top-0 md:-left-[5rem] lg:top-[-4] lg:left-8 xl:left-14 2xl:left-50`;
+        return `${baseClasses} top-6 left-8 md:top-0 md:-left-[5rem] lg:top-[-4] lg:left-8 xl:left-8 2xl:left-40`;
       case "top-right":
-        return `${baseClasses} top-6 right-8 md:top-0 md:-right-[4rem] lg:top-[-4] lg:right-8 xl:right-18 2xl:right-54`;
+        return `${baseClasses} top-6 right-8 md:top-0 md:-right-[4rem] lg:top-[-4] lg:right-8 xl:right-8 2xl:right-40`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 md:-left-[5rem] lg:left-[-2rem] xl:left-[0rem] 2xl:left-[10rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:-left-[5rem] lg:left-[-2rem] xl:left-[-2rem] 2xl:left-[6rem] transform -translate-y-1/2`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 md:-right-[5rem] lg:right-[-2rem] xl:right-[-0rem] 2xl:right-[10rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-[5rem] lg:right-[-2rem] xl:right-[-2rem] 2xl:right-[6rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 md:bottom-0 md:-left-[4rem] lg:bottom-0 lg:left-[2rem] xl:left-[4rem] 2xl:left-[14rem]`;
+        return `${baseClasses} bottom-8 left-8 md:bottom-0 md:-left-[4rem] lg:bottom-0 xl:bottom-[-2rem] lg:left-[2rem] xl:left-[1rem] 2xl:left-[9rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:-right-[4rem] lg:bottom-0 lg:right-[2rem] xl:right-[4rem] 2xl:right-[14rem]`;
+        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:-right-[4rem] lg:bottom-0 lg:right-[2rem] xl:right-[1rem] 2xl:right-[9rem]`;
       default:
         return baseClasses;
     }
@@ -101,29 +83,41 @@ const NovaaAdvantageSection = () => {
     }
   };
 
-  // Animation variants remain the same
+  // Animation variants
   const containerVariants: Variants = {
-    /* ... as before ... */
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
   };
+
   const itemVariants: Variants = {
-    /* ... as before ... */
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
   };
+
   const centerVariants: Variants = {
-    /* ... as before ... */
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
   };
 
-  if (loading) {
-    // You can add a skeleton loader here for better UX
-    return (
-      <section className="font-cinzel relative bg-secondary py-10 lg:py-20 overflow-hidden text-center">
-        Loading Advantages...
-      </section>
-    );
-  }
-
-  if (!data) {
-    return null; // Or show an error message
-  }
+  // Sort advantages by order
+  const sortedAdvantages = [...advantages].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
     <section className="font-cinzel relative bg-secondary py-10 lg:py-20 overflow-hidden">
@@ -136,18 +130,16 @@ const NovaaAdvantageSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Use dangerouslySetInnerHTML to render HTML from title */}
           <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#303030] mb-4">
-            {data.title}{" "}
+            {title}{" "}
             <span className="font-bold bg-clip-text text-transparent bg-[#D4AF37]">
-              {data.highlightedTitle}
+              {highlightedTitle}
             </span>
           </h2>
 
-          {/* Use dangerouslySetInnerHTML for the description from TinyMCE */}
           <div
             className="font-josefin text-[#303030] description-text text-center"
-            dangerouslySetInnerHTML={{ __html: data.description }}
+            dangerouslySetInnerHTML={{ __html: description }}
           />
         </motion.div>
 
@@ -167,8 +159,8 @@ const NovaaAdvantageSection = () => {
             <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[250px] md:h-[250px] lg:w-85 lg:h-85 xl:w-[420px] xl:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
               <div className="w-full h-full rounded-full overflow-hidden shadow-2xl relative z-10">
                 <WaterEffectImage
-                  backgroundSrc={data.backgroundImage}
-                  logoSrc={data.logoImage}
+                  backgroundSrc={backgroundImage}
+                  logoSrc={logoImage}
                   width={400}
                   height={400}
                   className="w-full h-full"
@@ -179,7 +171,7 @@ const NovaaAdvantageSection = () => {
           </motion.div>
 
           {/* Advantage Items */}
-          {data.advantages.map((advantage, index) => {
+          {sortedAdvantages.map((advantage, index) => {
             const layout = layoutProperties[index % layoutProperties.length]; // Cycle through positions
             return (
               <motion.div
@@ -237,7 +229,7 @@ const NovaaAdvantageSection = () => {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {data.advantages.map((advantage) => (
+            {sortedAdvantages.map((advantage) => (
               <motion.div
                 key={`mobile-${advantage._id}`}
                 className="bg-white rounded-xl p-2 my-2 shadow-lg"
@@ -272,5 +264,3 @@ const NovaaAdvantageSection = () => {
     </section>
   );
 };
-
-export default NovaaAdvantageSection;

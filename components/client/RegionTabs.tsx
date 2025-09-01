@@ -1,4 +1,3 @@
-// RegionTabs.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -6,42 +5,66 @@ import { Badge } from "@/components/ui/badge";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setRegion } from "@/redux/slices/collectionSlice";
 
-const regions = ["Thailand", "UAE", "Europe"];
-
 export default function RegionTabs() {
   const dispatch = useAppDispatch();
-  const selectedRegion = useAppSelector(
-    (state) => state.curated.selectedRegion
+  const { selectedRegion, categories, allProjects, collection, dataSource } = useAppSelector(
+    (state) => state.curated
   );
 
+  // Filter active categories that have projects and sort by order
+  const activeCategories = categories
+    .filter(category => {
+      if (dataSource === 'curated' && collection) {
+        // For curated collection, check if category has curated projects
+        const curatedProjects = collection.items[category._id];
+        return category.isActive && curatedProjects && curatedProjects.length > 0;
+      } else {
+        // For all projects, check if category has any active projects
+        const categoryProjects = allProjects.filter(
+          project => project.category._id === category._id && project.isActive
+        );
+        return category.isActive && categoryProjects.length > 0;
+      }
+    })
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  if (activeCategories.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="flex justify-center items-center mb-10 ">
-      {regions.map((region) => {
-        const isActive = selectedRegion === region;
-        const isDisabled = region !== "Thailand";
+    <div className="flex justify-center items-center mb-10">
+      {activeCategories.map((category) => {
+        const isActive = selectedRegion === category.name;
+        
+        // Calculate project count based on data source
+        let projectCount = 0;
+        if (dataSource === 'curated' && collection) {
+          projectCount = collection.items[category._id]?.length || 0;
+        } else {
+          projectCount = allProjects.filter(
+            project => project.category._id === category._id && project.isActive
+          ).length;
+        }
 
         return (
           <Button
-            key={region}
-            onClick={() => dispatch(setRegion(region))}
-            disabled={isDisabled}
+            key={category._id}
+            onClick={() => dispatch(setRegion(category.name))}
             variant="ghost"
-            className={`font-josefin cursor-pointer text-base sm:text-[22px] relative rounded-none px-5 sm:px-10 py-6 sm:py-8 font-medium  border-y-2 transition-colors duration-300
+            className={`font-josefin cursor-pointer text-base sm:text-[22px] relative rounded-none px-5 sm:px-10 py-6 sm:py-8 font-medium border-y-2 transition-colors duration-300
               ${
                 isActive
-                  ? "  border-background  text-[#01292B] "
-                  : " border-[#01292B80] border-y-[1.2px]  text-[#01292BCC]"
+                  ? "border-background text-[#01292B]"
+                  : "border-[#01292B80] border-y-[1.2px] text-[#01292BCC]"
               }
               hover:text-[#D4AF37]`}
           >
-            <span className="gap-2">
-              {region}
-              {isDisabled && (
-                <Badge
-                  variant="secondary"
-                  className="font-josefin absolute font-medium text-background top-1 text-[8px] xs:text-[10px] sm:text-xs py-[0.5px] px-2 rounded-[20px]"
-                >
-                  Soon
+            <span className="flex items-center gap-2">
+              {category.name}
+              {projectCount > 0 && (
+                <Badge variant="secondary" className="text-xs">
+                  {projectCount}
                 </Badge>
               )}
             </span>

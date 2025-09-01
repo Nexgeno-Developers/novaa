@@ -1,198 +1,324 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { 
-  ChevronLeft,
-  ChevronRight,
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
   Home,
   FileText,
-  UserCircle,
+  Settings,
+  Users,
+  BarChart3,
   Image,
-  ClipboardList,
-  ClipboardEdit
-} from 'lucide-react';
+  ChevronDown,
+  ChevronRight,
+  Layout,
+  Globe,
+  MessageSquare,
+  Mail,
+  Building,
+  TrendingUp,
+  HelpCircle,
+  Star,
+  Info,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
+  Tag,
+  ListCollapse,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface AdminSidebarProps {
-  collapsed: boolean;
-  onToggle: (collapsed: boolean) => void;
-  isMobile? : boolean
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
-const navigation = [
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: any;
+  current?: boolean;
+  children?: NavigationItem[];
+}
+
+// {
+//     name: 'Navigation',
+//     href: '#',
+//     icon: Layout,
+//     children: [
+//       { name: 'Navbar', href: '/admin/dashboard/navbar-management', icon: Layout },
+//       { name: 'Footer', href: '/admin/dashboard/footer-management', icon: Layout },
+//     ],
+//   },
+
+const navigation: NavigationItem[] = [
+  { name: "Dashboard", href: "/admin/dashboard", icon: Home },
+  { name: "Pages", href: "/admin/pages", icon: FileText },
+
   {
-    name: 'Dashboard',
-    href: '/admin/dashboard',
-    icon: Home,
+    name: "Layout",
+    href: "#",
+    icon: Layout,
+    children: [
+      { name: "Navbar", href: "/admin/navbar", icon: Layout },
+      { name: "Footer", href: "/admin/footer", icon: Layout },
+    ],
+  },
+  { name: "Media Library", href: "/admin/media", icon: Image },
+  {
+    name: "Curated Collection",
+    href: "/admin/curated-collection",
+    icon: ListCollapse, // Use your preferred icon
   },
   {
-    name: 'Pages',
-    href: '/admin/pages',
-    icon: FileText,
+    name: "Categories",
+    href: "/admin/categories",
+    icon: Tag,
   },
   {
-    name: 'Media',
-    href: '/admin/media',
-    icon: Image,
+    name: "Projects",
+    href: "/admin/projects",
+    icon: Building,
   },
   {
-    name: 'Breadcrumb',
-    href: '/admin/breadcrumb',
-    icon: ClipboardList,
-  },{
-    name: 'Navbar',
-    href: '/admin/navbar',
-    icon: ClipboardEdit,
+    name: "Enquiries",
+    href: "/admin/enquiries",
+    icon: MessageSquare,
   },
-  {
-    name: 'Footer',
-    href: '/admin/footer',
-    icon: ClipboardList,
-  },
+  // { name: "Users", href: "/admin/users", icon: Users },
+  // { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  // { name: "Contact Forms", href: "/admin/contact", icon: MessageSquare },
+  // { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
+export default function AdminSidebar({
+  isCollapsed,
+  onToggleCollapse,
+}: AdminSidebarProps) {
   const pathname = usePathname();
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+
+  const toggleExpanded = (itemName: string) => {
+    setExpandedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemName)) {
+        newSet.delete(itemName);
+      } else {
+        newSet.add(itemName);
+      }
+      return newSet;
+    });
+  };
+
+  const isActive = (href: string) => {
+    if (href === "/admin/dashboard") {
+      return pathname === href;
+    }
+    return pathname.startsWith(href);
+  };
+
+  const NavItem = ({
+    item,
+    level = 0,
+  }: {
+    item: NavigationItem;
+    level?: number;
+  }) => {
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = expandedItems.has(item.name);
+    const itemIsActive = item.href !== "#" && isActive(item.href);
+
+    if (isCollapsed && hasChildren) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                className={`w-full justify-center p-2 h-10 ${
+                  itemIsActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <item.icon className="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="flex flex-col space-y-1">
+              <span className="font-medium">{item.name}</span>
+              {item.children?.map((child) => (
+                <Link
+                  key={child.name}
+                  href={child.href}
+                  className="block px-2 py-1 text-sm hover:bg-gray-100 rounded"
+                >
+                  {child.name}
+                </Link>
+              ))}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    if (isCollapsed && !hasChildren) {
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                className={`w-full justify-center p-2 h-10 ${
+                  itemIsActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+                asChild
+              >
+                <Link href={item.href}>
+                  <item.icon className="h-5 w-5" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">{item.name}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    if (hasChildren) {
+      return (
+        <Collapsible
+          open={isExpanded}
+          onOpenChange={() => toggleExpanded(item.name)}
+        >
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start pl-${2 + level * 4} pr-2 h-10 ${
+                itemIsActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <item.icon className="h-5 w-5 mr-3" />
+              <span className="flex-1 text-left">{item.name}</span>
+              {isExpanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1 pl-5">
+            {item.children?.map((child) => (
+              <NavItem key={child.name} item={child} level={level + 1} />
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
+      );
+    }
+
+    return (
+      <Button
+        variant="ghost"
+        className={`w-full justify-start pl-${2 + level * 4} pr-2 h-10 ${
+          itemIsActive
+            ? "bg-primary/10 text-primary"
+            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+        }`}
+        asChild
+      >
+        <Link href={item.href}>
+          <item.icon className="h-5 w-5 mr-3" />
+          <span>{item.name}</span>
+        </Link>
+      </Button>
+    );
+  };
 
   return (
-    <>
-      {/* Mobile overlay */}
-      <div className="lg:hidden">
-        {!collapsed && (
-          <div className="fixed inset-0 flex z-40">
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => onToggle(true)} />
-            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
-              <div className="absolute top-0 right-0 -mr-12 pt-2">
-                <button
-                  className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                  onClick={() => onToggle(true)}
-                >
-                  <ChevronLeft className="h-6 w-6 text-white" />
-                </button>
-              </div>
-              <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                <div className="flex-shrink-0 flex items-center px-4">
-                  <span className="text-xl font-bold text-gray-900">Novaa CMS</span>
-                </div>
-                <nav className="mt-5 px-2 space-y-1">
-                  {navigation.map((item) => {
-                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-                    const Icon = item.icon;
-                    
-                    return (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={`group flex items-center px-2 py-2 text-base font-medium rounded-md transition-colors ${
-                          isActive
-                            ? 'bg-blue-100 text-blue-900'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                        }`}
-                      >
-                        <Icon
-                          className={`mr-4 flex-shrink-0 h-6 w-6 ${
-                            isActive ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
-                          }`}
-                        />
-                        {item.name}
-                      </Link>
-                    );
-                  })}
-                </nav>
-              </div>
+    <div
+      className={`fixed flex h-full flex-col bg-white border-r border-gray-200 transition-all duration-300 ${
+        isCollapsed ? "w-16" : "w-64"
+      }`}
+    >
+      {/* Logo */}
+      <div className="flex h-16 shrink-0 items-center justify-between px-4 border-b border-gray-200">
+        {!isCollapsed && (
+          <Link href="/admin/dashboard" className="flex items-center">
+            <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">
+                N
+              </span>
             </div>
+            <span className="ml-2 text-lg font-semibold text-gray-900">
+              Novaa Admin
+            </span>
+          </Link>
+        )}
+
+        {isCollapsed && (
+          <Link
+            href="/admin/dashboard"
+            className="flex items-center justify-center w-full"
+          >
+            <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">
+                N
+              </span>
+            </div>
+          </Link>
+        )}
+
+        {/* Collapse Toggle - Only show on desktop */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onToggleCollapse}
+          className={`hidden lg:flex h-6 w-6 p-0 ${
+            isCollapsed ? "mx-auto" : ""
+          }`}
+        >
+          {isCollapsed ? (
+            <ChevronRightIcon className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+
+      {/* Navigation */}
+      <ScrollArea className="flex-1 px-2 py-4">
+        <nav className="space-y-1">
+          {navigation.map((item) => (
+            <NavItem key={item.name} item={item} />
+          ))}
+        </nav>
+      </ScrollArea>
+
+      {/* Bottom section */}
+      <div className="p-4 border-t border-gray-200">
+        {!isCollapsed ? (
+          <div className="text-xs text-gray-500 text-center">
+            © 2024 Novaa Global Properties
           </div>
+        ) : (
+          <div className="h-4" />
         )}
       </div>
-
-      {/* Desktop sidebar */}
-      <div className={`hidden lg:fixed lg:inset-y-0 lg:flex lg:flex-col transition-all duration-300 z-30 ${
-        collapsed ? 'lg:w-16' : 'lg:w-64'
-      }`}>
-        <div className="flex flex-col flex-grow pt-5 bg-white border-r border-gray-200 overflow-y-auto shadow-sm">
-          {/* Logo and toggle button */}
-          <div className="flex items-center justify-between px-4 pb-4">
-            {!collapsed && (
-              <div className="flex items-center">
-                <span className="text-xl font-bold text-gray-900">Novaa CMS</span>
-              </div>
-            )}
-            <button
-              onClick={() => onToggle(!collapsed)}
-              className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors"
-            >
-              {collapsed ? (
-                <ChevronRight className="h-5 w-5" />
-              ) : (
-                <ChevronLeft className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="mt-5 flex-1 px-2 space-y-2">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-              const Icon = item.icon;
-              
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? 'bg-blue-100 text-blue-900 shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
-                  title={collapsed ? item.name : undefined}
-                >
-                  <Icon
-                    className={`flex-shrink-0 h-5 w-5 ${
-                      collapsed ? 'mx-auto' : 'mr-3'
-                    } ${
-                      isActive ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
-                    } transition-colors`}
-                  />
-                  {!collapsed && (
-                    <span className="truncate">{item.name}</span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* User profile section */}
-          <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-            <div className="flex items-center w-full">
-              <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <UserCircle className="h-5 w-5 text-white" />
-              </div>
-              {!collapsed && (
-                <div className="ml-3 min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-700">Admin</p>
-                  <p className="text-xs text-gray-500 truncate">Administrator</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu button */}
-      <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow lg:hidden">
-        <button
-          className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-          onClick={() => onToggle(!collapsed)}
-        >
-          <ChevronRight className="h-6 w-6" />
-        </button>
-        <div className="flex-1 px-4 flex justify-between items-center">
-          <div className="flex-1">
-            <span className="text-xl font-bold text-gray-900">Novaa CMS</span>
-          </div>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }

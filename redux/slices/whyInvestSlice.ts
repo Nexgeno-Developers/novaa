@@ -18,6 +18,11 @@ interface WhyInvestData {
   images: string[];
 }
 
+interface UpdateWhyInvestPayload {
+  pageSlug?: string;
+  updatedData: WhyInvestData;
+}
+
 interface WhyInvestState {
   data: WhyInvestData | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -30,17 +35,25 @@ const initialState: WhyInvestState = {
   error: null,
 };
 
-// Async Thunk to fetch data
-export const fetchWhyInvestData = createAsyncThunk('whyInvest/fetchData', async () => {
-  const response = await axios.get('/api/cms/why-invest');
-  return response.data.data;
-});
+export const fetchWhyInvestData = createAsyncThunk(
+  "whyInvest/fetchData",
+  async (pageSlug: string = "home") => {
+    try {
+      const response = await axios.get(`/api/cms/sections/${pageSlug}/why-invest-section`);
+      return response.data.content;
+    } catch (err) {
+      // fallback
+      const fallback = await axios.get("/api/cms/home");
+      return fallback.data.whyInvest;
+    }
+  }
+);
 
 // Async Thunk to update data
 export const updateWhyInvestData = createAsyncThunk(
   'whyInvest/updateData',
-  async (updatedData: WhyInvestData) => {
-    const response = await axios.post('/api/cms/why-invest', updatedData);
+  async ({pageSlug = "home" , updatedData} : UpdateWhyInvestPayload ) => {
+      const response = await axios.post(`/api/cms/sections/${pageSlug}/why-invest-section` , updatedData);
     return response.data.data;
   }
 );

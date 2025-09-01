@@ -1,11 +1,9 @@
-// components/public/FaqSection.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ArrowUp, ArrowDown } from "lucide-react";
 
-// Types matching the backend model
 interface FaqItem {
   _id: string;
   question: string;
@@ -13,61 +11,77 @@ interface FaqItem {
   order: number;
 }
 
-interface FaqData {
-  title: string;
-  description: string;
-  backgroundImage: string;
-  faqs: FaqItem[];
+interface FaqSectionProps {
+  title?: string;
+  description?: string;
+  backgroundImage?: string;
+  faqs?: FaqItem[];
+  [key: string]: unknown;
 }
 
-const FaqSection = () => {
-  const [data, setData] = useState<FaqData | null>(null);
-  const [loading, setLoading] = useState(true);
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
+const headingVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  },
+};
+
+const FaqSection = ({
+  title = "FREQUENTLY ASKED QUESTIONS",
+  description = "Find answers to common questions",
+  backgroundImage = "/images/default-bg.jpg",
+  faqs = [],
+  ...props
+}: FaqSectionProps) => {
   const [expandedIndex, setExpandedIndex] = useState(0); // Accordion state
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/cms/faq');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const fetchedData: FaqData = await response.json();
-        // Sort FAQs by order
-        fetchedData.faqs.sort((a, b) => a.order - b.order);
-        setData(fetchedData);
-      } catch (error) {
-        console.error("Failed to fetch FAQ data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const toggleExpanded = (index: number) => {
     setExpandedIndex(expandedIndex === index ? -1 : index);
   };
 
-  // Animation variants remain the same
-  const containerVariants: Variants = { /* ... as before ... */ };
-  const itemVariants: Variants = { /* ... as before ... */ };
-  const headingVariants: Variants = { /* ... as before ... */ };
+  // Sort FAQs by order
+  const sortedFaqs = [...faqs].sort((a, b) => a.order - b.order);
 
-  if (loading) {
-    return <section className="relative text-center py-20 bg-[#01292B]">Loading FAQs...</section>;
-  }
-
-  if (!data) {
-    return null; // Or show an error message
+  if (!faqs || faqs.length === 0) {
+    return (
+      <section className="relative text-center py-20 bg-[#01292B]">
+        <div className="text-white text-xl">No FAQs available</div>
+      </section>
+    );
   }
 
   return (
     <section className="relative overflow-hidden">
-      {/* Background Image from CMS */}
+      {/* Background Image from props */}
       <div className="absolute inset-0">
         <div 
           className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: `url(${data.backgroundImage})` }}
+          style={{ backgroundImage: `url(${backgroundImage})` }}
         ></div>
       </div>
 
@@ -86,11 +100,11 @@ const FaqSection = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-bold bg-gradient-to-b from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent lg:mb-6">
-                {data.title}
+                {title}
             </h2>
-            {data.description && (
+            {description && (
                  <div className="font-josefin font-light text-[#FFFFFFE5] text-base lg:text-lg"
-                      dangerouslySetInnerHTML={{ __html: data.description }}/>
+                      dangerouslySetInnerHTML={{ __html: description }}/>
             )}
           </motion.div>
 
@@ -102,7 +116,7 @@ const FaqSection = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            {data.faqs.map((faq, index) => (
+            {sortedFaqs.map((faq, index) => (
               <motion.div
                 key={faq._id}
                 className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden"

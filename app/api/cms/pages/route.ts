@@ -1,30 +1,18 @@
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
-import Section from '@/models/Section';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
-import { defaultAboutSections, defaultContactSections, defaultHomeSections } from '@/lib/defaultPages';
-import { initializeDefaultPages } from '@/lib/defaultPages';
 
-export async function GET(request: NextRequest) {
+// GET - Fetch all pages (admin only)
+export async function GET() {
   try {
     await connectDB();
-    const token = getTokenFromRequest(request);
-    if (!token || !verifyToken(token)) {
-      return Response.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
-    let pages = await Page.find().sort({ createdAt: -1 });
-
-    // console.log("Pages" , pages) 
-
-    // If no pages exist, initialize them here
-    if (pages.length === 0) {
-      console.log("No pages found, initializing defaults...");
-      await initializeDefaultPages();
-      pages = await Page.find().sort({ createdAt: -1 });
-    }
-
+    
+    const pages = await Page.find({})
+      .sort({ order: 1, createdAt: -1 })
+      .lean();
+    
+    console.log('Fetched pages:', pages.length);
     return Response.json(pages);
   } catch (error) {
     console.error('Pages fetch error:', error);
@@ -32,7 +20,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create a new page (admin only)
+// POST - Create new page (admin only)
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
@@ -42,40 +30,17 @@ export async function POST(request: NextRequest) {
     if (!token || !verifyToken(token)) {
       return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const pageData = await request.json();
     
-    // Create the page
-    const page = await Page.create(pageData);
-    
-    // If it's a home page, create default sections
-    if (page.slug === 'home') {
-      const sections = defaultHomeSections.map(section => ({
-        ...section,
-        pageSlug: page.slug,
-      }));
-      
-      const inserted = await Section.insertMany(sections);
-      console.log("Inserted home section " , inserted.length)
+    // Check if slug already exists
+    const existingPage = await Page.findOne({ slug: pageData.slug });
+    if (existingPage) {
+      return Response.json({ message: 'Page with this slug already exists' }, { status: 400 });
     }
 
-    if(page.slug === 'about-us') {
-      const sections = defaultAboutSections.map(section => ({
-        ...section,
-        pageSlug: page.slug,
-      }));
-      
-      await Section.insertMany(sections);
-    }
-
-    if(page.slug === 'contact-us') {
-      const sections = defaultContactSections.map(section => ({
-        ...section,
-        pageSlug: page.slug,
-      }));
-      
-      await Section.insertMany(sections);
-    }
+    const page = new Page(pageData);
+    await page.save();
     
     return Response.json(page, { status: 201 });
   } catch (error) {
@@ -84,3 +49,57 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// PUT - Update page (admin only)
+export async function PUT(request: NextRequest) {
+  try {
+    await connectDB();
+    
+    // Verify admin authentication
+    const token = getTokenFromRequest(request);
+    if (!token || !verifyToken(token)) {
+      return Response.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { _id, ...updateData } = await request.json();
+    
+    const page = await Page.findByIdAndUpdate(_id, updateData, { new: true });
+    if (!page) {
+      return Response.json({ message: 'Page not found' }, { status: 404 });
+    }
+    
+    return Response.json(page);
+  } catch (error) {
+    console.error('Page update error:', error);
+    return Response.json({ message: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// DELETE - Delete page (admin only)
+export async function DELETE(request: NextRequest) {
+  try {
+    await connectDB();
+    
+    // Verify admin authentication
+    const token = getTokenFromRequest(request);
+    if (!token || !verifyToken(token)) {
+      return Response.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const pageId = searchParams.get('id');
+    
+    if (!pageId) {
+      return Response.json({ message: 'Page ID is required' }, { status: 400 });
+    }
+
+    const page = await Page.findByIdAndDelete(pageId);
+    if (!page) {
+      return Response.json({ message: 'Page not found' }, { status: 404 });
+    }
+    
+    return Response.json({ message: 'Page deleted successfully' });
+  } catch (error) {
+    console.error('Page deletion error:', error);
+    return Response.json({ message: 'Internal server error' }, { status: 500 });
+  }
+}

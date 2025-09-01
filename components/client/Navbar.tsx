@@ -1,53 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { fetchNavbar } from "@/redux/slices/navbarSlice";
 import { cn } from "@/lib/utils";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
-export default function Navbar() {
+// Define the component's props types
+interface NavbarItem {
+  _id?: string;
+  label: string;
+  href: string;
+  order: number;
+  isActive: boolean;
+}
+
+interface NavbarData {
+  _id?: string;
+  logo: {
+    url: string;
+    alt: string;
+  };
+  items: NavbarItem[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface NavbarProps {
+  data: NavbarData;
+}
+
+export default function Navbar({ data }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const dispatch = useAppDispatch();
-  const { logo, items, loading } = useAppSelector(
-    (state) => state.navbar
-  );
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchNavbar());
-  }, [dispatch]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  console.log("Nav Items ", items);
-
-  if (loading) {
-    return (
-      <header className="absolute top-0 w-full bg-background z-20 text-white">
-        <div className="container flex items-center justify-between h-20">
-          <div className="h-8 w-24 bg-gray-300 animate-pulse rounded"></div>
-          <div className="hidden lg:flex space-x-10">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="h-4 w-16 bg-gray-300 animate-pulse rounded"
-              ></div>
-            ))}
-          </div>
-        </div>
-      </header>
-    );
-  }
-
-  // All active, sorted by order
-  const activeItems = items
+  // All active items, sorted by order
+  const activeItems = data.items
     .filter((item) => item.isActive)
     .sort((a, b) => a.order - b.order);
 
@@ -56,8 +49,6 @@ export default function Navbar() {
 
   // Rest of items (excluding last one)
   const mainNavItems = activeItems.slice(0, -1);
-
-  console.log("Nav Active Items ", activeItems);
 
   return (
     <header className="absolute top-0 w-full bg-background lg:bg-[#00000099] z-20 text-white">
@@ -80,12 +71,12 @@ export default function Navbar() {
             className="flex items-center justify-start xl:justify-center bg-background h-full cursor-pointer relative z-10"
             onClick={() => router.push("/")}
           >
-            {logo ? (
+            {data.logo ? (
               <Image
-                src={logo.url}
+                src={data.logo.url}
                 width={155}
                 height={60}
-                alt={logo.alt}
+                alt={data.logo.alt}
                 priority
                 className="w-[140px] sm:w-[155px] h-auto pt-[7px]"
               />

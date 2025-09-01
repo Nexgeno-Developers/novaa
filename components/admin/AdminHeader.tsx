@@ -1,123 +1,170 @@
 'use client';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/redux';
-import { logout } from '@/redux/slices/authSlice';
-import { Menu, Bell, User, LogOut } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
-import { useAppDispatch } from '@/redux/hooks';
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { Bell, Search, User, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-interface AdminHeaderProps {
-  sidebarCollapsed?: boolean;
-  onSidebarToggle?: (collapsed: boolean) => void;
-}
+export default function AdminHeader() {
+const pathname = usePathname();
+  const [searchQuery, setSearchQuery] = useState('');
 
-export default function AdminHeader({ 
-  sidebarCollapsed, 
-  onSidebarToggle 
-}: AdminHeaderProps) {
-  const { user } = useSelector((state: RootState) => state.auth);
-  const dispatch = useAppDispatch();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleLogout = () => {
-    dispatch(logout());
+  // Get page title from pathname
+  const getPageTitle = () => {
+    const segments = pathname.split('/').filter(Boolean);
+    if (segments.length <= 1) return 'Dashboard';
+    
+    const lastSegment = segments[segments.length - 1];
+    return lastSegment
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
+  // Get breadcrumbs
+  const getBreadcrumbs = () => {
+    const segments = pathname.split('/').filter(Boolean);
+    const breadcrumbs = [];
+    
+    let currentPath = '';
+    segments.forEach((segment, index) => {
+      currentPath += `/${segment}`;
+      if (index > 0) { // Skip the 'admin' segment
+        breadcrumbs.push({
+          label: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' '),
+          path: currentPath,
+          isLast: index === segments.length - 1
+        });
+      }
+    });
+    
+    return breadcrumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Left side - Mobile menu button */}
-          <div className="flex items-center">
-            <button
-              className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              onClick={() => onSidebarToggle && onSidebarToggle(!sidebarCollapsed)}
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-            
-            {/* Breadcrumb or page title could go here */}
-            <div className="hidden sm:block ml-4 lg:ml-0">
-              <h1 className="text-lg font-semibold text-gray-900">
-                Dashboard
-              </h1>
-            </div>
-          </div>
-
-          {/* Right side - Notifications and user menu */}
-          <div className="flex items-center space-x-4">
-            {/* Notifications */}
-            <button className="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-md relative">
-              <Bell className="h-5 w-5" />
-              {/* Notification badge */}
-              <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-400"></span>
-            </button>
-
-            {/* User dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                className="flex items-center space-x-3 p-2 text-sm rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <div className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-                <div className="hidden sm:block text-left">
-                  <p className="text-sm font-medium text-gray-900">
-                    {user?.name || 'Admin'}
-                  </p>
-                  <p className="text-xs text-gray-500">Administrator</p>
-                </div>
-              </button>
-
-              {/* Dropdown menu */}
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm text-gray-900">{user?.name}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
-                  </div>
-                  
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      // Handle profile navigation
-                    }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <User className="h-4 w-4 mr-3" />
-                    Profile Settings
-                  </button>
-                  
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      handleLogout();
-                    }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <LogOut className="h-4 w-4 mr-3" />
-                    Sign Out
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+    <div className="flex w-full items-center justify-between">
+      {/* Left side - Page info */}
+      <div className="flex flex-col">
+        <h1 className="text-xl font-semibold text-gray-900">{getPageTitle()}</h1>
+        {breadcrumbs.length > 0 && (
+          <nav className="flex text-sm text-gray-500" aria-label="Breadcrumb">
+            <span>Admin</span>
+            {breadcrumbs.map((breadcrumb, index) => (
+              <span key={index}>
+                <span className="mx-2">/</span>
+                <span className={breadcrumb.isLast ? 'text-gray-900 font-medium' : ''}>
+                  {breadcrumb.label}
+                </span>
+              </span>
+            ))}
+          </nav>
+        )}
       </div>
-    </header>
+
+      {/* Right side - Search and actions */}
+      <div className="flex items-center space-x-4">
+        {/* Search */}
+        <div className="relative hidden sm:block">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            type="search"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-64 pl-9"
+          />
+        </div>
+
+        {/* Notifications */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="relative">
+              <Bell className="h-5 w-5" />
+              <Badge 
+                variant="destructive" 
+                className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+              >
+                3
+              </Badge>
+              <span className="sr-only">View notifications</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80">
+            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <div className="space-y-2 p-2">
+              <div className="p-2 hover:bg-gray-50 rounded-sm cursor-pointer">
+                <div className="text-sm font-medium">New contact form submission</div>
+                <div className="text-xs text-gray-500">2 minutes ago</div>
+              </div>
+              <div className="p-2 hover:bg-gray-50 rounded-sm cursor-pointer">
+                <div className="text-sm font-medium">Page content updated</div>
+                <div className="text-xs text-gray-500">1 hour ago</div>
+              </div>
+              <div className="p-2 hover:bg-gray-50 rounded-sm cursor-pointer">
+                <div className="text-sm font-medium">New user registered</div>
+                <div className="text-xs text-gray-500">3 hours ago</div>
+              </div>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Theme Toggle */}
+        <Button variant="ghost" size="sm">
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+
+        {/* User Menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src="/avatars/admin.jpg" alt="Admin" />
+                <AvatarFallback>AD</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">Admin User</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  admin@novaa.com
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
   );
 }
