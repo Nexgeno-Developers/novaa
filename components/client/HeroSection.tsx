@@ -20,7 +20,7 @@ interface HighlightedWord {
 }
 
 interface HeroSectionProps {
-  mediaType?: 'image' | 'video';
+  mediaType?: "image" | "video";
   mediaUrl?: string;
   title?: string;
   subtitle?: string;
@@ -59,9 +59,11 @@ export default function HeroSection({
   ...props
 }: HeroSectionProps) {
 
+  console.log("Props" , props.heroSection)
+
   const getTitleStyle = () => {
     if (titleGradient && titleGradient !== "none") {
-      console.log('Applying title gradient:', titleGradient);
+      console.log("Applying title gradient:", titleGradient);
       return {
         background: titleGradient,
         WebkitBackgroundClip: "text",
@@ -77,7 +79,7 @@ export default function HeroSection({
 
   const getSubtitleStyle = () => {
     if (subtitleGradient && subtitleGradient !== "none") {
-      console.log('Applying subtitle gradient:', subtitleGradient);
+      console.log("Applying subtitle gradient:", subtitleGradient);
       return {
         background: subtitleGradient,
         WebkitBackgroundClip: "text",
@@ -91,20 +93,28 @@ export default function HeroSection({
     };
   };
 
+  console.log("media ", mediaUrl);
+
   const renderStyledTitle = () => {
     if (!title) return title;
 
     let styledTitle = title;
     highlightedWords?.forEach(({ word, style }) => {
       const regex = new RegExp(`\\b${word}\\b`, "gi");
-      const backgroundStyle = style.background 
+      const backgroundStyle = style.background
         ? `background: ${style.background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;`
-        : '';
-      
+        : "";
+
       styledTitle = styledTitle.replace(
         regex,
-        `<span class="${style.fontFamily || 'font-cinzel'}" style="color: ${style.background ? 'transparent' : style.color}; font-weight: ${style.fontWeight}; font-size: ${style.fontSize}; font-style: ${style.fontStyle}; ${backgroundStyle} ${
-          style.textDecoration ? `text-decoration: ${style.textDecoration};` : ""
+        `<span class="${style.fontFamily || "font-cinzel"}" style="color: ${
+          style.background ? "transparent" : style.color
+        }; font-weight: ${style.fontWeight}; font-size: ${
+          style.fontSize
+        }; font-style: ${style.fontStyle}; ${backgroundStyle} ${
+          style.textDecoration
+            ? `text-decoration: ${style.textDecoration};`
+            : ""
         }">${word}</span>`
       );
     });
@@ -115,7 +125,7 @@ export default function HeroSection({
   return (
     <section className="relative h-screen overflow-hidden pt-20">
       {/* Background Media */}
-      {mediaType === 'video' ? (
+      {mediaType === "video" ? (
         <video
           src={mediaUrl}
           autoPlay
@@ -135,10 +145,14 @@ export default function HeroSection({
       )}
 
       {/* Dynamic Overlay */}
-      <div 
+      <div
         className="absolute inset-x-0 bottom-0 h-1/2 z-0"
-        style={{ 
-          background: `linear-gradient(to top, ${overlayColor}${Math.round(overlayOpacity * 255).toString(16).padStart(2, '0')} 0%, transparent 100%)`
+        style={{
+          background: `linear-gradient(to top, ${overlayColor}${Math.round(
+            overlayOpacity * 255
+          )
+            .toString(16)
+            .padStart(2, "0")} 0%, transparent 100%)`,
         }}
       />
 
@@ -155,7 +169,7 @@ export default function HeroSection({
             >
               {renderStyledTitle()}
             </motion.div>
-            
+
             {subtitle && (
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -176,7 +190,7 @@ export default function HeroSection({
                 className="mt-6"
               >
                 <Link href={ctaButton.href}>
-                  <Button 
+                  <Button
                     size="lg"
                     className="bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:scale-105"
                   >

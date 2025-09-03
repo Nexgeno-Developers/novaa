@@ -1,4 +1,3 @@
-// hooks/useHeroData.ts
 import { useState, useEffect } from 'react';
 
 interface HighlightedWord {

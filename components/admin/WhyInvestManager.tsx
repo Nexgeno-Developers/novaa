@@ -233,7 +233,7 @@ export default function WhyInvestManager({
                               <div className="space-y-2">
                                 <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Title</Label>
                                 <Input 
-                                  value={point.title}
+                                  value={point?.title}
                                   onChange={(e) => handleInvestmentPointChange(index, 'title', e.target.value)}
                                   className="border border-slate-200 dark:border-slate-600 rounded-xl bg-white/80 dark:bg-slate-700/80 focus:border-purple-500 transition-all duration-300"
                                   placeholder="Point title..."
@@ -242,7 +242,7 @@ export default function WhyInvestManager({
                               <div className="space-y-2">
                                 <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Description</Label>
                                 <Textarea 
-                                  value={point.description}
+                                  value={point?.description}
                                   onChange={(e) => handleInvestmentPointChange(index, 'description', e.target.value)}
                                   className="border border-slate-200 dark:border-slate-600 rounded-xl bg-white/80 dark:bg-slate-700/80 focus:border-emerald-500 transition-all duration-300 min-h-[80px]"
                                   placeholder="Describe this investment point..."

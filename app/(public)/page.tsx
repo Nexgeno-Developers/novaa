@@ -63,7 +63,7 @@ export default async function Home() {
         const Component = sectionComponentMap[section.type];
         // If a component is found, render it. Otherwise, render nothing.
         // This prevents the page from crashing if a section type has no matching component.
-        return Component ? <Component key={section._id} {...section.content} /> : null;
+        return Component ? <Component key={section._id} {...(section.content.heroSection || section.content)} /> : null;
       })}
     </main>
   );
