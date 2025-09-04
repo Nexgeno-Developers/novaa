@@ -1,27 +1,40 @@
 // components/admin/CategoriesSection.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Edit, Trash2, Loader2, GripVertical } from 'lucide-react';
-import {toast} from 'sonner';
-import { RootState } from '@/redux';
-import { 
-  fetchCategories, 
-  createCategory, 
-  updateCategory, 
-  deleteCategory 
-} from '@/redux/slices/categoriesSlice';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import { useAppDispatch } from '@/redux/hooks';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus, Edit, Trash2, Loader2, GripVertical } from "lucide-react";
+import { toast } from "sonner";
+import { RootState } from "@/redux";
+import {
+  fetchCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "@/redux/slices/categoriesSlice";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { useAppDispatch } from "@/redux/hooks";
 
 interface Category {
   _id: string;
@@ -33,14 +46,16 @@ interface Category {
 
 export default function CategoriesSection() {
   const dispatch = useAppDispatch();
-  const { categories, loading, error } = useSelector((state: RootState) => state.categories);
+  const { categories, loading, error } = useSelector(
+    (state: RootState) => state.categories
+  );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
+    name: "",
     isActive: true,
-    order: 0
+    order: 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,9 +65,9 @@ export default function CategoriesSection() {
 
   const resetForm = () => {
     setFormData({
-      name: '',
+      name: "",
       isActive: true,
-      order: categories.length
+      order: categories.length,
     });
     setEditingCategory(null);
   };
@@ -66,7 +81,7 @@ export default function CategoriesSection() {
     setFormData({
       name: category.name,
       isActive: category.isActive,
-      order: category.order
+      order: category.order,
     });
     setEditingCategory(category);
     setIsDialogOpen(true);
@@ -78,19 +93,23 @@ export default function CategoriesSection() {
 
     try {
       if (editingCategory) {
-        await dispatch(updateCategory({
-          id: editingCategory._id,
-          data: formData
-        })).unwrap();
-        toast.success("Category updated successfully")
+        await dispatch(
+          updateCategory({
+            id: editingCategory._id,
+            data: formData,
+          })
+        ).unwrap();
+        toast.success("Category updated successfully");
       } else {
         await dispatch(createCategory(formData)).unwrap();
-        toast.success("Category created successfully")
+        toast.success("Category created successfully");
       }
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
-      toast.error(`Failed to ${editingCategory ? 'update' : 'create'} category`)
+      toast.error(
+        `Failed to ${editingCategory ? "update" : "create"} category`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -100,9 +119,9 @@ export default function CategoriesSection() {
     if (confirm(`Are you sure you want to delete "${name}"?`)) {
       try {
         await dispatch(deleteCategory(id)).unwrap();
-        toast.success("Category deleted successfully")
+        toast.success("Category deleted successfully");
       } catch (error) {
-        toast.error("Failed to delete category")
+        toast.error("Failed to delete category");
       }
     }
   };
@@ -117,51 +136,67 @@ export default function CategoriesSection() {
     // Update order for all items
     items.forEach((item, index) => {
       if (item.order !== index) {
-        dispatch(updateCategory({
-          id: item._id,
-          data: { ...item, order: index }
-        }));
+        dispatch(
+          updateCategory({
+            id: item._id,
+            data: { ...item, order: index },
+          })
+        );
       }
     });
   };
 
   return (
-    <Card className='py-6'>
+    <Card className="py-6">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Categories Management
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={openCreateDialog} className='text-background cursor-pointer'>
+              <Button
+                onClick={openCreateDialog}
+                className="text-background cursor-pointer"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Category
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>
-                  {editingCategory ? 'Edit Category' : 'Add New Category'}
+                <DialogTitle className="text-primary">
+                  {editingCategory ? "Edit Category" : "Add New Category"}
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="categoryName">Category Name</Label>
+                  <Label htmlFor="categoryName" className="text-primary">
+                    Category Name
+                  </Label>
                   <Input
                     id="categoryName"
                     value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     placeholder="Enter category name"
+                    className="text-gray-300"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="categoryOrder">Order</Label>
+                  <Label htmlFor="categoryOrder" className='text-primary'>Order</Label>
                   <Input
                     id="categoryOrder"
                     type="number"
+                    className='text-gray-300'
                     value={formData.order}
-                    onChange={(e) => setFormData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        order: parseInt(e.target.value) || 0,
+                      }))
+                    }
                     placeholder="Display order"
                     min="0"
                   />
@@ -171,23 +206,36 @@ export default function CategoriesSection() {
                   <Switch
                     id="categoryActive"
                     checked={formData.isActive}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, isActive: checked }))
+                    }
                   />
-                  <Label htmlFor="categoryActive">Active</Label>
+                  <Label htmlFor="categoryActive" className='text-primary'>Active</Label>
                 </div>
 
                 <div className="flex justify-end space-x-2">
-                  <Button type="button" variant="outline" className='bg-gray-300 hover:bg-gray-200 cursor-pointer' onClick={() => setIsDialogOpen(false)}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-gray-300 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
                     Cancel
                   </Button>
-                  <Button type="submit" className='text-background bg-primary cursor-pointer' disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="text-background bg-primary cursor-pointer"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {editingCategory ? 'Updating...' : 'Creating...'}
+                        {editingCategory ? "Updating..." : "Creating..."}
                       </>
+                    ) : editingCategory ? (
+                      "Update Category"
                     ) : (
-                      editingCategory ? 'Update Category' : 'Create Category'
+                      "Create Category"
                     )}
                   </Button>
                 </div>
@@ -212,33 +260,50 @@ export default function CategoriesSection() {
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   <Table>
-                    <TableHeader className='bg-gray-300'>
+                    <TableHeader className="bg-gray-300">
                       <TableRow>
                         <TableHead className="w-8"></TableHead>
-                        <TableHead className='text-background'>Name</TableHead>
-                        <TableHead className='text-background'>Slug</TableHead>
-                        <TableHead className='text-background'>Status</TableHead>
-                        <TableHead className='text-background'>Order</TableHead>
-                        <TableHead className="text-right text-background">Actions</TableHead>
+                        <TableHead className="text-background">Name</TableHead>
+                        <TableHead className="text-background">Slug</TableHead>
+                        <TableHead className="text-background">
+                          Status
+                        </TableHead>
+                        <TableHead className="text-background">Order</TableHead>
+                        <TableHead className="text-right text-background">
+                          Actions
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {categories.map((category, index) => (
-                        <Draggable key={category._id} draggableId={category._id} index={index}>
+                        <Draggable
+                          key={category._id}
+                          draggableId={category._id}
+                          index={index}
+                        >
                           {(provided, snapshot) => (
                             <TableRow
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              className={snapshot.isDragging ? 'bg-muted' : ''}
+                              className={snapshot.isDragging ? "bg-muted" : ""}
                             >
                               <TableCell {...provided.dragHandleProps}>
                                 <GripVertical className="h-4 w-4 text-muted-foreground" />
                               </TableCell>
-                              <TableCell className="font-medium">{category.name}</TableCell>
-                              <TableCell className="text-muted-foreground">{category.slug}</TableCell>
+                              <TableCell className="font-medium">
+                                {category.name}
+                              </TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {category.slug}
+                              </TableCell>
                               <TableCell>
-                                <Badge className='text-background' variant={category.isActive ? 'default' : 'secondary'}>
-                                  {category.isActive ? 'Active' : 'Inactive'}
+                                <Badge
+                                  className="text-background"
+                                  variant={
+                                    category.isActive ? "default" : "secondary"
+                                  }
+                                >
+                                  {category.isActive ? "Active" : "Inactive"}
                                 </Badge>
                               </TableCell>
                               <TableCell>{category.order}</TableCell>
@@ -254,7 +319,9 @@ export default function CategoriesSection() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => handleDelete(category._id, category.name)}
+                                    onClick={() =>
+                                      handleDelete(category._id, category.name)
+                                    }
                                     className="text-destructive hover:text-destructive"
                                   >
                                     <Trash2 className="h-4 w-4" />

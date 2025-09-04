@@ -2,18 +2,18 @@
 
 import React, { useState, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux"; // adjust path if needed
+import { RootState } from "@/redux";
 import { MediaItem } from "@/redux/slices/mediaSlice";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
-import { ImageIcon, Video, X, Loader2 } from "lucide-react";
+import { ImageIcon, Video, X, Loader2, FileText, File } from "lucide-react";
 
 interface MediaSelectButtonProps {
   value: string;
   onSelect: (url: string) => void;
-  mediaType: "image" | "video";
+  mediaType: "image" | "video" | "file" | "pdf";
   label: string;
   placeholder?: string;
 }
@@ -48,21 +48,90 @@ const MediaSelectButton = ({
     return `${fileName}.${format}`;
   };
 
-  // Detect local default images (so we don’t keep “Loading…” forever)
+  const getFileIcon = (format?: string) => {
+    if (!format) return <File className="h-6 w-6 text-gray-400" />;
+    
+    const lowerFormat = format.toLowerCase();
+    if (lowerFormat === 'pdf') return <FileText className="h-6 w-6 text-red-500" />;
+    if (['doc', 'docx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-blue-500" />;
+    if (['xls', 'xlsx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-green-500" />;
+    return <File className="h-6 w-6 text-gray-400" />;
+  };
+
   const isLocalDefault =
     value?.startsWith("/images/") ||
     value?.startsWith("/static/") ||
     value?.startsWith("/assets/");
 
   const isMediaLoading = status === "loading";
-  // Fix: only resolve if not local default and not yet matched in items
-  const isResolvingMedia =
-    !!value && !isLocalDefault && !selectedMedia && isMediaLoading;
+  const isResolvingMedia = !!value && !isLocalDefault && !selectedMedia && isMediaLoading;
+
+  const renderIcon = () => {
+    switch (mediaType) {
+      case "image":
+        return <ImageIcon className="h-5 w-5" />;
+      case "video":
+        return <Video className="h-5 w-5" />;
+      case "pdf":
+        return <FileText className="h-5 w-5" />;
+      case "file":
+      default:
+        return <File className="h-5 w-5" />;
+    }
+  };
+
+  const renderPreview = () => {
+    if (mediaType === "image") {
+      return (
+        <img
+          src={selectedMedia?.secure_url || value}
+          alt="Preview"
+          className="w-full h-full object-cover"
+          onLoad={() => setPreviewLoading(false)}
+          onError={() => setPreviewLoading(false)}
+          onLoadStart={() => setPreviewLoading(true)}
+          style={{ display: previewLoading ? "none" : "block" }}
+        />
+      );
+    }
+
+    if (mediaType === "video") {
+      return (
+        <video
+          src={selectedMedia?.secure_url || value}
+          className="w-full h-full object-cover"
+          muted
+          onLoadedData={() => setPreviewLoading(false)}
+          onError={() => setPreviewLoading(false)}
+          onLoadStart={() => setPreviewLoading(true)}
+          style={{ display: previewLoading ? "none" : "block" }}
+        />
+      );
+    }
+
+    // For files and PDFs
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50">
+        {getFileIcon(selectedMedia?.format)}
+        <p className="text-xs text-gray-600 mt-2 text-center px-2">
+          {selectedMedia 
+            ? formatFileName(selectedMedia.public_id, selectedMedia.format)
+            : value.split("/").pop()
+          }
+        </p>
+        {selectedMedia && (
+          <p className="text-xs text-gray-500">
+            {(selectedMedia.bytes / 1024 / 1024).toFixed(2)} MB
+          </p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-gray-300">{label}</Label>
+        <Label className="text-sm font-medium text-primary">{label}</Label>
 
         <div className="space-y-3">
           <Button
@@ -102,20 +171,22 @@ const MediaSelectButton = ({
                       onLoadStart={() => setImageLoading(true)}
                       style={{ display: imageLoading ? "none" : "block" }}
                     />
-                  ) : (
+                  ) : mediaType === "video" ? (
                     <div className="w-full h-full flex items-center justify-center">
                       <Video className="h-6 w-6 text-gray-400" />
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      {getFileIcon(selectedMedia?.format)}
                     </div>
                   )}
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-sm truncate">
                     {selectedMedia
-                      ? formatFileName(
-                          selectedMedia.public_id,
-                          selectedMedia.format
-                        )
-                      : value.split("/").pop()}
+                      ? formatFileName(selectedMedia.public_id, selectedMedia.format)
+                      : value.split("/").pop()
+                    }
                   </p>
                   {selectedMedia && (
                     <p className="text-xs text-gray-500">
@@ -127,11 +198,7 @@ const MediaSelectButton = ({
               </div>
             ) : (
               <div className="flex items-center gap-2 text-gray-500">
-                {mediaType === "image" ? (
-                  <ImageIcon className="h-5 w-5" />
-                ) : (
-                  <Video className="h-5 w-5" />
-                )}
+                {renderIcon()}
                 <span>{placeholder || `Select ${mediaType}...`}</span>
               </div>
             )}
@@ -163,27 +230,7 @@ const MediaSelectButton = ({
                 </div>
               )}
 
-              {mediaType === "image" ? (
-                <img
-                  src={selectedMedia?.secure_url || value}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                  onLoad={() => setPreviewLoading(false)}
-                  onError={() => setPreviewLoading(false)}
-                  onLoadStart={() => setPreviewLoading(true)}
-                  style={{ display: previewLoading ? "none" : "block" }}
-                />
-              ) : (
-                <video
-                  src={selectedMedia?.secure_url || value}
-                  className="w-full h-full object-cover"
-                  muted
-                  onLoadedData={() => setPreviewLoading(false)}
-                  onError={() => setPreviewLoading(false)}
-                  onLoadStart={() => setPreviewLoading(true)}
-                  style={{ display: previewLoading ? "none" : "block" }}
-                />
-              )}
+              {renderPreview()}
 
               {!previewLoading && selectedMedia && (
                 <div className="absolute top-2 right-2">
@@ -213,7 +260,7 @@ const MediaSelectButton = ({
         onOpenChange={setSelectorOpen}
         onSelect={handleMediaSelect}
         selectedValue={value}
-        mediaType={mediaType}
+        mediaType={mediaType === "pdf" ? "file" : mediaType}
         title={`Select ${label}`}
       />
     </>

@@ -3,40 +3,43 @@
 import { useState } from "react";
 import { motion, Variants } from "framer-motion";
 
-const MasterplanSection = () => {
-  // State to manage the currently active tab, initialized to '3' (Common Zones)
-  const [activeTab, setActiveTab] = useState(3);
+interface MasterPlanTab {
+  title: string;
+  subtitle?: string;
+  subtitle2?: string;
+  image: string;
+}
 
-  // Updated features array with image sources for each tab
-  const features = [
-    {
-      id: 1,
-      title: "Luxury Condominiums",
-      imgSrc: "/images/highlights/bg.jpg",
-    },
-    {
-      id: 2,
-      title: "Premium Residences by Dusit International",
-      imgSrc: "/images/highlights/bg.jpg",
-    },
-    {
-      id: 3,
-      title: "Common Zones",
-      subtitle: "Shopping Centre",
-      subtitle2: "Spa & Villa",
-      imgSrc: "/images/highlights/bg.jpg",
-    },
-    {
-      id: 4,
-      title: "Integrated Amenities",
-      imgSrc: "/images/highlights/bg.jpg",
-    },
-    {
-      id: 5,
-      title: "Exclusive Ocean Club",
-      imgSrc: "/images/highlights/bg.jpg",
-    },
-  ];
+interface Project {
+  _id: string;
+  name: string;
+  projectDetail?: {
+    masterPlan: {
+      title: string;
+      subtitle: string;
+      description: string;
+      backgroundImage: string;
+      tabs: MasterPlanTab[];
+    };
+  };
+}
+
+interface MasterplanSectionProps {
+  project: Project;
+}
+
+const MasterplanSection = ({ project }: MasterplanSectionProps) => {
+  // Set the first tab as active by default, or null if no tabs
+  const [activeTab, setActiveTab] = useState(
+    project.projectDetail?.masterPlan?.tabs?.length ? 0 : null
+  );
+
+  const masterPlan = project.projectDetail?.masterPlan;
+
+  // Return null if no master plan data or no tabs
+  if (!masterPlan || !masterPlan.tabs || masterPlan.tabs.length === 0) {
+    return null;
+  }
 
   // Animation variants for the header text
   const itemVariants: Variants = {
@@ -65,34 +68,38 @@ const MasterplanSection = () => {
             variants={itemVariants}
             className="text-center mb-4 sm:mb-16 px-6"
           >
-            <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-4 px-4">
-              A MASTERPLAN THAT BLENDS NATURE,{" "}
-              <span className="text-primary font-bold">
-                WELLNESS &amp; HOSPITALITY
-              </span>
-            </h2>
-            <p className="font-josefin text-white max-w-4xl mx-auto description-text">
-              At Layan Verde, architecture and nature blend seamlessly. The
-              master plan features luxury residences, hotel-managed units,
-              lifestyle amenities, and lush green spaces — all designed for a
-              resort-style experience in Phuket.
-            </p>
+            {masterPlan.title && (
+              <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-4 px-4">
+                {masterPlan.title}
+              </h2>
+            )}
+            {masterPlan.subtitle && (
+              <h3 className="font-cinzel text-xl sm:text-2xl lg:text-[35px] font-normal text-primary mb-4 px-4">
+                {masterPlan.subtitle}
+              </h3>
+            )}
+            {masterPlan.description && (
+              <div 
+                className="font-josefin text-white max-w-4xl mx-auto description-text"
+                dangerouslySetInnerHTML={{ __html: masterPlan.description }}
+              />
+            )}
           </motion.div>
 
           {/* Interactive Tabs Section */}
           <div className="w-full flex flex-col items-center">
-            {features.map((feature) => (
+            {masterPlan.tabs.map((tab, index) => (
               <motion.div
-                key={feature.id}
+                key={index}
                 layout // This prop enables the magic layout animation
-                onClick={() => setActiveTab(feature.id)}
-                className="w-full  overflow-hidden cursor-pointer"
+                onClick={() => setActiveTab(index)}
+                className="w-full overflow-hidden cursor-pointer"
                 transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
               >
-                {activeTab === feature.id ? (
+                {activeTab === index ? (
                   // --- ACTIVE TAB VIEW ---
                   <motion.div
-                    style={{ backgroundImage: `url(${feature.imgSrc})` }}
+                    style={{ backgroundImage: `url(${tab.image})` }}
                     className="relative w-full h-[400px] sm:h-[600px] bg-center bg-cover flex items-center justify-center"
                     initial={{ opacity: 0.8 }}
                     animate={{ opacity: 1 }}
@@ -102,13 +109,13 @@ const MasterplanSection = () => {
                     <div className="bg-black/50 w-full h-full inset-0 absolute"></div>
                     <div className="font-josefin text-center z-10 p-4">
                       <motion.h3
-                        layoutId={`title-${feature.id}`} // Match layoutId for smooth title transition
+                        layoutId={`title-${index}`} // Match layoutId for smooth title transition
                         className="text-3xl md:text-6xl font-normal text-white mb-10"
                       >
-                        {feature.title}
+                        {tab.title}
                       </motion.h3>
-                      {/* Subtitles for Common Zones */}
-                      {feature.subtitle && (
+                      {/* Subtitles */}
+                      {tab.subtitle && (
                         <motion.p
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -116,10 +123,10 @@ const MasterplanSection = () => {
                           className="text-white font-medium text-2xl mb-1"
                         >
                           C1 -{" "}
-                          <span className="font-light">{feature.subtitle}</span>
+                          <span className="font-light">{tab.subtitle}</span>
                         </motion.p>
                       )}
-                      {feature.subtitle2 && (
+                      {tab.subtitle2 && (
                         <motion.p
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -128,7 +135,7 @@ const MasterplanSection = () => {
                         >
                           C2 -{" "}
                           <span className="font-light">
-                            {feature.subtitle2}
+                            {tab.subtitle2}
                           </span>
                         </motion.p>
                       )}
@@ -139,14 +146,14 @@ const MasterplanSection = () => {
                   <div className="relative group w-full h-[100px] sm:h-[180px] flex items-center justify-center text-center bg-background hover:bg-[#024f53] transition-colors duration-300">
                     {/* Background image revealed on hover */}
                     <div
-                      style={{ backgroundImage: `url(${feature.imgSrc})` }}
+                      style={{ backgroundImage: `url(${tab.image})` }}
                       className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out"
                     />
                     <motion.h3
-                      layoutId={`title-${feature.id}`} // Match layoutId for smooth title transition
+                      layoutId={`title-${index}`} // Match layoutId for smooth title transition
                       className="relative z-10 font-josefin text-2xl md:text-4xl font-normal text-white leading-tight p-4"
                     >
-                      {feature.title}
+                      {tab.title}
                     </motion.h3>
                   </div>
                 )}

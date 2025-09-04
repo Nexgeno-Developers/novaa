@@ -355,7 +355,7 @@ export default function MediaManagement() {
                 Drag and drop files here or click to browse
                 <br />
                 <span className="text-xs">
-                  Supports: JPG, PNG, WebP, GIF, MP4, WebM (Max: 50MB)
+                  Supports: JPG, PDF, PNG, WebP, GIF, MP4, WebM (Max: 50MB)
                 </span>
               </p>
             </label>

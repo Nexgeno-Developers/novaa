@@ -108,11 +108,11 @@ const navigation: NavigationItem[] = [
     ],
   },
   { name: "Media Library", href: "/admin/media", icon: Image },
-  {
-    name: "Curated Collection",
-    href: "/admin/curated-collection",
-    icon: ListCollapse, // Use your preferred icon
-  },
+  // {
+  //   name: "Curated Collection",
+  //   href: "/admin/curated-collection",
+  //   icon: ListCollapse, // Use your preferred icon
+  // },
   {
     name: "Enquiries",
     href: "/admin/enquiries",

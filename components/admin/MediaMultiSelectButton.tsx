@@ -167,7 +167,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
                   )}
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-sm">
+                  <p className="font-medium text-sm text-primary">
                     {selectedImages.length} {selectedImages.length === 1 ? 'item' : 'items'} selected
                   </p>
                   <p className="text-xs text-gray-500">Click to change selection</p>
@@ -182,7 +182,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="max-w-5xl max-h-[90vh]">
+        <DialogContent className="max-w-3xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>Select Media</span>

@@ -4,38 +4,32 @@ import { motion, Variants } from "framer-motion";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
 
-const ModernAmenities = () => {
-  const amenities = [
-    {
-      id: 1,
-      title: "Landscaped Garden",
-      image: "/images/modern-amenities/amenity-one.jpg",
-    },
-    {
-      id: 2,
-      title: "Senior Citizen Sit-Outs",
-      image: "/images/modern-amenities/amenity-two.jpg",
-    },
-    {
-      id: 3,
-      title: "Kids' Play Area",
-      image: "/images/modern-amenities/amenity-three.jpg",
-    },
-    {
-      id: 4,
-      title: "Fitness Center",
-      image: "/images/modern-amenities/amenity-four.jpg",
-    },
-  ];
+interface ModernAmenitiesProps {
+  project: {
+    name: string;
+    projectDetail?: {
+      modernAmenities?: {
+        title?: string;
+        description?: string;
+        amenities?: Array<{
+          image: string;
+          title: string;
+        }>;
+      };
+    };
+  };
+}
 
-  // const autoplayOptions = {
-  //   delay: 3000,
-  //   stopOnInteraction: false,
-  //   stopOnMouseEnter: true,
-  //   stopOnFocusIn: false
-  // }
+const ModernAmenities: React.FC<ModernAmenitiesProps> = ({ project }) => {
+  const amenitiesData = project.projectDetail?.modernAmenities;
+  
+  // Default values
+  const title = amenitiesData?.title || "MODERN AMENITIES FOR A BALANCED LIFESTYLE";
+  const description = amenitiesData?.description || 
+    "Thoughtfully designed spaces that promote wellness, comfort, and everyday ease.";
+  
+  const amenities = amenitiesData?.amenities || [];
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -48,7 +42,6 @@ const ModernAmenities = () => {
         "(min-width: 1024px)": { slidesToScroll: 1 },
       },
     }
-    // [Autoplay(autoplayOptions)] // Uncommented autoplay
   );
 
   const scrollPrev = useCallback(() => {
@@ -91,6 +84,11 @@ const ModernAmenities = () => {
     },
   };
 
+  // Don't render if no amenities
+  if (amenities.length === 0) {
+    return null;
+  }
+
   return (
     <section className="relative bg-background py-10 sm:py-20 overflow-hidden">
       <div className="relative z-10 container">
@@ -103,13 +101,17 @@ const ModernAmenities = () => {
           {/* Header */}
           <motion.div variants={itemVariants} className="text-center mb-4 sm:mb-16">
             <h2 className="font-cinzel text-2xl md:text-4xl lg:text-[50px] font-normal text-white mb-6">
-              MODERN AMENITIES FOR A{" "}
-              <span className="text-primary font-bold">BALANCED LIFESTYLE</span>
+              {title.split(' ').map((word, index) => {
+                if (word === 'BALANCED' || word === 'LIFESTYLE') {
+                  return <span key={index} className="text-primary font-bold">{word} </span>;
+                }
+                return `${word} `;
+              })}
             </h2>
-            <p className="font-josefin text-white max-w-3xl mx-auto description-text">
-              Thoughtfully designed spaces that promote wellness, comfort, and
-              everyday ease.
-            </p>
+            <div 
+              className="font-josefin text-white max-w-3xl mx-auto description-text"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
           </motion.div>
 
           {/* Carousel Container */}
@@ -119,7 +121,7 @@ const ModernAmenities = () => {
               <div className="flex">
                 {amenities.map((amenity, index) => (
                   <div
-                    key={amenity.id}
+                    key={index}
                     className="flex-[0_0_100%] min-w-0 pl-4 md:flex-[0_0_33.3333%] lg:flex-[0_0_33.333%]"
                   >
                     <motion.div

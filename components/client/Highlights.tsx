@@ -3,14 +3,37 @@
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 
-const Highlights = () => {
-  const highlights = [
-    "1 & 2 BHK premium apartments",
-    "Vastu-compliant homes",
-    "G+4 storey towers",
-    "Prime Location in the Heart of Phuket",
-    "Surrounded by nature and green zones",
-    "Just 25 Minutes from Phuket International Airport",
+interface HighlightsProps {
+  project: {
+    name: string;
+    projectDetail?: {
+      keyHighlights?: {
+        backgroundImage?: string;
+        description?: string;
+        highlights?: Array<{
+          text: string;
+        }>;
+      };
+    };
+  };
+}
+
+const Highlights: React.FC<HighlightsProps> = ({ project }) => {
+  const highlightsData = project.projectDetail?.keyHighlights;
+  const projectName = project.name;
+
+  // Default values
+  const backgroundImage = highlightsData?.backgroundImage || '/images/highlights/bg.jpg';
+  const description = highlightsData?.description || 
+    "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.";
+  
+  const highlights = highlightsData?.highlights || [
+    { text: "1 & 2 BHK premium apartments" },
+    { text: "Vastu-compliant homes" },
+    { text: "G+4 storey towers" },
+    { text: "Prime Location" },
+    { text: "Surrounded by nature and green zones" },
+    { text: "Modern amenities and facilities" }
   ];
 
   const containerVariants: Variants = {
@@ -39,13 +62,17 @@ const Highlights = () => {
     },
   };
 
+  if (highlights.length === 0) {
+    return null; // Don't render if no highlights
+  }
+
   return (
     <section className="relative w-full overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/images/highlights/bg.jpg')`,
+          backgroundImage: `url('${backgroundImage}')`,
         }}
       />
 
@@ -68,18 +95,16 @@ const Highlights = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
-          className=""
         >
           {/* Header */}
-          <motion.div variants={itemVariants} className=" mb-2 sm:mb-16">
+          <motion.div variants={itemVariants} className="mb-2 sm:mb-16">
             <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-6 text-center sm:text-left">
               PROJECT <span className="text-primary font-bold">HIGHLIGHTS</span>
             </h2>
-            <p className="font-josefin text-white description-text max-w-2xl text-center sm:text-left">
-              Is simply dummy text of the printing and typesetting industry.
-              Lorem Ipsum has been the industry&apos;s standard dummy text ever since
-              the 1500s.
-            </p>
+            <div 
+              className="font-josefin text-white description-text max-w-2xl text-center sm:text-left"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
           </motion.div>
 
           {/* Highlights Grid */}
@@ -95,14 +120,14 @@ const Highlights = () => {
               >
                 <div className="flex-shrink-0 mt-1">
                   <Image
-                    src={"/icons/pin.svg"}
+                    src="/icons/pin.svg"
                     alt="pin icon"
                     width={30}
                     height={30}
                   />
                 </div>
                 <p className="font-josefin text-white text-lg md:text-xl font-normal leading-relaxed group-hover:text-primary transition-colors duration-300">
-                  {highlight}
+                  {highlight.text}
                 </p>
               </motion.div>
             ))}

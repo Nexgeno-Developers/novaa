@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -24,12 +23,8 @@ import {
   Image as ImageIcon,
   Video,
   FileText,
-  Calendar,
-  HardDrive,
+  File,
   Loader2,
-  X,
-  Filter,
-  Upload,
   RefreshCw
 } from 'lucide-react';
 
@@ -38,7 +33,7 @@ interface AdvancedMediaSelectorProps {
   onOpenChange: (open: boolean) => void;
   onSelect: (media: MediaItem) => void;
   selectedValue?: string;
-  mediaType?: 'image' | 'video' | 'all';
+  mediaType?: 'image' | 'video' | 'file' | 'all';
   title?: string;
   multiple?: boolean;
   onMultipleSelect?: (media: MediaItem[]) => void;
@@ -61,45 +56,97 @@ export function AdvancedMediaSelector({
   const [selectedItems, setSelectedItems] = useState<MediaItem[]>([]);
   const [previewItem, setPreviewItem] = useState<MediaItem | null>(null);
   const [localQuery, setLocalQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
 
-  // Filter media based on mediaType prop
+  // Filter media based on mediaType prop and active tab
   const filteredMedia = useMemo(() => {
     let filtered = mediaItems;
     
+    // If mediaType is specified and not 'all', filter by that type
     if (mediaType !== 'all') {
-      filtered = filtered.filter(item => item.resource_type === mediaType);
+      if (mediaType === 'file') {
+        // For 'file' type, include everything that's not image or video
+        filtered = filtered.filter(item => 
+          item.resource_type !== 'image' && item.resource_type !== 'video'
+        );
+      } else {
+        filtered = filtered.filter(item => item.resource_type === mediaType);
+      }
+    } else {
+      // If mediaType is 'all', filter by active tab
+      if (activeTab !== 'all') {
+        if (activeTab === 'file') {
+          filtered = filtered.filter(item => 
+            item.resource_type !== 'image' && item.resource_type !== 'video'
+          );
+        } else {
+          filtered = filtered.filter(item => item.resource_type === activeTab);
+        }
+      }
     }
     
     return filtered;
-  }, [mediaItems, mediaType]);
+  }, [mediaItems, mediaType, activeTab]);
 
   // Initialize media type filter
   useEffect(() => {
     if (isOpen) {
-      if (mediaType !== 'all') {
-        dispatch(setType(mediaType));
-      }
       // Fetch media if not already loaded
       if (mediaItems.length === 0) {
         dispatch(fetchMedia({ limit: 100, reset: true }));
       }
     }
-  }, [isOpen, mediaType, dispatch, mediaItems.length]);
+  }, [isOpen, dispatch, mediaItems.length]);
 
   // Handle search with debouncing
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       dispatch(setQuery(localQuery));
       dispatch(resetMedia());
+      
+      let searchType: string | undefined;
+      if (mediaType !== 'all') {
+        if (mediaType === 'file') {
+          // Don't set a specific type for files - let backend handle it
+          searchType = undefined;
+        } else {
+          searchType = mediaType;
+        }
+      } else if (activeTab !== 'all') {
+        if (activeTab === 'file') {
+          searchType = undefined;
+        } else {
+          searchType = activeTab;
+        }
+      }
+      
       dispatch(fetchMedia({ 
         query: localQuery, 
-        type: mediaType !== 'all' ? mediaType : undefined,
+        type: searchType,
         reset: true 
       }));
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [localQuery, mediaType, dispatch]);
+  }, [localQuery, mediaType, activeTab, dispatch]);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    dispatch(resetMedia());
+    
+    let searchType: string | undefined;
+    if (value === 'file') {
+      searchType = undefined;
+    } else if (value !== 'all') {
+      searchType = value;
+    }
+    
+    dispatch(fetchMedia({ 
+      query: localQuery || undefined, 
+      type: searchType,
+      reset: true 
+    }));
+  };
 
   const handleItemSelect = (item: MediaItem) => {
     if (multiple) {
@@ -129,9 +176,24 @@ export function AdvancedMediaSelector({
 
   const handleLoadMore = () => {
     if (hasMore && !loading) {
+      let searchType: string | undefined;
+      if (mediaType !== 'all') {
+        if (mediaType === 'file') {
+          searchType = undefined;
+        } else {
+          searchType = mediaType;
+        }
+      } else if (activeTab !== 'all') {
+        if (activeTab === 'file') {
+          searchType = undefined;
+        } else {
+          searchType = activeTab;
+        }
+      }
+      
       dispatch(fetchMedia({ 
         query: localQuery || undefined, 
-        type: mediaType !== 'all' ? mediaType : undefined
+        type: searchType
       }));
     }
   };
@@ -154,6 +216,13 @@ export function AdvancedMediaSelector({
   const formatFileName = (publicId: string, format: string) => {
     const fileName = publicId.split('/').pop() || publicId;
     return `${fileName}.${format}`;
+  };
+
+  const getFileIcon = (item: MediaItem) => {
+    if (item.resource_type === 'image') return <ImageIcon className="h-6 w-6 text-blue-500" />;
+    if (item.resource_type === 'video') return <Video className="h-6 w-6 text-purple-500" />;
+    if (item.format === 'pdf') return <FileText className="h-6 w-6 text-red-500" />;
+    return <File className="h-6 w-6 text-gray-500" />;
   };
 
   const isItemSelected = (item: MediaItem) => {
@@ -185,7 +254,7 @@ export function AdvancedMediaSelector({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Video className="h-6 w-6 text-gray-400" />
+                    {getFileIcon(item)}
                   </div>
                 )}
                 {isSelected && (
@@ -235,7 +304,7 @@ export function AdvancedMediaSelector({
 
     return (
       <Card 
-        className={` group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
+        className={`group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
           isSelected ? 'ring-2 ring-primary' : ''
         }`}
         onClick={() => handleItemSelect(item)}
@@ -250,7 +319,7 @@ export function AdvancedMediaSelector({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                <Video className="h-8 w-8 text-gray-400" />
+                {getFileIcon(item)}
               </div>
             )}
 
@@ -350,8 +419,7 @@ export function AdvancedMediaSelector({
             </div>
           </DialogHeader>
 
-          <div className="px-6 
-pb-4">
+          <div className="px-6 pb-4">
             {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="relative flex-1">
@@ -367,17 +435,18 @@ pb-4">
 
             {/* Media Type Tabs (if mediaType is 'all') */}
             {mediaType === 'all' && (
-              <Tabs defaultValue="all" className="mb-4">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-4">
                 <TabsList>
                   <TabsTrigger value="all">All Files</TabsTrigger>
                   <TabsTrigger value="image">Images</TabsTrigger>
                   <TabsTrigger value="video">Videos</TabsTrigger>
+                  <TabsTrigger value="file">Documents</TabsTrigger>
                 </TabsList>
               </Tabs>
             )}
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-1">
                   <FileText className="h-4 w-4 text-blue-500 mr-1" />
@@ -392,7 +461,7 @@ pb-4">
                   <span className="text-sm text-gray-600">Images</span>
                 </div>
                 <span className="text-lg font-semibold">
-                  {filteredMedia.filter(item => item.resource_type === 'image').length}
+                  {mediaItems.filter(item => item.resource_type === 'image').length}
                 </span>
               </div>
               
@@ -402,7 +471,17 @@ pb-4">
                   <span className="text-sm text-gray-600">Videos</span>
                 </div>
                 <span className="text-lg font-semibold">
-                  {filteredMedia.filter(item => item.resource_type === 'video').length}
+                  {mediaItems.filter(item => item.resource_type === 'video').length}
+                </span>
+              </div>
+              
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1">
+                  <File className="h-4 w-4 text-orange-500 mr-1" />
+                  <span className="text-sm text-gray-600">Files</span>
+                </div>
+                <span className="text-lg font-semibold">
+                  {mediaItems.filter(item => item.resource_type !== 'image' && item.resource_type !== 'video').length}
                 </span>
               </div>
             </div>
@@ -413,7 +492,8 @@ pb-4">
             {loading && filteredMedia.length === 0 ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  {/* <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" /> */}
+                  <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
+                  <p className="text-gray-500">Loading media...</p>
                 </div>
               </div>
             ) : filteredMedia.length === 0 ? (
@@ -430,7 +510,7 @@ pb-4">
               <div
                 className={
                   viewMode === 'grid'
-                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 py-2"
+                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-2"
                     : "space-y-2"
                 }
               >
@@ -451,7 +531,7 @@ pb-4">
                 >
                   {loading ? (
                     <>
-                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Loading...
                     </>
                   ) : (
@@ -464,7 +544,7 @@ pb-4">
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between p-6 border-t">
-            <div className="text-sm text-background">
+            <div className="text-sm text-gray-600">
               {filteredMedia.length} file{filteredMedia.length !== 1 ? 's' : ''} available
             </div>
 
@@ -481,7 +561,7 @@ pb-4">
                 <Button
                   onClick={handleMultipleConfirm}
                   disabled={selectedItems.length === 0}
-                  className="bg-primary text-white hover:bg-primary/90"
+                  className="bg-primary text-white hover:bg-primary/90 cursor-pointer"
                 >
                   Select {selectedItems.length} Item{selectedItems.length !== 1 ? 's' : ''}
                 </Button>
@@ -509,12 +589,19 @@ pb-4">
                     alt="Preview"
                     className="w-full max-h-96 object-contain"
                   />
-                ) : (
+                ) : previewItem.resource_type === 'video' ? (
                   <video
                     src={previewItem.secure_url}
                     controls
                     className="w-full max-h-96 object-contain"
                   />
+                ) : (
+                  <div className="w-full h-48 flex flex-col items-center justify-center">
+                    {getFileIcon(previewItem)}
+                    <p className="mt-2 text-gray-600">
+                      {formatFileName(previewItem.public_id, previewItem.format)}
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -543,7 +630,7 @@ pb-4">
               <div className="flex justify-end gap-3 pt-4 border-t">
                 <Button
                   variant="outline"
-                  className='bg-primary text-background hover:bg-primary/90 cursor-pointer '
+                  className='bg-primary text-background hover:bg-primary/90 cursor-pointer'
                   onClick={() => setPreviewItem(null)}
                 >
                   Close
@@ -553,7 +640,7 @@ pb-4">
                     handleItemSelect(previewItem);
                     setPreviewItem(null);
                   }}
-                  className="bg-primary text-background hover:bg-primary/90 cursor-pointer "
+                  className="bg-primary text-background hover:bg-primary/90 cursor-pointer"
                 >
                   {isItemSelected(previewItem) ? 'Selected' : 'Select This File'}
                 </Button>

@@ -387,7 +387,7 @@ const handleNestedInputChange = (
               Add Blog
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto">
+          <DialogContent className="max-w-3xl max-h-[95vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-primary">
                 {editingBlog ? "Edit Blog" : "Add New Blog"}

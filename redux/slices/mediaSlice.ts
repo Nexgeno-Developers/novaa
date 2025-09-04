@@ -1,8 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { Key } from 'readline';
 
 // Define the structure of a media item
 export interface MediaItem {
+  _id: Key | null | undefined;
+  alt: any;
   public_id: string;
   resource_type: 'image' | 'video';
   secure_url: string;

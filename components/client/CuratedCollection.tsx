@@ -7,53 +7,71 @@ import CollectionCard from "@/components/client/CollectionCard";
 import RegionTabs from "@/components/client/RegionTabs";
 import { useAppDispatch } from "@/redux/hooks";
 import {
-  fetchCuratedCollectionData,
+  setCuratedCollectionData,
   resetState,
+  setDataSource,
+  setCategories,
+  setRegion,
 } from "@/redux/slices/collectionSlice";
-import { Loader2 } from "lucide-react";
 
 interface CuratedCollectionProps {
   pageSlug?: string;
+  title?: string;
+  description?: string;
+  isActive?: boolean;
+  items?: Record<string, any[]>;
+  [key: string]: unknown;
 }
 
 export default function CuratedCollection({
   pageSlug = "home",
+  title,
+  description,
+  isActive,
+  items,
+  ...props
 }: CuratedCollectionProps) {
   const dispatch = useAppDispatch();
-  const { collection, loading, error } = useSelector(
+  const { collection } = useSelector(
     (state: RootState) => state.curated
   );
 
   useEffect(() => {
-    // Reset state and fetch curated collection data
-    dispatch(resetState());
-    dispatch(fetchCuratedCollectionData(pageSlug));
-  }, [dispatch, pageSlug]);
+    // Only proceed if we have the required props data
+    if (title && description && isActive !== undefined && items) {
+      dispatch(resetState());
+      
+      // Set data source to 'curated' so components know to use curated data
+      dispatch(setDataSource('curated'));
+      
+      // Set the collection data
+      const collectionData = {
+        title,
+        description,
+        isActive,
+        items,
+        ...props
+      };
+      dispatch(setCuratedCollectionData(collectionData));
+      
+      // Extract and set categories from the items
+      const categories = Object.keys(items).map(categoryId => {
+        // Get category info from first item in that category
+        const firstItem = items[categoryId]?.[0];
+        if (firstItem?.category) {
+          return firstItem.category;
+        }
+        return null;
+      }).filter(Boolean);
+      
+      // Sort categories by order and set them
+      const sortedCategories = categories.sort((a, b) => (a.order || 0) - (b.order || 0));
+      dispatch(setCategories(sortedCategories));
+    }
+  }, [dispatch, title, description, isActive, items]);
 
-  if (loading) {
-    return (
-      <section className="py-10 sm:py-20 bg-secondary">
-        <div className="container flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin mr-2" />
-          <span>Loading curated collection...</span>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="py-10 sm:py-20 bg-secondary">
-        <div className="container text-center">
-          <p className="text-red-500">
-            Error loading curated collection: {error}
-          </p>
-        </div>
-      </section>
-    );
-  }
-
-  if (!collection || !collection.isActive) {
+  // No loading state needed since data comes from props
+  if (!title || !isActive) {
     return null;
   }
 
@@ -64,11 +82,11 @@ export default function CuratedCollection({
           <div className="mb-10 flex flex-col justify-center items-center lg:items-start text-center sm:text-left">
             <h2
               className="font-cinzel text-2xl lg:text-3xl xl:text-[50px] font-bold mb-2 text-[#D4AF37]"
-              dangerouslySetInnerHTML={{ __html: collection.title }}
+              dangerouslySetInnerHTML={{ __html: title }}
             />
             <div
               className="font-josefin description-text text-[#303030] max-w-2xl mx-auto text-center lg:text-left"
-              dangerouslySetInnerHTML={{ __html: collection.description }}
+              dangerouslySetInnerHTML={{ __html: description }}
             />
           </div>
 
