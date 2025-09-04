@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   DragDropContext,
   Droppable,
@@ -20,16 +19,6 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-// Redux
-import { AppDispatch, RootState } from "@/redux";
-import {
-  fetchNovaaAdvantageData,
-  saveNovaaAdvantageData,
-  updateMainField,
-  updateAdvantageItem,
-  reorderAdvantages,
-} from "@/redux/slices/advantageSlice";
-
 // Shadcn UI and Custom Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +31,23 @@ import MediaSelectButton from "@/components/admin/MediaSelectButton";
 import BaseSectionManager from "@/components/admin/BaseSectionManager";
 import Image from "next/image";
 
+interface AdvantageItem {
+  _id: string;
+  title: string;
+  description: string;
+  icon: string;
+  order: number;
+}
+
+interface AdvantageData {
+  title: string;
+  highlightedTitle: string;
+  description: string;
+  backgroundImage: string;
+  logoImage: string;
+  advantages: AdvantageItem[];
+}
+
 interface NovaaAdvantageManagerProps {
   section: any; // Required
   onChange: (changes: any) => void; // Required
@@ -49,117 +55,148 @@ interface NovaaAdvantageManagerProps {
 }
 
 const NovaaAdvantageManagerContent = ({
+  section,
   onChange,
-  showSaveButton = true,
 }: {
-  onChange?: (changes: any) => void;
-  showSaveButton?: boolean;
+  section: any;
+  onChange: (changes: any) => void;
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { data, status } = useSelector((state: RootState) => state.advantage);
+  // Local state for section-based management
+  const [localData, setLocalData] = useState<AdvantageData>({
+    title: section?.content?.title || "",
+    highlightedTitle: section?.content?.highlightedTitle || "",
+    description: section?.content?.description || "",
+    backgroundImage: section?.content?.backgroundImage || "",
+    logoImage: section?.content?.logoImage || "",
+    advantages: section?.content?.advantages || [],
+  });
 
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [originalData, setOriginalData] = useState(null);
+  const [hasLocalChanges, setHasLocalChanges] = useState(false);
+  const [originalData, setOriginalData] = useState<AdvantageData | null>(null);
 
+  // Initialize data when section prop changes
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchNovaaAdvantageData());
-    }
-  }, [status, dispatch]);
+    if (section?.content) {
+      const newData = {
+        title: section.content.title || "",
+        highlightedTitle: section.content.highlightedTitle || "",
+        description: section.content.description || "",
+        backgroundImage: section.content.backgroundImage || "",
+        logoImage: section.content.logoImage || "",
+        advantages: section.content.advantages || [],
+      };
 
-  // Store original data for comparison
-  useEffect(() => {
-    if (data && !originalData) {
-      setOriginalData(JSON.parse(JSON.stringify(data)));
+      // Only update local data if we don't have pending changes
+      if (!hasLocalChanges) {
+        setLocalData(newData);
+        setOriginalData(JSON.parse(JSON.stringify(newData)));
+      }
     }
-  }, [data, originalData]);
+  }, [section, hasLocalChanges]);
+
+  // Add effect to handle successful saves
+  useEffect(() => {
+    if (section?.content && hasLocalChanges && originalData) {
+      const currentContent = JSON.stringify(localData);
+      const sectionContent = JSON.stringify({
+        title: section.content.title || "",
+        highlightedTitle: section.content.highlightedTitle || "",
+        description: section.content.description || "",
+        backgroundImage: section.content.backgroundImage || "",
+        logoImage: section.content.logoImage || "",
+        advantages: section.content.advantages || [],
+      });
+
+      if (currentContent === sectionContent) {
+        setHasLocalChanges(false);
+        setOriginalData(JSON.parse(JSON.stringify(localData)));
+      }
+    }
+  }, [section?.content, hasLocalChanges, localData, originalData]);
 
   // Notify parent of changes
   useEffect(() => {
-    if (onChange && data && originalData && hasUnsavedChanges) {
-      const hasChanges = JSON.stringify(data) !== JSON.stringify(originalData);
-      if (hasChanges) {
-        setHasUnsavedChanges(true);
-        onChange({ content: data });
-      }
+    if (onChange && hasLocalChanges) {
+      onChange({ content: localData });
     }
-  }, [data, originalData]);
+  }, [hasLocalChanges, localData]);
 
-  const handleSaveChanges = () => {
-    if (data) {
-      dispatch(saveNovaaAdvantageData(data));
-      setOriginalData(JSON.parse(JSON.stringify(data)));
-      setHasUnsavedChanges(false);
-    }
+  const handleUpdateMainField = (field: keyof AdvantageData, value: string) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+    setHasLocalChanges(true);
+  };
+
+  const handleUpdateAdvantageItem = useCallback(
+    (index: number, field: keyof AdvantageItem, value: string) => {
+      setLocalData((prev) => ({
+        ...prev,
+        advantages: prev.advantages.map((item, i) =>
+          i === index ? { ...item, [field]: value } : item
+        ),
+      }));
+      setHasLocalChanges(true);
+    },
+    []
+  );
+
+  const handleAddAdvantage = () => {
+    const newAdvantage: AdvantageItem = {
+      _id: uuidv4(),
+      title: "",
+      description: "",
+      icon: "",
+      order: localData.advantages.length,
+    };
+
+    setLocalData((prev) => ({
+      ...prev,
+      advantages: [...prev.advantages, newAdvantage],
+    }));
+    setHasLocalChanges(true);
+  };
+
+  const handleDeleteAdvantage = (index: number) => {
+    setLocalData((prev) => ({
+      ...prev,
+      advantages: prev.advantages.filter((_, i) => i !== index),
+    }));
+    setHasLocalChanges(true);
   };
 
   const handleOnDragEnd = (result: DropResult) => {
-    if (!result.destination || !data) return;
-    const items = Array.from(data.advantages);
+    if (!result.destination) return;
+
+    const items = Array.from(localData.advantages);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    dispatch(reorderAdvantages(items));
-  };
 
-  const handleRefresh = () => {
-    dispatch(fetchNovaaAdvantageData());
-    setHasUnsavedChanges(false);
-    setOriginalData(null);
+    // Update order property
+    const reorderedItems = items.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
+
+    setLocalData((prev) => ({
+      ...prev,
+      advantages: reorderedItems,
+    }));
+    setHasLocalChanges(true);
   };
 
   const handleBackgroundImageSelect = (imageUrl: string) => {
-    dispatch(updateMainField({ field: "backgroundImage", value: imageUrl }));
+    handleUpdateMainField("backgroundImage", imageUrl);
   };
 
   const handleLogoImageSelect = (imageUrl: string) => {
-    dispatch(updateMainField({ field: "logoImage", value: imageUrl }));
+    handleUpdateMainField("logoImage", imageUrl);
   };
 
-  if (status === "loading" && !data)
-    return <div className="p-8">Loading Advantage Manager...</div>;
-  if (status === "failed" || !data)
-    return <div className="p-8">Could not load data. Try refreshing.</div>;
+  const handleAdvantageIconSelect = (index: number, imageUrl: string) => {
+    handleUpdateAdvantageItem(index, "icon", imageUrl);
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header - only show in standalone mode */}
-      {showSaveButton && (
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              Nova Advantage Manager
-            </h1>
-            {hasUnsavedChanges && (
-              <p className="text-sm text-orange-600 mt-1">
-                You have unsaved changes
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleRefresh}
-              disabled={status === "loading"}
-              className="bg-primary text-background cursor-pointer"
-            >
-              <RefreshCw
-                className={`w-4 h-4 mr-2 ${
-                  status === "loading" ? "animate-spin" : ""
-                }`}
-              />
-              Refresh
-            </Button>
-            <Button
-              onClick={handleSaveChanges}
-              className="bg-primary text-background cursor-pointer"
-              disabled={status === "loading" || !hasUnsavedChanges}
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {status === "loading" ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
-        </div>
-      )}
-
       <Tabs defaultValue="content">
         <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
           <TabsTrigger
@@ -174,7 +211,7 @@ const NovaaAdvantageManagerContent = ({
             className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
           >
             <Images className="w-4 h-4" />
-            <span className="font-medium">Center Image</span>
+            <span className="font-medium">Images</span>
           </TabsTrigger>
         </TabsList>
 
@@ -190,14 +227,9 @@ const NovaaAdvantageManagerContent = ({
                   <Input
                     id="main-title"
                     placeholder="e.g., THE NOVAA"
-                    value={data.title}
+                    value={localData.title}
                     onChange={(e) =>
-                      dispatch(
-                        updateMainField({
-                          field: "title",
-                          value: e.target.value,
-                        })
-                      )
+                      handleUpdateMainField("title", e.target.value)
                     }
                   />
                 </div>
@@ -206,14 +238,9 @@ const NovaaAdvantageManagerContent = ({
                   <Input
                     id="highlighted-title"
                     placeholder="e.g., ADVANTAGE"
-                    value={data.highlightedTitle}
+                    value={localData.highlightedTitle}
                     onChange={(e) =>
-                      dispatch(
-                        updateMainField({
-                          field: "highlightedTitle",
-                          value: e.target.value,
-                        })
-                      )
+                      handleUpdateMainField("highlightedTitle", e.target.value)
                     }
                   />
                 </div>
@@ -222,11 +249,9 @@ const NovaaAdvantageManagerContent = ({
                 <Label>Main Description</Label>
                 <RichTextEditor
                   id="main-description"
-                  value={data.description}
+                  value={localData.description}
                   onEditorChange={(content) =>
-                    dispatch(
-                      updateMainField({ field: "description", value: content })
-                    )
+                    handleUpdateMainField("description", content)
                   }
                 />
               </div>
@@ -238,74 +263,129 @@ const NovaaAdvantageManagerContent = ({
           <Card className="py-6">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Advantage Items</CardTitle>
+              <Button
+                onClick={handleAddAdvantage}
+                className="bg-primary text-background cursor-pointer"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Advantage
+              </Button>
             </CardHeader>
             <CardContent>
-              <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="advantages">
-                  {(provided) => (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      className="space-y-4"
-                    >
-                      {data.advantages.map((item, index) => (
-                        <Draggable
-                          key={item._id}
-                          draggableId={item._id}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className="p-4 border rounded-lg bg-white shadow-sm flex items-start gap-4"
-                            >
-                              <div className="text-gray-400 hover:text-gray-600 cursor-grab pt-2">
-                                <GripVertical />
-                              </div>
-                              <div className="flex-grow space-y-4">
-                                <div className="space-y-2">
-                                  <Label>Title</Label>
-                                  <Input
-                                    value={item.title}
-                                    onChange={(e) =>
-                                      dispatch(
-                                        updateAdvantageItem({
-                                          index,
-                                          field: "title",
-                                          value: e.target.value,
-                                        })
-                                      )
-                                    }
-                                  />
+              {localData.advantages.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="mb-4">No advantages added yet</p>
+                  <Button
+                    onClick={handleAddAdvantage}
+                    className="bg-primary text-background cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Your First Advantage
+                  </Button>
+                </div>
+              ) : (
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                  <Droppable droppableId="advantages">
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="space-y-4"
+                      >
+                        {localData.advantages.map((item, index) => (
+                          <Draggable
+                            key={item._id}
+                            draggableId={item._id}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className={`p-4 border rounded-lg bg-white shadow-sm flex items-start gap-4 transition-all duration-200 ${
+                                  snapshot.isDragging
+                                    ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
+                                    : ""
+                                }`}
+                              >
+                                <div
+                                  {...provided.dragHandleProps}
+                                  className="text-gray-400 hover:text-gray-600 cursor-grab pt-2"
+                                >
+                                  <GripVertical />
                                 </div>
-                                <div className="space-y-2">
-                                  <Label>Description</Label>
-                                  <RichTextEditor
-                                    id={`advantage-desc-${item._id}`}
-                                    value={item.description}
-                                    onEditorChange={(content) =>
-                                      dispatch(
-                                        updateAdvantageItem({
+
+                                <div className="flex-grow space-y-4">
+                                  <div className="space-y-2">
+                                    <Label>Title</Label>
+                                    <Input
+                                      value={item.title}
+                                      onChange={(e) =>
+                                        handleUpdateAdvantageItem(
                                           index,
-                                          field: "description",
-                                          value: content,
-                                        })
-                                      )
-                                    }
-                                  />
+                                          "title",
+                                          e.target.value
+                                        )
+                                      }
+                                      placeholder="Advantage title"
+                                    />
+                                  </div>
+
+                                  <div className="space-y-2">
+                                    <Label>Description</Label>
+                                    <RichTextEditor
+                                      id={`advantage-desc-${item._id}`}
+                                      value={item.description}
+                                      onEditorChange={(content) =>
+                                        handleUpdateAdvantageItem(
+                                          index,
+                                          "description",
+                                          content
+                                        )
+                                      }
+                                    />
+                                  </div>
+
+                                  {/* <div className="space-y-2">
+                                    <Label>Icon</Label>
+                                    <div className="flex items-center gap-4">
+                                      {item.icon && (
+                                        <Image
+                                          src={item.icon}
+                                          alt="Icon preview"
+                                          width={48}
+                                          height={48}
+                                          className="object-contain border rounded"
+                                        />
+                                      )}
+                                      <MediaSelectButton
+                                        label={item.icon ? "Change Icon" : "Select Icon"}
+                                        mediaType="image"
+                                        value={item.icon}
+                                        onSelect={(imageUrl) => handleAdvantageIconSelect(index, imageUrl)}
+                                      />
+                                    </div>
+                                  </div> */}
                                 </div>
+
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleDeleteAdvantage(index)}
+                                  className="cursor-pointer"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
                               </div>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -318,45 +398,56 @@ const NovaaAdvantageManagerContent = ({
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <Label className="text-lg font-medium">Background Image</Label>
-                <div className="w-full aspect-square rounded-lg border border-dashed flex items-center justify-center bg-gray-300 overflow-hidden">
-                  {data.backgroundImage ? (
+                <div className="w-full aspect-square rounded-lg border border-dashed flex items-center justify-center bg-gray-50 overflow-hidden">
+                  {localData.backgroundImage ? (
                     <Image
-                      src={data.backgroundImage}
+                      src={localData.backgroundImage}
                       alt="Background Preview"
                       width={500}
                       height={300}
-                      className="object-cover"
+                      className="object-cover w-full h-full"
                     />
                   ) : (
-                    <ImageIcon className="h-16 w-16 text-gray-300" />
+                    <div className="text-center">
+                      <ImageIcon className="h-16 w-16 text-gray-300 mx-auto mb-2" />
+                      <p className="text-gray-500 text-sm">
+                        No background image selected
+                      </p>
+                    </div>
                   )}
                 </div>
                 <MediaSelectButton
                   label="Select Background Image"
                   mediaType="image"
-                  value={data.backgroundImage}
+                  value={localData.backgroundImage}
                   onSelect={handleBackgroundImageSelect}
                 />
               </div>
+
               <div className="space-y-3">
                 <Label className="text-lg font-medium">Center Logo Image</Label>
-                <div className="w-full aspect-square rounded-lg bg-gray-300 border border-dashed flex items-center justify-center overflow-hidden">
-                  {data.logoImage ? (
+                <div className="w-full aspect-square rounded-lg bg-gray-50 border border-dashed flex items-center justify-center overflow-hidden">
+                  {localData.logoImage ? (
                     <Image
-                      src={data.logoImage}
+                      src={localData.logoImage}
                       alt="Logo Preview"
                       width={300}
                       height={300}
-                      className="object-contain"
+                      className="object-contain w-full h-full p-4"
                     />
                   ) : (
-                    <ImageIcon className="h-16 w-16 text-gray-300" />
+                    <div className="text-center">
+                      <ImageIcon className="h-16 w-16 text-gray-300 mx-auto mb-2" />
+                      <p className="text-gray-500 text-sm">
+                        No logo image selected
+                      </p>
+                    </div>
                   )}
                 </div>
                 <MediaSelectButton
                   label="Select Logo Image"
                   mediaType="image"
-                  value={data.logoImage}
+                  value={localData.logoImage}
                   onSelect={handleLogoImageSelect}
                 />
               </div>
@@ -379,7 +470,8 @@ export default function NovaaAdvantageManager({
     return (
       <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed">
         <p className="text-gray-600">
-          This manager can only be used within the global page management system.
+          This manager can only be used within the global page management
+          system.
         </p>
       </div>
     );
@@ -390,13 +482,10 @@ export default function NovaaAdvantageManager({
       section={section}
       onChange={onChange}
       showSaveButton={showSaveButton}
-      title="Nova Advantage"
+      title="Novaa Advantage"
       description="Manage advantage section content and images"
     >
-      <NovaaAdvantageManagerContent 
-        onChange={onChange}
-        showSaveButton={false} 
-      />
+      <NovaaAdvantageManagerContent section={section} onChange={onChange} />
     </BaseSectionManager>
   );
 }

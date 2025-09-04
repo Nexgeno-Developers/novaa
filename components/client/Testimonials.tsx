@@ -15,10 +15,14 @@ interface TestimonialData {
   order: number;
   isActive: boolean;
 }
+interface SectionContent {
+  title?: string;
+  subtitle?: string;
+}
 
 interface TestimonialsSectionProps {
-  title?: string;
-  description?: string;
+  title: string;
+  subtitle: string;
   testimonials?: TestimonialData[];
   [key: string]: unknown;
 }
@@ -59,11 +63,10 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className=""
     >
-      <div className="relative flex justify-center items-center overflow-hidden">
-        {/* Card with inverted radius */}
-        <div className="inverted-radius h-60 bg-white rounded-[40px] p-6 lg:p-8 sm:h-[300px] flex flex-col relative z-10 ">
+      <div className="relative flex justify-center items-center">
+        {/* Masked card */}
+        <div className="inverted-radius h-60 sm:h-[300px] bg-white rounded-[40px] p-6 lg:p-8 flex flex-col z-10">
           <div className="flex pb-2">
             <StarRating rating={testimonial.rating} />
           </div>
@@ -77,12 +80,12 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
           ></p>
         </div>
 
-        {/* Avatar outside the mask */}
-        <div className="absolute  bottom-0 right-0 xl:right-5 2xl:right-15">
+        {/* Avatar ABOVE mask */}
+        <div className="absolute bottom-0 sm:bottom-0 right-0 sm:right-0 z-20">
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
-            className="w-14 h-14 rounded-full object-cover border-1 border-[#CDB04E]"
+            className="w-14 h-14 rounded-full object-cover border border-[#CDB04E] bg-white"
           />
         </div>
       </div>
@@ -91,11 +94,20 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
 };
 
 export function EliteClientsTestimonials({
-  title = "What Our <span class='text-[#D4AF37] font-bold'>Elite Clients Say</span>",
-  description = "Real stories from real people who trust us",
   testimonials = [],
+  title = "What Our <span class='text-[#D4AF37] font-bold'>Elite Clients Say</span>",
+  subtitle = "Real stories from real people who trust us",
   ...props
 }: TestimonialsSectionProps) {
+  // console.log("Title and subtitle" , title , subtitle)
+  // console.log("Elite output " , content)
+  // const title =
+  //   content?.title ??
+  //   ;
+
+  // const description =
+  //   content?.description ?? "";
+
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -155,9 +167,9 @@ export function EliteClientsTestimonials({
           <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase">
             <div dangerouslySetInnerHTML={{ __html: title }} />
           </h2>
-          <div
+          <span
             className="font-josefin text-[#303030] description-text"
-            dangerouslySetInnerHTML={{ __html: description }}
+            dangerouslySetInnerHTML={{ __html: subtitle }}
           />
         </motion.div>
 
@@ -168,7 +180,7 @@ export function EliteClientsTestimonials({
               <div className="flex ">
                 {activeTestimonials.map((testimonial, index) => (
                   <div
-                    className="min-w-0 flex-[0_0_100%] lg:flex-[0_0_33.3333%]"
+                    className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.3333%]"
                     key={testimonial.id}
                   >
                     <TestimonialCard

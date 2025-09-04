@@ -139,7 +139,7 @@ body {
   --x: 20px; /* horizontal offset (no percentane) */
   --y: 10px; /* vertical offset (no percentage) */
 
-  width: 400px;
+  width: 600px;
   aspect-ratio: 1;
   background: #fff;
   border-radius: var(--r);

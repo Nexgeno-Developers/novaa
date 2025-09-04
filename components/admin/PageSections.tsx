@@ -58,7 +58,7 @@ import WhyInvestManager from "@/components/admin/WhyInvestManager";
 import InvestorInsightsManager from "@/components/admin/InvestorInsightsManager";
 import PhuketPropertiesManager from "@/components/admin/PhuketPropertiesManager";
 import HomePageManager from "@/components/admin/HomePageManager";
-import NovaaAdvantagesManager from "@/components/admin/AdvantageManager";
+import NovaaAdvantageManager from "@/components/admin/AdvantageManager";
 import CuratedCollectionManager from "@/components/admin/CuratedCollectionManager";
 import BreadcrumbManager from "@/components/admin/BreadcrumbManager";
 import OurStoryManager from "@/components/admin/OurStoryManager";
@@ -80,7 +80,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   collection: CuratedCollectionManager,
   "phuket-properties": PhuketPropertiesManager,
   "why-invest": WhyInvestManager,
-  advantage: NovaaAdvantagesManager,
+  advantage: NovaaAdvantageManager,
   faq: FaqManager,
   testimonials: TestimonialsManager,
   insights: InvestorInsightsManager,
@@ -176,59 +176,119 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
   );
 
   // Global save functionality
+  // const handleGlobalSave = async () => {
+  //   if (!hasChanges || Object.keys(sectionChanges).length === 0) {
+  //     toast.info("No changes to save");
+  //     return;
+  //   }
+
+  //   setIsSaving(true);
+
+  //   try {
+  //     // Save each modified section
+  //     const savePromises = Object.entries(sectionChanges).map(
+  //       async ([sectionId, changes]) => {
+  //         const section = sections.find((s) => s._id === sectionId);
+  //         if (!section) return null;
+
+  //         const response = await fetch(
+  //           `/api/cms/sections/${encodeURIComponent(
+  //             pageSlug
+  //           )}/${encodeURIComponent(section.slug)}`,
+  //           {
+  //             method: "PUT",
+  //             headers: { "Content-Type": "application/json" },
+  //             credentials: "include",
+  //             body: JSON.stringify(changes),
+  //           }
+  //         );
+
+  //         if (!response.ok) {
+  //           throw new Error(`Failed to save ${section.name}`);
+  //         }
+
+  //         return response.json();
+  //       }
+  //     );
+
+  //     await Promise.all(savePromises);
+
+  //     // Reset changes state
+  //     setSectionChanges({});
+  //     setHasChanges(false);
+  //     setOriginalSections(JSON.parse(JSON.stringify(sections)));
+
+  //     toast.success("All changes saved successfully!");
+
+  //     // Refresh sections
+  //     dispatch(fetchPageSections(pageSlug));
+  //   } catch (error) {
+  //     console.error("Save error:", error);
+  //     toast.error("Failed to save changes");
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+
   const handleGlobalSave = async () => {
-    if (!hasChanges || Object.keys(sectionChanges).length === 0) {
-      toast.info("No changes to save");
-      return;
-    }
+  if (!hasChanges || Object.keys(sectionChanges).length === 0) {
+    toast.info("No changes to save");
+    return;
+  }
 
-    setIsSaving(true);
+  setIsSaving(true);
 
-    try {
-      // Save each modified section
-      const savePromises = Object.entries(sectionChanges).map(
-        async ([sectionId, changes]) => {
-          const section = sections.find((s) => s._id === sectionId);
-          if (!section) return null;
+  try {
+    // Save each modified section
+    const savePromises = Object.entries(sectionChanges).map(
+      async ([sectionId, changes]) => {
+        const section = sections.find((s) => s._id === sectionId);
+        if (!section) return null;
 
-          const response = await fetch(
-            `/api/cms/sections/${encodeURIComponent(
-              pageSlug
-            )}/${encodeURIComponent(section.slug)}`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify(changes),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`Failed to save ${section.name}`);
+        const response = await fetch(
+          `/api/cms/sections/${encodeURIComponent(
+            pageSlug
+          )}/${encodeURIComponent(section.slug)}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(changes),
           }
+        );
 
-          return response.json();
+        if (!response.ok) {
+          throw new Error(`Failed to save ${section.name}`);
         }
-      );
 
-      await Promise.all(savePromises);
+        return response.json();
+      }
+    );
 
-      // Reset changes state
-      setSectionChanges({});
-      setHasChanges(false);
+    await Promise.all(savePromises);
+
+    // IMPORTANT: Reset changes state BEFORE refreshing
+    // This prevents child components from losing data during refresh
+    setSectionChanges({});
+    setHasChanges(false);
+    
+    toast.success("All changes saved successfully!");
+
+    // Refresh sections AFTER resetting state
+    await dispatch(fetchPageSections(pageSlug));
+    
+    // Update original sections for discard functionality
+    setTimeout(() => {
       setOriginalSections(JSON.parse(JSON.stringify(sections)));
+    }, 100); // Small delay to ensure sections are updated
 
-      toast.success("All changes saved successfully!");
-
-      // Refresh sections
-      dispatch(fetchPageSections(pageSlug));
-    } catch (error) {
-      console.error("Save error:", error);
-      toast.error("Failed to save changes");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  } catch (error) {
+    console.error("Save error:", error);
+    toast.error("Failed to save changes");
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   // Refresh functionality
   const handleRefresh = async () => {

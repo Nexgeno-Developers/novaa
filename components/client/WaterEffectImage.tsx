@@ -18,6 +18,8 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
   alt = "water effect image",
   className = "",
 }) => {
+
+    console.log("Background image and logo image " , backgroundSrc , logoSrc)
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);

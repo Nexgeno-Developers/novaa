@@ -11,8 +11,8 @@ export interface ITestimonial {
 }
 
 export interface IInvestorInsightsContent {
-  mainTitle: string;
-  highlightedTitle: string;
+  title: string;
+  subtitle: string;
   description: string;
 }
 

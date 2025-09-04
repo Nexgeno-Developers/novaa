@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   DragDropContext,
   Droppable,
@@ -47,27 +46,13 @@ import {
   Trash2,
   GripVertical,
   Star,
-  Save,
-  Loader2,
   Sparkles,
   Images,
-  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/admin/Editor";
 import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
 import BaseSectionManager from "@/components/admin/BaseSectionManager";
-import {
-  fetchTestimonials,
-  updateTestimonialsContent,
-  createTestimonial,
-  updateTestimonial,
-  deleteTestimonial,
-  reorderTestimonials,
-  selectTestimonials,
-  clearError,
-} from "@/redux/slices/testimonialsSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 interface TestimonialItem {
   id: string;
@@ -89,10 +74,8 @@ interface TestimonialFormData {
 }
 
 interface TestimonialsData {
-  content: {
-    title: string;
-    description: string;
-  };
+  subtitle: string;
+  title: string;
   testimonials: TestimonialItem[];
 }
 
@@ -105,32 +88,19 @@ interface TestimonialsManagerProps {
 const TestimonialsManagerContent = ({
   section,
   onChange,
-  showSaveButton = true,
 }: {
-  section?: any;
-  onChange?: (changes: any) => void;
-  showSaveButton?: boolean;
+  section: any;
+  onChange: (changes: any) => void;
 }) => {
-  const dispatch = useAppDispatch();
-  const { loading, error, content, testimonials, actionLoading } =
-    useAppSelector(selectTestimonials);
+  // Local state for section-based management
+  const [localData, setLocalData] = useState<TestimonialsData>({
+    title: section?.content?.title || "",
+    subtitle: section?.content?.subtitle || "",
+    testimonials: section?.content?.testimonials || [],
+  });
 
-  // Use refs to track initialization state like PhuketPropertiesManager
-  const isInitializedRef = useRef(false);
-  const initialDataSetRef = useRef(false);
-  const userHasInteractedRef = useRef(false);
-
-  // Default data structure
-  const defaultData: TestimonialsData = {
-    content: {
-      title: "",
-      description: "",
-    },
-    testimonials: [],
-  };
-
-  // Local state for testimonials data
-  const [testimonialsData, setTestimonialsData] = useState<TestimonialsData>(defaultData);
+  const [hasLocalChanges, setHasLocalChanges] = useState(false);
+  const [originalData, setOriginalData] = useState<TestimonialsData | null>(null);
 
   // Testimonial form state
   const [testimonialForm, setTestimonialForm] = useState<TestimonialFormData>({
@@ -144,127 +114,39 @@ const TestimonialsManagerContent = ({
   // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editingTestimonial, setEditingTestimonial] = useState<TestimonialItem | null>(null);
+  const [editingTestimonial, setEditingTestimonial] =
+    useState<TestimonialItem | null>(null);
   const [isSelectorOpen, setSelectorOpen] = useState(false);
 
-  // Memoize the onChange callback to prevent infinite re-renders
-  const handleOnChange = useCallback(
-    (changes: any) => {
-      if (onChange && userHasInteractedRef.current) {
-        onChange(changes);
-      }
-    },
-    [onChange]
-  );
-
-  // Initial load - section data only (following PhuketPropertiesManager pattern)
+  // Initialize data when section prop changes
   useEffect(() => {
-    if (section?.content && !initialDataSetRef.current) {
-      const sectionData = section.content;
-      setTestimonialsData((prev) => ({ ...prev, ...sectionData }));
-      initialDataSetRef.current = true;
-      isInitializedRef.current = true;
-    } else if (!section && !isInitializedRef.current) {
-      // Fallback for standalone mode
-      if (content && testimonials) {
-        setTestimonialsData({
-          content: {
-            title: content.title || "",
-            description: content.description || "",
-          },
-          testimonials: testimonials || [],
-        });
-      } else {
-        setTestimonialsData(defaultData);
-      }
-      isInitializedRef.current = true;
+    if (section?.content) {
+      const newData = {
+        title: section.content.title || "",
+        subtitle: section.content.subtitle || "",
+        testimonials: section.content.testimonials || [],
+      };
+      setLocalData(newData);
+      setOriginalData(JSON.parse(JSON.stringify(newData)));
     }
-  }, [section, content, testimonials]);
+  }, [section]);
 
-  // Load Redux data only in standalone mode
+  // Notify parent of changes
   useEffect(() => {
-    if (!section) {
-      dispatch(fetchTestimonials());
+    if (onChange && hasLocalChanges) {
+      onChange({ content: localData });
     }
-  }, [dispatch, section]);
+  }, [hasLocalChanges]);
 
-  // Notify parent only if user interacted (following PhuketPropertiesManager pattern)
-  useEffect(() => {
-    if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
-      onChange({ content: testimonialsData });
-    }
-  }, [testimonialsData]);
+  const handleContentUpdate = useCallback((field: string, value: string) => {
+    setLocalData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+    setHasLocalChanges(true);
+  }, []);
 
-  // Handle Redux state updates for standalone mode
-  useEffect(() => {
-    if (!section && content && testimonials && !initialDataSetRef.current) {
-      setTestimonialsData({
-        content: {
-          title: content.title || "",
-          description: content.description || "",
-        },
-        testimonials: testimonials || [],
-      });
-      initialDataSetRef.current = true;
-    }
-  }, [content, testimonials, section]);
-
-  // Handle errors
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearError());
-    }
-  }, [error, dispatch]);
-
-  // Memoize update functions to prevent unnecessary re-renders
-  const updateTestimonialsData = useCallback(
-    (updates: Partial<TestimonialsData>) => {
-      userHasInteractedRef.current = true;
-      setTestimonialsData((prev) => ({ ...prev, ...updates }));
-    },
-    []
-  );
-
-  const handleContentUpdate = useCallback(
-    (field: string, value: string) => {
-      userHasInteractedRef.current = true;
-      setTestimonialsData((prev) => ({
-        ...prev,
-        content: { ...prev.content, [field]: value },
-      }));
-    },
-    []
-  );
-
-const handleContentSave = async () => {
-  try {
-    if (section) {
-      // Global mode - data is already being saved via parent onChange
-      // Just show success message since parent handles the actual saving
-      toast.success("Changes will be saved with the page!");
-    } else {
-      // Standalone mode - use Redux
-      await dispatch(updateTestimonialsContent(testimonialsData.content)).unwrap();
-      toast.success("Content updated successfully!");
-    }
-  } catch (error) {
-    if (!section) {
-      console.error("Error updating content:", error);
-      toast.error("Failed to save content");
-    }
-  }
-};
-
-  const handleRefresh = () => {
-    if (!section) {
-      dispatch(fetchTestimonials());
-    }
-    userHasInteractedRef.current = false;
-    initialDataSetRef.current = false;
-  };
-
-  const handleCreateTestimonial = async () => {
+  const handleCreateTestimonial = () => {
     if (
       !testimonialForm.name ||
       !testimonialForm.role ||
@@ -275,34 +157,22 @@ const handleContentSave = async () => {
       return;
     }
 
-    try {
-      if (section) {
-        // Global mode - update local state
-        const newTestimonial: TestimonialItem = {
-          id: Date.now().toString(),
-          ...testimonialForm,
-          order: testimonialsData.testimonials.length,
-          isActive: true,
-        };
-        
-        userHasInteractedRef.current = true;
-        setTestimonialsData((prev) => ({
-          ...prev,
-          testimonials: [...prev.testimonials, newTestimonial],
-        }));
-        
-        toast.success("Testimonial created successfully!");
-      } else {
-        // Standalone mode - use Redux
-        await dispatch(createTestimonial(testimonialForm)).unwrap();
-        toast.success("Testimonial created successfully!");
-      }
-      
-      resetTestimonialForm();
-      setIsCreateDialogOpen(false);
-    } catch (error) {
-      console.error("Error creating testimonial:", error);
-    }
+    const newTestimonial: TestimonialItem = {
+      id: Date.now().toString(),
+      ...testimonialForm,
+      order: localData.testimonials.length,
+      isActive: true,
+    };
+
+    setLocalData((prev) => ({
+      ...prev,
+      testimonials: [...prev.testimonials, newTestimonial],
+    }));
+    setHasLocalChanges(true);
+
+    toast.success("Testimonial created successfully!");
+    resetTestimonialForm();
+    setIsCreateDialogOpen(false);
   };
 
   const handleEditTestimonial = (testimonial: TestimonialItem) => {
@@ -317,7 +187,7 @@ const handleContentSave = async () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleUpdateTestimonial = async () => {
+  const handleUpdateTestimonial = () => {
     if (
       !editingTestimonial ||
       !testimonialForm.name ||
@@ -329,58 +199,30 @@ const handleContentSave = async () => {
       return;
     }
 
-    try {
-      if (section) {
-        // Global mode - update local state
-        userHasInteractedRef.current = true;
-        setTestimonialsData((prev) => ({
-          ...prev,
-          testimonials: prev.testimonials.map((item) =>
-            item.id === editingTestimonial.id
-              ? { ...item, ...testimonialForm }
-              : item
-          ),
-        }));
-        
-        toast.success("Testimonial updated successfully!");
-      } else {
-        // Standalone mode - use Redux
-        await dispatch(
-          updateTestimonial({
-            id: editingTestimonial.id,
-            testimonialData: testimonialForm,
-          })
-        ).unwrap();
-        toast.success("Testimonial updated successfully!");
-      }
-      
-      resetTestimonialForm();
-      setIsEditDialogOpen(false);
-      setEditingTestimonial(null);
-    } catch (error) {
-      console.error("Error updating testimonial:", error);
-    }
+    setLocalData((prev) => ({
+      ...prev,
+      testimonials: prev.testimonials.map((item) =>
+        item.id === editingTestimonial.id
+          ? { ...item, ...testimonialForm }
+          : item
+      ),
+    }));
+    setHasLocalChanges(true);
+
+    toast.success("Testimonial updated successfully!");
+    resetTestimonialForm();
+    setIsEditDialogOpen(false);
+    setEditingTestimonial(null);
   };
 
-  const handleDeleteTestimonial = async (id: string) => {
-    try {
-      if (section) {
-        // Global mode - update local state
-        userHasInteractedRef.current = true;
-        setTestimonialsData((prev) => ({
-          ...prev,
-          testimonials: prev.testimonials.filter((item) => item.id !== id),
-        }));
-        
-        toast.success("Testimonial deleted successfully!");
-      } else {
-        // Standalone mode - use Redux
-        await dispatch(deleteTestimonial(id)).unwrap();
-        toast.success("Testimonial deleted successfully!");
-      }
-    } catch (error) {
-      console.error("Error deleting testimonial:", error);
-    }
+  const handleDeleteTestimonial = (id: string) => {
+    setLocalData((prev) => ({
+      ...prev,
+      testimonials: prev.testimonials.filter((item) => item.id !== id),
+    }));
+    setHasLocalChanges(true);
+
+    toast.success("Testimonial deleted successfully!");
   };
 
   const resetTestimonialForm = () => {
@@ -393,11 +235,10 @@ const handleContentSave = async () => {
     });
   };
 
-  const handleDragEnd = async (result: DropResult) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const currentTestimonials = section ? testimonialsData.testimonials : testimonials;
-    const items = Array.from(currentTestimonials);
+    const items = Array.from(localData.testimonials);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
@@ -407,24 +248,13 @@ const handleContentSave = async () => {
       order: index,
     }));
 
-    try {
-      if (section) {
-        // Global mode - update local state
-        userHasInteractedRef.current = true;
-        setTestimonialsData((prev) => ({
-          ...prev,
-          testimonials: reorderedItems,
-        }));
-        
-        toast.success("Testimonials reordered successfully!");
-      } else {
-        // Standalone mode - use Redux
-        await dispatch(reorderTestimonials(reorderedItems)).unwrap();
-        toast.success("Testimonials reordered successfully!");
-      }
-    } catch (error) {
-      console.error("Error reordering testimonials:", error);
-    }
+    setLocalData((prev) => ({
+      ...prev,
+      testimonials: reorderedItems,
+    }));
+    setHasLocalChanges(true);
+
+    toast.success("Testimonials reordered successfully!");
   };
 
   const handleAvatarSelect = (media: { url: string }) => {
@@ -447,61 +277,8 @@ const handleContentSave = async () => {
     );
   };
 
-  // Get current testimonials based on mode
-  const currentTestimonials = section ? testimonialsData.testimonials : testimonials || [];
-  const currentContent = section ? testimonialsData.content : { title: content?.title || "", description: content?.description || "" };
-
-  if (loading && !section) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Loading testimonials...</span>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      {/* Header - only show in standalone mode */}
-      {showSaveButton && !section && (
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">Testimonials Manager</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="bg-gray-200 cursor-pointer"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={loading}
-            >
-              <RefreshCw
-                className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
-              />
-              Refresh
-            </Button>
-            <Button
-              onClick={handleContentSave}
-              disabled={actionLoading?.content}
-              className="text-background cursor-pointer"
-            >
-              {actionLoading?.content ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Changes
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
-
       <Tabs defaultValue="content" className="w-full">
         <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
           <TabsTrigger
@@ -529,7 +306,7 @@ const handleContentSave = async () => {
               <div className="space-y-2">
                 <Label htmlFor="title">Section Title</Label>
                 <RichTextEditor
-                  value={currentContent.title}
+                  value={localData.title}
                   onEditorChange={(content) =>
                     handleContentUpdate("title", content)
                   }
@@ -538,13 +315,13 @@ const handleContentSave = async () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Section Description</Label>
+                <Label htmlFor="subtitle">Section Subtitle</Label>
                 <RichTextEditor
-                  value={currentContent.description}
+                  value={localData.subtitle}
                   onEditorChange={(content) =>
-                    handleContentUpdate("description", content)
+                    handleContentUpdate("subtitle", content)
                   }
-                  id="testimonials-description"
+                  id="testimonials-subtitle"
                 />
               </div>
             </CardContent>
@@ -681,23 +458,15 @@ const handleContentSave = async () => {
                   <Button
                     onClick={handleCreateTestimonial}
                     className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-                    disabled={actionLoading?.create}
                   >
-                    {actionLoading?.create ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Creating...
-                      </>
-                    ) : (
-                      "Create Testimonial"
-                    )}
+                    Create Testimonial
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
 
-          {currentTestimonials.length === 0 ? (
+          {localData.testimonials.length === 0 ? (
             <Card>
               <CardContent className="text-center py-8">
                 <p className="text-gray-500 mb-4">No testimonials found</p>
@@ -719,7 +488,7 @@ const handleContentSave = async () => {
                     ref={provided.innerRef}
                     className="space-y-4"
                   >
-                    {currentTestimonials.map((testimonial, index) => (
+                    {localData.testimonials.map((testimonial, index) => (
                       <Draggable
                         key={testimonial.id}
                         draggableId={testimonial.id}
@@ -956,16 +725,8 @@ const handleContentSave = async () => {
             <Button
               onClick={handleUpdateTestimonial}
               className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-              disabled={actionLoading?.update}
             >
-              {actionLoading?.update ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                "Update Testimonial"
-              )}
+              Update Testimonial
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1010,11 +771,7 @@ export default function TestimonialsManager({
       title="Testimonials"
       description="Manage testimonials section content and reviews"
     >
-      <TestimonialsManagerContent 
-        section={section}
-        onChange={onChange} 
-        showSaveButton={false} 
-      />
+      <TestimonialsManagerContent section={section} onChange={onChange} />
     </BaseSectionManager>
   );
 }

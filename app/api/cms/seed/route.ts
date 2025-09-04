@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
         slug: "about-section",
         type: "about",
         component: "AboutManager",
-        order: 2,
+        order: 3,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
         slug: "why-invest-section",
         type: "why-invest",
         component: "WhyInvestManager",
-        order: 3,
+        order: 4,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
         slug: "phuket-properties-section",
         type: "phuket-properties",
         component: "PhuketPropertiesManager",
-        order: 4,
+        order: 5,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -352,8 +352,8 @@ export async function POST(request: NextRequest) {
         name: "Novaa Advantage Section",
         slug: "advantage-section",
         type: "advantage",
-        component: "NovaaAdvantagesManager",
-        order: 3,
+        component: "NovaaAdvantageManager",
+        order: 6,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -420,7 +420,7 @@ export async function POST(request: NextRequest) {
         slug: "testimonials-section",
         type: "testimonials",
         component: "TestimonialsManager",
-        order: 5,
+        order: 7,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -477,7 +477,7 @@ export async function POST(request: NextRequest) {
         slug: "faq-section",
         type: "faq",
         component: "FaqManager",
-        order: 6,
+        order: 8,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -523,7 +523,7 @@ export async function POST(request: NextRequest) {
         slug: "investor-insights-section",
         type: "insights",
         component: "InvestorInsightsManager",
-        order: 7,
+        order: 9,
         pageSlug: "home",
         status: "active",
         settings: {

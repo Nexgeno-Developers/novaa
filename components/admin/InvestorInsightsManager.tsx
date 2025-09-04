@@ -80,8 +80,8 @@ interface InvestorInsightsManagerProps {
 // Default data structure
 const defaultInvestorData = {
   content: {
-    mainTitle: "",
-    highlightedTitle: "",
+    title: "",
+    subtitle: "",
     description: "",
   },
   testimonials: [],
@@ -105,8 +105,8 @@ export default function InvestorInsightsManager({
 
   // Local state for content
   const [contentForm, setContentForm] = useState<IInvestorInsightsContent>({
-    mainTitle: "",
-    highlightedTitle: "",
+    title: "",
+    subtitle: "",
     description: "",
   });
 
@@ -153,20 +153,28 @@ export default function InvestorInsightsManager({
   // Initial load - section data first, then Redux fallback
   useEffect(() => {
     if (section?.content && !initialDataSetRef.current) {
-      // Use section data from parent (global mode)
+      // console.log("inside if")
       const sectionData = section.content;
-      if (sectionData.content) {
-        setContentForm(sectionData.content);
-      }
+
+      console.log("Section investor data ", sectionData);
+
+      // If data is already flat, just set it directly
+      setContentForm({
+        title: sectionData.content.title || "",
+        subtitle: sectionData.content.subtitle || "",
+        description: sectionData.content.description || "",
+      });
+
       if (sectionData.testimonials) {
         setLocalTestimonials(sectionData.testimonials);
       }
+
       initialDataSetRef.current = true;
       isInitializedRef.current = true;
     } else if (!section?.content && !initialDataSetRef.current) {
-      // Fallback to Redux data if no section data
+      console.log("inside else");
       if (data?.content) {
-        setContentForm(data.content);
+        setContentForm(data?.content);
       }
       if (data?.testimonials) {
         setLocalTestimonials(data.testimonials);
@@ -195,6 +203,8 @@ export default function InvestorInsightsManager({
       onChange({ content: combinedData });
     }
   }, [contentForm, localTestimonials]);
+
+  // console.log("Content Form ", contentForm);
 
   // Memoized update functions to prevent unnecessary re-renders
   const updateContentForm = useCallback(
@@ -391,7 +401,7 @@ export default function InvestorInsightsManager({
     },
     [localTestimonials, updateTestimonials, dispatch]
   );
-
+  // console.log("Local testimonials", localTestimonials);
   // Handle errors
   useEffect(() => {
     if (error) {
@@ -473,31 +483,28 @@ export default function InvestorInsightsManager({
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="mainTitle" className="pb-2">
+                      <Label htmlFor="title" className="pb-2">
                         Main Title
                       </Label>
                       <Input
-                        id="mainTitle"
-                        value={contentForm.mainTitle}
+                        id="title"
+                        value={contentForm.title}
                         onChange={(e) =>
-                          handleContentChange("mainTitle", e.target.value)
+                          handleContentChange("title", e.target.value)
                         }
                         placeholder="e.g., Insights for the"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="highlightedTitle" className="pb-2">
+                      <Label htmlFor="subtitle" className="pb-2">
                         Highlighted Title
                       </Label>
                       <Input
-                        id="highlightedTitle"
-                        value={contentForm.highlightedTitle}
+                        id="subtitle"
+                        value={contentForm.subtitle}
                         onChange={(e) =>
-                          handleContentChange(
-                            "highlightedTitle",
-                            e.target.value
-                          )
+                          handleContentChange("subtitle", e.target.value)
                         }
                         placeholder="e.g., Discerning Investor"
                       />

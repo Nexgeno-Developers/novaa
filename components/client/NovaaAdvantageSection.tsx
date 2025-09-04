@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import { WaterEffectImage } from "./WaterEffectImage";
@@ -37,11 +37,67 @@ export default function NovaaAdvantageSection({
   title = "THE",
   highlightedTitle = "NOVAA ADVANTAGE",
   description = "<p>Discover what makes NOVAA your premier choice for luxury real estate in Thailand.</p>",
-  backgroundImage = "/images/advantage-bg.jpg",
-  logoImage = "/images/novaa-logo.png",
+  backgroundImage = "/advantage-section-images/background.png",
+  logoImage = "/advantage-section-images/logo.png",
   advantages = [],
   ...props
 }: NovaaAdvantageSectionProps) {
+
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [loadingStates, setLoadingStates] = useState({
+    background: false,
+    logo: false
+  });
+
+  console.log("Props", props);
+  console.log("Background Image", backgroundImage);
+  console.log("logoImage", logoImage);
+
+  // Preload images
+  useEffect(() => {
+    const preloadImages = async () => {
+      try {
+        const promises = [];
+        
+        // Preload background image
+        if (backgroundImage) {
+          const bgPromise = new Promise((resolve, reject) => {
+            const img = new window.Image();
+            img.onload = () => {
+              setLoadingStates(prev => ({ ...prev, background: true }));
+              resolve(img);
+            };
+            img.onerror = reject;
+            img.src = backgroundImage;
+          });
+          promises.push(bgPromise);
+        }
+
+        // Preload logo image
+        if (logoImage) {
+          const logoPromise = new Promise((resolve, reject) => {
+            const img = new window.Image();
+            img.onload = () => {
+              setLoadingStates(prev => ({ ...prev, logo: true }));
+              resolve(img);
+            };
+            img.onerror = reject;
+            img.src = logoImage;
+          });
+          promises.push(logoPromise);
+        }
+
+        await Promise.all(promises);
+        setImagesLoaded(true);
+      } catch (error) {
+        console.error("Error preloading images:", error);
+        // Set loaded to true even on error to prevent infinite loading
+        setImagesLoaded(true);
+      }
+    };
+
+    preloadImages();
+  }, [backgroundImage, logoImage]);
 
   // Helper functions for positioning
   const getPositionClasses = (position: string) => {
@@ -121,6 +177,30 @@ export default function NovaaAdvantageSection({
 
   return (
     <section className="font-cinzel relative bg-secondary py-10 lg:py-20 overflow-hidden">
+      {/* Preload images with Next.js Image component for better caching */}
+      <div className="hidden">
+        {backgroundImage && (
+          <Image
+            src={backgroundImage}
+            alt="Preload background"
+            width={400}
+            height={400}
+            priority
+            onLoad={() => setLoadingStates(prev => ({ ...prev, background: true }))}
+          />
+        )}
+        {logoImage && (
+          <Image
+            src={logoImage}
+            alt="Preload logo"
+            width={400}
+            height={400}
+            priority
+            onLoad={() => setLoadingStates(prev => ({ ...prev, logo: true }))}
+          />
+        )}
+      </div>
+
       <div className="container">
         {/* Header */}
         <motion.div
@@ -158,14 +238,24 @@ export default function NovaaAdvantageSection({
           >
             <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[250px] md:h-[250px] lg:w-85 lg:h-85 xl:w-[420px] xl:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
               <div className="w-full h-full rounded-full overflow-hidden shadow-2xl relative z-10">
-                <WaterEffectImage
-                  backgroundSrc={backgroundImage}
-                  logoSrc={logoImage}
-                  width={400}
-                  height={400}
-                  className="w-full h-full"
-                  alt="Advantage Section Background"
-                />
+                {/* Loading placeholder */}
+                {!imagesLoaded && (
+                  <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                )}
+                
+                {/* Water effect image - only render when images are loaded */}
+                {imagesLoaded && (
+                  <WaterEffectImage
+                    backgroundSrc={backgroundImage}
+                    logoSrc={logoImage}
+                    width={400}
+                    height={400}
+                    className="w-full h-full"
+                    alt="Advantage Section Background"
+                  />
+                )}
               </div>
             </div>
           </motion.div>
@@ -263,4 +353,4 @@ export default function NovaaAdvantageSection({
       </div>
     </section>
   );
-};
+}

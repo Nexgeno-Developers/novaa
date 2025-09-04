@@ -15,13 +15,13 @@ interface SectionContent {
   [key: string]: unknown; 
 }
 
-const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
+const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   hero: HeroSection,
   'collection': CuratedCollection,
   'about': AboutPage,
   'why-invest': WhyInvestSection,
   'phuket-properties': PhuketPropertiesSection,
-  advantage: NovaaAdvantageSection,
+  "advantage": NovaaAdvantageSection,
   faq: FaqSection,
   testimonials: EliteClientsTestimonials,
   insights: InvestorInsightsSection,
@@ -60,7 +60,10 @@ export default async function Home() {
   return (
     <main className="relative overflow-hidden">
       {sections.map(section => {
+        // console.log("Section" , section)
+        // console.log("Section type" , section.type)
         const Component = sectionComponentMap[section.type];
+        console.log("Componet" , Component)
         // If a component is found, render it. Otherwise, render nothing.
         // This prevents the page from crashing if a section type has no matching component.
         return Component ? <Component key={section._id} {...(section.content.heroSection || section.content)} /> : null;
