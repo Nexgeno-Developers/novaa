@@ -120,6 +120,12 @@ const blogCategoriesSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setCategories: (state, action: PayloadAction<BlogCategory[]>) => {
+      state.categories = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    
   },
   extraReducers: (builder) => {
     // Fetch blog categories
@@ -181,5 +187,5 @@ const blogCategoriesSlice = createSlice({
   },
 });
 
-export const { clearError } = blogCategoriesSlice.actions;
+export const { clearError , setCategories} = blogCategoriesSlice.actions;
 export default blogCategoriesSlice.reducer;

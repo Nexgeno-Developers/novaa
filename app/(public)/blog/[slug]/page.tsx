@@ -12,6 +12,7 @@ async function getBlogBySlug(slug: string) {
     
     const blog = await Blog.findOne({ slug, isActive: true })
       .populate('category', 'title slug')
+      .populate('author', 'name avatar') // Make sure to populate author if it's a reference
     
     if (!blog) {
       return null;
@@ -23,13 +24,31 @@ async function getBlogBySlug(slug: string) {
       _id: { $ne: blog._id },
       isActive: true
     })
+      .populate('category', 'title slug')
+      .populate('author', 'name avatar') // Populate author for related blogs too
       .sort({ createdAt: -1 })
       .limit(4)
+
+    // Convert all BSON/ObjectId fields into plain strings
+    const updatedBlog = JSON.parse(JSON.stringify(blog));
+    const updatedRelatedBlogs = JSON.parse(JSON.stringify(relatedBlogs));
+
+    // Ensure categoryName is set (in case it's not in the database)
+    if (updatedBlog.category && !updatedBlog.categoryName) {
+      updatedBlog.categoryName = updatedBlog.category.title;
+    }
+
+    // Ensure categoryName is set for related blogs
+    updatedRelatedBlogs.forEach((relatedBlog: any) => {
+      if (relatedBlog.category && !relatedBlog.categoryName) {
+        relatedBlog.categoryName = relatedBlog.category.title;
+      }
+    });
     
     // Increment view count
     await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
     
-    return { blog, relatedBlogs };
+    return { updatedBlog, updatedRelatedBlogs };
   } catch (error) {
     console.error('Error fetching blog:', error);
     return null;
@@ -54,53 +73,53 @@ async function getBreadcrumbData() {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }>  }) {
-  const {slug} = await params
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const result = await getBlogBySlug(slug);
   
-  if (!result?.blog) {
+  if (!result?.updatedBlog) {
     return {
       title: 'Blog Not Found',
       description: 'The requested blog post could not be found.'
     };
   }
   
-  const { blog } = result;
+  const { updatedBlog } = result;
   
   return {
-    title: blog.seo?.metaTitle || blog.title,
-    description: blog.seo?.metaDescription || blog.description,
-    keywords: blog.seo?.keywords?.join(', ') || blog.tags?.join(', '),
+    title: updatedBlog.seo?.metaTitle || updatedBlog.title,
+    description: updatedBlog.seo?.metaDescription || updatedBlog.description,
+    keywords: updatedBlog.seo?.keywords?.join(', ') || updatedBlog.tags?.join(', '),
     openGraph: {
-      title: blog.title,
-      description: blog.description,
-      images: [blog.image],
+      title: updatedBlog.title,
+      description: updatedBlog.description,
+      images: [updatedBlog.image],
       type: 'article',
-      publishedTime: blog.createdAt,
-      authors: [blog.author.name],
+      publishedTime: updatedBlog.createdAt,
+      authors: [updatedBlog.author.name],
     },
     twitter: {
       card: 'summary_large_image',
-      title: blog.title,
-      description: blog.description,
-      images: [blog.image],
+      title: updatedBlog.title,
+      description: updatedBlog.description,
+      images: [updatedBlog.image],
     }
   };
 }
 
-export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }>  }) {
-    const {slug} = await params
+export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
 
   const [result, breadcrumbData] = await Promise.all([
     getBlogBySlug(slug),
     getBreadcrumbData()
   ]);
   
-  if (!result?.blog) {
+  if (!result?.updatedBlog) {
     notFound();
   }
   
-  const { blog, relatedBlogs } = result;
+  const { updatedBlog, updatedRelatedBlogs } = result;
   
   return (
     <main className="relative">
@@ -110,7 +129,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           pageSlug={breadcrumbData.pageSlug}
         />
       )}
-      <BlogDetailClient blog={blog} relatedBlogs={relatedBlogs} />
+      <BlogDetailClient blog={updatedBlog} relatedBlogs={updatedRelatedBlogs} />
     </main>
   );
 }

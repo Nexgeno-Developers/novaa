@@ -616,7 +616,7 @@ export async function POST(request: NextRequest) {
         content: {
           title: "About Us",
           description: "",
-          backgroundImageUrl: "/images/breadcrumb-about.jpg",
+          backgroundImageUrl: "/images/bg1.webp",
         },
       },
       {

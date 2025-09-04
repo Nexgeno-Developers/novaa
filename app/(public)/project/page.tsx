@@ -1,28 +1,52 @@
-import connectDB from '@/lib/mongodb';
-import Section from '@/models/Section';
-import BreadcrumbsSection from '@/components/client/BreadcrumbsSection';
-import ProjectSection from '@/components/client/ProjectSection';
+import connectDB from "@/lib/mongodb";
+import Section from "@/models/Section";
+import Category from "@/models/Category"; // Import your Category model
+import Project from "@/models/Project"; // Import your Project model
+import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
+import ProjectSection from "@/components/client/ProjectSection";
 
 const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   breadcrumb: BreadcrumbsSection,
-  project: ProjectSection, // This maps to the "project" type our seed data
-  // Add more project section components as needed
+  project: ProjectSection,
 };
 
 async function getProjectPageData() {
   try {
     await connectDB();
 
-    // Fetch all active sections for the 'project' page and sort them by order
-    const sections = await Section.find({ 
-      pageSlug: 'project', 
-      status: 'active',
-      'settings.isVisible': true  // Only fetch visible sections
-    })
-      .sort({ order: 1 })
-      .lean();
+    // Fetch sections, categories, and projects in parallel
+    const [sections, categories, projects] = await Promise.all([
+      Section.find({
+        pageSlug: "project",
+        status: "active",
+        "settings.isVisible": true,
+      })
+        .sort({ order: 1 })
+        .lean(),
 
-    return sections;
+      Category.find({ isActive: true }).sort({ order: 1 }).lean(),
+
+      Project.find({ isActive: true })
+        .populate("category")
+        .sort({ order: 1 })
+        .lean(),
+    ]);
+
+    // Attach project data to project sections
+    const sectionsWithData = sections.map((section) => {
+      if (section.type === "project") {
+        return {
+          ...section,
+          projectsData: {
+            categories,
+            projects,
+          },
+        };
+      }
+      return section;
+    });
+
+    return sectionsWithData;
   } catch (error) {
     console.error("Failed to fetch project page data:", error);
     return [];
@@ -44,10 +68,21 @@ export default async function ProjectPage() {
 
   return (
     <main className="relative">
-      {sections.map(section => {
-        const Component = sectionComponentMap[section.type] || sectionComponentMap[section.slug];
-        // If a component is found, render it. Otherwise, render nothing.
-        return Component ? <Component key={section._id} {...section.content} pageSlug={section.pageSlug} /> : null;
+      {sections.map((section) => {
+        const Component =
+          sectionComponentMap[section.type] ||
+          sectionComponentMap[section.slug];
+
+        // Pass project data as props if available
+        const componentProps = {
+          ...section.content,
+          pageSlug: section.pageSlug,
+          ...(section.projectsData && { projectsData: section.projectsData }),
+        };
+
+        return Component ? (
+          <Component key={section._id} {...componentProps} />
+        ) : null;
       })}
     </main>
   );

@@ -10,8 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/hooks";
-import { fetchBlogs, Blog } from "@/redux/slices/blogsSlice";
-import { fetchBlogCategories } from "@/redux/slices/blogCategoriesSlice";
+import { fetchBlogs, Blog, setBlogs } from "@/redux/slices/blogsSlice";
+import { fetchBlogCategories, setCategories } from "@/redux/slices/blogCategoriesSlice";
 import { RootState } from "@/redux";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +23,10 @@ interface BlogSectionProps {
   maxBlogs?: number;
   displayMode?: "grid" | "list";
   showReadMore?: boolean;
-  // Add any other props that might come from your CMS content
+  blogData?: {
+    categories: any[];
+    blogs: any[];
+  };
   [key: string]: unknown;
 }
 
@@ -55,27 +58,38 @@ export default function BlogSection({
   maxBlogs = 6,
   displayMode = "grid",
   showReadMore = true,
+  blogData,
   ...props
 }: BlogSectionProps) {
+
+  console.log("Blog data" , blogData)
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { blogs, loading } = useSelector((state: RootState) => state.blogs);
   const { categories } = useSelector((state: RootState) => state.blogCategories);
   
-  // Comment out filtration logic as requested
-  // const [selectedCategory, setSelectedCategory] = useState("all");
+  // State for client-side loading when no server data is provided
+  const [isClientLoading, setIsClientLoading] = useState(!blogData);
 
   useEffect(() => {
-    dispatch(fetchBlogs({ 
-      status: "active", 
-      limit: maxBlogs,
-      // category: selectedCategory !== "all" ? selectedCategory : undefined
-    }));
-    
-    if (showCategories) {
-      dispatch(fetchBlogCategories());
+    if (blogData?.blogs && blogData?.categories) {
+      // Use server-side data
+      dispatch(setBlogs(blogData.blogs));
+      dispatch(setCategories(blogData.categories));
+      setIsClientLoading(false);
+    } else {
+      // Fallback to client-side fetching if no server data
+      setIsClientLoading(true);
+      dispatch(fetchBlogs({ 
+        status: "active", 
+        limit: maxBlogs,
+      }));
+      
+      if (showCategories) {
+        dispatch(fetchBlogCategories());
+      }
     }
-  }, [dispatch, maxBlogs, showCategories]);
+  }, [dispatch, maxBlogs, showCategories, blogData]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -90,9 +104,10 @@ export default function BlogSection({
     return text.substr(0, maxLength) + "...";
   };
 
-  // const activeCategories = categories.filter(cat => cat.isActive);
+  // Show loading state only when client-side loading or Redux loading
+  const isLoading = isClientLoading || loading;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-10 sm:py-20 bg-[#FAF4EB]">
         <div className="container">
@@ -122,51 +137,6 @@ export default function BlogSection({
   return (
     <section className="bg-[#FAF4EB] py-16">
       <div className="container">
-        {/* <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-center mb-12"
-        > */}
-          {/* <motion.h2 
-            variants={itemVariants}
-            className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold text-[#01292B] mb-4"
-          >
-            {title}
-          </motion.h2>
-          <motion.p 
-            variants={itemVariants}
-            className="text-lg text-[#303030] max-w-2xl mx-auto mb-8"
-          >
-            {description}
-          </motion.p> */}
-
-          {/* Category Filter - Commented out as requested */}
-          {/* {showCategories && activeCategories.length > 0 && (
-            <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-3 mb-8">
-              <Button
-                variant={selectedCategory === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("all")}
-                className={selectedCategory === "all" ? "text-background" : ""}
-              >
-                All
-              </Button>
-              {activeCategories.map((category) => (
-                <Button
-                  key={category._id}
-                  variant={selectedCategory === category._id ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category._id)}
-                  className={selectedCategory === category._id ? "text-background" : ""}
-                >
-                  {category.title}
-                </Button>
-              ))}
-            </motion.div>
-          )} */}
-        {/* </motion.div> */}
-
         <motion.div
           variants={containerVariants}
           initial="hidden"

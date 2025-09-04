@@ -347,7 +347,7 @@ const curatedSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    // NEW ACTIONS FOR DIRECT DATA SETTING
+    // Direct data setting actions for server-side data
     setCuratedCollectionData: (state, action) => {
       state.collection = action.payload;
       state.loading = false;
@@ -378,6 +378,23 @@ const curatedSlice = createSlice({
     },
     setDataSource: (state, action) => {
       state.dataSource = action.payload;
+    },
+    setAllProjects: (state, action) => {
+      state.allProjects = action.payload;
+      
+      // Auto-select first category with projects if none selected and categories exist
+      if (!state.selectedRegion && state.categories.length > 0) {
+        const categoryWithProjects = state.categories.find((category) => {
+          const categoryProjects = state.allProjects.filter(
+            project => project.category._id === category._id && project.isActive
+          );
+          return category.isActive && categoryProjects.length > 0;
+        });
+
+        if (categoryWithProjects) {
+          state.selectedRegion = categoryWithProjects.name;
+        }
+      }
     }
   },
   extraReducers: (builder) => {
@@ -442,5 +459,13 @@ const curatedSlice = createSlice({
   },
 });
 
-export const { setRegion, resetState, setCuratedCollectionData, setCategories, setDataSource } = curatedSlice.actions;
+export const { 
+  setRegion, 
+  resetState, 
+  setCuratedCollectionData, 
+  setCategories, 
+  setDataSource, 
+  setAllProjects 
+} = curatedSlice.actions;
+
 export default curatedSlice.reducer;

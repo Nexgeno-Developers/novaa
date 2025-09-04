@@ -1,32 +1,37 @@
 // app/project-detail/[id]/page.tsx
-import { notFound } from 'next/navigation';
-import connectDB from '@/lib/mongodb';
-import Project from '@/models/Project';
-import ProjectHeroSection from '@/components/client/ProjectHeroSection';
-import ProjectHighlights from '@/components/client/ProjectHighlights';
-import Highlights from '@/components/client/Highlights';
-import ModernAmenities from '@/components/client/ModernAmenities';
-import MasterPlanSection from '@/components/client/MasterplanSection';
-import InvestmentPlans from '@/components/client/InvestmentPlans';
-import ContactForm from '@/components/ContactForm';
-import GatewaySection from '@/components/client/GatewaySection';
+import { notFound } from "next/navigation";
+import connectDB from "@/lib/mongodb";
+import Project from "@/models/Project";
+import ProjectHeroSection from "@/components/client/ProjectHeroSection";
+import ProjectHighlights from "@/components/client/ProjectHighlights";
+import Highlights from "@/components/client/Highlights";
+import ModernAmenities from "@/components/client/ModernAmenities";
+import MasterPlanSection from "@/components/client/MasterplanSection";
+import InvestmentPlans from "@/components/client/InvestmentPlans";
+import ContactForm from "@/components/ContactForm";
+import GatewaySection from "@/components/client/GatewaySection";
 
 async function getProjectData(id: string) {
   try {
     await connectDB();
-    
+
     // Make sure the ID is valid MongoDB ObjectId
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return null;
     }
-    
-    const project = await Project.findById(id).populate('category').lean();
-    
+
+    const project = await Project.findById(id).populate("category").lean();
+
+    // console.log(typeof project._id);
+
     if (!project || !project.isActive) {
       return null;
     }
-    
-    return project;
+
+    // Convert all BSON/ObjectId fields into plain strings
+    const plainProject = JSON.parse(JSON.stringify(project));
+
+    return plainProject;
   } catch (error) {
     console.error("Failed to fetch project data:", error);
     return null;
@@ -39,10 +44,10 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  
+
   // Debug log
   console.log("Project Detail Page - ID:", id);
-  
+
   const project = await getProjectData(id);
 
   if (!project) {
@@ -73,72 +78,70 @@ export default async function ProjectDetailPage({
         subtitle: "",
         scheduleMeetingButton: "Schedule a meeting",
         getBrochureButton: "Get Brochure",
-        brochurePdf: ""
+        brochurePdf: "",
       },
       projectHighlights: {
         backgroundImage: "",
         description: "",
-        highlights: []
+        highlights: [],
       },
       keyHighlights: {
         backgroundImage: "",
         description: "",
-        highlights: []
+        highlights: [],
       },
       modernAmenities: {
         title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
         description: "",
-        amenities: []
+        amenities: [],
       },
       masterPlan: {
         title: "",
         subtitle: "",
         description: "",
         backgroundImage: "",
-        tabs: []
+        tabs: [],
       },
       investmentPlans: {
         title: "LIMITED-TIME INVESTMENT PLANS",
-        description: "Secure high returns with exclusive, time-sensitive opportunities.",
+        description:
+          "Secure high returns with exclusive, time-sensitive opportunities.",
         backgroundImage: "",
-        plans: []
-      }
-    }
+        plans: [],
+      },
+    },
   };
 
   return (
     <main className="relative">
       {/* Hero Section */}
       <ProjectHeroSection project={serializedProject} />
-      
+
       {/* Project Highlights Section - Only render if has highlights */}
-      {serializedProject.projectDetail?.projectHighlights?.highlights?.length > 0 && (
-        <ProjectHighlights project={serializedProject} />
-      )}
-      
+      {serializedProject.projectDetail?.projectHighlights?.highlights?.length >
+        0 && <ProjectHighlights project={serializedProject} />}
+
       {/* Key Highlights Section - Only render if has highlights */}
-      {serializedProject.projectDetail?.keyHighlights?.highlights?.length > 0 && (
-        <Highlights project={serializedProject} />
-      )}
-      
+      {serializedProject.projectDetail?.keyHighlights?.highlights?.length >
+        0 && <Highlights project={serializedProject} />}
+
       {/* Modern Amenities Section - Only render if has amenities */}
-      {serializedProject.projectDetail?.modernAmenities?.amenities?.length > 0 && (
-        <ModernAmenities project={serializedProject} />
-      )}
-      
+      {serializedProject.projectDetail?.modernAmenities?.amenities?.length >
+        0 && <ModernAmenities project={serializedProject} />}
+
       {/* Investment Plans Section - Only render if has plans */}
       {serializedProject.projectDetail?.investmentPlans?.plans?.length > 0 && (
         <InvestmentPlans project={serializedProject} />
       )}
-      
+
       {/* Master Plan Section - Only render if has tabs */}
       {serializedProject.projectDetail?.masterPlan?.tabs?.length > 0 && (
         <MasterPlanSection project={serializedProject} />
       )}
-      
+
       {/* Gateway Section - Keep as static for now */}
       <GatewaySection />
-      
+
       {/* Contact Form - Keep as static for now */}
       <ContactForm />
     </main>
@@ -156,16 +159,18 @@ export async function generateMetadata({
 
   if (!project) {
     return {
-      title: 'Project Not Found',
+      title: "Project Not Found",
     };
   }
 
   return {
     title: `${project.name} - ${project.location} | Real Estate`,
-    description: project.description.replace(/<[^>]*>/g, '').substring(0, 160),
+    description: project.description.replace(/<[^>]*>/g, "").substring(0, 160),
     openGraph: {
       title: project.name,
-      description: project.description.replace(/<[^>]*>/g, '').substring(0, 160),
+      description: project.description
+        .replace(/<[^>]*>/g, "")
+        .substring(0, 160),
       images: project.images.slice(0, 1),
     },
   };

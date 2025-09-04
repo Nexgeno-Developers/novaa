@@ -2,17 +2,24 @@
 
 import CollectionCard from "@/components/client/CollectionCard";
 import RegionTabs from "@/components/client/RegionTabs";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch } from "@/redux/hooks";
 import { useEffect } from "react";
-import { fetchAllProjectsData, resetState } from "@/redux/slices/collectionSlice";
-import { Loader2 } from "lucide-react";
+import { 
+  resetState,
+  setCategories,
+  setAllProjects,
+  setDataSource
+} from "@/redux/slices/collectionSlice";
 
 interface ProjectSectionProps {
   pageSlug: string;
   displayMode?: "grid" | "carousel";
   isLocationVisible?: boolean;
   showRegionTabs?: boolean;
-  // Add any other props that might come from your CMS content
+  projectsData?: {
+    categories: any[];
+    projects: any[];
+  };
   [key: string]: unknown;
 }
 
@@ -21,41 +28,23 @@ export default function ProjectSection({
   displayMode = "grid",
   isLocationVisible = true,
   showRegionTabs = true,
+  projectsData,
   ...props
 }: ProjectSectionProps) {
   const dispatch = useAppDispatch();
-  const { loading, error, categories, allProjects } = useAppSelector(
-    (state) => state.curated
-  );
 
   useEffect(() => {
-    // Reset state and fetch all projects data
-    dispatch(resetState());
-    dispatch(fetchAllProjectsData());
-  }, [dispatch]);
+    if (projectsData?.categories && projectsData?.projects) {
+      // Reset state and set the server-side data
+      dispatch(resetState());
+      dispatch(setDataSource('all'));
+      dispatch(setCategories(projectsData.categories));
+      dispatch(setAllProjects(projectsData.projects));
+    }
+  }, [dispatch, projectsData]);
 
-  if (loading) {
-    return (
-      <section className="py-10 sm:py-20 bg-secondary">
-        <div className="container flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin mr-2" />
-          <span>Loading Projects...</span>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="py-10 sm:py-20 bg-secondary">
-        <div className="container text-center">
-          <p className="text-red-500">Error loading projects: {error}</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (!categories.length || !allProjects.length) {
+  // No loading states needed since data comes from props
+  if (!projectsData?.categories?.length || !projectsData?.projects?.length) {
     return (
       <section className="py-10 sm:py-20 bg-secondary">
         <div className="container text-center">
@@ -80,7 +69,6 @@ export default function ProjectSection({
           <CollectionCard
             isLocationVisible={isLocationVisible}
             displayMode={displayMode}
-            // No maxItems limit for project page - show all projects
           />
         </div>
       </div>
