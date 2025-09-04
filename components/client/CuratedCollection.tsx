@@ -86,7 +86,7 @@ export default function CuratedCollection({
             />
             <div
               className="font-josefin description-text text-[#303030] max-w-2xl mx-auto text-center lg:text-left"
-              dangerouslySetInnerHTML={{ __html: description }}
+              dangerouslySetInnerHTML={{ __html: description as string }}
             />
           </div>
 

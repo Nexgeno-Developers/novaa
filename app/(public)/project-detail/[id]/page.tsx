@@ -20,7 +20,7 @@ async function getProjectData(id: string) {
       return null;
     }
 
-    const project = await Project.findById(id).populate("category").lean();
+    const project = await Project.findById(id).populate("category").lean<any>();
 
     // console.log(typeof project._id);
 
