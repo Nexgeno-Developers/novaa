@@ -14,6 +14,8 @@ import {
   GripVertical,
   Sparkles,
   Images,
+  Edit,
+  MapPin,
 } from "lucide-react";
 import {
   DragDropContext,
@@ -50,12 +52,13 @@ interface PhuketPropertiesData {
   description: string;
   explorerHeading: string;
   explorerDescription: string;
+  mapImage: string;
   categories: Category[];
 }
 
 interface PhuketPropertiesManagerProps {
-  section: any; // Required for global mode
-  onChange: (changes: any) => void; // Required for global mode
+  section: any;
+  onChange: (changes: any) => void;
   showSaveButton?: boolean;
 }
 
@@ -64,11 +67,9 @@ export default function PhuketPropertiesManager({
   onChange,
   showSaveButton = false,
 }: PhuketPropertiesManagerProps) {
-  // State management following HomePageManager pattern
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Use refs to track initialization state like HomePageManager
+  
   const isInitializedRef = useRef(false);
   const initialDataSetRef = useRef(false);
   const userHasInteractedRef = useRef(false);
@@ -77,38 +78,17 @@ export default function PhuketPropertiesManager({
   const defaultData: PhuketPropertiesData = {
     mainHeading: "DISCOVER PRIME PROPERTIES",
     subHeading: "ACROSS PHUKET",
-    description: "",
+    description: "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
     explorerHeading: "Phuket Explorer",
-    explorerDescription: "",
-    categories: [
-      {
-        id: "luxury-villas",
-        title: "Luxury Villas",
-        icon: "/icons/villa.svg",
-        locations: [],
-      },
-      {
-        id: "condominiums",
-        title: "Condominiums",
-        icon: "/icons/condo.svg",
-        locations: [],
-      },
-      {
-        id: "commercial",
-        title: "Commercial",
-        icon: "/icons/commercial.svg",
-        locations: [],
-      },
-    ],
+    explorerDescription: "<p>Navigate through different property categories and locations.</p>",
+    mapImage: "/images/map2.png",
+    categories: [],
   };
 
-  // Local state for properties data
   const [propertiesData, setPropertiesData] = useState<PhuketPropertiesData>(defaultData);
-
-  // Additional state for UI
   const [activeCategory, setActiveCategory] = useState<string>("");
+  const [newCategoryName, setNewCategoryName] = useState<string>("");
 
-  // Memoize the onChange callback to prevent infinite re-renders
   const handleOnChange = useCallback(
     (changes: any) => {
       if (onChange) {
@@ -119,7 +99,7 @@ export default function PhuketPropertiesManager({
     [onChange]
   );
 
-  // Initial load - section data only
+  // Initial load
   useEffect(() => {
     if (section?.content && !initialDataSetRef.current) {
       const sectionData = section.content;
@@ -128,28 +108,26 @@ export default function PhuketPropertiesManager({
       isInitializedRef.current = true;
       setLoading(false);
     } else if (!section && !isInitializedRef.current) {
-      // Should never happen in global mode, but fallback
       setPropertiesData(defaultData);
       isInitializedRef.current = true;
       setLoading(false);
     }
   }, [section]);
 
-  // Notify parent only if user interacted
+  // Notify parent of changes
   useEffect(() => {
     if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
       onChange({ content: propertiesData });
     }
   }, [propertiesData]);
 
-  // Set active category when data loads
+  // Set active category
   useEffect(() => {
     if (propertiesData.categories.length > 0 && !activeCategory) {
       setActiveCategory(propertiesData.categories[0].id);
     }
   }, [propertiesData.categories, activeCategory]);
 
-  // Memoize updatePropertiesData to prevent unnecessary re-renders
   const updatePropertiesData = useCallback(
     (updates: Partial<PhuketPropertiesData>) => {
       userHasInteractedRef.current = true;
@@ -165,6 +143,44 @@ export default function PhuketPropertiesManager({
     [updatePropertiesData]
   );
 
+  // Category Management Functions
+  const handleAddCategory = useCallback(() => {
+    if (!newCategoryName.trim()) return;
+
+    const newCategory: Category = {
+      id: Date.now().toString(),
+      title: newCategoryName.trim(),
+      icon: "/icons/villa.svg", // Default icon
+      locations: [],
+    };
+
+    setPropertiesData((prev) => ({
+      ...prev,
+      categories: [...prev.categories, newCategory],
+    }));
+
+    setNewCategoryName("");
+    setActiveCategory(newCategory.id);
+    userHasInteractedRef.current = true;
+  }, [newCategoryName]);
+
+  const handleDeleteCategory = useCallback((categoryId: string) => {
+    setPropertiesData((prev) => ({
+      ...prev,
+      categories: prev.categories.filter((cat) => cat.id !== categoryId),
+    }));
+
+    // If deleting active category, set new active category
+    if (activeCategory === categoryId) {
+      const remainingCategories = propertiesData.categories.filter(
+        (cat) => cat.id !== categoryId
+      );
+      setActiveCategory(remainingCategories.length > 0 ? remainingCategories[0].id : "");
+    }
+
+    userHasInteractedRef.current = true;
+  }, [activeCategory, propertiesData.categories]);
+
   const handleCategoryTitleUpdate = useCallback(
     (categoryId: string, title: string) => {
       setPropertiesData((prev) => ({
@@ -178,6 +194,34 @@ export default function PhuketPropertiesManager({
     []
   );
 
+  const handleCategoryIconUpdate = useCallback(
+    (categoryId: string, icon: string) => {
+      setPropertiesData((prev) => ({
+        ...prev,
+        categories: prev.categories.map((cat) =>
+          cat.id === categoryId ? { ...cat, icon } : cat
+        ),
+      }));
+      userHasInteractedRef.current = true;
+    },
+    []
+  );
+
+  const handleCategoryDragEnd = useCallback((result: DropResult) => {
+    if (!result.destination) return;
+
+    const newCategories = Array.from(propertiesData.categories);
+    const [reorderedCategory] = newCategories.splice(result.source.index, 1);
+    newCategories.splice(result.destination.index, 0, reorderedCategory);
+
+    setPropertiesData((prev) => ({
+      ...prev,
+      categories: newCategories,
+    }));
+    userHasInteractedRef.current = true;
+  }, [propertiesData.categories]);
+
+  // Location Management Functions
   const handleAddLocation = useCallback((categoryId: string) => {
     const newLocation: Location = {
       id: Date.now().toString(),
@@ -236,7 +280,7 @@ export default function PhuketPropertiesManager({
     []
   );
 
-  const handleDragEnd = useCallback(
+  const handleLocationDragEnd = useCallback(
     (result: DropResult) => {
       if (!result.destination) return;
 
@@ -259,13 +303,6 @@ export default function PhuketPropertiesManager({
       userHasInteractedRef.current = true;
     },
     [activeCategory, propertiesData.categories]
-  );
-
-  const handleLocationImageSelect = useCallback(
-    (categoryId: string, locationId: string, imageUrl: string) => {
-      handleUpdateLocation(categoryId, locationId, { image: imageUrl });
-    },
-    [handleUpdateLocation]
   );
 
   const getCurrentCategory = useCallback(() => {
@@ -291,23 +328,31 @@ export default function PhuketPropertiesManager({
         )}
 
         <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
+          <TabsList className="grid w-full h-15 grid-cols-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
             <TabsTrigger
               value="content"
               className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="font-medium">Content Management</span>
+              <span className="font-medium">Content</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="categories"
+              className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
+            >
+              <Edit className="w-4 h-4" />
+              <span className="font-medium">Categories</span>
             </TabsTrigger>
             <TabsTrigger
               value="map"
               className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
             >
               <Images className="w-4 h-4" />
-              <span className="font-medium">Map Management</span>
+              <span className="font-medium">Map</span>
             </TabsTrigger>
           </TabsList>
 
+          {/* Content Tab */}
           <TabsContent value="content" className="space-y-6">
             <Card className="py-6">
               <CardHeader>
@@ -388,65 +433,165 @@ export default function PhuketPropertiesManager({
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
 
+          {/* Categories Tab */}
+          <TabsContent value="categories" className="space-y-6">
             <Card className="py-6">
               <CardHeader>
-                <CardTitle>Category Buttons</CardTitle>
+                <CardTitle>Category Management</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {propertiesData.categories.map((category: Category) => (
-                  <div
-                    key={category.id}
-                    className="flex items-center space-x-4 p-4 border rounded-lg"
-                  >
-                    <Badge className="text-background">{category.id}</Badge>
-                    <div className="flex-1">
-                      <Label className="pb-2">Button Title</Label>
-                      <Input
-                        value={category.title}
-                        onChange={(e) =>
-                          handleCategoryTitleUpdate(category.id, e.target.value)
-                        }
-                        placeholder="Category Title"
-                      />
-                    </div>
-                    <div className="text-sm pt-4 text-gray-500">
-                      Icon: {category.icon}
-                    </div>
+              <CardContent className="space-y-6">
+                {/* Add New Category */}
+                <div className="flex gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                  <div className="flex-1">
+                    <Label className="pb-2">Add New Category</Label>
+                    <Input
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      placeholder="Enter category name..."
+                      onKeyPress={(e) => e.key === "Enter" && handleAddCategory()}
+                    />
                   </div>
-                ))}
+                  <Button
+                    onClick={handleAddCategory}
+                    disabled={!newCategoryName.trim()}
+                    className="mt-6 text-background cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Category
+                  </Button>
+                </div>
+
+                {/* Categories List */}
+                <DragDropContext onDragEnd={handleCategoryDragEnd}>
+                  <Droppable droppableId="categories">
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="space-y-4"
+                      >
+                        {propertiesData.categories.map((category, index) => (
+                          <Draggable
+                            key={category.id}
+                            draggableId={category.id}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className="p-4 border rounded-lg bg-white shadow-sm"
+                              >
+                                <div className="flex items-center space-x-4">
+                                  <div
+                                    {...provided.dragHandleProps}
+                                    className="cursor-grab hover:cursor-grabbing"
+                                  >
+                                    <GripVertical className="w-5 h-5 text-gray-400" />
+                                  </div>
+
+                                  <Badge variant="outline" className="text-background">{index + 1}</Badge>
+
+                                  <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="pt-1 mb-2 text-background">Category Title</Label>
+                                      <Input
+                                        value={category.title}
+                                        onChange={(e) =>
+                                          handleCategoryTitleUpdate(
+                                            category.id,
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Category Title"
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <MediaSelectButton
+                                        label="Category Icon"
+                                        mediaType="image"
+                                        value={category.icon}
+                                        onSelect={(iconUrl) =>
+                                          handleCategoryIconUpdate(category.id, iconUrl)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="text-sm text-gray-500">
+                                    {category.locations.length} locations
+                                  </div>
+
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleDeleteCategory(category.id)}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </CardContent>
             </Card>
           </TabsContent>
 
+          {/* Map Management Tab */}
           <TabsContent value="map" className="space-y-6">
             <Card className="py-6">
               <CardHeader>
-                <CardTitle>Map Location Management</CardTitle>
+                <CardTitle>Map Configuration</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-6">
+                {/* Map Image Selection */}
+                <div>
+                  <MediaSelectButton
+                    label="Map Background Image"
+                    mediaType="image"
+                    value={propertiesData.mapImage}
+                    onSelect={(imageUrl) => handleFieldUpdate("mapImage", imageUrl)}
+                  />
+                  {propertiesData.mapImage && (
+                    <div className="mt-4">
+                      <img
+                        src={propertiesData.mapImage}
+                        alt="Map preview"
+                        className="w-48 h-32 object-cover rounded border"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Category Selection for Locations */}
                 <div className="mb-4">
-                  <Label>Select Category</Label>
-                  <div className="flex space-x-2 mt-2">
-                    {propertiesData.categories.map((category: Category) => (
+                  <Label>Select Category for Location Management</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {propertiesData.categories.map((category) => (
                       <Button
                         key={category.id}
                         variant={
                           activeCategory === category.id ? "default" : "outline"
                         }
                         onClick={() => setActiveCategory(category.id)}
-                        className={`text-sm cursor-pointer ${
-                          activeCategory === category.id
-                            ? "bg-primary text-background"
-                            : "bg-gray-200"
-                        }`}
+                        size="sm"
                       >
-                        {category.title.split(" ")[0]}
+                        {category.title}
                       </Button>
                     ))}
                   </div>
                 </div>
 
+                {/* Location Management */}
                 {getCurrentCategory() && (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -456,14 +601,13 @@ export default function PhuketPropertiesManager({
                       <Button
                         onClick={() => handleAddLocation(activeCategory)}
                         size="sm"
-                        className="bg-primary text-background cursor-pointer"
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Location
                       </Button>
                     </div>
 
-                    <DragDropContext onDragEnd={handleDragEnd}>
+                    <DragDropContext onDragEnd={handleLocationDragEnd}>
                       <Droppable droppableId="locations">
                         {(provided) => (
                           <div
@@ -472,7 +616,7 @@ export default function PhuketPropertiesManager({
                             className="space-y-2"
                           >
                             {getCurrentCategory()?.locations.map(
-                              (location: Location, index: number) => (
+                              (location, index) => (
                                 <Draggable
                                   key={location.id}
                                   draggableId={location.id}
@@ -495,7 +639,7 @@ export default function PhuketPropertiesManager({
                                         <div className="flex-1 space-y-4">
                                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
-                                              <Label>Name</Label>
+                                              <Label>Location Name</Label>
                                               <Input
                                                 value={location.name}
                                                 onChange={(e) =>
@@ -561,10 +705,10 @@ export default function PhuketPropertiesManager({
                                               mediaType="image"
                                               value={location.image}
                                               onSelect={(imageUrl) =>
-                                                handleLocationImageSelect(
+                                                handleUpdateLocation(
                                                   activeCategory,
                                                   location.id,
-                                                  imageUrl
+                                                  { image: imageUrl }
                                                 )
                                               }
                                             />
@@ -616,6 +760,13 @@ export default function PhuketPropertiesManager({
                     </DragDropContext>
                   </div>
                 )}
+
+                {propertiesData.categories.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No categories available. Please add categories first in the Categories tab.</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -624,14 +775,13 @@ export default function PhuketPropertiesManager({
     );
   };
 
-  // Always wrapped with BaseSectionManager for global mode
   return (
     <BaseSectionManager
       section={section}
       onChange={handleOnChange}
       showSaveButton={showSaveButton}
       title="Phuket Properties"
-      description="Manage properties content and map locations"
+      description="Manage properties content, categories, and map locations"
     >
       {renderContent()}
     </BaseSectionManager>

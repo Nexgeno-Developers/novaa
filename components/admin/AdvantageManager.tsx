@@ -294,7 +294,7 @@ const NovaaAdvantageManagerContent = ({
                       >
                         {localData.advantages.map((item, index) => (
                           <Draggable
-                            key={item._id}
+                            key={index}
                             draggableId={item._id}
                             index={index}
                           >

@@ -27,6 +27,7 @@ interface PhuketPropertiesSectionProps {
   description?: string;
   explorerHeading?: string;
   explorerDescription?: string;
+  mapImage?: string;
   categories?: Category[];
   [key: string]: unknown;
 }
@@ -74,6 +75,7 @@ export default function PhuketPropertiesSection({
   description = "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
   explorerHeading = "PHUKET EXPLORER",
   explorerDescription = "<p>Navigate through different property categories and locations.</p>",
+  mapImage = "/images/map2.png",
   categories = [],
   ...props
 }: PhuketPropertiesSectionProps) {
@@ -216,7 +218,7 @@ export default function PhuketPropertiesSection({
                         </div>
                       </div>
                       <span className="text-base sm:text-xl lg:text-3xl font-medium font-josefin">
-                        {category.title.split(" ")[0]}
+                        {category.title}
                       </span>
                     </button>
                   );
@@ -293,8 +295,8 @@ export default function PhuketPropertiesSection({
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <Image
-                src={"/images/map2.png"}
-                alt="map"
+                src={mapImage}
+                alt="Phuket map"
                 fill
                 className="object-contain"
               />
@@ -327,7 +329,7 @@ export default function PhuketPropertiesSection({
                     </div>
                     {/* Hover Image Card */}
                     <AnimatePresence>
-                      {hoveredPin === location.id && (
+                      {hoveredPin === location.id && location.image && (
                         <motion.div
                           className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-30 bg-white rounded-xl overflow-hidden border border-background"
                           initial={{ opacity: 0, y: 10, scale: 0.9 }}
@@ -355,4 +357,4 @@ export default function PhuketPropertiesSection({
       </div>
     </section>
   );
-};
+}

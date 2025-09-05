@@ -160,9 +160,9 @@ export default function InvestorInsightsManager({
 
       // If data is already flat, just set it directly
       setContentForm({
-        title: sectionData.content.title || "",
-        subtitle: sectionData.content.subtitle || "",
-        description: sectionData.content.description || "",
+        title: sectionData?.content?.title || "",
+        subtitle: sectionData?.content?.subtitle || "",
+        description: sectionData?.content?.description || "",
       });
 
       if (sectionData.testimonials) {

@@ -203,144 +203,60 @@ export async function POST(request: NextRequest) {
           explorerHeading: "Phuket Explorer",
           explorerDescription:
             "Discover the beauty and development of Phuket Island",
+          mapImage: "/images/map2.png",
           categories: [
             {
-              id: "beaches",
-              title: "Beaches Locations",
-              icon: "/icons/beach.svg",
+              id: Date.now().toString(),
+              title: "Luxury Villas",
+              icon: "/icons/villa.svg",
               locations: [
                 {
-                  id: "patong",
-                  name: "Patong Beach",
-                  image:
-                    "https://placehold.co/200x150/C3912F/FFFFFF?text=Patong+Beach",
-                  coords: { top: "35%", left: "20%" },
+                  id: (Date.now() + 1).toString(),
+                  name: "Patong Beach Villas",
+                  image: "/images/patong-villa.jpg",
+                  coords: { top: "30%", left: "25%" },
                   icon: "/icons/map-pin.svg",
                 },
                 {
-                  id: "karon",
-                  name: "Karon Beach",
-                  image:
-                    "https://placehold.co/200x150/C3912F/FFFFFF?text=Karon+Beach",
-                  coords: { top: "55%", left: "30%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "kata",
-                  name: "Kata Beach",
-                  image:
-                    "https://placehold.co/200x150/C3912F/FFFFFF?text=Kata+Beach",
-                  coords: { top: "60%", left: "50%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "kamala",
-                  name: "Kamala Beach",
-                  image:
-                    "https://placehold.co/200x150/C3912F/FFFFFF?text=Kamala+Beach",
-                  coords: { top: "35%", left: "40%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "surin",
-                  name: "Surin Beach",
-                  image:
-                    "https://placehold.co/200x150/C3912F/FFFFFF?text=Surin+Beach",
-                  coords: { top: "70%", left: "25%" },
+                  id: (Date.now() + 2).toString(),
+                  name: "Kata Noi Luxury Resort",
+                  image: "/images/kata-resort.jpg",
+                  coords: { top: "65%", left: "20%" },
                   icon: "/icons/map-pin.svg",
                 },
               ],
             },
             {
-              id: "projects",
-              title: "Projects Locations",
-              icon: "/icons/project.svg",
+              id: (Date.now() + 3).toString(),
+              title: "Condominiums",
+              icon: "/icons/condo.svg",
               locations: [
                 {
-                  id: "origin",
-                  name: "Origin Project",
-                  image:
-                    "https://placehold.co/200x150/01292B/FFFFFF?text=Origin",
-                  coords: { top: "35%", left: "20%" },
+                  id: (Date.now() + 4).toString(),
+                  name: "Phuket Town Condos",
+                  image: "/images/phuket-condos.jpg",
+                  coords: { top: "45%", left: "35%" },
                   icon: "/icons/map-pin.svg",
                 },
                 {
-                  id: "banyan",
-                  name: "Banyan Tree Hub",
-                  image:
-                    "https://placehold.co/200x150/01292B/FFFFFF?text=Banyan",
-                  coords: { top: "35%", left: "45%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "laguna",
-                  name: "Laguna Complex",
-                  image:
-                    "https://placehold.co/200x150/01292B/FFFFFF?text=Laguna",
-                  coords: { top: "60%", left: "50%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "central",
-                  name: "Central Mall",
-                  image:
-                    "https://placehold.co/200x150/01292B/FFFFFF?text=Central",
-                  coords: { top: "70%", left: "25%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "villas",
-                  name: "Island Villas",
-                  image:
-                    "https://placehold.co/200x150/01292B/FFFFFF?text=Villas",
-                  coords: { top: "50%", left: "25%" },
+                  id: (Date.now() + 5).toString(),
+                  name: "Kamala Beach Apartments",
+                  image: "/images/kamala-apartments.jpg",
+                  coords: { top: "25%", left: "30%" },
                   icon: "/icons/map-pin.svg",
                 },
               ],
             },
             {
-              id: "alliance",
-              title: "Government Alliance",
-              icon: "/icons/alliance.svg",
+              id: (Date.now() + 6).toString(),
+              title: "Commercial Properties",
+              icon: "/icons/commercial.svg",
               locations: [
                 {
-                  id: "townhall",
-                  name: "Phuket Town Hall",
-                  image:
-                    "https://placehold.co/200x150/5B21B6/FFFFFF?text=Town+Hall",
-                  coords: { top: "35%", left: "20%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "tourism",
-                  name: "Tourism Authority",
-                  image:
-                    "https://placehold.co/200x150/5B21B6/FFFFFF?text=Tourism",
-                  coords: { top: "55%", left: "25%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "marine",
-                  name: "Marine Department",
-                  image:
-                    "https://placehold.co/200x150/5B21B6/FFFFFF?text=Marine",
-                  coords: { top: "55%", left: "45%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "tourism2",
-                  name: "Tourism Authority",
-                  image:
-                    "https://placehold.co/200x150/5B21B6/FFFFFF?text=Tourism",
-                  coords: { top: "50%", left: "15%" },
-                  icon: "/icons/map-pin.svg",
-                },
-                {
-                  id: "marine2",
-                  name: "Marine Department",
-                  image:
-                    "https://placehold.co/200x150/5B21B6/FFFFFF?text=Marine",
-                  coords: { top: "55%", left: "45%" },
+                  id: (Date.now() + 7).toString(),
+                  name: "Central Phuket Mall",
+                  image: "/images/central-mall.jpg",
+                  coords: { top: "50%", left: "40%" },
                   icon: "/icons/map-pin.svg",
                 },
               ],
