@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 // Define the structure of a media item
 export interface MediaItem {
   _id: string;
   alt: any;
   public_id: string;
-  resource_type: "image" | "video";
+  resource_type: "image" | "video" | "raw" | "auto"; // Added "raw" and "auto" for documents
   secure_url: string;
   url: string;
   format: string;
@@ -26,7 +25,7 @@ interface MediaState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   query: string;
-  type: string; // "all" | "image" | "video"
+  type: string; // "all" | "image" | "video" | "file"
   cursor?: string;
   hasMore: boolean;
   totalCount: number;
@@ -50,12 +49,14 @@ export const fetchMedia = createAsyncThunk(
   async ({
     query,
     type,
+    resource_type,
     cursor,
     limit = 20,
     reset = false,
   }: {
     query?: string;
     type?: string;
+    resource_type?: string;
     cursor?: string;
     limit?: number;
     reset?: boolean;
@@ -64,6 +65,7 @@ export const fetchMedia = createAsyncThunk(
 
     if (query) params.append("query", query);
     if (type && type !== "all") params.append("type", type);
+    if (resource_type && resource_type !== "all") params.append("resource_type", resource_type);
     if (cursor && !reset) params.append("cursor", cursor);
     params.append("limit", limit.toString());
 

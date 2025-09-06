@@ -16,25 +16,29 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query') || undefined;
     const typeParam = searchParams.get('type');
+    const resourceTypeParam = searchParams.get('resource_type');
     
-    // Handle the type parameter properly
-    const type = (typeParam && typeParam !== 'all') ? typeParam as 'image' | 'video' : undefined;
+    // Handle the type parameter properly - now includes 'file' and 'raw'
+    const type = (typeParam && typeParam !== 'all') ? typeParam as 'image' | 'video' | 'file' | 'raw' : undefined;
+    const resource_type = (resourceTypeParam && resourceTypeParam !== 'all') ? resourceTypeParam as 'image' | 'video' | 'raw' | 'auto' : undefined;
     
     const limit = parseInt(searchParams.get('limit') || '20');
     const cursor = searchParams.get('cursor') || undefined;
 
-    // console.log('API received params:', { query, type, limit, cursor });
+    console.log('API received params:', { query, type, resource_type, limit, cursor });
 
     // Use alternative search method for better query handling
     const result = query 
-      ? await cloudinaryService.searchFilesAlternative(query, type, limit, cursor)
-      : await cloudinaryService.searchFiles(undefined, type, limit, cursor);
+      ? await cloudinaryService.searchFilesAlternative(query, type, limit, cursor, resource_type)
+      : await cloudinaryService.searchFiles(undefined, type, limit, cursor, resource_type);
 
-    // console.log("API sending result:", {
-    //   resourceCount: result.resources.length,
-    //   totalCount: result.total_count,
-    //   hasNextCursor: !!result.next_cursor
-    // });
+    console.log("API sending result:", {
+      resourceCount: result.resources.length,
+      totalCount: result.total_count,
+      hasNextCursor: !!result.next_cursor,
+      resourceTypes: [...new Set(result.resources.map((r: any) => r.resource_type))],
+      formats: [...new Set(result.resources.map((r: any) => r.format))]
+    });
 
     return NextResponse.json({
       success: true,
@@ -78,16 +82,28 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Validate file type
+    // UPDATED: Expanded allowed file types to include documents
     const allowedTypes = [
+      // Images
       'image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif',
-      'video/mp4', 'video/webm', 'video/mov', 'video/avi'
+      // Videos
+      'video/mp4', 'video/webm', 'video/mov', 'video/avi',
+      // Documents
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'text/plain',
+      'application/rtf'
     ];
 
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({
         success: false,
-        error: `File type ${file.type} is not allowed`
+        error: `File type ${file.type} is not allowed. Supported types: Images, Videos, PDF, Word, Excel, PowerPoint, Text files.`
       }, { status: 400 });
     }
 
@@ -131,7 +147,10 @@ export async function DELETE(request: NextRequest) {
 
     console.log("Deleting file:", public_id, resource_type);
 
-    const success = await cloudinaryService.deleteFile(public_id, resource_type || 'image');
+    // UPDATED: Handle different resource types properly
+    const resourceTypeToUse = resource_type || 'auto'; // Default to 'auto' instead of 'image'
+
+    const success = await cloudinaryService.deleteFile(public_id, resourceTypeToUse);
 
     console.log("Delete success:", success);
 

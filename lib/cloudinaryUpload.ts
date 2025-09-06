@@ -26,7 +26,7 @@ export interface CloudinarySearchResult {
     public_id: string;
     format: string;
     version: number;
-    resource_type: "image" | "video";
+    resource_type: "image" | "video" | "raw" | "auto"; // Added "raw" and "auto"
     type: string;
     created_at: string;
     bytes: number;
@@ -44,7 +44,7 @@ export interface CloudinarySearchResult {
 
 export type SearchFilesParams = {
   query?: string;
-  resourceType?: "image" | "video";
+  resourceType?: "image" | "video" | "raw" | "file"; // Added "raw" and "file"
   maxResults?: number;   // default 20
   nextCursor?: string;
 };
@@ -67,12 +67,23 @@ export class CloudinaryService {
       const originalName = file.name.replace(/\.[^/.]+$/, "");
       const cleanName = originalName.replace(/[^a-zA-Z0-9-_]/g, "_");
 
+      // UPDATED: Better resource type detection
+      let resourceType: "image" | "video" | "raw" = "raw";
+      if (file.type.startsWith('image/')) {
+        resourceType = "image";
+      } else if (file.type.startsWith('video/')) {
+        resourceType = "video";
+      } else {
+        // Documents, PDFs, etc. should be uploaded as 'raw'
+        resourceType = "raw";
+      }
+
       // Upload to cloudinary
       const result = await cloudinary.uploader.upload(dataURI, {
         folder: folder || this.folder,
-        resource_type: "auto",
-        quality: "auto:good",
-        fetch_format: "auto",
+        resource_type: resourceType, // Use detected resource type instead of "auto"
+        quality: resourceType === "image" ? "auto:good" : undefined,
+        fetch_format: resourceType === "image" ? "auto" : undefined,
         public_id: `${cleanName}_${timestamp}`,
         overwrite: false,
       });
@@ -100,7 +111,7 @@ export class CloudinaryService {
 
   async deleteFile(
     publicId: string,
-    resourceType: "image" | "video" | "raw" = "image"
+    resourceType: "image" | "video" | "raw" | "auto" = "auto" // Changed default to "auto"
   ): Promise<boolean> {
     try {
       console.log("Deleting:", publicId, resourceType);
@@ -114,78 +125,111 @@ export class CloudinaryService {
       return false;
     }
   }
-async searchFiles(
-  query?: string,
-  resourceType?: "image" | "video",
-  maxResults: number = 20,
-  nextCursor?: string
-): Promise<CloudinarySearchResult> {
-  try {
-    console.log("Search params:", { query, resourceType, maxResults, nextCursor });
-    
-    let searchExpression = `folder:${this.folder}`;
 
-    if (resourceType) {
-      searchExpression += ` AND resource_type:${resourceType}`;
+  // UPDATED: Enhanced search with resource_type support
+  async searchFiles(
+    query?: string,
+    resourceType?: "image" | "video" | "file" | "raw",
+    maxResults: number = 20,
+    nextCursor?: string,
+    resource_type?: "image" | "video" | "raw" | "auto" // New parameter
+  ): Promise<CloudinarySearchResult> {
+    try {
+      console.log("Search params:", { query, resourceType, resource_type, maxResults, nextCursor });
+      
+      let searchExpression = `folder:${this.folder}`;
+
+      // Use resource_type parameter if provided, otherwise fall back to resourceType
+      const typeFilter = resource_type || resourceType;
+      
+      if (typeFilter) {
+        if (typeFilter === 'file') {
+          // For 'file' type, search for 'raw' resource type
+          searchExpression += ` AND resource_type:raw`;
+        } else {
+          searchExpression += ` AND resource_type:${typeFilter}`;
+        }
+      } else {
+        // If no type specified, include all types
+        searchExpression += ` AND (resource_type:image OR resource_type:video OR resource_type:raw)`;
+      }
+
+      if (query && query.trim()) {
+        // Search in both filename and public_id
+        searchExpression += ` AND (filename:*${query.trim()}* OR public_id:*${query.trim()}*)`;
+      }
+
+      console.log("Final search expression:", searchExpression);
+
+      const searchParams: {
+        expression: string;
+        sort_by: [string, "asc" | "desc"][];
+        max_results: number;
+        next_cursor?: string;
+      } = {
+        expression: searchExpression,
+        sort_by: [["created_at", "desc"]],
+        max_results: maxResults,
+      };
+
+      if (nextCursor) {
+        searchParams.next_cursor = nextCursor;
+      }
+
+      const searchResult = await cloudinary.search
+        .expression(searchExpression)
+        .sort_by("created_at", "desc")
+        .max_results(maxResults)
+        .next_cursor(nextCursor)
+        .execute();
+
+      console.log("Search result:", {
+        found: searchResult.resources?.length || 0,
+        total: searchResult.total_count || 0,
+        resourceTypes: [...new Set(searchResult.resources?.map((r: any) => r.resource_type) || [])],
+        formats: [...new Set(searchResult.resources?.map((r: any) => r.format) || [])]
+      });
+
+      return {
+        resources: searchResult.resources || [],
+        total_count: searchResult.total_count || 0,
+        time: searchResult.time || 0,
+        next_cursor: searchResult.next_cursor,
+      };
+    } catch (error) {
+      console.error("Cloudinary search error:", error);
+      return {
+        resources: [],
+        total_count: 0,
+        time: 0,
+      };
     }
-
-    if (query && query.trim()) {
-      searchExpression += ` AND filename:*${query.trim()}*`;
-    }
-
-    console.log("Final search expression:", searchExpression);
-
-    const searchParams: {
-      expression: string;
-      sort_by: [string, "asc" | "desc"][];
-      max_results: number;
-      next_cursor?: string;
-    } = {
-      expression: searchExpression,
-      sort_by: [["created_at", "desc"]],
-      max_results: maxResults,
-    };
-
-    if (nextCursor) {
-      searchParams.next_cursor = nextCursor;
-    }
-
-    const searchResult = await cloudinary.search
-      .expression(searchExpression)
-      .sort_by("created_at", "desc")
-      .max_results(maxResults)
-      .next_cursor(nextCursor)
-      .execute();
-
-    return {
-      resources: searchResult.resources || [],
-      total_count: searchResult.total_count || 0,
-      time: searchResult.time || 0,
-      next_cursor: searchResult.next_cursor,
-    };
-  } catch (error) {
-    console.error("Cloudinary search error:", error);
-    return {
-      resources: [],
-      total_count: 0,
-      time: 0,
-    };
   }
-}
 
-  // Alternative search method if filename search doesn't work well
+  // UPDATED: Alternative search method with enhanced filtering
   async searchFilesAlternative(
     query?: string,
-    resourceType?: "image" | "video",
+    resourceType?: "image" | "video" | "file" | "raw",
     maxResults: number = 20,
-    nextCursor?: string
+    nextCursor?: string,
+    resource_type?: "image" | "video" | "raw" | "auto"
   ): Promise<CloudinarySearchResult> {
     try {
       // Get all files first, then filter locally if query is provided
       let searchExpression = `folder:${this.folder}`;
 
-      if (resourceType) {
-        searchExpression += ` AND resource_type:${resourceType}`;
+      // Use resource_type parameter if provided, otherwise fall back to resourceType
+      const typeFilter = resource_type || resourceType;
+      
+      if (typeFilter) {
+        if (typeFilter === 'file') {
+          searchExpression += ` AND resource_type:raw`;
+        } else {
+          searchExpression += ` AND resource_type:${typeFilter}`;
+        }
+      } else {
+        // Include all types
+        searchExpression += ` AND (resource_type:image OR resource_type:video OR resource_type:raw)`;
       }
 
       console.log("Alternative search expression:", searchExpression);
@@ -213,6 +257,13 @@ async searchFiles(
         filteredResources = filteredResources.slice(0, maxResults);
       }
 
+      console.log("Alternative search result:", {
+        found: filteredResources.length,
+        total: query ? filteredResources.length : searchResult.total_count,
+        resourceTypes: [...new Set(filteredResources.map((r: any) => r.resource_type))],
+        formats: [...new Set(filteredResources.map((r: any) => r.format))]
+      });
+
       return {
         resources: filteredResources,
         total_count: query ? filteredResources.length : searchResult.total_count,
@@ -230,7 +281,7 @@ async searchFiles(
   }
 
   async getAllFiles(
-    resourceType?: "image" | "video",
+    resourceType?: "image" | "video" | "raw" | "file",
     maxResults: number = 20,
     nextCursor?: string
   ): Promise<CloudinarySearchResult> {
