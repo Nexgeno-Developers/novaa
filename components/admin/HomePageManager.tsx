@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -22,9 +21,9 @@ import {
 } from "@/components/ui/select";
 import {
   Eye,
-  Images,
   Save,
   Sparkles,
+  Images,
 } from "lucide-react";
 import { toast } from "sonner";
 import MediaSelectButton from "./MediaSelectButton";
@@ -50,43 +49,6 @@ interface HomePageManagerProps {
   onChange?: (changes: any) => void;
   showSaveButton?: boolean;
 }
-
-// const fontFamilies = [
-//   { value: "font-cinzel", label: "Cinzel" },
-//   { value: "font-inter", label: "Inter" },
-//   { value: "font-roboto", label: "Roboto" },
-//   { value: "font-playfair", label: "Playfair Display" },
-//   { value: "font-poppins", label: "Poppins" },
-//   { value: "font-montserrat", label: "Montserrat" },
-// ];
-
-// const fontSizes = [
-//   { value: "text-sm", label: "Small" },
-//   { value: "text-base", label: "Base" },
-//   { value: "text-lg", label: "Large" },
-//   { value: "text-xl", label: "XL" },
-//   { value: "text-2xl", label: "2XL" },
-//   { value: "text-3xl", label: "3XL" },
-//   { value: "text-4xl", label: "4XL" },
-//   { value: "text-[50px]", label: "50px" },
-//   { value: "text-[60px]", label: "60px" },
-// ];
-
-// const gradientOptions = [
-//   { value: "none", label: "No Gradient" },
-//   {
-//     value: "linear-gradient(45deg, #C3912F, #F5E7A8, #C3912F)",
-//     label: "Gold Gradient",
-//   },
-//   { value: "linear-gradient(45deg, #667eea, #764ba2)", label: "Purple Blue" },
-//   { value: "linear-gradient(45deg, #f093fb, #f5576c)", label: "Pink Red" },
-//   { value: "linear-gradient(45deg, #4facfe, #00f2fe)", label: "Blue Cyan" },
-//   { value: "linear-gradient(45deg, #43e97b, #38f9d7)", label: "Green Mint" },
-//   { value: "linear-gradient(45deg, #fa709a, #fee140)", label: "Pink Yellow" },
-//   { value: "linear-gradient(45deg, #a8edea, #fed6e3)", label: "Soft Pastel" },
-//   { value: "linear-gradient(45deg, #ff9a9e, #fecfef)", label: "Pink Pastel" },
-//   { value: "linear-gradient(45deg, #ffecd2, #fcb69f)", label: "Orange Peach" },
-// ];
 
 export default function HomePageManager({ 
   section, 
@@ -149,15 +111,6 @@ export default function HomePageManager({
       onChange({ content: { heroSection: heroData } });
     }
   }, [heroData]);
-
-
-  // useEffect(() => {
-  //   if (originalData) {
-  //     const hasChanges = JSON.stringify(heroData) !== JSON.stringify(originalData);
-  //     setHasLocalChanges(hasChanges);
-  //   }
-  // }, [heroData, originalData]);
-
 
    const fetchHeroData = async () => {
     try {
@@ -270,17 +223,6 @@ export default function HomePageManager({
     };
   }, [heroData.subtitleGradient]);
 
-  // Handle gradient changes with proper state management
-  // const handleTitleGradientChange = useCallback((value: string) => {
-  //   setHeroData(prev => ({ ...prev, titleGradient: value }));
-  //   setHasLocalChanges(true);
-  // }, []);
-
-  // const handleSubtitleGradientChange = useCallback((value: string) => {
-  //   setHeroData(prev => ({ ...prev, subtitleGradient: value }));
-  //   setHasLocalChanges(true);
-  // }, []);
-
   const renderContent = () => {
     if (loading) {
       return (
@@ -334,123 +276,106 @@ export default function HomePageManager({
           </Alert>
         )}
 
-        {previewMode ? (
-          <Card className="py-6">
-            <CardHeader>
-              <CardTitle>Live Preview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative h-[500px] overflow-hidden rounded-lg">
-                {heroData.mediaType === "video" ? (
-                  <video
-                    src={heroData.mediaUrl}
-                    autoPlay
-                    loop
-                    muted
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <div
-                    className="absolute inset-0 w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${heroData.mediaUrl})` }}
-                  />
-                )}
-
-                {/* Gradient overlay */}
-                <div
-                  className="absolute inset-x-0 bottom-0 h-1/2 z-0"
-                  style={{
-                    background: `linear-gradient(to top, ${
-                      heroData.overlayColor
-                    }${Math.round(heroData.overlayOpacity * 255)
-                      .toString(16)
-                      .padStart(2, "0")} 0%, transparent 100%)`,
-                  }}
-                />
-
-                {/* Content */}
-                <div className="absolute bottom-6 w-full z-10 px-6">
-                  <div className={`${heroData.titleFontFamily}`}>
-                    <div
-                      className={`${heroData.titleFontSize} font-normal leading-tight`}
-                      style={getTitleStyle()}
-                    >
-                      {heroData.title}
-                    </div>
-                    {heroData.subtitle && (
-                      <div
-                        className={`font-bold ${heroData.subtitleFontSize} leading-tight mt-2 ${heroData.subtitleFontFamily}`}
-                        style={getSubtitleStyle()}
-                      >
-                        {heroData.subtitle}
-                      </div>
-                    )}
-                  </div>
+          <div className="space-y-6">
+            {/* Content Section */}
+            <Card className="py-6">
+              <CardHeader className="flex flex-row items-center space-y-0 pb-4">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="h-5 w-5 text-blue-600" />
+                  <CardTitle>Hero Content & Styling</CardTitle>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Tabs defaultValue="content" className="space-y-6">
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Title Section */}
+                <div className="space-y-4 p-4 border rounded-lg bg-gray-50/50">
+                  <h4 className="font-semibold text-lg flex items-center space-x-2">
+                    <span>Title Settings</span>
+                  </h4>
 
-              <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
-              <TabsTrigger 
-                value="content" 
-                className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span className="font-medium">Content</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="media"
-                className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-              >
-                <Images className="w-4 h-4" />
-                <span className="font-medium">Media & Overlay</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="media" className="space-y-6">
-              <Card className="py-6">
-                <CardHeader>
-                  <CardTitle>Background Media & Overlay</CardTitle>
-                  <CardDescription>
-                    Select background media and configure overlay settings
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-8">
-                  {/* Media Type Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Media Type
+                      Hero Title
                     </label>
-                    <Select
-                      value={heroData.mediaType}
-                      onValueChange={(value: "image" | "video") => {
-                        updateHeroData({ mediaType: value, mediaUrl: "" });
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select media type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="image">Image</SelectItem>
-                        <SelectItem value="video">Video</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <MediaSelectButton
-                      label={`Background ${heroData.mediaType === "video" ? "Video" : "Image"}`}
-                      mediaType={heroData.mediaType}
-                      value={heroData.mediaUrl}
-                      onSelect={(url: string) => updateHeroData({ mediaUrl: url })}
-                      placeholder={`Choose a background ${heroData.mediaType}`}
+                    <Textarea
+                      value={heroData.title}
+                      onChange={(e) => updateHeroData({ title: e.target.value })}
+                      placeholder="Experience Unparalleled Luxury in Thailand"
+                      className="text-lg"
+                      rows={3}
                     />
                   </div>
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
+                {/* Subtitle Section */}
+                <div className="space-y-4 p-4 border rounded-lg bg-gray-50/50">
+                  <h4 className="font-semibold text-lg">Subtitle Settings</h4>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Subtitle
+                    </label>
+                    <Textarea
+                      value={heroData.subtitle}
+                      onChange={(e) => updateHeroData({ subtitle: e.target.value })}
+                      placeholder="Your Premier Destination for Luxury Properties"
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Media & Overlay Section */}
+            <Card className="py-6">
+              <CardHeader className="flex flex-row items-center space-y-0 pb-4">
+                <div className="flex items-center space-x-2">
+                  <Images className="h-5 w-5 text-purple-600" />
+                  <CardTitle>Background Media & Overlay</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                {/* Media Type Selection */}
+                <div className="p-4 border rounded-lg bg-purple-50/30">
+                  <h4 className="font-semibold text-lg mb-4">Media Settings</h4>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Media Type
+                      </label>
+                      <Select
+                        value={heroData.mediaType}
+                        onValueChange={(value: "image" | "video") => {
+                          updateHeroData({ mediaType: value, mediaUrl: "" });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select media type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="image">Image</SelectItem>
+                          <SelectItem value="video">Video</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <MediaSelectButton
+                        label={`Background ${heroData.mediaType === "video" ? "Video" : "Image"}`}
+                        mediaType={heroData.mediaType}
+                        value={heroData.mediaUrl}
+                        onSelect={(url: string) => updateHeroData({ mediaUrl: url })}
+                        placeholder={`Choose a background ${heroData.mediaType}`}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Overlay Settings */}
+                {/* <div className="p-4 border rounded-lg bg-purple-50/30">
+                  <h4 className="font-semibold text-lg mb-4">Overlay Settings</h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Overlay Color
@@ -490,231 +415,10 @@ export default function HomePageManager({
                       />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="content" className="space-y-6">
-              <Card className="py-6">
-                <CardHeader>
-                  <CardTitle>Hero Content & Styling</CardTitle>
-                  <CardDescription>
-                    Configure title and subtitle text with styling options
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Title Section */}
-                  <div className="space-y-4 p-4 border rounded-lg">
-                    <h4 className="font-semibold text-lg">Title Settings</h4>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Hero Title
-                      </label>
-                      <Textarea
-                        value={heroData.title}
-                        onChange={(e) => updateHeroData({ title: e.target.value })}
-                        placeholder="Experience Unparalleled Luxury in Thailand"
-                        className="text-lg"
-                        rows={3}
-                      />
-                    </div>
-
-                    {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Title Font Family
-                        </label>
-                        <Select
-                          value={heroData.titleFontFamily}
-                          onValueChange={(value) =>
-                            updateHeroData({ titleFontFamily: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {fontFamilies.map((font) => (
-                              <SelectItem key={font.value} value={font.value}>
-                                {font.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Title Font Size
-                        </label>
-                        <Select
-                          value={heroData.titleFontSize}
-                          onValueChange={(value) =>
-                            updateHeroData({ titleFontSize: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue/>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {fontSizes.map((size) => (
-                              <SelectItem key={size.value} value={size.value}>
-                                {size.label}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="text-2xl md:text-[50px]">
-                              Responsive 2XL-50PX
-                            </SelectItem>
-                             <SelectItem value="text-3xl md:text-[60px]">
-                              Responsive 3XL-60PX
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Title Gradient
-                        </label>
-                        <Select
-                          value={heroData.titleGradient}
-                          onValueChange={handleTitleGradientChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {gradientOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div> */}
-                  </div>
-
-                  {/* Subtitle Section */}
-                  <div className="space-y-4 p-4 border rounded-lg">
-                    <h4 className="font-semibold text-lg">Subtitle Settings</h4>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Subtitle
-                      </label>
-                      <Textarea
-                        value={heroData.subtitle}
-                        onChange={(e) => updateHeroData({ subtitle: e.target.value })}
-                        placeholder="Your Premier Destination for Luxury Properties"
-                        rows={2}
-                      />
-                    </div>
-
-                    {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Subtitle Font Family
-                        </label>
-                        <Select
-                          value={heroData.subtitleFontFamily}
-                          onValueChange={(value) =>
-                            updateHeroData({ subtitleFontFamily: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {fontFamilies.map((font) => (
-                              <SelectItem key={font.value} value={font.value}>
-                                {font.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Subtitle Font Size
-                        </label>
-                        <Select
-                          value={heroData.subtitleFontSize}
-                          onValueChange={(value) =>
-                            updateHeroData({ subtitleFontSize: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {fontSizes.map((size) => (
-                              <SelectItem key={size.value} value={size.value}>
-                                {size.label}
-                              </SelectItem>
-                            ))}
-                            <SelectItem value="text-2xl md:text-[50px]">
-                              Responsive 2XL-50PX
-                            </SelectItem>
-                            <SelectItem value="text-3xl md:text-[60px]">
-                              Responsive 3XL-60PX
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Subtitle Gradient
-                        </label>
-                        <Select
-                          value={heroData.subtitleGradient}
-                          onValueChange={handleSubtitleGradientChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {gradientOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div> */}
-                  </div>
-
-                  {/* Preview Section */}
-                  <div className="p-4 bg-gray-900 rounded-lg">
-                    <h4 className="font-medium text-white mb-4">
-                      Content Preview:
-                    </h4>
-                    <div className="space-y-2">
-                      <div
-                        className={`${heroData.titleFontSize} font-normal ${heroData.titleFontFamily}`}
-                        style={getTitleStyle()}
-                      >
-                        {heroData.title}
-                      </div>
-                      {heroData.subtitle && (
-                        <p
-                          className={`font-bold ${heroData.subtitleFontSize} ${heroData.subtitleFontFamily}`}
-                          style={getSubtitleStyle()}
-                        >
-                          {heroData.subtitle}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        )}
+                </div> */}
+              </CardContent>
+            </Card>
+          </div>
       </div>
     );
   };

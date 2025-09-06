@@ -22,8 +22,6 @@ async function getProjectData(id: string) {
 
     const project = await Project.findById(id).populate("category").lean<any>();
 
-    // console.log(typeof project._id);
-
     if (!project || !project.isActive) {
       return null;
     }
@@ -44,9 +42,6 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
-  // Debug log
-  console.log("Project Detail Page - ID:", id);
 
   const project = await getProjectData(id);
 
@@ -109,6 +104,19 @@ export default async function ProjectDetailPage({
         backgroundImage: "",
         plans: [],
       },
+      gatewaySection: {
+        title: "A place to come home to",
+        subtitle: "and a location that",
+        highlightText: "holds its value.",
+        description:
+          "Set between Layan and Bangtao, this address offers more than scenery. It brings you close to Phuket's most lived-in stretch from cafés and golf courses to global schools and beach clubs.",
+        explorerTitle: "Your Gateway to Paradise",
+        explorerDescription:
+          "Perfectly positioned where tropical elegance meets modern convenience, discover a world of luxury at your doorstep.",
+        backgroundImage: "/gateway-images/background.png",
+        mapImage: "/images/map2.png",
+        categories: [],
+      },
     },
   };
 
@@ -116,6 +124,11 @@ export default async function ProjectDetailPage({
     <main className="relative">
       {/* Hero Section */}
       <ProjectHeroSection project={serializedProject} />
+
+      {/* Gateway section  */}
+      {serializedProject.projectDetail?.gateway?.categories?.length > 0 && (
+        <GatewaySection project={serializedProject} />
+      )}
 
       {/* Project Highlights Section - Only render if has highlights */}
       {serializedProject.projectDetail?.projectHighlights?.highlights?.length >
@@ -139,10 +152,7 @@ export default async function ProjectDetailPage({
         <MasterPlanSection project={serializedProject} />
       )}
 
-      {/* Gateway Section - Keep as static for now */}
-      <GatewaySection />
-
-      {/* Contact Form - Keep as static for now */}
+      {/* Contact Form */}
       <ContactForm />
     </main>
   );

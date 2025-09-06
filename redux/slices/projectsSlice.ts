@@ -27,6 +27,24 @@ interface InvestmentPlan {
   returnStartDate: string;
 }
 
+interface GatewayLocation {
+  name: string;
+  image: string;
+  coords: {
+    top: string;
+    left: string;
+  };
+  icon: string;
+}
+
+interface GatewayCategory {
+  title: string;
+  description: string;
+  icon: string;
+  locations: GatewayLocation[];
+}
+
+
 interface ProjectDetail {
   hero: {
     backgroundImage: string;
@@ -63,6 +81,17 @@ interface ProjectDetail {
     description: string;
     backgroundImage: string;
     plans: InvestmentPlan[];
+  };
+   gateway: {
+    title: string;
+    subtitle: string;
+    highlightText: string;
+    description: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    backgroundImage: string;
+    mapImage: string;
+    categories: GatewayCategory[];
   };
 }
 

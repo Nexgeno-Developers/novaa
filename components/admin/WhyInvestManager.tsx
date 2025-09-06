@@ -78,7 +78,7 @@ export default function WhyInvestManager({
         setOriginalData(JSON.parse(JSON.stringify(localData)));
       }
     }
-  }, [section?.content, hasLocalChanges, localData, originalData]);
+  }, [section]);
 
   // console.log("Local data investment points" , localData.investmentPoints)
   // console.log("Original data " , originalData)
@@ -155,7 +155,7 @@ export default function WhyInvestManager({
         >
           <div className="space-y-6">
             {/* Enhanced Tabs */}
-            <Tabs defaultValue="content" className="space-y-6">
+            {/* <Tabs defaultValue="content" className="space-y-6">
               <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
                 <TabsTrigger
                   value="content"
@@ -171,12 +171,12 @@ export default function WhyInvestManager({
                   <Images className="w-4 h-4" />
                   <span className="font-medium">Images</span>
                 </TabsTrigger>
-              </TabsList>
+              </TabsList> */}
 
               {/* Content Tab */}
-              <TabsContent value="content" className="space-y-6">
+              {/* <TabsContent value="content" className="space-y-6"> */}
                 {/* Main Section Card */}
-                <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 py-6">
+                <Card className=" bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 py-6">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <CardHeader className="relative bg-gradient-to-r from-slate-50 to-blue-50/50 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-600/50">
                     <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
@@ -312,11 +312,8 @@ export default function WhyInvestManager({
                     </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              {/* Images Tab */}
-              <TabsContent value="images">
-                <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
+                {/* Background Images */}
+                <Card className="bg-white/70 py-6 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <CardHeader className="relative bg-gradient-to-r from-slate-50 to-violet-50/50 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-600/50">
                     <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
@@ -375,8 +372,13 @@ export default function WhyInvestManager({
                     </div>
                   </CardContent>
                 </Card>
+              {/* </TabsContent> */}
+
+              {/* Images Tab */}
+              {/* <TabsContent value="images">
+                
               </TabsContent>
-            </Tabs>
+            </Tabs> */}
           </div>
         </BaseSectionManager>
 

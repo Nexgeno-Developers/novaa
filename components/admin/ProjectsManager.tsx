@@ -83,6 +83,23 @@ interface InvestmentPlan {
   returnStartDate: string;
 }
 
+interface GatewayLocation {
+  name: string;
+  image: string;
+  coords: {
+    top: string;
+    left: string;
+  };
+  icon: string;
+}
+
+interface GatewayCategory {
+  title: string;
+  description: string;
+  icon: string;
+  locations: GatewayLocation[];
+}
+
 interface Project {
   _id: string;
   name: string;
@@ -134,6 +151,18 @@ interface Project {
       description: string;
       backgroundImage: string;
       plans: InvestmentPlan[];
+    };
+
+    gateway: {
+      title: string;
+      subtitle: string;
+      highlightText: string;
+      description: string;
+      sectionTitle: string;
+      sectionDescription: string;
+      backgroundImage: string;
+      mapImage: string;
+      categories: GatewayCategory[];
     };
   };
 }
@@ -198,9 +227,24 @@ export default function ProjectsManager() {
     },
     investmentPlans: {
       title: "LIMITED-TIME INVESTMENT PLANS",
-      description: "Secure high returns with exclusive, time-sensitive opportunities.",
+      description:
+        "Secure high returns with exclusive, time-sensitive opportunities.",
       backgroundImage: "",
       plans: [] as InvestmentPlan[],
+    },
+    // Add this gateway section
+    gateway: {
+      title: "A place to come home to",
+      subtitle: "and a location that",
+      highlightText: "holds its value.",
+      description:
+        "Set between Layan and Bangtao, this address offers more than scenery.",
+      sectionTitle: "Your Gateway to Paradise",
+      sectionDescription:
+        "Perfectly positioned where tropical elegance meets modern convenience.",
+      backgroundImage: "",
+      mapImage: "",
+      categories: [] as GatewayCategory[],
     },
   });
 
@@ -222,6 +266,24 @@ export default function ProjectsManager() {
     guaranteedReturn: "",
     returnStartDate: "",
   });
+
+  const [newGatewayCategory, setNewGatewayCategory] = useState({
+    title: "",
+    description: "",
+    icon: "",
+    locations: [],
+  });
+
+  const [newGatewayLocation, setNewGatewayLocation] = useState({
+    name: "",
+    image: "",
+    coords: { top: "50%", left: "50%" },
+    icon: "/icons/map-pin.svg",
+  });
+
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<
+    number | null
+  >(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -277,9 +339,23 @@ export default function ProjectsManager() {
       },
       investmentPlans: {
         title: "LIMITED-TIME INVESTMENT PLANS",
-        description: "Secure high returns with exclusive, time-sensitive opportunities.",
+        description:
+          "Secure high returns with exclusive, time-sensitive opportunities.",
         backgroundImage: "",
         plans: [],
+      },
+      gateway: {
+        title: "A place to come home to",
+        subtitle: "and a location that",
+        highlightText: "holds its value.",
+        description:
+          "Set between Layan and Bangtao, this address offers more than scenery.",
+        sectionTitle: "Your Gateway to Paradise",
+        sectionDescription:
+          "Perfectly positioned where tropical elegance meets modern convenience.",
+        backgroundImage: "",
+        mapImage: "",
+        categories: [],
       },
     });
 
@@ -313,14 +389,40 @@ export default function ProjectsManager() {
           title: project.projectDetail.masterPlan?.title || "",
           subtitle: project.projectDetail.masterPlan?.subtitle || "",
           description: project.projectDetail.masterPlan?.description || "",
-          backgroundImage: project.projectDetail.masterPlan?.backgroundImage || "",
+          backgroundImage:
+            project.projectDetail.masterPlan?.backgroundImage || "",
           tabs: project.projectDetail.masterPlan?.tabs || [],
         },
         investmentPlans: {
-          title: project.projectDetail.investmentPlans?.title || "LIMITED-TIME INVESTMENT PLANS",
-          description: project.projectDetail.investmentPlans?.description || "Secure high returns with exclusive, time-sensitive opportunities.",
-          backgroundImage: project.projectDetail.investmentPlans?.backgroundImage || "",
+          title:
+            project.projectDetail.investmentPlans?.title ||
+            "LIMITED-TIME INVESTMENT PLANS",
+          description:
+            project.projectDetail.investmentPlans?.description ||
+            "Secure high returns with exclusive, time-sensitive opportunities.",
+          backgroundImage:
+            project.projectDetail.investmentPlans?.backgroundImage || "",
           plans: project.projectDetail.investmentPlans?.plans || [],
+        },
+        gateway: {
+          title:
+            project.projectDetail.gateway?.title || "A place to come home to",
+          subtitle:
+            project.projectDetail.gateway?.subtitle || "and a location that",
+          highlightText:
+            project.projectDetail.gateway?.highlightText || "holds its value.",
+          description:
+            project.projectDetail.gateway?.description ||
+            "Set between Layan and Bangtao, this address offers more than scenery.",
+          sectionTitle:
+            project.projectDetail.gateway?.sectionTitle ||
+            "Your Gateway to Paradise",
+          sectionDescription:
+            project.projectDetail.gateway?.sectionDescription ||
+            "Perfectly positioned where tropical elegance meets modern convenience.",
+          backgroundImage: project.projectDetail.gateway?.backgroundImage || "",
+          mapImage: project.projectDetail.gateway?.mapImage || "",
+          categories: project.projectDetail.gateway?.categories || [],
         },
       });
     }
@@ -529,7 +631,12 @@ export default function ProjectsManager() {
           tabs: [...prev.masterPlan.tabs, newMasterPlanTab],
         },
       }));
-      setNewMasterPlanTab({ title: "", subtitle: "", subtitle2: "", image: "" });
+      setNewMasterPlanTab({
+        title: "",
+        subtitle: "",
+        subtitle2: "",
+        image: "",
+      });
     } else {
       toast.error("Please fill in title and image for the master plan tab");
     }
@@ -548,7 +655,11 @@ export default function ProjectsManager() {
 
   // Add new investment plan
   const addInvestmentPlan = () => {
-    if (newInvestmentPlan.paymentPlan && newInvestmentPlan.guaranteedReturn && newInvestmentPlan.returnStartDate) {
+    if (
+      newInvestmentPlan.paymentPlan &&
+      newInvestmentPlan.guaranteedReturn &&
+      newInvestmentPlan.returnStartDate
+    ) {
       setProjectDetailData((prev) => ({
         ...prev,
         investmentPlans: {
@@ -556,7 +667,11 @@ export default function ProjectsManager() {
           plans: [...prev.investmentPlans.plans, newInvestmentPlan],
         },
       }));
-      setNewInvestmentPlan({ paymentPlan: "", guaranteedReturn: "", returnStartDate: "" });
+      setNewInvestmentPlan({
+        paymentPlan: "",
+        guaranteedReturn: "",
+        returnStartDate: "",
+      });
     } else {
       toast.error("Please fill in all fields for the investment plan");
     }
@@ -571,6 +686,85 @@ export default function ProjectsManager() {
         plans: prev.investmentPlans.plans.filter((_, i) => i !== index),
       },
     }));
+  };
+
+  // Add these helper functions:
+  const addGatewayCategory = () => {
+    if (
+      newGatewayCategory.title &&
+      newGatewayCategory.description &&
+      newGatewayCategory.icon
+    ) {
+      setProjectDetailData((prev) => ({
+        ...prev,
+        gateway: {
+          ...prev.gateway,
+          categories: [...prev.gateway.categories, newGatewayCategory],
+        },
+      }));
+      setNewGatewayCategory({
+        title: "",
+        description: "",
+        icon: "",
+        locations: [],
+      });
+    } else {
+      toast.error("Please fill in all fields for the category");
+    }
+  };
+
+  const removeGatewayCategory = (index: number) => {
+    setProjectDetailData((prev) => ({
+      ...prev,
+      gateway: {
+        ...prev.gateway,
+        categories: prev.gateway.categories.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const addLocationToCategory = (categoryIndex: number) => {
+    if (newGatewayLocation.name && newGatewayLocation.image) {
+      setProjectDetailData((prev) => {
+        const updatedCategories = [...prev.gateway.categories];
+        updatedCategories[categoryIndex].locations.push(newGatewayLocation);
+        return {
+          ...prev,
+          gateway: {
+            ...prev.gateway,
+            categories: updatedCategories,
+          },
+        };
+      });
+      setNewGatewayLocation({
+        name: "",
+        image: "",
+        coords: { top: "50%", left: "50%" },
+        icon: "/icons/map-pin.svg",
+      });
+      setSelectedCategoryIndex(null);
+    } else {
+      toast.error("Please fill in location name and image");
+    }
+  };
+
+  const removeLocationFromCategory = (
+    categoryIndex: number,
+    locationIndex: number
+  ) => {
+    setProjectDetailData((prev) => {
+      const updatedCategories = [...prev.gateway.categories];
+      updatedCategories[categoryIndex].locations = updatedCategories[
+        categoryIndex
+      ].locations.filter((_, i) => i !== locationIndex);
+      return {
+        ...prev,
+        gateway: {
+          ...prev.gateway,
+          categories: updatedCategories,
+        },
+      };
+    });
   };
 
   // Filter projects based on search and category
@@ -612,47 +806,47 @@ export default function ProjectsManager() {
                 >
                   Basic Info
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="hero"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
                 >
                   Hero Section
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="project-highlights"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
                 >
                   Project Highlights
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="key-highlights"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
                 >
                   Key Highlights
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="amenities"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
                 >
                   Amenities
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="master-plan"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
                 >
                   Master Plan
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="investment-plans"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
                 >
                   Investment Plans
+                </TabsTrigger>
+                <TabsTrigger
+                  value="gateway"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white text-sm font-medium text-gray-300 rounded-xl px-4 py-2 transition-all duration-300 ease-in-out hover:bg-white/10 hover:text-white"
+                >
+                  Gateway Section
                 </TabsTrigger>
               </TabsList>
 
@@ -816,7 +1010,6 @@ export default function ProjectsManager() {
                     </Label>
                   </div>
                 </TabsContent>
-
                 {/* Hero Section Tab */}
                 <TabsContent value="hero" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -931,7 +1124,6 @@ export default function ProjectsManager() {
                     />
                   </div>
                 </TabsContent>
-
                 {/* Project Highlights Tab */}
                 <TabsContent value="project-highlights" className="space-y-6">
                   <div className="space-y-2">
@@ -1075,7 +1267,6 @@ export default function ProjectsManager() {
                     </Card>
                   )}
                 </TabsContent>
-
                 {/* Key Highlights Tab */}
                 <TabsContent value="key-highlights" className="space-y-6">
                   <div className="space-y-2">
@@ -1181,7 +1372,6 @@ export default function ProjectsManager() {
                     </Card>
                   )}
                 </TabsContent>
-
                 {/* Modern Amenities Tab */}
                 <TabsContent value="amenities" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1318,7 +1508,6 @@ export default function ProjectsManager() {
                     </Card>
                   )}
                 </TabsContent>
-
                 {/* Master Plan Tab */}
                 <TabsContent value="master-plan" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1406,7 +1595,10 @@ export default function ProjectsManager() {
                     <CardContent className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="masterPlanTabTitle" className="text-primary">
+                          <Label
+                            htmlFor="masterPlanTabTitle"
+                            className="text-primary"
+                          >
                             Tab Title *
                           </Label>
                           <Input
@@ -1423,7 +1615,10 @@ export default function ProjectsManager() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="masterPlanTabSubtitle" className="text-primary">
+                          <Label
+                            htmlFor="masterPlanTabSubtitle"
+                            className="text-primary"
+                          >
                             Tab Subtitle (Optional)
                           </Label>
                           <Input
@@ -1440,7 +1635,10 @@ export default function ProjectsManager() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="masterPlanTabSubtitle2" className="text-primary">
+                          <Label
+                            htmlFor="masterPlanTabSubtitle2"
+                            className="text-primary"
+                          >
                             Tab Subtitle 2 (Optional)
                           </Label>
                           <Input
@@ -1537,12 +1735,14 @@ export default function ProjectsManager() {
                     </Card>
                   )}
                 </TabsContent>
-
                 {/* Investment Plans Tab */}
                 <TabsContent value="investment-plans" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="investmentPlansTitle" className="text-primary">
+                      <Label
+                        htmlFor="investmentPlansTitle"
+                        className="text-primary"
+                      >
                         Section Title
                       </Label>
                       <Input
@@ -1620,7 +1820,10 @@ export default function ProjectsManager() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="guaranteedReturn" className="text-primary">
+                          <Label
+                            htmlFor="guaranteedReturn"
+                            className="text-primary"
+                          >
                             Guaranteed Return *
                           </Label>
                           <Input
@@ -1637,7 +1840,10 @@ export default function ProjectsManager() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="returnStartDate" className="text-primary">
+                          <Label
+                            htmlFor="returnStartDate"
+                            className="text-primary"
+                          >
                             Return Start Date *
                           </Label>
                           <Input
@@ -1683,20 +1889,32 @@ export default function ProjectsManager() {
                                 className="flex items-center gap-4 p-4 border rounded-lg"
                               >
                                 <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
-                                  {String(index + 1).padStart(2, '0')}
+                                  {String(index + 1).padStart(2, "0")}
                                 </div>
                                 <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                   <div>
-                                    <p className="text-sm text-gray-500">Payment Plan</p>
-                                    <p className="font-medium">{plan.paymentPlan}</p>
+                                    <p className="text-sm text-gray-500">
+                                      Payment Plan
+                                    </p>
+                                    <p className="font-medium">
+                                      {plan.paymentPlan}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="text-sm text-gray-500">Guaranteed Return</p>
-                                    <p className="font-medium">{plan.guaranteedReturn}</p>
+                                    <p className="text-sm text-gray-500">
+                                      Guaranteed Return
+                                    </p>
+                                    <p className="font-medium">
+                                      {plan.guaranteedReturn}
+                                    </p>
                                   </div>
                                   <div>
-                                    <p className="text-sm text-gray-500">Return Start Date</p>
-                                    <p className="font-medium">{plan.returnStartDate}</p>
+                                    <p className="text-sm text-gray-500">
+                                      Return Start Date
+                                    </p>
+                                    <p className="font-medium">
+                                      {plan.returnStartDate}
+                                    </p>
                                   </div>
                                 </div>
                                 <Button
@@ -1716,7 +1934,475 @@ export default function ProjectsManager() {
                     </Card>
                   )}
                 </TabsContent>
+                <TabsContent value="gateway" className="space-y-6">
+                  {/* Basic Gateway Settings */}
+                  <Card className="py-6">
+                    <CardHeader>
+                      <CardTitle>Gateway Section Settings</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="gatewayTitle"
+                            className="text-primary"
+                          >
+                            Main Title
+                          </Label>
+                          <Input
+                            id="gatewayTitle"
+                            value={projectDetailData.gateway.title}
+                            className="text-gray-300"
+                            onChange={(e) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "title",
+                                e.target.value
+                              )
+                            }
+                            placeholder="A place to come home to"
+                          />
+                        </div>
 
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="gatewaySubtitle"
+                            className="text-primary"
+                          >
+                            Subtitle
+                          </Label>
+                          <Input
+                            id="gatewaySubtitle"
+                            value={projectDetailData.gateway.subtitle}
+                            className="text-gray-300"
+                            onChange={(e) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "subtitle",
+                                e.target.value
+                              )
+                            }
+                            placeholder="and a location that"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="gatewayHighlight"
+                            className="text-primary"
+                          >
+                            Highlight Text
+                          </Label>
+                          <Input
+                            id="gatewayHighlight"
+                            value={projectDetailData.gateway.highlightText}
+                            className="text-gray-300"
+                            onChange={(e) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "highlightText",
+                                e.target.value
+                              )
+                            }
+                            placeholder="holds its value."
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="gatewaySectionTitle"
+                            className="text-primary"
+                          >
+                            Section Title
+                          </Label>
+                          <Input
+                            id="gatewaySectionTitle"
+                            value={projectDetailData.gateway.sectionTitle}
+                            className="text-gray-300"
+                            onChange={(e) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "sectionTitle",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Your Gateway to Paradise"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-primary">Main Description</Label>
+                        <div className="min-h-[150px]">
+                          <Editor
+                            value={projectDetailData.gateway.description}
+                            onEditorChange={(content) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "description",
+                                content
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-primary">
+                          Section Description
+                        </Label>
+                        <div className="min-h-[150px]">
+                          <Editor
+                            value={projectDetailData.gateway.sectionDescription}
+                            onEditorChange={(content) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "sectionDescription",
+                                content
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <MediaSelectButton
+                            value={projectDetailData.gateway.backgroundImage}
+                            onSelect={(url) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "backgroundImage",
+                                url
+                              )
+                            }
+                            mediaType="image"
+                            label="Background Image"
+                            placeholder="Select background image"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <MediaSelectButton
+                            value={projectDetailData.gateway.mapImage}
+                            onSelect={(url) =>
+                              handleProjectDetailChange(
+                                "gateway",
+                                "mapImage",
+                                url
+                              )
+                            }
+                            mediaType="image"
+                            label="Map Image"
+                            placeholder="Select map image"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Add New Category */}
+                  <Card className="py-6">
+                    <CardHeader>
+                      <CardTitle>Add New Category</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="categoryTitle"
+                            className="text-primary"
+                          >
+                            Category Title
+                          </Label>
+                          <Input
+                            id="categoryTitle"
+                            value={newGatewayCategory.title}
+                            onChange={(e) =>
+                              setNewGatewayCategory((prev) => ({
+                                ...prev,
+                                title: e.target.value,
+                              }))
+                            }
+                            placeholder="Bangtao & Layan Beach"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="categoryDescription"
+                            className="text-primary"
+                          >
+                            Category Description
+                          </Label>
+                          <Input
+                            id="categoryDescription"
+                            value={newGatewayCategory.description}
+                            onChange={(e) =>
+                              setNewGatewayCategory((prev) => ({
+                                ...prev,
+                                description: e.target.value,
+                              }))
+                            }
+                            placeholder="Pristine white sand beaches just 5 minutes away"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <MediaSelectButton
+                          value={newGatewayCategory.icon}
+                          onSelect={(url) =>
+                            setNewGatewayCategory((prev) => ({
+                              ...prev,
+                              icon: url,
+                            }))
+                          }
+                          mediaType="image"
+                          label="Category Icon"
+                          placeholder="Select category icon"
+                        />
+                      </div>
+
+                      <Button
+                        type="button"
+                        onClick={addGatewayCategory}
+                        className="w-full text-background cursor-pointer"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Category
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Existing Categories */}
+                  {projectDetailData.gateway.categories.length > 0 && (
+                    <Card className="py-6">
+                      <CardHeader>
+                        <CardTitle>
+                          Gateway Categories (
+                          {projectDetailData.gateway.categories.length})
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {projectDetailData.gateway.categories.map(
+                            (category, categoryIndex) => (
+                              <div
+                                key={categoryIndex}
+                                className="border rounded-lg p-4 space-y-4"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                                      <img
+                                        src={category.icon}
+                                        alt={category.title}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                    <div>
+                                      <h4 className="font-medium">
+                                        {category.title}
+                                      </h4>
+                                      <p className="text-sm text-muted-foreground">
+                                        {category.description}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      removeGatewayCategory(categoryIndex)
+                                    }
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+
+                                {/* Add Location to Category */}
+                                <div className="border-t pt-4">
+                                  <div className="flex items-center justify-between mb-4">
+                                    <h5 className="font-medium">
+                                      Locations ({category.locations.length})
+                                    </h5>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        setSelectedCategoryIndex(
+                                          selectedCategoryIndex ===
+                                            categoryIndex
+                                            ? null
+                                            : categoryIndex
+                                        )
+                                      }
+                                      className="text-primary cursor-pointer"
+                                    >
+                                      <Plus className="mr-2 h-3 w-3" />
+                                      Add Location
+                                    </Button>
+                                  </div>
+
+                                  {/* Add Location Form */}
+                                  {selectedCategoryIndex === categoryIndex && (
+                                    <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                          <Label className="text-primary">
+                                            Location Name
+                                          </Label>
+                                          <Input
+                                            value={newGatewayLocation.name}
+                                            onChange={(e) =>
+                                              setNewGatewayLocation((prev) => ({
+                                                ...prev,
+                                                name: e.target.value,
+                                              }))
+                                            }
+                                            placeholder="Patong Beach"
+                                          />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                          <MediaSelectButton
+                                            value={newGatewayLocation.image}
+                                            onSelect={(url) =>
+                                              setNewGatewayLocation((prev) => ({
+                                                ...prev,
+                                                image: url,
+                                              }))
+                                            }
+                                            mediaType="image"
+                                            label="Location Image"
+                                            placeholder="Select location image"
+                                          />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                          <Label className="text-primary">
+                                            Map Position (Top %)
+                                          </Label>
+                                          <Input
+                                            value={
+                                              newGatewayLocation.coords.top
+                                            }
+                                            onChange={(e) =>
+                                              setNewGatewayLocation((prev) => ({
+                                                ...prev,
+                                                coords: {
+                                                  ...prev.coords,
+                                                  top: e.target.value,
+                                                },
+                                              }))
+                                            }
+                                            placeholder="33%"
+                                          />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                          <Label className="text-primary">
+                                            Map Position (Left %)
+                                          </Label>
+                                          <Input
+                                            value={
+                                              newGatewayLocation.coords.left
+                                            }
+                                            onChange={(e) =>
+                                              setNewGatewayLocation((prev) => ({
+                                                ...prev,
+                                                coords: {
+                                                  ...prev.coords,
+                                                  left: e.target.value,
+                                                },
+                                              }))
+                                            }
+                                            placeholder="15%"
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="flex gap-2">
+                                        <Button
+                                          type="button"
+                                          onClick={() =>
+                                            addLocationToCategory(categoryIndex)
+                                          }
+                                          className="text-background cursor-pointer"
+                                        >
+                                          <Plus className="mr-2 h-4 w-4" />
+                                          Add Location
+                                        </Button>
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          onClick={() =>
+                                            setSelectedCategoryIndex(null)
+                                          }
+                                        >
+                                          Cancel
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Existing Locations */}
+                                  {category.locations.length > 0 && (
+                                    <div className="space-y-2">
+                                      {category.locations.map(
+                                        (location, locationIndex) => (
+                                          <div
+                                            key={locationIndex}
+                                            className="flex items-center gap-4 p-2 border rounded"
+                                          >
+                                            <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
+                                              <img
+                                                src={location.image}
+                                                alt={location.name}
+                                                className="w-full h-full object-cover"
+                                              />
+                                            </div>
+                                            <div className="flex-1">
+                                              <p className="font-medium">
+                                                {location.name}
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">
+                                                Position: {location.coords.top}{" "}
+                                                / {location.coords.left}
+                                              </p>
+                                            </div>
+                                            <Button
+                                              type="button"
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() =>
+                                                removeLocationFromCategory(
+                                                  categoryIndex,
+                                                  locationIndex
+                                                )
+                                              }
+                                              className="text-red-500 hover:text-red-700"
+                                            >
+                                              <X className="h-3 w-3" />
+                                            </Button>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </TabsContent>
                 {/* Submit Button - Outside tabs but inside form */}
                 <div className="flex justify-end space-x-2 pt-6 border-t">
                   <Button

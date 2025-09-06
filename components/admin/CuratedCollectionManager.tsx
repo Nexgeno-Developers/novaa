@@ -296,7 +296,7 @@ export default function CuratedCollectionManager({
               </div>
 
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-sm">
+                <Badge variant="outline" className="text-sm text-gray-600">
                   Total Selected: {totalSelectedProjects} projects
                 </Badge>
               </div>
@@ -333,7 +333,7 @@ export default function CuratedCollectionManager({
                         );
 
                         return (
-                          <div
+                        <div
                             key={project._id}
                             className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50"
                           >
@@ -373,7 +373,7 @@ export default function CuratedCollectionManager({
                               {project.badge && (
                                 <Badge
                                   variant="outline"
-                                  className="text-xs mt-1"
+                                  className="text-xs mt-1 text-background"
                                 >
                                   {project.badge}
                                 </Badge>
