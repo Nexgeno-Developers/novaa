@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Loader from "@/components/client/Loader";
@@ -39,6 +39,7 @@ import {
   FileText,
   Calendar,
   HardDrive,
+  File,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -57,54 +58,33 @@ export default function MediaManagement() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [previewDialog, setPreviewDialog] = useState<MediaItem | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<MediaItem | null>(null);
+  const [currentTab, setCurrentTab] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const dispatch = useAppDispatch();
-  const { items, loading, query, type, hasMore, totalCount, cursor } = useAppSelector((state) => state.media);
+  const { items, loading, query, type, hasMore, totalCount, cursor } =
+    useAppSelector((state) => state.media);
 
   // Initial load
   useEffect(() => {
-    dispatch(fetchMedia({ reset: true }));
+    dispatch(fetchMedia({ reset: true, fetchAll: true })); // New flag to fetch all
   }, [dispatch]);
 
-  // Handle search with debouncing
-  useEffect(() => {
+  // Handle search with debouncing (client-side)
+  const debouncedSearch = useMemo(() => {
     const timeoutId = setTimeout(() => {
-      dispatch(resetMedia());
-      dispatch(fetchMedia({ 
-        query, 
-        type, 
-        reset: true 
-      }));
+      // Client-side search will be handled by filteredMedia
     }, 300);
-
     return () => clearTimeout(timeoutId);
-  }, [query, type, dispatch]);
+  }, [searchQuery]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setQuery(e.target.value));
+    setSearchQuery(e.target.value);
   };
 
-  const handleTabChange = (newType: string) => {
-    dispatch(setType(newType));
-  };
-
-  const handleRefresh = () => {
-    dispatch(resetMedia());
-    dispatch(fetchMedia({ 
-      query, 
-      type, 
-      reset: true 
-    }));
-  };
-
-  const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      dispatch(fetchMedia({ 
-        query, 
-        type, 
-        cursor 
-      }));
-    }
+  const handleTabChange = (newTab: string) => {
+    setCurrentTab(newTab);
+    // No API call needed - just change tab instantly!
   };
 
   const handleFileUpload = async (files: FileList) => {
@@ -124,10 +104,10 @@ export default function MediaManagement() {
           method: "POST",
           body: formData,
         });
-        console.log("Respone after upload" , response)
+        console.log("Respone after upload", response);
 
         const result = await response.json();
-        console.log("Result after upload" , result)
+        console.log("Result after upload", result);
 
         if (result.success) {
           dispatch(addMediaItem(result));
@@ -229,19 +209,63 @@ export default function MediaManagement() {
   };
 
   // Filter items based on current type
-  const filteredMedia = items.filter((file) => {
-    if (type === "all") return true;
-    return file?.resource_type === type;
-  });
+  const filteredMedia = useMemo(() => {
+    let filtered = items;
 
+    // Filter by tab
+    if (currentTab !== "all") {
+      filtered = filtered.filter((file) => {
+        if (currentTab === "files") {
+          return (
+            file?.resource_type === "raw" ||
+            (file?.resource_type !== "image" && file?.resource_type !== "video")
+          );
+        }
+        return file?.resource_type === currentTab;
+      });
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((file) => {
+        const filename = file.public_id.split("/").pop() || "";
+        const fullName = `${filename}.${file.format}`;
+        return (
+          fullName.toLowerCase().includes(query) ||
+          file.format.toLowerCase().includes(query) ||
+          file.resource_type.toLowerCase().includes(query)
+        );
+      });
+    }
+
+    return filtered;
+  }, [items, currentTab, searchQuery]);
   // Calculate stats from current items
-  const stats = {
-    total: totalCount,
-    images: items.filter(f => f.resource_type === "image").length,
-    videos: items.filter(f => f.resource_type === "video").length,
-    totalSize: items.reduce((acc, f) => acc + f.bytes, 0)
+  const stats = useMemo(
+    () => ({
+      total: totalCount || items.length,
+      images: items.filter((f) => f.resource_type === "image").length,
+      videos: items.filter((f) => f.resource_type === "video").length,
+      files: items.filter(
+        (f) =>
+          f.resource_type === "raw" ||
+          (f.resource_type !== "image" && f.resource_type !== "video")
+      ).length,
+    }),
+    [items, totalCount]
+  );
+
+  const handleRefresh = () => {
+    dispatch(resetMedia());
+    dispatch(fetchMedia({ reset: true, fetchAll: true }));
   };
 
+  const handleLoadMore = () => {
+    if (hasMore && !loading) {
+      dispatch(fetchMedia({ cursor, fetchAll: true }));
+    }
+  };
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -256,7 +280,7 @@ export default function MediaManagement() {
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            className="bg-white text-background cursor-pointer"
+            className="bg-primary text-background cursor-pointer"
             size="sm"
             onClick={handleRefresh}
             disabled={loading}
@@ -266,7 +290,7 @@ export default function MediaManagement() {
 
           <Button
             variant="outline"
-            className="bg-white text-background cursor-pointer"
+            className="bg-primary text-background cursor-pointer"
             size="sm"
             onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
           >
@@ -320,12 +344,10 @@ export default function MediaManagement() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <HardDrive className="h-5 w-5 text-orange-500" />
+              <File className="h-5 w-5 text-orange-500" />
               <div>
-                <p className="text-sm text-gray-600">Storage Used</p>
-                <p className="text-xl font-bold">
-                  {formatFileSize(stats.totalSize)}
-                </p>
+                <p className="text-sm text-gray-600">Documents</p>
+                <p className="text-xl font-bold">{stats.files}</p>
               </div>
             </div>
           </CardContent>
@@ -340,7 +362,7 @@ export default function MediaManagement() {
               type="file"
               id="fileInput"
               multiple
-              accept="image/*,video/*"
+              accept="image/*,video/*,.pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx"
               onChange={(e) =>
                 e.target.files && handleFileUpload(e.target.files)
               }
@@ -355,7 +377,7 @@ export default function MediaManagement() {
                 Drag and drop files here or click to browse
                 <br />
                 <span className="text-xs">
-                  Supports: JPG, PDF, PNG, WebP, GIF, MP4, WebM (Max: 50MB)
+                  Supports: Images, Videos, PDFs, Documents (Max: 50MB)
                 </span>
               </p>
             </label>
@@ -369,7 +391,7 @@ export default function MediaManagement() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search media files..."
-            value={query}
+            value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10"
           />
@@ -377,20 +399,23 @@ export default function MediaManagement() {
       </div>
 
       {/* Tabs and Media Grid */}
-      <Tabs value={type} onValueChange={handleTabChange}>
-        <TabsList className="grid w-full max-w-md grid-cols-3 bg-gray-300 text-background">
+      <Tabs value={currentTab} onValueChange={handleTabChange}>
+        <TabsList className="grid w-full max-w-lg grid-cols-4 bg-gray-300 text-background">
           <TabsTrigger value="all" className="cursor-pointer">
-            All Files
+            All Files ({stats.total})
           </TabsTrigger>
           <TabsTrigger value="image" className="cursor-pointer">
-            Images
+            Images ({stats.images})
           </TabsTrigger>
           <TabsTrigger value="video" className="cursor-pointer">
-            Videos
+            Videos ({stats.videos})
+          </TabsTrigger>
+          <TabsTrigger value="files" className="cursor-pointer">
+            Documents ({stats.files})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value={type} className="mt-6">
+        <TabsContent value={currentTab} className="mt-6">
           {loading && items.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -400,16 +425,17 @@ export default function MediaManagement() {
             <Card>
               <CardContent className="p-12 text-center">
                 <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No media files found
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No media files found</h3>
                 <p className="text-gray-500">
-                  {query ? "Try adjusting your search terms" : "Upload some files to get started"}
+                  {searchQuery ? "Try adjusting your search terms" : "Upload some files to get started"}
                 </p>
               </CardContent>
             </Card>
           ) : (
             <>
+              <div className="mb-4 text-sm text-gray-500">
+                Showing {filteredMedia.length} of {items.length} files
+              </div>
               <div
                 className={
                   viewMode === "grid"
@@ -431,20 +457,17 @@ export default function MediaManagement() {
                 ))}
               </div>
 
+              {/* Load More for fetching additional pages */}
               {hasMore && (
                 <div className="flex justify-center mt-8">
-                  <Button
-                    onClick={handleLoadMore}
-                    disabled={loading}
-                    variant="outline"
-                  >
+                  <Button onClick={handleLoadMore} disabled={loading} variant="outline">
                     {loading ? (
                       <>
                         <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                        Loading...
+                        Loading More...
                       </>
                     ) : (
-                      "Load More"
+                      "Load More Files"
                     )}
                   </Button>
                 </div>
@@ -522,12 +545,38 @@ function MediaCard({
   formatFileSize: (bytes: number) => string;
   formatDate: (date: string) => string;
 }) {
+  // Function to get appropriate icon for file type
+  const getFileIcon = (file: MediaItem) => {
+    if (file.resource_type === "image") {
+      return <ImageIcon className="h-6 w-6 text-blue-500" />;
+    } else if (file.resource_type === "video") {
+      return <Video className="h-6 w-6 text-purple-500" />;
+    } else {
+      // For other file types, show different icons based on format
+      switch (file.format?.toLowerCase()) {
+        case "pdf":
+          return <FileText className="h-6 w-6 text-red-500" />;
+        case "doc":
+        case "docx":
+          return <FileText className="h-6 w-6 text-blue-600" />;
+        case "xls":
+        case "xlsx":
+          return <FileText className="h-6 w-6 text-green-600" />;
+        case "ppt":
+        case "pptx":
+          return <FileText className="h-6 w-6 text-orange-600" />;
+        default:
+          return <File className="h-6 w-6 text-gray-500" />;
+      }
+    }
+  };
+
   if (viewMode === "list") {
     return (
       <Card className="hover:shadow-md transition-shadow">
         <CardContent className="p-4">
           <div className="flex items-center space-x-4 bg-transparent">
-            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
               {file.resource_type === "image" ? (
                 <img
                   src={file.secure_url}
@@ -535,9 +584,7 @@ function MediaCard({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Video className="h-6 w-6 text-gray-400" />
-                </div>
+                getFileIcon(file)
               )}
             </div>
 
@@ -555,7 +602,10 @@ function MediaCard({
                     file.resource_type === "image" ? "default" : "secondary"
                   }
                 >
-                  {file.resource_type}
+                  {file.resource_type === "image" ||
+                  file.resource_type === "video"
+                    ? file.resource_type
+                    : "document"}
                 </Badge>
                 <span className="text-xs text-gray-400 uppercase">
                   {file.format}
@@ -607,7 +657,7 @@ function MediaCard({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              <Video className="h-8 w-8 text-primary" />
+              {getFileIcon(file)}
             </div>
           )}
 
@@ -653,7 +703,9 @@ function MediaCard({
               variant={file.resource_type === "image" ? "default" : "secondary"}
               className="text-xs text-background"
             >
-              {file.resource_type}
+              {file.resource_type === "image" || file.resource_type === "video"
+                ? file.resource_type
+                : "document"}
             </Badge>
             <span className="text-xs text-gray-400 uppercase">
               {file.format}
@@ -679,41 +731,98 @@ function PreviewDialog({
   formatFileSize: (bytes: number) => string;
   formatDate: (date: string) => string;
 }) {
+  const renderPreview = () => {
+    if (file.resource_type === "image") {
+      return (
+        <img
+          src={file.secure_url}
+          alt="Preview"
+          className="w-full max-h-96 object-contain"
+        />
+      );
+    } else if (file.resource_type === "video") {
+      return (
+        <video
+          src={file.secure_url}
+          controls
+          className="w-full max-h-96 object-contain"
+        >
+          Your browser does not support video playback.
+        </video>
+      );
+    } else {
+      // For documents and other files
+      const isViewableInBrowser = ["pdf"].includes(
+        file.format?.toLowerCase() || ""
+      );
+
+      if (isViewableInBrowser) {
+        return (
+          <div className="w-full h-96 border rounded-lg overflow-hidden">
+            <iframe
+              src={file.secure_url}
+              className="w-full h-full"
+              title="File preview"
+            />
+          </div>
+        );
+      } else {
+        return (
+          <div className="w-full h-96 bg-gray-100 rounded-lg flex flex-col items-center justify-center">
+            <FileText className="h-16 w-16 text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              {file.format?.toUpperCase()} Document
+            </h3>
+            <p className="text-gray-500 text-center mb-4">
+              This file type cannot be previewed in the browser.
+              <br />
+              Download the file to view its contents.
+            </p>
+            <Button
+              onClick={() => {
+                const a = document.createElement("a");
+                a.href = file.secure_url;
+                a.download = `${file.public_id.split("/").pop()}.${
+                  file.format
+                }`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+              }}
+              className="bg-primary text-white hover:bg-primary/90"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download File
+            </Button>
+          </div>
+        );
+      }
+    }
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl overflow-hidden border-background">
+      <DialogContent className="max-w-3xl h-[90vh] overflow-hidden border-background">
         {/* Header */}
         <DialogHeader>
-          <div className="flex items-center justify-between px-3">
+          <div className="flex items-center justify-between px-3 pt-4">
             <DialogTitle className="text-primary text-lg font-semibold">
-              {file.public_id.split("/").pop()}.{file.format}
+              {file.public_id.split("/").pop()}
             </DialogTitle>
             <Badge
               className="text-background capitalize"
               variant={file.resource_type === "image" ? "default" : "secondary"}
             >
-              {file.resource_type}
+              {file.resource_type === "image" || file.resource_type === "video"
+                ? file.resource_type
+                : "document"}
             </Badge>
           </div>
         </DialogHeader>
 
         {/* Preview */}
         <div className="relative bg-gray-100 rounded-lg overflow-hidden">
-          {file.resource_type === "image" ? (
-            <img
-              src={file.secure_url}
-              alt="Preview"
-              className="w-full max-h-96 object-contain"
-            />
-          ) : (
-            <video
-              src={file.secure_url}
-              controls
-              className="w-full max-h-96 object-contain"
-            >
-              Your browser does not support video playback.
-            </video>
-          )}
+          {renderPreview()}
         </div>
 
         {/* File Details */}
@@ -722,7 +831,12 @@ function PreviewDialog({
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-gray-500">Type</dt>
-              <dd className="font-medium capitalize">{file.resource_type}</dd>
+              <dd className="font-medium capitalize">
+                {file.resource_type === "image" ||
+                file.resource_type === "video"
+                  ? file.resource_type
+                  : "document"}
+              </dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-gray-500">Format</dt>
@@ -768,7 +882,9 @@ function PreviewDialog({
               onClick={() => {
                 const a = document.createElement("a");
                 a.href = file.secure_url;
-                a.download = `${file.public_id.split("/").pop()}.${file.format}`;
+                a.download = `${file.public_id.split("/").pop()}.${
+                  file.format
+                }`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);

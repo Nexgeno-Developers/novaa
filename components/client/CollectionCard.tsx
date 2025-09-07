@@ -151,7 +151,7 @@ export default function CollectionCard({
   // Project Card Component
   const ProjectCard = ({ property }: { property: any }) => (
     <motion.div
-      className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300"
+      className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin"
     >
       <div
         className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"

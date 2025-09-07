@@ -22,6 +22,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Plus,
   Edit,
   Trash2,
@@ -32,10 +42,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux";
-import {
-  fetchProjects,
-  deleteProject,
-} from "@/redux/slices/projectsSlice";
+import { fetchProjects, deleteProject } from "@/redux/slices/projectsSlice";
 import { fetchCategories } from "@/redux/slices/categoriesSlice";
 import { useAppDispatch } from "@/redux/hooks";
 
@@ -63,6 +70,7 @@ export default function ProjectsManager() {
     (state: RootState) => state.projects
   );
   const { categories } = useSelector((state: RootState) => state.categories);
+  const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -72,14 +80,12 @@ export default function ProjectsManager() {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Are you sure you want to delete "${name}"?`)) {
-      try {
-        await dispatch(deleteProject(id)).unwrap();
-        toast.success("Project deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete project");
-      }
+  const handleDelete = async (id: string) => {
+    try {
+      await dispatch(deleteProject(id)).unwrap();
+      toast.success("Project deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete project");
     }
   };
 
@@ -174,7 +180,7 @@ export default function ProjectsManager() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="bg-gray-300">
+                <TableHeader className="bg-primary/90">
                   <TableRow>
                     <TableHead className="text-background">Image</TableHead>
                     <TableHead className="text-background">Name</TableHead>
@@ -238,7 +244,7 @@ export default function ProjectsManager() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-background"
+                            className="text-primary hover:text-primary/90 cursor-pointer"
                             onClick={() => handleEdit(project._id)}
                           >
                             <Edit className="h-4 w-4" />
@@ -246,10 +252,8 @@ export default function ProjectsManager() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() =>
-                              handleDelete(project._id, project.name)
-                            }
-                            className="text-destructive hover:text-destructive"
+                            onClick={() => setDeleteDialogId(project._id)}
+                            className="text-destructive hover:text-destructive cursor-pointer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -263,6 +267,31 @@ export default function ProjectsManager() {
           )}
         </CardContent>
       </Card>
+      <AlertDialog
+        open={!!deleteDialogId}
+        onOpenChange={() => setDeleteDialogId(null)}
+      >
+        <AlertDialogContent className="bg-gray-300">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              enquiry and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-gray-100/90 cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteDialogId && handleDelete(deleteDialogId)}
+              className="bg-destructive text-foreground cursor-pointer hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

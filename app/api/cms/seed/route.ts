@@ -332,6 +332,52 @@ export async function POST(request: NextRequest) {
         },
       },
       {
+        name: "FAQ Section",
+        slug: "faq-section",
+        type: "faq",
+        component: "FaqManager",
+        order: 8,
+        pageSlug: "home",
+        status: "active",
+        settings: {
+          isVisible: true,
+          backgroundColor: "#f8f9fa",
+          padding: "80px 0",
+          margin: "0",
+        },
+        content: {
+          title: "Frequently Asked Questions",
+          subtitle: "Get answers to common questions",
+          layout: "accordion",
+          showSearch: true,
+          categories: ["General", "Investment", "Legal", "Process"],
+          backgroundImage: "/clients/bg.png",
+          description: "Here are some frequently asked questions.",
+          faqs: [
+            {
+              question: "What is the first question?",
+              answer: "<p>This is the answer to the first question.</p>",
+              order: 0,
+            },
+            {
+              question: "What is the second question?",
+              answer: "<p>This is the answer to the second question.</p>",
+              order: 1,
+            },
+            {
+              question: "What is the third question?",
+              answer: "<p>This is the answer to the third question.</p>",
+              order: 2,
+            },
+            {
+              question: "What is the fourth question?",
+              answer: "<p>This is the answer to the fourth question.</p>",
+              order: 3,
+            },
+          ],
+        },
+      },
+      {
         name: "Testimonials Section",
         slug: "testimonials-section",
         type: "testimonials",
@@ -388,52 +434,7 @@ export async function POST(request: NextRequest) {
           ],
         },
       },
-      {
-        name: "FAQ Section",
-        slug: "faq-section",
-        type: "faq",
-        component: "FaqManager",
-        order: 8,
-        pageSlug: "home",
-        status: "active",
-        settings: {
-          isVisible: true,
-          backgroundColor: "#f8f9fa",
-          padding: "80px 0",
-          margin: "0",
-        },
-        content: {
-          title: "Frequently Asked Questions",
-          subtitle: "Get answers to common questions",
-          layout: "accordion",
-          showSearch: true,
-          categories: ["General", "Investment", "Legal", "Process"],
-          backgroundImage: "/clients/bg.png",
-          description: "Here are some frequently asked questions.",
-          faqs: [
-            {
-              question: "What is the first question?",
-              answer: "<p>This is the answer to the first question.</p>",
-              order: 0,
-            },
-            {
-              question: "What is the second question?",
-              answer: "<p>This is the answer to the second question.</p>",
-              order: 1,
-            },
-            {
-              question: "What is the third question?",
-              answer: "<p>This is the answer to the third question.</p>",
-              order: 2,
-            },
-            {
-              question: "What is the fourth question?",
-              answer: "<p>This is the answer to the fourth question.</p>",
-              order: 3,
-            },
-          ],
-        },
-      },
+
       {
         name: "Investor Insights Section",
         slug: "investor-insights-section",

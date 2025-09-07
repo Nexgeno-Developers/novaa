@@ -68,7 +68,7 @@ export default function Navbar({ data }: NavbarProps) {
         <div className="container relative flex items-center justify-between h-20">
           {/* Logo */}
           <div
-            className="flex items-center justify-start xl:justify-center bg-background h-full cursor-pointer relative z-10"
+            className="flex items-center justify-start xl:justify-center bg-background h-full cursor-pointer relative z-10 xl:pr-30"
             onClick={() => router.push("/")}
           >
             {data.logo ? (
@@ -109,7 +109,7 @@ export default function Navbar({ data }: NavbarProps) {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="inline-flex items-center gap-2 px-6 pt-3 pb-2 rounded-md text-background font-semibold text-sm shadow-lg transition-all cursor-pointer"
+                className="inline-flex font-josefin items-center gap-2 px-6 pt-3 pb-2 rounded-md text-background font-semibold text-sm shadow-lg transition-all cursor-pointer"
                 style={{
                   background:
                     "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",

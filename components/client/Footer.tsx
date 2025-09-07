@@ -35,7 +35,7 @@ export default function Footer({ data }: FooterProps) {
                 <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-bold mb-6 bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">{data.tagline.subtitle}</h2>
                 <p className="font-josefin description-text mb-12 text-[#FFFFFFE5] max-w-2xl mx-auto">{data.tagline.description}</p>
                 <div className="inline-block">
-                    <button className="group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-6 py-3 sm:px-8 sm:py-4 rounded-full transition-all duration-300 flex flex-col items-center gap-1 text-base sm:text-lg font-medium text-center cursor-pointer">
+                    <button className="font-josefin group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-6 py-3 sm:px-8 sm:py-4 rounded-full transition-all duration-300 flex flex-col items-center gap-1 text-base sm:text-lg font-medium text-center cursor-pointer">
                         {data?.ctaButtonLines.map((line, i) => <span key={i}>{line}</span>)}
                         <ArrowRight className="w-5 h-5 mt-1 group-hover:translate-x-1 transition-transform duration-300" />
                     </button>
@@ -43,7 +43,7 @@ export default function Footer({ data }: FooterProps) {
             </div>
 
             {/* Dynamic Content Box */}
-            <div className="container bg-[#01292BCC] rounded-3xl">
+            <div className="container bg-[#01292BCC] rounded-3xl font-josefin">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-6 sm:p-12">
                     {/* About Us */}
                     <div>

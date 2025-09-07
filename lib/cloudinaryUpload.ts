@@ -129,7 +129,7 @@ export class CloudinaryService {
   // UPDATED: Enhanced search with resource_type support
   async searchFiles(
     query?: string,
-    resourceType?: "image" | "video" | "file" | "raw",
+    resourceType?: "image" | "video" | "file" | "raw" | "auto",
     maxResults: number = 20,
     nextCursor?: string,
     resource_type?: "image" | "video" | "raw" | "auto" // New parameter
@@ -209,7 +209,7 @@ export class CloudinaryService {
   // UPDATED: Alternative search method with enhanced filtering
   async searchFilesAlternative(
     query?: string,
-    resourceType?: "image" | "video" | "file" | "raw",
+    resourceType?: "image" | "video" | "file" | "raw" | "auto",
     maxResults: number = 20,
     nextCursor?: string,
     resource_type?: "image" | "video" | "raw" | "auto"

@@ -36,6 +36,17 @@ import {
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useAppDispatch } from "@/redux/hooks";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 interface Category {
   _id: string;
   name: string;
@@ -51,6 +62,9 @@ export default function CategoriesSection() {
   );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
+
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -115,14 +129,12 @@ export default function CategoriesSection() {
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`Are you sure you want to delete "${name}"?`)) {
-      try {
-        await dispatch(deleteCategory(id)).unwrap();
-        toast.success("Category deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete category");
-      }
+  const handleDelete = async (id: string) => {
+    try {
+      await dispatch(deleteCategory(id)).unwrap();
+      toast.success("Category deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete category");
     }
   };
 
@@ -161,15 +173,15 @@ export default function CategoriesSection() {
                 Add Category
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-xl">
               <DialogHeader>
-                <DialogTitle className="text-primary">
+                <DialogTitle className="text-gradient-gold">
                   {editingCategory ? "Edit Category" : "Add New Category"}
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="categoryName" className="text-primary">
+                  <Label htmlFor="categoryName" className="text-background ">
                     Category Name
                   </Label>
                   <Input
@@ -179,17 +191,19 @@ export default function CategoriesSection() {
                       setFormData((prev) => ({ ...prev, name: e.target.value }))
                     }
                     placeholder="Enter category name"
-                    className="text-gray-300"
+                    className="text-background no-selection-highlight"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="categoryOrder" className='text-primary'>Order</Label>
+                  <Label htmlFor="categoryOrder" className="text-background">
+                    Order
+                  </Label>
                   <Input
                     id="categoryOrder"
                     type="number"
-                    className='text-gray-300'
+                    className="text-background"
                     value={formData.order}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -210,7 +224,9 @@ export default function CategoriesSection() {
                       setFormData((prev) => ({ ...prev, isActive: checked }))
                     }
                   />
-                  <Label htmlFor="categoryActive" className='text-primary'>Active</Label>
+                  <Label htmlFor="categoryActive" className="text-background">
+                    Active
+                  </Label>
                 </div>
 
                 <div className="flex justify-end space-x-2">
@@ -260,7 +276,7 @@ export default function CategoriesSection() {
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   <Table>
-                    <TableHeader className="bg-gray-300">
+                    <TableHeader className="bg-primary/90">
                       <TableRow>
                         <TableHead className="w-8"></TableHead>
                         <TableHead className="text-background">Name</TableHead>
@@ -319,9 +335,9 @@ export default function CategoriesSection() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() =>
-                                      handleDelete(category._id, category.name)
-                                    }
+                                    onClick={() => (
+                                      setDeleteDialogId(category._id)
+                                    )}
                                     className="text-destructive hover:text-destructive"
                                   >
                                     <Trash2 className="h-4 w-4" />
@@ -341,6 +357,34 @@ export default function CategoriesSection() {
           </DragDropContext>
         )}
       </CardContent>
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deleteDialogId}
+        onOpenChange={() => (
+          setDeleteDialogId(null)
+        )}
+      >
+        <AlertDialogContent className="bg-gray-300">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              enquiry and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-gray-100/90 cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteDialogId && handleDelete(deleteDialogId)}
+              className="bg-destructive text-foreground cursor-pointer hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }

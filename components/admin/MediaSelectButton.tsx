@@ -139,7 +139,7 @@ const MediaSelectButton = ({
             variant="outline"
             onClick={() => setSelectorOpen(true)}
             disabled={isMediaLoading}
-            className="w-full justify-start h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
+            className="w-full justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
             {isMediaLoading || isResolvingMedia ? (
               <div className="flex items-center gap-3 w-full">

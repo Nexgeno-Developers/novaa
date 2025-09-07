@@ -1,4 +1,3 @@
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CategoriesSection from '@/components/admin/CategoriesSection';
 
 export default function CategoriesPage() {

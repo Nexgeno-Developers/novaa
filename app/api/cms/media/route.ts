@@ -5,6 +5,7 @@ import { CloudinaryService } from '@/lib/cloudinaryUpload';
 const cloudinaryService = new CloudinaryService();
 
 // GET - Fetch media files with pagination and search
+
 export async function GET(request: NextRequest) {
   try {
     // Verify admin authentication
@@ -15,22 +16,22 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('query') || undefined;
-    const typeParam = searchParams.get('type');
     const resourceTypeParam = searchParams.get('resource_type');
     
-    // Handle the type parameter properly - now includes 'file' and 'raw'
-    const type = (typeParam && typeParam !== 'all') ? typeParam as 'image' | 'video' | 'file' | 'raw' : undefined;
-    const resource_type = (resourceTypeParam && resourceTypeParam !== 'all') ? resourceTypeParam as 'image' | 'video' | 'raw' | 'auto' : undefined;
+    // Handle resource_type parameter - this should map to Cloudinary's resource types
+    const resource_type = (resourceTypeParam && resourceTypeParam !== 'all') 
+      ? resourceTypeParam as 'image' | 'video' | 'raw' | 'auto' 
+      : undefined;
     
     const limit = parseInt(searchParams.get('limit') || '20');
     const cursor = searchParams.get('cursor') || undefined;
 
-    console.log('API received params:', { query, type, resource_type, limit, cursor });
+    console.log('API received params:', { query, resource_type, limit, cursor });
 
-    // Use alternative search method for better query handling
+    // Use the resource_type parameter directly for Cloudinary search
     const result = query 
-      ? await cloudinaryService.searchFilesAlternative(query, type, limit, cursor, resource_type)
-      : await cloudinaryService.searchFiles(undefined, type, limit, cursor, resource_type);
+      ? await cloudinaryService.searchFilesAlternative(query, resource_type, limit, cursor)
+      : await cloudinaryService.searchFiles(undefined, resource_type, limit, cursor);
 
     console.log("API sending result:", {
       resourceCount: result.resources.length,

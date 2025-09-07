@@ -25,7 +25,7 @@ interface MediaState {
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   query: string;
-  type: string; // "all" | "image" | "video" | "file"
+  type: string; // "all" | "image" | "video" | "files"
   cursor?: string;
   hasMore: boolean;
   totalCount: number;
@@ -43,31 +43,43 @@ const initialState: MediaState = {
   totalCount: 0,
 };
 
-// Async thunk to fetch media from your API
+// Updated async thunk to handle fetchAll
 export const fetchMedia = createAsyncThunk(
   "media/fetchMedia",
   async ({
     query,
     type,
-    resource_type,
     cursor,
     limit = 20,
     reset = false,
+    fetchAll = false, // New parameter
   }: {
     query?: string;
     type?: string;
-    resource_type?: string;
     cursor?: string;
     limit?: number;
     reset?: boolean;
+    fetchAll?: boolean; // Add this type
   }) => {
     const params = new URLSearchParams();
 
+    // If fetchAll is true, don't filter by resource_type to get everything
     if (query) params.append("query", query);
-    if (type && type !== "all") params.append("type", type);
-    if (resource_type && resource_type !== "all") params.append("resource_type", resource_type);
+    
+    if (!fetchAll) {
+      // Only filter by type if we're not fetching all
+      if (type && type !== "all") {
+        params.append("resource_type", type);
+      }
+    }
+    
     if (cursor && !reset) params.append("cursor", cursor);
-    params.append("limit", limit.toString());
+    
+    // Use larger limit when fetching all
+    const actualLimit = fetchAll ? 100 : limit;
+    params.append("limit", actualLimit.toString());
+
+    console.log("Sending API params:", params.toString(), { fetchAll });
 
     const response = await axios.get(`/api/cms/media?${params.toString()}`);
     console.log("API fetchMedia response:", response.data);
@@ -77,6 +89,7 @@ export const fetchMedia = createAsyncThunk(
       totalCount: response.data.data.total_count || 0,
       nextCursor: response.data.data.next_cursor,
       reset,
+      fetchAll, // Pass this through to the reducer
     };
   }
 );
@@ -132,19 +145,27 @@ const mediaSlice = createSlice({
         state.loading = false;
         state.status = "succeeded";
 
-        const { resources, totalCount, nextCursor, reset } = action.payload;
+        const { resources, totalCount, nextCursor, reset, fetchAll } = action.payload;
 
         if (reset || !state.cursor) {
           // Fresh search or initial load
           state.items = resources;
         } else {
-          // Pagination - append new items
-          state.items = [...state.items, ...resources];
+          // Pagination - append new items, avoiding duplicates
+          const newItems = resources.filter(
+            newItem => !state.items.some(
+              existingItem => existingItem.public_id === newItem.public_id
+            )
+          );
+          state.items = [...state.items, ...newItems];
         }
 
         state.totalCount = totalCount;
         state.cursor = nextCursor;
-        state.hasMore = resources.length === 20; // Assuming limit is 20
+        
+        // When fetchAll is true, we might have more data available
+        // But for client-side filtering, we usually want to load everything
+        state.hasMore = fetchAll ? !!nextCursor : resources.length === 20;
       })
       .addCase(fetchMedia.rejected, (state, action) => {
         state.loading = false;

@@ -217,7 +217,7 @@ export default function PhuketPropertiesSection({
                           />
                         </div>
                       </div>
-                      <span className="text-base sm:text-xl lg:text-3xl font-medium font-josefin">
+                      <span className="text-base sm:text-xl lg:text-3xl font-medium font-josefin line-clamp-1">
                         {category.title}
                       </span>
                     </button>

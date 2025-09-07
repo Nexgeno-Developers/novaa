@@ -71,11 +71,11 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
             <StarRating rating={testimonial.rating} />
           </div>
           <div
-            className="text-background description-text mb-0 lg:mb-8 flex-grow"
+            className="text-background description-text mb-0 lg:mb-8 flex-grow font-josefin"
             dangerouslySetInnerHTML={{ __html: testimonial.quote }}
           />
           <p
-            className="font-light"
+            className="font-light font-josefin"
             dangerouslySetInnerHTML={{ __html: testimonial.name }}
           ></p>
         </div>
@@ -180,7 +180,7 @@ export function EliteClientsTestimonials({
               <div className="flex ">
                 {activeTestimonials.map((testimonial, index) => (
                   <div
-                    className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.3333%]"
+                    className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.3333%] px-4"
                     key={testimonial.id}
                   >
                     <TestimonialCard
@@ -195,9 +195,9 @@ export function EliteClientsTestimonials({
             {/* Navigation */}
             {activeTestimonials.length > 1 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                // initial={{ opacity: 0, y: 20 }}
+                // animate={{ opacity: 1, y: 0 }}
+                // transition={{ duration: 0.6, delay: 0.4 }}
                 className="flex items-center justify-center gap-4 mt-10"
               >
                 <button

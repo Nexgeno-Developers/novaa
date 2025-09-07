@@ -42,85 +42,67 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({
-  mediaType = 'image',
-  mediaUrl = '/images/hero.jpg',
-  title = 'Experience Unparalleled',
-  subtitle = 'Luxury in Thailand',
+  mediaType = "image",
+  mediaUrl = "/images/hero.jpg",
+  title = "Experience Unparalleled",
+  subtitle = "Luxury in Thailand",
   highlightedWords,
   ctaButton,
   overlayOpacity = 0.4,
-  overlayColor = '#01292B',
-  titleFontFamily = 'font-cinzel',
-  subtitleFontFamily = 'font-cinzel',
-  titleFontSize = 'text-2xl md:text-[50px]',
-  subtitleFontSize = 'text-2xl md:text-[50px]',
-  titleGradient = 'none',
-  subtitleGradient = 'none',
+  overlayColor = "#01292B",
+  titleFontFamily = "font-cinzel",
+  subtitleFontFamily = "font-cinzel",
+  titleFontSize = "text-2xl md:text-[50px]",
+  subtitleFontSize = "text-2xl md:text-[50px]",
+  titleGradient = "none",
+  subtitleGradient = "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
   ...props
 }: HeroSectionProps) {
+  console.log("Props", props.heroSection);
 
-  console.log("Props" , props.heroSection)
+  // const getTitleStyle = () => {
+  //   if (titleGradient && titleGradient !== "none") {
+  //     console.log("Applying title gradient:", titleGradient);
+  //     return {
+  //       background: titleGradient,
+  //       WebkitBackgroundClip: "text",
+  //       backgroundClip: "text",
+  //       WebkitTextFillColor: "transparent",
+  //       color: "transparent",
+  //     };
+  //   }
+  //   return {
+  //     color: "white",
+  //   };
+  // };
+  // console.log("media ", mediaUrl);
 
-  const getTitleStyle = () => {
-    if (titleGradient && titleGradient !== "none") {
-      console.log("Applying title gradient:", titleGradient);
-      return {
-        background: titleGradient,
-        WebkitBackgroundClip: "text",
-        backgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        color: "transparent",
-      };
-    }
-    return {
-      color: "white",
-    };
-  };
+  // const renderStyledTitle = () => {
+  //   if (!title) return title;
 
-  const getSubtitleStyle = () => {
-    if (subtitleGradient && subtitleGradient !== "none") {
-      console.log("Applying subtitle gradient:", subtitleGradient);
-      return {
-        background: subtitleGradient,
-        WebkitBackgroundClip: "text",
-        backgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        color: "transparent",
-      };
-    }
-    return {
-      color: "white",
-    };
-  };
+  //   let styledTitle = title;
+  //   highlightedWords?.forEach(({ word, style }) => {
+  //     const regex = new RegExp(`\\b${word}\\b`, "gi");
+  //     const backgroundStyle = style.background
+  //       ? `background: ${style.background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;`
+  //       : "";
 
-  console.log("media ", mediaUrl);
+  //     styledTitle = styledTitle.replace(
+  //       regex,
+  //       `<span class="${style.fontFamily || "font-cinzel"}" style="color: ${
+  //         style.background ? "transparent" : style.color
+  //       }; font-weight: ${style.fontWeight}; font-size: ${
+  //         style.fontSize
+  //       }; font-style: ${style.fontStyle}; ${backgroundStyle} ${
+  //         style.textDecoration
+  //           ? `text-decoration: ${style.textDecoration};`
+  //           : ""
+  //       }">${word}</span>`
+  //     );
+  //   });
 
-  const renderStyledTitle = () => {
-    if (!title) return title;
-
-    let styledTitle = title;
-    highlightedWords?.forEach(({ word, style }) => {
-      const regex = new RegExp(`\\b${word}\\b`, "gi");
-      const backgroundStyle = style.background
-        ? `background: ${style.background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;`
-        : "";
-
-      styledTitle = styledTitle.replace(
-        regex,
-        `<span class="${style.fontFamily || "font-cinzel"}" style="color: ${
-          style.background ? "transparent" : style.color
-        }; font-weight: ${style.fontWeight}; font-size: ${
-          style.fontSize
-        }; font-style: ${style.fontStyle}; ${backgroundStyle} ${
-          style.textDecoration
-            ? `text-decoration: ${style.textDecoration};`
-            : ""
-        }">${word}</span>`
-      );
-    });
-
-    return <div dangerouslySetInnerHTML={{ __html: styledTitle }} />;
-  };
+  //   return <div dangerouslySetInnerHTML={{ __html: styledTitle }} />;
+  // };
 
   return (
     <section className="relative h-screen overflow-hidden pt-20">
@@ -159,15 +141,14 @@ export default function HeroSection({
       {/* Text Overlay */}
       <div className="absolute bottom-6 sm:bottom-10 w-full z-10">
         <div className="container text-white">
-          <div className={titleFontFamily}>
+          <div>
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className={`${titleFontSize} leading-[100%] tracking-[0%] font-normal`}
-              style={getTitleStyle()}
+              className={`text-2xl lg:text-3xl xl:text-[60px] font-cinzel  leading-[100%] tracking-[0%] font-normal`}
             >
-              {renderStyledTitle()}
+              {title}{" "}
             </motion.div>
 
             {subtitle && (
@@ -175,8 +156,15 @@ export default function HeroSection({
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.2 }}
-                className={`font-bold ${subtitleFontSize} leading-[100%] mt-2 ${subtitleFontFamily}`}
-                style={getSubtitleStyle()}
+                className={`text-2xl lg:text-3xl font-bold xl:text-[60px] leading-[100%] mt-2 ${subtitleFontFamily}`}
+                style={{
+                  background:
+                    "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                }}
               >
                 {subtitle}
               </motion.div>
