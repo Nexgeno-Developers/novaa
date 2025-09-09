@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   DragDropContext,
   Droppable,
@@ -8,7 +8,7 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,8 +46,8 @@ import {
   Trash2,
   GripVertical,
   Star,
-  Sparkles,
-  Images,
+  Book,
+  Image,
 } from "lucide-react";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/admin/Editor";
@@ -100,7 +100,9 @@ const TestimonialsManagerContent = ({
   });
 
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
-  const [originalData, setOriginalData] = useState<TestimonialsData | null>(null);
+  const [originalData, setOriginalData] = useState<TestimonialsData | null>(
+    null
+  );
 
   // Testimonial form state
   const [testimonialForm, setTestimonialForm] = useState<TestimonialFormData>({
@@ -279,7 +281,7 @@ const TestimonialsManagerContent = ({
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="content" className="w-full">
+      {/* <Tabs defaultValue="content" className="w-full">
         <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
           <TabsTrigger
             value="content"
@@ -297,324 +299,344 @@ const TestimonialsManagerContent = ({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="content" className="space-y-6">
-          <Card className="py-6">
-            <CardHeader>
-              <CardTitle>Section Content</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Section Title</Label>
-                <RichTextEditor
-                  value={localData.title}
-                  onEditorChange={(content) =>
-                    handleContentUpdate("title", content)
-                  }
-                  id="testimonials-title"
-                />
-              </div>
+        <TabsContent value="content" className="space-y-6"> */}
+      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <CardTitle className="flex items-center text-gray-800 py-6">
+            <Book className="h-5 w-5 mr-2 text-blue-600" />
+            Section Content
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="title" className="text-primary/90">
+              Section Title
+            </Label>
+            <RichTextEditor
+              value={localData.title}
+              onEditorChange={(content) =>
+                handleContentUpdate("title", content)
+              }
+              id="testimonials-title"
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="subtitle">Section Subtitle</Label>
-                <RichTextEditor
-                  value={localData.subtitle}
-                  onEditorChange={(content) =>
-                    handleContentUpdate("subtitle", content)
-                  }
-                  id="testimonials-subtitle"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+          <div className="space-y-2">
+            <Label htmlFor="subtitle" className="text-primary/90">
+              Section Subtitle
+            </Label>
+            <RichTextEditor
+              value={localData.subtitle}
+              onEditorChange={(content) =>
+                handleContentUpdate("subtitle", content)
+              }
+              id="testimonials-subtitle"
+            />
+          </div>
+        </CardContent>
+      </Card>
+      {/* </TabsContent> */}
 
-        <TabsContent value="testimonials" className="space-y-6">
-          <div className="flex items-center justify-between">
+      {/* <TabsContent value="testimonials" className="space-y-6"> */}
+      {/* <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <CardTitle className="flex items-center text-gray-800 py-6">
+            <Image className="h-5 w-5 mr-2 text-blue-600" />
+            Manage Testimonials
+          </CardTitle>
+        </CardHeader> */}
+      <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
+        <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <div className="flex items-center">
+            <Image className="h-5 w-5 mr-2 text-blue-600" />
+
             <h2 className="text-xl font-semibold">Manage Testimonials</h2>
-            <Dialog
-              open={isCreateDialogOpen}
-              onOpenChange={setIsCreateDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button className="bg-primary text-background cursor-pointer">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Testimonial
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
-                  <DialogTitle>Create New Testimonial</DialogTitle>
-                  <DialogDescription>
-                    Add a new client testimonial to the section.
-                  </DialogDescription>
-                </DialogHeader>
+          </div>
+          <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+          >
+            <DialogTrigger asChild className="flex">
+              <Button className="bg-primary text-background cursor-pointer">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Testimonial
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px] admin-theme">
+              <DialogHeader>
+                <DialogTitle className="text-primary/90">Create New Testimonial</DialogTitle>
+                <DialogDescription>
+                  Add a new client testimonial to the section.
+                </DialogDescription>
+              </DialogHeader>
 
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Client Name *</Label>
-                      <Input
-                        id="name"
-                        value={testimonialForm.name}
-                        onChange={(e) =>
-                          setTestimonialForm((prev) => ({
-                            ...prev,
-                            name: e.target.value,
-                          }))
-                        }
-                        placeholder="e.g., Mr. David Chen"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="role">Role & Location *</Label>
-                      <Input
-                        id="role"
-                        value={testimonialForm.role}
-                        onChange={(e) =>
-                          setTestimonialForm((prev) => ({
-                            ...prev,
-                            role: e.target.value,
-                          }))
-                        }
-                        placeholder="e.g., Business Magnate, Singapore"
-                      />
-                    </div>
-                  </div>
-
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Rating *</Label>
-                    <Select
-                      value={testimonialForm.rating.toString()}
-                      onValueChange={(value) =>
+                    <Label htmlFor="name" className="text-primary/90">Client Name *</Label>
+                    <Input
+                      id="name"
+                      value={testimonialForm.name}
+                      onChange={(e) =>
                         setTestimonialForm((prev) => ({
                           ...prev,
-                          rating: parseInt(value),
+                          name: e.target.value,
                         }))
                       }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select rating" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[5, 4, 3, 2, 1].map((rating) => (
-                          <SelectItem key={rating} value={rating.toString()}>
-                            <div className="flex items-center gap-2">
-                              {rating} {renderStars(rating)}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Testimonial Quote *</Label>
-                    <RichTextEditor
-                      value={testimonialForm.quote}
-                      onEditorChange={(content) =>
-                        setTestimonialForm((prev) => ({
-                          ...prev,
-                          quote: content,
-                        }))
-                      }
-                      id="create-testimonial-quote"
+                      placeholder="e.g., Mr. David Chen"
                     />
                   </div>
-
                   <div className="space-y-2">
-                    <Label>Client Avatar *</Label>
-                    <div className="flex items-center gap-4">
-                      {testimonialForm.avatar && (
-                        <img
-                          src={testimonialForm.avatar}
-                          alt="Selected avatar"
-                          className="w-16 h-16 rounded-full object-cover border"
-                        />
-                      )}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setSelectorOpen(true)}
-                      >
-                        {testimonialForm.avatar
-                          ? "Change Image"
-                          : "Select Image"}
-                      </Button>
-                    </div>
+                    <Label htmlFor="role" className="text-primary/90">Role & Location *</Label>
+                    <Input
+                      id="role"
+                      value={testimonialForm.role}
+                      onChange={(e) =>
+                        setTestimonialForm((prev) => ({
+                          ...prev,
+                          role: e.target.value,
+                        }))
+                      }
+                      placeholder="e.g., Business Magnate, Singapore"
+                    />
                   </div>
                 </div>
 
-                <DialogFooter>
-                  <Button
-                    variant="outline"
-                    className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-                    onClick={() => {
-                      resetTestimonialForm();
-                      setIsCreateDialogOpen(false);
-                    }}
+                <div className="space-y-2">
+                  <Label className="text-primary/90">Rating *</Label>
+                  <Select
+                    value={testimonialForm.rating.toString()}
+                    onValueChange={(value) =>
+                      setTestimonialForm((prev) => ({
+                        ...prev,
+                        rating: parseInt(value),
+                      }))
+                    }
                   >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleCreateTestimonial}
-                    className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-                  >
-                    Create Testimonial
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+                    <SelectTrigger className="ring-2 ring-primary/20 cursor-pointer">
+                      <SelectValue placeholder="Select rating" />
+                    </SelectTrigger>
+                    <SelectContent className="admin-theme">
+                      {[5, 4, 3, 2, 1].map((rating) => (
+                        <SelectItem key={rating} value={rating.toString()} className="cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            {rating} {renderStars(rating)}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-          {localData.testimonials.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-8">
-                <p className="text-gray-500 mb-4">No testimonials found</p>
+                <div className="space-y-2">
+                  <Label className="text-primary/90">Testimonial Quote *</Label>
+                  <RichTextEditor
+                    value={testimonialForm.quote}
+                    onEditorChange={(content) =>
+                      setTestimonialForm((prev) => ({
+                        ...prev,
+                        quote: content,
+                      }))
+                    }
+                    id="create-testimonial-quote"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-primary/90">Client Avatar *</Label>
+                  <div className="flex items-center gap-4">
+                    {testimonialForm.avatar && (
+                      <img
+                        src={testimonialForm.avatar}
+                        alt="Selected avatar"
+                        className="w-16 h-16 rounded-full object-cover border"
+                      />
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="cursor-pointer "
+                      onClick={() => setSelectorOpen(true)}
+                    >
+                      {testimonialForm.avatar ? "Change Image" : "Select Image"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter>
                 <Button
-                  onClick={() => setIsCreateDialogOpen(true)}
-                  className="bg-primary text-background cursor-pointer"
+                  variant="outline"
+                  className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
+                  onClick={() => {
+                    resetTestimonialForm();
+                    setIsCreateDialogOpen(false);
+                  }}
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Your First Testimonial
+                  Cancel
                 </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="testimonials">
-                {(provided) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-4"
-                  >
-                    {localData.testimonials.map((testimonial, index) => (
-                      <Draggable
-                        key={testimonial.id}
-                        draggableId={testimonial.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <Card
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className={`transition-all duration-200 ${
-                              snapshot.isDragging
-                                ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
-                                : ""
-                            }`}
-                          >
-                            <CardContent className="p-6">
-                              <div className="flex items-start gap-4">
+                <Button
+                  onClick={handleCreateTestimonial}
+                  className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
+                >
+                  Create Testimonial
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {localData.testimonials.length === 0 ? (
+          <Card className="py-6">
+            <CardContent className="text-center py-8">
+              <p className="text-primary/90 mb-4">No testimonials found</p>
+              <Button
+                onClick={() => setIsCreateDialogOpen(true)}
+                className="bg-primary text-primary/90 cursor-pointer"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Testimonial
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="testimonials">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="space-y-4 px-6"
+                >
+                  {localData.testimonials.map((testimonial, index) => (
+                    <Draggable
+                      key={testimonial.id}
+                      draggableId={testimonial.id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <Card
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          className={`transition-all duration-200 ${
+                            snapshot.isDragging
+                              ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
+                              : ""
+                          }`}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-4">
+                              <div
+                                {...provided.dragHandleProps}
+                                className="cursor-move p-2 hover:bg-gray-100 rounded"
+                              >
+                                <GripVertical className="w-4 h-4 text-gray-400" />
+                              </div>
+
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={testimonial.avatar}
+                                  alt={testimonial.name}
+                                  className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                                />
+                              </div>
+
+                              <div className="flex-grow space-y-2">
+                                <div className="flex items-center gap-4">
+                                  <h3 className="font-semibold text-lg text-primary/90">
+                                    {testimonial.name}
+                                  </h3>
+                                  <Badge variant="secondary" className="text-primary/90">
+                                    {testimonial.role}
+                                  </Badge>
+                                  {renderStars(testimonial.rating)}
+                                </div>
+
                                 <div
-                                  {...provided.dragHandleProps}
-                                  className="cursor-move p-2 hover:bg-gray-100 rounded"
-                                >
-                                  <GripVertical className="w-4 h-4 text-gray-400" />
-                                </div>
+                                  className="text-gray-600 line-clamp-3"
+                                  dangerouslySetInnerHTML={{
+                                    __html: testimonial.quote,
+                                  }}
+                                />
 
-                                <div className="flex-shrink-0">
-                                  <img
-                                    src={testimonial.avatar}
-                                    alt={testimonial.name}
-                                    className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                                  />
-                                </div>
-
-                                <div className="flex-grow space-y-2">
-                                  <div className="flex items-center gap-4">
-                                    <h3 className="font-semibold text-lg">
-                                      {testimonial.name}
-                                    </h3>
-                                    <Badge variant="secondary">
-                                      {testimonial.role}
-                                    </Badge>
-                                    {renderStars(testimonial.rating)}
-                                  </div>
-
-                                  <div
-                                    className="text-gray-600 line-clamp-3"
-                                    dangerouslySetInnerHTML={{
-                                      __html: testimonial.quote,
-                                    }}
-                                  />
-
-                                  <div className="text-sm text-gray-500">
-                                    Order: {testimonial.order + 1}
-                                  </div>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="bg-gray-200 cursor-pointer"
-                                    onClick={() =>
-                                      handleEditTestimonial(testimonial)
-                                    }
-                                  >
-                                    <Edit className="w-4 h-4" />
-                                  </Button>
-
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button
-                                        size="sm"
-                                        className="cursor-pointer"
-                                        variant="destructive"
-                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>
-                                          Delete Testimonial
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Are you sure you want to delete this
-                                          testimonial? This action cannot be
-                                          undone.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>
-                                          Cancel
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() =>
-                                            handleDeleteTestimonial(
-                                              testimonial.id
-                                            )
-                                          }
-                                          className="bg-red-600 hover:bg-red-700"
-                                        >
-                                          Delete
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
+                                <div className="text-sm text-gray-500">
+                                  Order: {testimonial.order + 1}
                                 </div>
                               </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          )}
-        </TabsContent>
-      </Tabs>
+
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="bg-gray-200 cursor-pointer"
+                                  onClick={() =>
+                                    handleEditTestimonial(testimonial)
+                                  }
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      size="sm"
+                                      className="cursor-pointer"
+                                      variant="destructive"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent className="admin-theme">
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle className="text-primary/90">
+                                        Delete Testimonial
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete this
+                                        testimonial? This action cannot be
+                                        undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() =>
+                                          handleDeleteTestimonial(
+                                            testimonial.id
+                                          )
+                                        }
+                                        className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        )}
+      </Card>
+      {/* </TabsContent>
+        
+      </Tabs> */}
 
       {/* Edit Testimonial Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] admin-theme">
           <DialogHeader>
-            <DialogTitle>Edit Testimonial</DialogTitle>
+            <DialogTitle className="text-primary/90">Edit Testimonial</DialogTitle>
             <DialogDescription>
               Update the testimonial information.
             </DialogDescription>
@@ -623,7 +645,7 @@ const TestimonialsManagerContent = ({
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-name">Client Name *</Label>
+                <Label htmlFor="edit-name" className="text-primary/90">Client Name *</Label>
                 <Input
                   id="edit-name"
                   value={testimonialForm.name}
@@ -637,7 +659,7 @@ const TestimonialsManagerContent = ({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-role">Role & Location *</Label>
+                <Label htmlFor="edit-role" className="text-primary/90">Role & Location *</Label>
                 <Input
                   id="edit-role"
                   value={testimonialForm.role}
@@ -653,7 +675,7 @@ const TestimonialsManagerContent = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Rating *</Label>
+              <Label className="text-primary/90">Rating *</Label>
               <Select
                 value={testimonialForm.rating.toString()}
                 onValueChange={(value) =>
@@ -663,12 +685,12 @@ const TestimonialsManagerContent = ({
                   }))
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="cursor-pointer ring-2 ring-primary/20">
                   <SelectValue placeholder="Select rating" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="admin-theme">
                   {[5, 4, 3, 2, 1].map((rating) => (
-                    <SelectItem key={rating} value={rating.toString()}>
+                    <SelectItem key={rating} value={rating.toString()} className="cursor-pointer">
                       <div className="flex items-center gap-2">
                         {rating} {renderStars(rating)}
                       </div>
@@ -679,7 +701,7 @@ const TestimonialsManagerContent = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Testimonial Quote *</Label>
+              <Label className="text-primary/90">Testimonial Quote *</Label>
               <RichTextEditor
                 value={testimonialForm.quote}
                 onEditorChange={(content) =>
@@ -690,7 +712,7 @@ const TestimonialsManagerContent = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Client Avatar *</Label>
+              <Label className="text-primary/90">Client Avatar *</Label>
               <div className="flex items-center gap-4">
                 {testimonialForm.avatar && (
                   <img
@@ -702,6 +724,7 @@ const TestimonialsManagerContent = ({
                 <Button
                   type="button"
                   variant="outline"
+                  className="cursor-pointer border-indigo-200 border-2"
                   onClick={() => setSelectorOpen(true)}
                 >
                   {testimonialForm.avatar ? "Change Image" : "Select Image"}

@@ -336,7 +336,7 @@ export async function POST(request: NextRequest) {
         slug: "faq-section",
         type: "faq",
         component: "FaqManager",
-        order: 8,
+        order: 7,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -382,7 +382,7 @@ export async function POST(request: NextRequest) {
         slug: "testimonials-section",
         type: "testimonials",
         component: "TestimonialsManager",
-        order: 7,
+        order: 8,
         pageSlug: "home",
         status: "active",
         settings: {

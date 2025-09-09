@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import connectDB from '@/lib/mongodb';
 import Blog from '@/models/Blog';
-import BlogCategory from '@/models/BlogCategory';
+// import BlogCategory from '@/models/BlogCategory';
 import Section from '@/models/Section';
 import BreadcrumbsSection from '@/components/client/BreadcrumbsSection';
 import BlogDetailClient from '@/components/client/BlogDetailClient';
@@ -39,7 +39,7 @@ async function getBlogBySlug(slug: string) {
     }
 
     // Ensure categoryName is set for related blogs
-    updatedRelatedBlogs.forEach((relatedBlog: any) => {
+    updatedRelatedBlogs.forEach((relatedBlog: { category: { title: string; }; categoryName: string; }) => {
       if (relatedBlog.category && !relatedBlog.categoryName) {
         relatedBlog.categoryName = relatedBlog.category.title;
       }

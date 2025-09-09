@@ -197,21 +197,21 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux';
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux";
 
 // Shadcn UI Components
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Images, Sparkles } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Image, Images, Sparkles } from "lucide-react";
 
 // Custom Components
-import MediaSelectButton from '@/components/admin/MediaSelectButton';
-import Editor from '@/components/admin/Editor';
-import BaseSectionManager from '@/components/admin/BaseSectionManager';
+import MediaSelectButton from "@/components/admin/MediaSelectButton";
+import Editor from "@/components/admin/Editor";
+import BaseSectionManager from "@/components/admin/BaseSectionManager";
 
 interface BreadcrumbManagerProps {
   section?: any;
@@ -224,7 +224,7 @@ export default function BreadcrumbManager({
   section,
   onChange,
   showSaveButton = true,
-  pageSlug
+  pageSlug,
 }: BreadcrumbManagerProps) {
   // Use refs to track initialization state
   const isInitializedRef = useRef(false);
@@ -232,9 +232,9 @@ export default function BreadcrumbManager({
 
   // Local state for section-based management
   const [localData, setLocalData] = useState({
-    title: section?.content?.title || '',
-    description: section?.content?.description || '',
-    backgroundImageUrl: section?.content?.backgroundImageUrl || '',
+    title: section?.content?.title || "",
+    description: section?.content?.description || "",
+    backgroundImageUrl: section?.content?.backgroundImageUrl || "",
   });
 
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -243,9 +243,9 @@ export default function BreadcrumbManager({
   useEffect(() => {
     if (section?.content && !initialDataSetRef.current) {
       const newData = {
-        title: section.content.title || '',
-        description: section.content.description || '',
-        backgroundImageUrl: section.content.backgroundImageUrl || '',
+        title: section.content.title || "",
+        description: section.content.description || "",
+        backgroundImageUrl: section.content.backgroundImageUrl || "",
       };
       setLocalData(newData);
       initialDataSetRef.current = true;
@@ -266,11 +266,11 @@ export default function BreadcrumbManager({
   };
 
   const handleEditorChange = (content: string) => {
-    handleFieldChange('description', content);
+    handleFieldChange("description", content);
   };
 
   const handleMediaSelect = (url: string) => {
-    handleFieldChange('backgroundImageUrl', url);
+    handleFieldChange("backgroundImageUrl", url);
   };
 
   // If section prop is provided, render within BaseSectionManager
@@ -284,7 +284,7 @@ export default function BreadcrumbManager({
         description="Configure the breadcrumb banner for this page"
       >
         <div className="space-y-6">
-          <Tabs defaultValue="content" className="w-full">
+          {/* <Tabs defaultValue="content" className="w-full">
             <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
               <TabsTrigger
                 value="content"
@@ -300,56 +300,67 @@ export default function BreadcrumbManager({
                 <Images className="w-4 h-4" />
                 <span className="font-medium">Background Image</span>
               </TabsTrigger>
-            </TabsList>
+            </TabsList> */}
 
-            <TabsContent value="content">
-              <Card className='py-6 shadow-sm border-0 bg-white'>
-                <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
-                  <CardTitle className="text-gray-800 py-6">Section Content</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="title" className="text-sm font-medium text-gray-700">
-                      Main Title
-                    </Label>
-                    <Input
-                      id="title"
-                      name="title"
-                      value={localData.title}
-                      onChange={(e) => handleFieldChange('title', e.target.value)}
-                      placeholder="e.g., About Our Company"
-                      className="border-gray-300 focus:border-primary focus:ring-primary"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">Description</Label>
-                    <div className="border border-gray-300 rounded-lg">
-                      <Editor
-                        value={localData.description}
-                        onEditorChange={handleEditorChange}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="background">
-              <Card className='py-6 shadow-sm border-0 bg-white'>
-                <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
-                  <CardTitle className="text-gray-800 py-6">Background Image</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <MediaSelectButton
-                    label="Section Background"
-                    mediaType="image"
-                    value={localData.backgroundImageUrl}
-                    onSelect={handleMediaSelect}
+          {/* <TabsContent value="content"> */}
+          <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                Content Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className=" space-y-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="title"
+                  className="text-sm font-medium text-primary/90"
+                >
+                  Main Title
+                </Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={localData.title}
+                  onChange={(e) => handleFieldChange("title", e.target.value)}
+                  placeholder="e.g., About Our Company"
+                  className="border-gray-300 focus:border-primary focus:ring-primary"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-primary/90">
+                  Description
+                </Label>
+                <div className="border border-gray-300 rounded-lg">
+                  <Editor
+                    value={localData.description}
+                    onEditorChange={handleEditorChange}
                   />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          {/* </TabsContent> */}
+
+          {/* <TabsContent value="background"> */}
+          <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Image className="h-5 w-5 mr-2 text-blue-600" />
+                Breadcrumb Background Image
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MediaSelectButton
+                label="Section Background"
+                mediaType="image"
+                value={localData.backgroundImageUrl}
+                onSelect={handleMediaSelect}
+              />
+            </CardContent>
+          </Card>
+          {/* </TabsContent>
+          </Tabs> */}
         </div>
       </BaseSectionManager>
     );

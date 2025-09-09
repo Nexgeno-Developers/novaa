@@ -178,7 +178,6 @@ export function AdvancedMediaSelector({
         fetchMedia({
           query: localQuery,
           type: searchType,
-          resource_type: searchResourceType,
           reset: true,
         })
       );
@@ -206,7 +205,6 @@ export function AdvancedMediaSelector({
       fetchMedia({
         query: localQuery || undefined,
         type: searchType,
-        resource_type: searchResourceType,
         reset: true,
       })
     );
@@ -268,7 +266,6 @@ export function AdvancedMediaSelector({
         fetchMedia({
           query: localQuery || undefined,
           type: searchType,
-          resource_type: searchResourceType,
         })
       );
     }
@@ -462,7 +459,7 @@ export function AdvancedMediaSelector({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+        <DialogContent className="max-w-4xl max-h-[95vh] p-0">
           <DialogHeader className="p-6 pb-0">
             <div className="flex items-center justify-between">
               <DialogTitle className="text-xl font-semibold">
@@ -539,7 +536,7 @@ export function AdvancedMediaSelector({
             )}
 
             {/* Stats */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="flex items-center justify-center mb-1">
                   <FileText className="h-4 w-4 text-blue-500 mr-1" />
@@ -599,8 +596,8 @@ export function AdvancedMediaSelector({
             {loading && filteredMedia.length === 0 ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
-                  <p className="text-gray-500">Loading media...</p>
+                  {/* <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" /> */}
+                  {/* <p className="text-gray-500">Loading media...</p> */}
                 </div>
               </div>
             ) : filteredMedia.length === 0 ? (
@@ -619,7 +616,7 @@ export function AdvancedMediaSelector({
               <div
                 className={
                   viewMode === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-2"
+                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 py-2"
                     : "space-y-2"
                 }
               >
@@ -641,7 +638,6 @@ export function AdvancedMediaSelector({
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Loading...
                     </>
                   ) : (
                     "Load More"

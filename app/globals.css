@@ -327,6 +327,7 @@ video {
 }
 
 .admin-theme {
+  font-family: 'Poppins', sans-serif;
   /* Base */
   --background: #f8fafc; /* light slate */
   --foreground: #0f172a; /* dark navy text */

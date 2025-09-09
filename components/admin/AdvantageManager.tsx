@@ -24,8 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import RichTextEditor from "@/components/admin/Editor";
 import MediaSelectButton from "@/components/admin/MediaSelectButton";
 import BaseSectionManager from "@/components/admin/BaseSectionManager";
@@ -197,7 +195,7 @@ const NovaaAdvantageManagerContent = ({
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="content">
+      {/* <Tabs defaultValue="content">
         <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
           <TabsTrigger
             value="content"
@@ -213,17 +211,20 @@ const NovaaAdvantageManagerContent = ({
             <Images className="w-4 h-4" />
             <span className="font-medium">Images</span>
           </TabsTrigger>
-        </TabsList>
+        </TabsList> */}
 
-        <TabsContent value="content" className="mt-4">
-          <Card className="py-6">
-            <CardHeader>
-              <CardTitle>Section Header</CardTitle>
+        {/* <TabsContent value="content" className="mt-4"> */}
+          <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
+               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                Main Content
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="main-title">Main Title</Label>
+                  <Label htmlFor="main-title" className="text-primary/90">Main Title</Label>
                   <Input
                     id="main-title"
                     placeholder="e.g., THE NOVAA"
@@ -234,7 +235,7 @@ const NovaaAdvantageManagerContent = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="highlighted-title">Highlighted Title</Label>
+                  <Label htmlFor="highlighted-title" className="text-primary/90">Highlighted Title</Label>
                   <Input
                     id="highlighted-title"
                     placeholder="e.g., ADVANTAGE"
@@ -246,7 +247,7 @@ const NovaaAdvantageManagerContent = ({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Main Description</Label>
+                <Label className="text-primary/90">Main Description</Label>
                 <RichTextEditor
                   id="main-description"
                   value={localData.description}
@@ -258,18 +259,20 @@ const NovaaAdvantageManagerContent = ({
             </CardContent>
           </Card>
 
-          <Separator className="my-8" />
+           <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
+               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                Advantage Items
+              </CardTitle>
 
-          <Card className="py-6">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Advantage Items</CardTitle>
-              <Button
+              {/* <Button
                 onClick={handleAddAdvantage}
                 className="bg-primary text-background cursor-pointer"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Advantage
-              </Button>
+              </Button> */}
             </CardHeader>
             <CardContent>
               {localData.advantages.length === 0 ? (
@@ -305,7 +308,7 @@ const NovaaAdvantageManagerContent = ({
                                 className={`p-4 border rounded-lg bg-white shadow-sm flex items-start gap-4 transition-all duration-200 ${
                                   snapshot.isDragging
                                     ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
-                                    : ""
+                                    : "ring-2 ring-primary/20"
                                 }`}
                               >
                                 <div
@@ -317,7 +320,7 @@ const NovaaAdvantageManagerContent = ({
 
                                 <div className="flex-grow space-y-4">
                                   <div className="space-y-2">
-                                    <Label>Title</Label>
+                                    <Label className="text-primary/90">Title</Label>
                                     <Input
                                       value={item.title}
                                       onChange={(e) =>
@@ -332,9 +335,8 @@ const NovaaAdvantageManagerContent = ({
                                   </div>
 
                                   <div className="space-y-2">
-                                    <Label>Description</Label>
+                                    <Label className="text-primary/90">Description</Label>
                                     <RichTextEditor
-                                      id={`advantage-desc-${item._id}`}
                                       value={item.description}
                                       onEditorChange={(content) =>
                                         handleUpdateAdvantageItem(
@@ -388,16 +390,19 @@ const NovaaAdvantageManagerContent = ({
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        {/* </TabsContent> */}
 
-        <TabsContent value="images" className="mt-4">
-          <Card className="py-6">
-            <CardHeader>
-              <CardTitle>Water Effect Image Components</CardTitle>
-            </CardHeader>
+        {/* <TabsContent value="images" className="mt-4"> */}
+          <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
+               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <ImageIcon className="h-5 w-5 mr-2 text-blue-600" />
+                Water Effect Image Components
+              </CardTitle>
+              </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <Label className="text-lg font-medium">Background Image</Label>
+                <Label className="text-lg font-medium text-primary/90">Background Image</Label>
                 <div className="w-full aspect-square rounded-lg border border-dashed flex items-center justify-center bg-gray-50 overflow-hidden">
                   {localData.backgroundImage ? (
                     <Image
@@ -425,7 +430,7 @@ const NovaaAdvantageManagerContent = ({
               </div>
 
               <div className="space-y-3">
-                <Label className="text-lg font-medium">Center Logo Image</Label>
+                <Label className="text-lg font-medium text-primary/90">Center Logo Image</Label>
                 <div className="w-full aspect-square rounded-lg bg-gray-50 border border-dashed flex items-center justify-center overflow-hidden">
                   {localData.logoImage ? (
                     <Image
@@ -453,8 +458,8 @@ const NovaaAdvantageManagerContent = ({
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        {/* </TabsContent> */}
+      {/* </Tabs> */}
     </div>
   );
 };

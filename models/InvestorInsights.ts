@@ -1,7 +1,7 @@
-// models/InvestorInsights.ts
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITestimonial {
+  _id?: string;
   quote: string;
   content: string;
   designation: string;
@@ -10,8 +10,8 @@ export interface ITestimonial {
 }
 
 export interface IInvestorInsightsContent {
-  mainTitle: string;
-  highlightedTitle: string;
+  title: string;
+  subtitle: string;
   description: string;
 }
 
@@ -28,25 +28,34 @@ const TestimonialSchema = new Schema({
   content: { type: String, required: true },
   designation: { type: String, required: true },
   src: { type: String, required: true },
-  order: { type: Number, required: true, default: 0 }
+  order: { type: Number, required: true, default: 0 },
 });
 
 const InvestorInsightsContentSchema = new Schema({
-  mainTitle: { type: String, required: true, default: "Insights for the" },
-  highlightedTitle: { type: String, required: true, default: "Discerning Investor" },
-  description: { type: String, required: true, default: "Stay informed with trending stories, industry updates, and thoughtful articles curated just for you." }
-});
-
-const InvestorInsightsSchema = new Schema({
-  content: { 
-    type: InvestorInsightsContentSchema, 
+  title: { type: String, required: true, default: "Insights for the" },
+  subtitle: { type: String, required: true, default: "Discerning Investor" },
+  description: {
+    type: String,
     required: true,
-    default: () => ({})
+    default:
+      "Stay informed with trending stories, industry updates, and thoughtful articles curated just for you.",
   },
-  testimonials: [TestimonialSchema],
-  isActive: { type: Boolean, default: true }
-}, {
-  timestamps: true
 });
 
-export default mongoose.models.InvestorInsights || mongoose.model<IInvestorInsights>('InvestorInsights', InvestorInsightsSchema);
+const InvestorInsightsSchema = new Schema(
+  {
+    content: {
+      type: InvestorInsightsContentSchema,
+      required: true,
+      default: () => ({}),
+    },
+    testimonials: [TestimonialSchema],
+    isActive: { type: Boolean, default: true },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export default mongoose.models.InvestorInsights ||
+  mongoose.model<IInvestorInsights>("InvestorInsights", InvestorInsightsSchema);

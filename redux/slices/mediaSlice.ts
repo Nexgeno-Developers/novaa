@@ -69,6 +69,7 @@ export const fetchMedia = createAsyncThunk(
     if (!fetchAll) {
       // Only filter by type if we're not fetching all
       if (type && type !== "all") {
+        console.log("Type from media" , type);
         params.append("resource_type", type);
       }
     }
@@ -79,10 +80,10 @@ export const fetchMedia = createAsyncThunk(
     const actualLimit = fetchAll ? 100 : limit;
     params.append("limit", actualLimit.toString());
 
-    console.log("Sending API params:", params.toString(), { fetchAll });
+    // console.log("Sending API params:", params.toString(), { fetchAll });
 
     const response = await axios.get(`/api/cms/media?${params.toString()}`);
-    console.log("API fetchMedia response:", response.data);
+    // console.log("API fetchMedia response:", response.data);
 
     return {
       resources: response.data.data.resources as MediaItem[],

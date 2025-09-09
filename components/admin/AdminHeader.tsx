@@ -189,11 +189,11 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
 
   return (
     <>
-      <div className="flex w-full items-center justify-between h-full ">
+      <div className="flex w-full items-center justify-between h-full">
         {/* Left side - Page info */}
         <div className="flex flex-col justify-center">
           <div className="flex items-center space-x-3">
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            <h1 className="text-2xl font-bold text-primary/90 tracking-tight">
               {getPageTitle()}
             </h1>
             <Badge variant="outline" className="text-xs font-medium hidden sm:inline-flex">
@@ -229,7 +229,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
           <div className="relative hidden md:block">
             <Button
               variant="outline"
-              className="relative w-80 h-10 justify-start text-sm text-muted-foreground hover:bg-accent/50 cursor-pointer dark:hover:text-gray-900"
+              className="relative w-80 h-10 justify-start text-sm text-gray-800 hover:text-primary/90 hover:bg-gray-50 cursor-pointer dark:hover:text-gray-900"
               onClick={() => setCommandOpen(true)}
             >
               <Search className="mr-2 h-4 w-4" />
@@ -257,23 +257,23 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   <Plus className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-card/95 backdrop-blur-sm border-border/50">
+              <DropdownMenuContent align="end" className="admin-theme w-48 bg-card/95 backdrop-blur-sm border-border/50">
                 <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className='cursor-pointer' onClick={() => router.push('/admin/navbar')}>
-                  <FileText className="mr-2 h-4 w-4" />
+                  <FileText className="mr-2 h-4 w-4 hover:text-primary/90" />
                   Manage Navbar
                 </DropdownMenuItem>
                 <DropdownMenuItem className='cursor-pointer' onClick={() => router.push('/admin/blogs/')}>
-                  <BookOpen className="mr-2 h-4 w-4" />
+                  <BookOpen className="mr-2 h-4 w-4 hover:text-primary/90" />
                   New Blog Post
                 </DropdownMenuItem>
                 <DropdownMenuItem className='cursor-pointer' onClick={() => router.push('/admin/projects/create')}>
-                  <Briefcase className="mr-2 h-4 w-4" />
+                  <Briefcase className="mr-2 h-4 w-4 hover:text-primary/90" />
                   New Project
                 </DropdownMenuItem>
                 <DropdownMenuItem className='cursor-pointer' onClick={() => router.push('/admin/media')}>
-                  <Image className="mr-2 h-4 w-4" />
+                  <Image className="mr-2 h-4 w-4 hover:text-primary/90" />
                   Upload Media
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -287,7 +287,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   size="sm" 
                   className="relative h-10 w-10 rounded-xl hover:bg-accent/20 cursor-pointer transition-all duration-300 hover:scale-105"
                 >
-                  <Bell className="h-5 w-5" />
+                  <Bell className="h-5 w-5 text-primary hover:text-primary/90" />
                   {unreadCount > 0 && (
                     <Badge 
                       variant="destructive" 
@@ -299,7 +299,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   <span className="sr-only">View notifications</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-96 bg-card/95 backdrop-blur-sm border-border/50 shadow-xl">
+              <DropdownMenuContent align="end" className="admin-theme w-96 bg-card/95 backdrop-blur-sm border-border/50 shadow-xl">
                 <DropdownMenuLabel className="flex items-center justify-between p-4">
                   <span className="font-semibold">Notifications</span>
                   {unreadCount > 0 && (
@@ -371,7 +371,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="relative h-10 w-10 rounded-xl hover:bg-accent/50 transition-all duration-300 hover:scale-105"
+                  className="relative cursor-pointer h-10 w-10 rounded-xl hover:bg-accent/50 transition-all duration-300 hover:scale-105"
                 >
                   <Avatar className="h-8 w-8 ring-2 ring-primary/20">
                     <AvatarImage src={user?.avatar || "/avatars/admin.jpg"} alt="Admin" />
@@ -381,7 +381,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 bg-card/95 backdrop-blur-sm border-border/50 shadow-xl" align="end" forceMount>
+              <DropdownMenuContent className="admin-theme w-64 bg-card/95 backdrop-blur-sm border-border/50 shadow-xl" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal p-4">
                   <div className="flex flex-col space-y-2">
                     <div className="flex items-center space-x-3">
@@ -410,21 +410,21 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   className="p-3 cursor-pointer hover:bg-accent/30 transition-colors"
                   onClick={() => router.push('/admin/profile')}
                 >
-                  <User className="mr-3 h-4 w-4" />
+                  <User className="mr-3 h-4 w-4 hover:text-primary/90" />
                   <span className="font-medium">Profile Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   className="p-3 cursor-pointer hover:bg-accent/30 transition-colors"
                   onClick={() => router.push('/admin/settings')}
                 >
-                  <Settings className="mr-3 h-4 w-4" />
+                  <Settings className="mr-3 h-4 w-4 hover:text-primary/90" />
                   <span className="font-medium">Preferences</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   className="p-3 cursor-pointer hover:bg-accent/30 transition-colors"
                   onClick={() => router.push('/admin/help')}
                 >
-                  <Zap className="mr-3 h-4 w-4" />
+                  <Zap className="mr-3 h-4 w-4 hover:text-primary/90" />
                   <span className="font-medium">Help & Support</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -433,7 +433,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
                   disabled={loading}
                   className="p-3 cursor-pointer hover:bg-destructive/10 text-destructive hover:text-destructive transition-colors"
                 >
-                  <LogOut className="mr-3 h-4 w-4" />
+                  <LogOut className="mr-3 h-4 w-4 hover:text-primary/90" />
                   <span className="font-medium">
                     {loading ? 'Signing out...' : 'Sign Out'}
                   </span>

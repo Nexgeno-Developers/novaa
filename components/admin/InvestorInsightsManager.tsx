@@ -152,6 +152,7 @@ export default function InvestorInsightsManager({
 
   // Initial load - section data first, then Redux fallback
   useEffect(() => {
+    console.log(section);
     if (section?.content && !initialDataSetRef.current) {
       // console.log("inside if")
       const sectionData = section.content;
@@ -160,9 +161,9 @@ export default function InvestorInsightsManager({
 
       // If data is already flat, just set it directly
       setContentForm({
-        title: sectionData?.content?.title || "",
-        subtitle: sectionData?.content?.subtitle || "",
-        description: sectionData?.content?.description || "",
+        title: sectionData?.title || "",
+        subtitle: sectionData?.subtitle || "",
+        description: sectionData?.description || "",
       });
 
       if (sectionData.testimonials) {
@@ -195,14 +196,16 @@ export default function InvestorInsightsManager({
 
   // Notify parent only when user has interacted and data is initialized
   useEffect(() => {
-    if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
-      const combinedData = {
-        content: contentForm,
-        testimonials: localTestimonials,
-      };
-      onChange({ content: combinedData });
-    }
-  }, [contentForm, localTestimonials]);
+  if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
+    const combinedData = {
+      title: contentForm.title,
+      subtitle: contentForm.subtitle, 
+      description: contentForm.description,
+      testimonials: localTestimonials,
+    };
+    onChange({ content: combinedData });
+  }
+}, [contentForm, localTestimonials]);
 
   // console.log("Content Form ", contentForm);
 
@@ -410,6 +413,8 @@ export default function InvestorInsightsManager({
     }
   }, [error, dispatch]);
 
+  console.log("Content form ", contentForm);
+
   // Require section prop for global save mode
   if (!section || !onChange) {
     return (
@@ -451,7 +456,7 @@ export default function InvestorInsightsManager({
         )}
 
         {/* Tabs */}
-        <Tabs defaultValue="content" className="space-y-6">
+        {/* <Tabs defaultValue="content" className="space-y-6">
           <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
             <TabsTrigger
               value="content"
@@ -470,205 +475,211 @@ export default function InvestorInsightsManager({
           </TabsList>
 
           {/* Content Tab */}
-          <TabsContent value="content">
-            <Card className="py-6">
-              <CardHeader>
-                <CardTitle>Section Content Management</CardTitle>
-                <CardDescription>
-                  Edit the main content that appears on the left side of the
-                  Investor Insights section
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="title" className="pb-2">
-                        Main Title
-                      </Label>
-                      <Input
-                        id="title"
-                        value={contentForm.title}
-                        onChange={(e) =>
-                          handleContentChange("title", e.target.value)
-                        }
-                        placeholder="e.g., Insights for the"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="subtitle" className="pb-2">
-                        Highlighted Title
-                      </Label>
-                      <Input
-                        id="subtitle"
-                        value={contentForm.subtitle}
-                        onChange={(e) =>
-                          handleContentChange("subtitle", e.target.value)
-                        }
-                        placeholder="e.g., Discerning Investor"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <Label>Description</Label>
-                      <div className="mt-2">
-                        <RichTextEditor
-                          value={contentForm.description}
-                          onEditorChange={(content) =>
-                            handleContentChange("description", content)
-                          }
-                          id="investor-insights-description"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Testimonials Tab */}
-          <TabsContent value="testimonials">
-            <Card className="py-6">
-              <CardHeader className="flex flex-row items-center justify-between">
+        {/* <TabsContent value="content">  */}
+        <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+            <CardTitle className="flex items-center text-gray-800 pt-6">
+              <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+              Section Content Management
+            </CardTitle>
+            <CardDescription className="pb-6">
+              Edit the main content that appears on the left side of the
+              Investor Insights section
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-4">
                 <div>
-                  <CardTitle>Animated Testimonials Management</CardTitle>
-                  <CardDescription>
-                    Manage the animated testimonial cards that display property
-                    insights
-                  </CardDescription>
+                  <Label htmlFor="title" className="pb-2 text-primary/90">
+                    Main Title
+                  </Label>
+                  <Input
+                    id="title"
+                    value={contentForm.title}
+                    onChange={(e) =>
+                      handleContentChange("title", e.target.value)
+                    }
+                    placeholder="e.g., Insights for the"
+                  />
                 </div>
-                <Button
-                  onClick={handleAddTestimonial}
-                  className="text-background cursor-pointer"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Testimonial
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[600px] pr-4">
-                  {!localTestimonials || localTestimonials.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No testimonials found. Add your first testimonial to get
-                      started.
-                    </div>
-                  ) : (
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                      <Droppable droppableId="investor-testimonials">
-                        {(provided) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className="space-y-4"
-                          >
-                            {localTestimonials
-                              .slice()
-                              .sort((a, b) => a.order - b.order)
-                              .map((testimonial, index) => (
-                                <Draggable
-                                  key={testimonial._id}
-                                  draggableId={testimonial._id as string}
-                                  index={index}
+
+                <div>
+                  <Label htmlFor="subtitle" className="pb-2  text-primary/90">
+                    Highlighted Title
+                  </Label>
+                  <Input
+                    id="subtitle"
+                    value={contentForm.subtitle}
+                    onChange={(e) =>
+                      handleContentChange("subtitle", e.target.value)
+                    }
+                    placeholder="e.g., Discerning Investor"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className=" text-primary/90">Description</Label>
+                  <div className="mt-2">
+                    <RichTextEditor
+                      value={contentForm.description}
+                      onEditorChange={(content) =>
+                        handleContentChange("description", content)
+                      }
+                      id="investor-insights-description"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        {/* </TabsContent> */}
+
+        {/* Testimonials Tab */}
+        {/* <TabsContent value="testimonials"> */}
+        <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
+          <CardHeader className=" bg-gradient-to-r from-purple-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <CardTitle className="flex items-center text-gray-800 pt-6">
+                  <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                  Animated Testimonials Management
+                </CardTitle>
+                <CardDescription className="py-2">
+                  Manage the animated testimonial cards that display property
+                  insights
+                </CardDescription>
+              </div>
+              <Button
+                onClick={handleAddTestimonial}
+                className="text-background cursor-pointer"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Testimonial
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[600px] pr-4">
+              {!localTestimonials || localTestimonials.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No testimonials found. Add your first testimonial to get
+                  started.
+                </div>
+              ) : (
+                <DragDropContext onDragEnd={handleDragEnd}>
+                  <Droppable droppableId="investor-testimonials">
+                    {(provided) => (
+                      <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="space-y-4"
+                      >
+                        {localTestimonials
+                          .slice()
+                          .sort((a, b) => a.order - b.order)
+                          .map((testimonial, index) => (
+                            <Draggable
+                              key={testimonial._id}
+                              draggableId={testimonial._id as string}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <Card
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  className={`transition-all duration-200 py-6 ${
+                                    snapshot.isDragging
+                                      ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
+                                      : ""
+                                  }`}
                                 >
-                                  {(provided, snapshot) => (
-                                    <Card
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      className={`transition-all duration-200 py-6 ${
-                                        snapshot.isDragging
-                                          ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
-                                          : ""
-                                      }`}
+                                  <CardContent className="pt-6 flex items-start gap-4">
+                                    {/* Drag handle */}
+                                    <div
+                                      {...provided.dragHandleProps}
+                                      className="flex flex-col items-center pt-2 cursor-move"
                                     >
-                                      <CardContent className="pt-6 flex items-start gap-4">
-                                        {/* Drag handle */}
-                                        <div
-                                          {...provided.dragHandleProps}
-                                          className="flex flex-col items-center pt-2 cursor-move"
-                                        >
-                                          <GripVertical className="h-4 w-4 text-muted-foreground" />
-                                          <Badge
-                                            variant="outline"
-                                            className="mt-2 text-xs text-background"
-                                          >
-                                            {testimonial.order}
-                                          </Badge>
-                                        </div>
+                                      <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                      <Badge
+                                        variant="outline"
+                                        className="mt-2 text-xs text-background"
+                                      >
+                                        {testimonial.order}
+                                      </Badge>
+                                    </div>
 
-                                        {/* Image */}
-                                        <div className="flex-shrink-0">
-                                          <img
-                                            src={testimonial.src}
-                                            alt={testimonial.content}
-                                            className="w-20 h-20 rounded-lg object-cover border"
-                                          />
-                                        </div>
+                                    {/* Image */}
+                                    <div className="flex-shrink-0">
+                                      <img
+                                        src={testimonial.src}
+                                        alt={testimonial.content}
+                                        className="w-20 h-20 rounded-lg object-cover border"
+                                      />
+                                    </div>
 
-                                        {/* Content */}
-                                        <div className="flex-1 space-y-2">
-                                          <h3 className="font-semibold text-lg">
-                                            {testimonial.content}
-                                          </h3>
-                                          <p className="text-sm text-muted-foreground">
-                                            {testimonial.designation}
-                                          </p>
-                                          <p className="text-sm line-clamp-3">
-                                            {testimonial.quote}
-                                          </p>
-                                        </div>
+                                    {/* Content */}
+                                    <div className="flex-1 space-y-2">
+                                      <h3 className="font-semibold text-lg">
+                                        {testimonial.content}
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground">
+                                        {testimonial.designation}
+                                      </p>
+                                      <p className="text-sm line-clamp-3">
+                                        {testimonial.quote}
+                                      </p>
+                                    </div>
 
-                                        {/* Actions */}
-                                        <div className="flex items-center gap-2">
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="bg-gray-200 cursor-pointer"
-                                            onClick={() =>
-                                              handleEditTestimonial(testimonial)
-                                            }
-                                          >
-                                            <Edit2 className="h-4 w-4" />
-                                          </Button>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() =>
-                                              handleDeleteTestimonial(
-                                                testimonial
-                                              )
-                                            }
-                                            className="bg-gray-200 cursor-pointer text-destructive hover:text-destructive"
-                                          >
-                                            <Trash2 className="h-4 w-4" />
-                                          </Button>
-                                        </div>
-                                      </CardContent>
-                                    </Card>
-                                  )}
-                                </Draggable>
-                              ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
-                  )}
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                                    {/* Actions */}
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="bg-gray-200 cursor-pointer"
+                                        onClick={() =>
+                                          handleEditTestimonial(testimonial)
+                                        }
+                                      >
+                                        <Edit2 className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleDeleteTestimonial(testimonial)
+                                        }
+                                        className="bg-gray-200 cursor-pointer text-destructive hover:text-destructive"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              )}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+        {/* </TabsContent>
+        </Tabs> */}
 
         {/* Add/Edit Testimonial Dialog */}
         <Dialog
           open={isTestimonialDialogOpen}
           onOpenChange={setIsTestimonialDialogOpen}
         >
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto admin-theme">
             <DialogHeader>
               <DialogTitle className="text-primary">
                 {editingTestimonial
@@ -692,7 +703,6 @@ export default function InvestorInsightsManager({
                   </Label>
                   <Input
                     id="testimonial-content"
-                    className="text-gray-300"
                     value={testimonialForm.content}
                     onChange={(e) =>
                       setTestimonialForm((prev) => ({
@@ -714,7 +724,6 @@ export default function InvestorInsightsManager({
                   <Input
                     id="testimonial-designation"
                     value={testimonialForm.designation}
-                    className="text-gray-300"
                     onChange={(e) =>
                       setTestimonialForm((prev) => ({
                         ...prev,
@@ -735,7 +744,6 @@ export default function InvestorInsightsManager({
                   <Input
                     id="testimonial-order"
                     type="number"
-                    className="text-gray-300"
                     value={testimonialForm.order}
                     onChange={(e) =>
                       setTestimonialForm((prev) => ({
@@ -752,9 +760,8 @@ export default function InvestorInsightsManager({
                   <div className="mt-2">
                     <Button
                       type="button"
-                      variant="outline"
                       onClick={() => setSelectorOpen(true)}
-                      className="w-full bg-gray-200 cursor-pointer"
+                      className="w-full cursor-pointer"
                     >
                       <Eye className="mr-2 h-4 w-4" />
                       {testimonialForm.src ? "Change Image" : "Select Image"}
@@ -834,7 +841,7 @@ export default function InvestorInsightsManager({
             setDeleteConfirmDialog({ isOpen: false, testimonial: null })
           }
         >
-          <DialogContent>
+          <DialogContent className="admin-theme max-w-2xl">
             <DialogHeader>
               <DialogTitle>Confirm Deletion</DialogTitle>
               <DialogDescription>
@@ -864,6 +871,7 @@ export default function InvestorInsightsManager({
             <DialogFooter>
               <Button
                 variant="outline"
+                className="cursor-pointer"
                 onClick={() =>
                   setDeleteConfirmDialog({ isOpen: false, testimonial: null })
                 }
@@ -872,6 +880,7 @@ export default function InvestorInsightsManager({
               </Button>
               <Button
                 variant="destructive"
+                className="cursor-pointer"
                 onClick={confirmDelete}
                 disabled={saving}
               >

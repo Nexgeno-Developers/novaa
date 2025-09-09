@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
+import { start } from "repl";
 
 interface TestimonialData {
   id: string;
@@ -15,14 +16,14 @@ interface TestimonialData {
   order: number;
   isActive: boolean;
 }
-interface SectionContent {
-  title?: string;
-  subtitle?: string;
-}
+// interface SectionContent {
+//   title?: string;
+//   subtitle?: string;
+// }
 
 interface TestimonialsSectionProps {
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   testimonials?: TestimonialData[];
   [key: string]: unknown;
 }
@@ -93,7 +94,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
   );
 };
 
-export function EliteClientsTestimonials({
+export default function EliteClientsTestimonials({
   testimonials = [],
   title = "What Our <span class='text-[#D4AF37] font-bold'>Elite Clients Say</span>",
   subtitle = "Real stories from real people who trust us",
@@ -108,7 +109,11 @@ export function EliteClientsTestimonials({
   // const description =
   //   content?.description ?? "";
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, dragFree: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    dragFree: true,
+    align: "start",
+  });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
@@ -177,11 +182,11 @@ export function EliteClientsTestimonials({
           <>
             {/* Embla Carousel */}
             <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex ">
+              <div className="flex">
                 {activeTestimonials.map((testimonial, index) => (
                   <div
-                    className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.3333%] px-4"
                     key={testimonial.id}
+                    className="min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] xl:flex-[0_0_33.3333%] px-4"
                   >
                     <TestimonialCard
                       testimonial={testimonial}

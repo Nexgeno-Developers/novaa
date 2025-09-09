@@ -8,7 +8,7 @@ interface BreadcrumbsSectionProps {
   description?: string;
   backgroundImageUrl?: string;
   [key: string]: unknown;
-  pageSlug: string;
+  pageSlug?: string;
 }
 
 export default function BreadcrumbsSection({

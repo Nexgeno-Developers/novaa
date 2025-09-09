@@ -93,7 +93,7 @@ export default function AboutManager({
     if (onChange && hasLocalChanges) {
       onChange({ content: localData });
     }
-  }, [localData]);
+  }, [localData , hasLocalChanges]);
 
   const handleFieldChange = (field: string, value: string | boolean) => {
     setLocalData((prev) => ({ ...prev, [field]: value }));
@@ -112,18 +112,18 @@ export default function AboutManager({
       >
         <div className="space-y-6">
           {/* Page Content Section */}
-          <Card className="shadow-sm border-0 bg-white">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+          <Card className="shadow-sm border-0 bg-purple-50/30 ring-2 ring-primary/20">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
               <CardTitle className="flex items-center text-gray-800 py-6">
                 <ImageIcon className="h-5 w-5 mr-2 text-blue-600" />
                 Page Content
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="pb-6 space-y-6 ">
               <div className="space-y-2">
                 <Label
                   htmlFor="title"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-primary/90"
                 >
                   Main Title
                 </Label>
@@ -137,7 +137,7 @@ export default function AboutManager({
                 />
                 <Label
                   htmlFor="subtitle"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-primary/90"
                 >
                   Subtitle
                 </Label>
@@ -154,7 +154,7 @@ export default function AboutManager({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700">
+                <Label className="text-sm font-medium text-primary/90">
                   Description
                 </Label>
                 <div className="border border-gray-300 rounded-lg">
@@ -170,8 +170,8 @@ export default function AboutManager({
           </Card>
 
           {/* Action Button Section */}
-          <Card className="shadow-sm border-0 bg-white">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-xl">
+          <Card className="shadow-sm border-0 bg-purple-50/30 ring-2 ring-secondary/20">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-xl border-b-emerald-100 border-b-2">
               <CardTitle className="flex items-center text-gray-800 py-6">
                 <ImageIcon className="h-5 w-5 mr-2 text-green-600" />
                 Call-to-Action Button
@@ -182,7 +182,7 @@ export default function AboutManager({
                 <div className="space-y-2">
                   <Label
                     htmlFor="buttonText"
-                    className="text-sm font-medium text-gray-700"
+                    className="text-sm font-medium text-primary/90"
                   >
                     Button Text
                   </Label>
@@ -216,8 +216,8 @@ export default function AboutManager({
           </Card>
 
           {/* Background & Effects Section */}
-          <Card className="shadow-sm border-0 bg-white">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
+          <Card className="shadow-sm border-0 bg-purple-50/30 ring-2 ring-purple-200/20">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl border-b-2 border-b-pink-100/90">
               <CardTitle className="flex items-center text-gray-800 py-6">
                 <Layers className="h-5 w-5 mr-2 text-purple-600" />
                 Background & Visual Effects
@@ -292,7 +292,7 @@ export default function AboutManager({
 
               {/* Overlay Controls */}
               <div className="pt-4 border-t border-gray-200">
-                <Label className="text-sm font-medium text-gray-700 mb-4 block">
+                <Label className="text-sm font-medium text-primary/90 mb-4 block">
                   Overlay Effects
                 </Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

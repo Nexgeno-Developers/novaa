@@ -16,6 +16,11 @@ import {
   Images,
   Edit,
   MapPin,
+  ImagesIcon,
+  BookAIcon,
+  SparkleIcon,
+  ImagePlusIcon,
+  Map,
 } from "lucide-react";
 import {
   DragDropContext,
@@ -327,8 +332,8 @@ export default function PhuketPropertiesManager({
           </Alert>
         )}
 
-        <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full h-15 grid-cols-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
+        {/* <Tabs defaultValue="content" className="space-y-6"> */}
+          {/* <TabsList className="grid w-full h-15 grid-cols-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
             <TabsTrigger
               value="content"
               className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
@@ -350,17 +355,20 @@ export default function PhuketPropertiesManager({
               <Images className="w-4 h-4" />
               <span className="font-medium">Map</span>
             </TabsTrigger>
-          </TabsList>
+          </TabsList> */}
 
           {/* Content Tab */}
-          <TabsContent value="content" className="space-y-6">
-            <Card className="py-6">
-              <CardHeader>
-                <CardTitle>Main Section Content</CardTitle>
-              </CardHeader>
+          {/* <TabsContent value="content" className="space-y-6"> */}
+            <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <BookAIcon className="h-5 w-5 mr-2 text-blue-600" />
+                Page Content
+              </CardTitle>
+            </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="mainHeading" className="pb-2">
+                  <Label htmlFor="mainHeading" className="pb-2 text-primary/90">
                     Main Heading
                   </Label>
                   <Input
@@ -374,7 +382,7 @@ export default function PhuketPropertiesManager({
                 </div>
 
                 <div>
-                  <Label htmlFor="subHeading" className="pb-2">
+                  <Label htmlFor="subHeading" className="pb-2 text-primary/90">
                     Sub Heading
                   </Label>
                   <Input
@@ -388,7 +396,7 @@ export default function PhuketPropertiesManager({
                 </div>
 
                 <div>
-                  <Label htmlFor="description" className="pb-2">
+                  <Label htmlFor="description" className="pb-2 text-primary/90">
                     Description
                   </Label>
                   <RichTextEditor
@@ -401,13 +409,16 @@ export default function PhuketPropertiesManager({
               </CardContent>
             </Card>
 
-            <Card className="py-6">
-              <CardHeader>
-                <CardTitle>Phuket Explorer Section</CardTitle>
-              </CardHeader>
+            <Card className="pb-6 ring-2 ring-primary/20 bg-pink-50/30">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <SparkleIcon className="h-5 w-5 mr-2 text-blue-600" />
+                Phuket Explorer Section
+              </CardTitle>
+            </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="explorerHeading" className="pb-2">
+                  <Label htmlFor="explorerHeading" className="pb-2 text-primary/90">
                     Explorer Heading
                   </Label>
                   <Input
@@ -421,7 +432,7 @@ export default function PhuketPropertiesManager({
                 </div>
 
                 <div>
-                  <Label htmlFor="explorerDescription" className="pb-2">
+                  <Label htmlFor="explorerDescription" className="pb-2 text-primary/90">
                     Explorer Description
                   </Label>
                   <RichTextEditor
@@ -433,19 +444,22 @@ export default function PhuketPropertiesManager({
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          {/* </TabsContent> */}
 
           {/* Categories Tab */}
-          <TabsContent value="categories" className="space-y-6">
-            <Card className="py-6">
-              <CardHeader>
-                <CardTitle>Category Management</CardTitle>
-              </CardHeader>
+          {/* <TabsContent value="categories" className="space-y-6"> */}
+            <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                Category Management
+              </CardTitle>
+            </CardHeader>
               <CardContent className="space-y-6">
                 {/* Add New Category */}
-                <div className="flex gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                <div className="flex gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary/60 transition-colors duration-300">
                   <div className="flex-1">
-                    <Label className="pb-2">Add New Category</Label>
+                    <Label className="pb-2 text-primary/90">Add New Category</Label>
                     <Input
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
@@ -492,11 +506,11 @@ export default function PhuketPropertiesManager({
                                     <GripVertical className="w-5 h-5 text-gray-400" />
                                   </div>
 
-                                  <Badge variant="outline" className="text-background">{index + 1}</Badge>
+                                  <Badge variant="outline" className="text-primary/90">{index + 1}</Badge>
 
                                   <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                      <Label className="pt-1 mb-2 text-background">Category Title</Label>
+                                      <Label className="pt-1 mb-2 text-primary/90">Category Title</Label>
                                       <Input
                                         value={category.title}
                                         onChange={(e) =>
@@ -506,6 +520,7 @@ export default function PhuketPropertiesManager({
                                           )
                                         }
                                         placeholder="Category Title"
+
                                       />
                                     </div>
 
@@ -544,14 +559,17 @@ export default function PhuketPropertiesManager({
                 </DragDropContext>
               </CardContent>
             </Card>
-          </TabsContent>
+          {/* </TabsContent> */}
 
           {/* Map Management Tab */}
-          <TabsContent value="map" className="space-y-6">
-            <Card className="py-6">
-              <CardHeader>
-                <CardTitle>Map Configuration</CardTitle>
-              </CardHeader>
+          {/* <TabsContent value="map" className="space-y-6"> */}
+            <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
+               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Map className="h-5 w-5 mr-2 text-blue-600" />
+                Map Configuration
+              </CardTitle>
+            </CardHeader>
               <CardContent className="space-y-6">
                 {/* Map Image Selection */}
                 <div>
@@ -561,20 +579,11 @@ export default function PhuketPropertiesManager({
                     value={propertiesData.mapImage}
                     onSelect={(imageUrl) => handleFieldUpdate("mapImage", imageUrl)}
                   />
-                  {propertiesData.mapImage && (
-                    <div className="mt-4">
-                      <img
-                        src={propertiesData.mapImage}
-                        alt="Map preview"
-                        className="w-48 h-32 object-cover rounded border"
-                      />
-                    </div>
-                  )}
                 </div>
 
                 {/* Category Selection for Locations */}
                 <div className="mb-4">
-                  <Label>Select Category for Location Management</Label>
+                  <Label className="text-primary/90">Select Category for Location Management</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {propertiesData.categories.map((category) => (
                       <Button
@@ -584,6 +593,7 @@ export default function PhuketPropertiesManager({
                         }
                         onClick={() => setActiveCategory(category.id)}
                         size="sm"
+                        className="cursor-pointer"
                       >
                         {category.title}
                       </Button>
@@ -595,7 +605,7 @@ export default function PhuketPropertiesManager({
                 {getCurrentCategory() && (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold">
+                      <h3 className="text-lg font-semibold text-primary/90">
                         {getCurrentCategory()?.title} Locations
                       </h3>
                       <Button
@@ -639,7 +649,7 @@ export default function PhuketPropertiesManager({
                                         <div className="flex-1 space-y-4">
                                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
-                                              <Label>Location Name</Label>
+                                              <Label className="pb-2 text-primary/90">Location Name</Label>
                                               <Input
                                                 value={location.name}
                                                 onChange={(e) =>
@@ -653,7 +663,7 @@ export default function PhuketPropertiesManager({
                                             </div>
 
                                             <div>
-                                              <Label>Top Position (%)</Label>
+                                              <Label className="pb-2 text-primary/90">Top Position (%)</Label>
                                               <Input
                                                 value={location.coords.top.replace(
                                                   "%",
@@ -676,7 +686,7 @@ export default function PhuketPropertiesManager({
                                             </div>
 
                                             <div>
-                                              <Label>Left Position (%)</Label>
+                                              <Label className="pb-2 text-primary/90">Left Position (%)</Label>
                                               <Input
                                                 value={location.coords.left.replace(
                                                   "%",
@@ -714,7 +724,7 @@ export default function PhuketPropertiesManager({
                                             />
                                           </div>
 
-                                          {location.image && (
+                                          {/* {location.image && (
                                             <div className="mt-2">
                                               <img
                                                 src={location.image}
@@ -726,7 +736,7 @@ export default function PhuketPropertiesManager({
                                                 }}
                                               />
                                             </div>
-                                          )}
+                                          )} */}
 
                                           <div className="p-2 bg-gray-50 rounded text-sm">
                                             <strong>Position:</strong> Top:{" "}
@@ -769,8 +779,8 @@ export default function PhuketPropertiesManager({
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          {/* </TabsContent> */}
+        {/* </Tabs> */}
       </div>
     );
   };

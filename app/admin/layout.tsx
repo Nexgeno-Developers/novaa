@@ -18,15 +18,17 @@ export default async function AdminLayoutPage({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(josefin_sans.className)}>
-        <Providers>
-            <AdminLayout>{children}</AdminLayout>
-          <Toaster
-            position="bottom-right"
-            richColors
-            closeButton
-            duration={3000}
-          />
-        </Providers>
+        <AdminLayout>
+          <Providers>
+            {children}
+            <Toaster
+              position="bottom-right"
+              richColors
+              closeButton
+              duration={3000}
+            />
+          </Providers>
+        </AdminLayout>
       </body>
     </html>
   );

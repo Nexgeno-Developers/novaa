@@ -110,7 +110,7 @@ export default function ProjectsManager() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Projects Manager</h1>
+        <h1 className="text-3xl font-bold text-primary/90">Projects Manager</h1>
         <Button
           onClick={handleCreateNew}
           className="text-background cursor-pointer"
@@ -121,8 +121,8 @@ export default function ProjectsManager() {
       </div>
 
       {/* Filters */}
-      <Card className="py-6">
-        <CardContent className="pt-6">
+      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
+        <CardContent className="font-poppins">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -131,7 +131,7 @@ export default function ProjectsManager() {
                   placeholder="Search projects..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
+                  className="pl-8 ring-2 ring-primary/20"
                 />
               </div>
             </div>
@@ -139,13 +139,19 @@ export default function ProjectsManager() {
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[200px] ring-2 ring-primary/20 cursor-pointer">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
+              <SelectContent className="admin-theme">
+                <SelectItem value="all" className="cursor-pointer">
+                  All Categories
+                </SelectItem>
                 {categories.map((category) => (
-                  <SelectItem key={category._id} value={category._id}>
+                  <SelectItem
+                    key={category._id}
+                    value={category._id}
+                    className="cursor-pointer"
+                  >
                     {category.name}
                   </SelectItem>
                 ))}
@@ -156,7 +162,7 @@ export default function ProjectsManager() {
       </Card>
 
       {/* Projects Table */}
-      <Card className="py-6">
+      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             Projects
@@ -267,25 +273,28 @@ export default function ProjectsManager() {
           )}
         </CardContent>
       </Card>
+      {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={!!deleteDialogId}
         onOpenChange={() => setDeleteDialogId(null)}
       >
-        <AlertDialogContent className="bg-gray-300">
+        <AlertDialogContent className="admin-theme">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle className="text-primary">
+              Are you sure?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              enquiry and remove it from our servers.
+              blog and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-gray-100/90 cursor-pointer">
+            <AlertDialogCancel className="hover:bg-gray-50 hover:text-primary cursor-pointer">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteDialogId && handleDelete(deleteDialogId)}
-              className="bg-destructive text-foreground cursor-pointer hover:bg-destructive/90"
+              className="bg-destructive text-white cursor-pointer hover:bg-destructive/90"
             >
               Delete
             </AlertDialogAction>

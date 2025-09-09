@@ -278,17 +278,17 @@ export default function HomePageManager({
 
           <div className="space-y-6">
             {/* Content Section */}
-            <Card className="py-6">
-              <CardHeader className="flex flex-row items-center space-y-0 pb-4">
-                <div className="flex items-center space-x-2">
+            <Card className="pb-6 bg-purple-50/30 ring-2 ring-primary/20">
+              <CardHeader className="flex flex-row items-center space-y-0 py-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+                <div className="flex items-center space-x-2 ">
                   <Sparkles className="h-5 w-5 text-blue-600" />
-                  <CardTitle>Hero Content & Styling</CardTitle>
+                  <CardTitle className="text-gray-900">Hero Content & Styling</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 ">
                 {/* Title Section */}
-                <div className="space-y-4 p-4 border rounded-lg bg-gray-50/50">
-                  <h4 className="font-semibold text-lg flex items-center space-x-2">
+                <div className="space-y-4 p-4 border rounded-lg bg-gray-50/50 ring-2 ring-primary/20">
+                  <h4 className="font-semibold text-lg flex items-center space-x-2 text-primary/80">
                     <span>Title Settings</span>
                   </h4>
 
@@ -307,8 +307,8 @@ export default function HomePageManager({
                 </div>
 
                 {/* Subtitle Section */}
-                <div className="space-y-4 p-4 border rounded-lg bg-gray-50/50">
-                  <h4 className="font-semibold text-lg">Subtitle Settings</h4>
+                <div className="space-y-4 p-4 border rounded-lg bg-gray-50/50 ring-2 ring-primary/20">
+                  <h4 className="font-semibold text-lg text-primary/80">Subtitle Settings</h4>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -326,17 +326,17 @@ export default function HomePageManager({
             </Card>
 
             {/* Media & Overlay Section */}
-            <Card className="py-6">
-              <CardHeader className="flex flex-row items-center space-y-0 pb-4">
+            <Card className="pb-6 bg-purple-50/30 ring-2 ring-primary/20">
+              <CardHeader className="flex flex-row items-center space-y-0 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2 py-6">
                 <div className="flex items-center space-x-2">
                   <Images className="h-5 w-5 text-purple-600" />
-                  <CardTitle>Background Media & Overlay</CardTitle>
+                  <CardTitle className="text-gray-900">Background Media & Overlay</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-8">
                 {/* Media Type Selection */}
-                <div className="p-4 border rounded-lg bg-purple-50/30">
-                  <h4 className="font-semibold text-lg mb-4">Media Settings</h4>
+                <div className="p-4 border rounded-lg bg-gray-50/50 ring-2 ring-primary/20">
+                  <h4 className="font-semibold text-lg mb-4 text-primary/90">Media Settings</h4>
                   
                   <div className="space-y-4">
                     <div>
@@ -349,12 +349,12 @@ export default function HomePageManager({
                           updateHeroData({ mediaType: value, mediaUrl: "" });
                         }}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="cursor-pointer ">
                           <SelectValue placeholder="Select media type" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="image">Image</SelectItem>
-                          <SelectItem value="video">Video</SelectItem>
+                        <SelectContent className="admin-theme">
+                          <SelectItem value="image" className="cursor-pointer">Image</SelectItem>
+                          <SelectItem value="video" className="cursor-pointer">Video</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

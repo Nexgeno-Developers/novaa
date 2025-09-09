@@ -5,7 +5,11 @@ import Project from "@/models/Project"; // Import your Project model
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import ProjectSection from "@/components/client/ProjectSection";
 
-const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
+interface SectionContent {
+  [key: string]: unknown; 
+}
+
+const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
   breadcrumb: BreadcrumbsSection,
   project: ProjectSection,
 };

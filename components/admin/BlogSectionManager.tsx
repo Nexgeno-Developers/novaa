@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Sparkles } from "lucide-react";
 
 interface BlogSectionData {
   title: string;
@@ -80,15 +81,18 @@ export default function BlogSectionManager({
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Blog Section Settings</CardTitle>
-        </CardHeader>
+     <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+              <CardTitle className="flex items-center text-gray-800 py-6">
+                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+                Blog Section Settings
+              </CardTitle>
+            </CardHeader>
         <CardContent className="space-y-6">
           {/* Section Header */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="blogTitle">Section Title</Label>
+              <Label htmlFor="blogTitle" className="text-primary/90">Section Title</Label>
               <Input
                 id="blogTitle"
                 value={formData.title}
@@ -97,7 +101,7 @@ export default function BlogSectionManager({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="maxBlogs">Maximum Blogs to Show</Label>
+              <Label htmlFor="maxBlogs" className="text-primary/90">Maximum Blogs to Show</Label>
               <Input
                 id="maxBlogs"
                 type="number"
@@ -112,7 +116,7 @@ export default function BlogSectionManager({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="blogDescription">Section Description</Label>
+            <Label htmlFor="blogDescription" className="text-primary/90">Section Description</Label>
             <Textarea
               id="blogDescription"
               value={formData.description}
@@ -125,19 +129,19 @@ export default function BlogSectionManager({
           {/* Display Settings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="displayMode">Display Mode</Label>
+              <Label htmlFor="displayMode" className="text-primary/90">Display Mode</Label>
               <Select
                 value={formData.displayMode}
                 onValueChange={(value) =>
                   handleInputChange("displayMode", value as "grid" | "list")
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="cursor-pointer">
                   <SelectValue placeholder="Select display mode" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="grid">Grid Layout</SelectItem>
-                  <SelectItem value="list">List Layout</SelectItem>
+                <SelectContent className="admin-theme">
+                  <SelectItem value="grid" className="cursor-pointer">Grid Layout</SelectItem>
+                  <SelectItem value="list" className="cursor-pointer">List Layout</SelectItem>
                 </SelectContent>
               </Select>
             </div>

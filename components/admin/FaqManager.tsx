@@ -1,10 +1,24 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { GripVertical, Plus, Trash2, RefreshCw, Save, Image as ImageIcon, Sparkles, Images } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
+import {
+  GripVertical,
+  Plus,
+  Trash2,
+  RefreshCw,
+  Save,
+  Image as ImageIcon,
+  Sparkles,
+  Images,
+} from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
 import {
@@ -14,8 +28,8 @@ import {
   addFaqItem,
   removeFaqItem,
   updateFaqItem,
-  reorderFaqs
-} from '@/redux/slices/faqslice';
+  reorderFaqs,
+} from "@/redux/slices/faqslice";
 
 // Shadcn UI and Custom Components
 import { Button } from "@/components/ui/button";
@@ -23,17 +37,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from '@/components/ui/separator';
-import RichTextEditor from '@/components/admin/Editor';
-import { AdvancedMediaSelector } from '@/components/admin/AdvancedMediaSelector';
-import BaseSectionManager from '@/components/admin/BaseSectionManager';
-import Image from 'next/image';
+import { Separator } from "@/components/ui/separator";
+import RichTextEditor from "@/components/admin/Editor";
+import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
+import BaseSectionManager from "@/components/admin/BaseSectionManager";
+import Image from "next/image";
+import MediaSelectButton from "./MediaSelectButton";
 
 interface FaqItem {
   _id: string;
   question: string;
   answer: string;
-  order:number
+  order: number;
 }
 
 interface FaqData {
@@ -71,7 +86,7 @@ const FaqManagerContent = ({
     title: "",
     description: "",
     backgroundImage: "",
-    faqs: []
+    faqs: [],
   };
 
   // Local state for FAQ data
@@ -111,7 +126,7 @@ const FaqManagerContent = ({
 
   // Load Redux data only in standalone mode
   useEffect(() => {
-    if (!section && status === 'idle') {
+    if (!section && status === "idle") {
       dispatch(fetchFaqData());
     }
   }, [dispatch, section, status]);
@@ -133,13 +148,10 @@ const FaqManagerContent = ({
   }, [data, section]);
 
   // Memoize update functions to prevent unnecessary re-renders
-  const updateFaqData = useCallback(
-    (updates: Partial<FaqData>) => {
-      userHasInteractedRef.current = true;
-      setFaqData((prev) => ({ ...prev, ...updates }));
-    },
-    []
-  );
+  const updateFaqData = useCallback((updates: Partial<FaqData>) => {
+    userHasInteractedRef.current = true;
+    setFaqData((prev) => ({ ...prev, ...updates }));
+  }, []);
 
   const handleMainFieldUpdate = useCallback(
     (field: keyof FaqData, value: string) => {
@@ -169,34 +181,34 @@ const FaqManagerContent = ({
 
   const handleOnDragEnd = (result: DropResult) => {
     if (!result.destination) return;
-    
+
     const items = Array.from(faqData.faqs);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    
+
     userHasInteractedRef.current = true;
-    setFaqData(prev => ({ ...prev, faqs: items }));
-    
+    setFaqData((prev) => ({ ...prev, faqs: items }));
+
     if (!section) {
       // Only dispatch to Redux in standalone mode
       dispatch(reorderFaqs(items));
     }
   };
-  
+
   const addNewFaq = () => {
     const newFaq: FaqItem = {
       _id: uuidv4(),
       question: "",
       answer: "",
-      order: 0
+      order: 0,
     };
-    
+
     userHasInteractedRef.current = true;
-    setFaqData(prev => ({
+    setFaqData((prev) => ({
       ...prev,
-      faqs: [...prev.faqs, newFaq]
+      faqs: [...prev.faqs, newFaq],
     }));
-    
+
     if (!section) {
       // Only dispatch to Redux in standalone mode
       dispatch(addFaqItem());
@@ -205,26 +217,30 @@ const FaqManagerContent = ({
 
   const handleRemoveFaq = (index: number) => {
     userHasInteractedRef.current = true;
-    setFaqData(prev => ({
+    setFaqData((prev) => ({
       ...prev,
-      faqs: prev.faqs.filter((_, i) => i !== index)
+      faqs: prev.faqs.filter((_, i) => i !== index),
     }));
-    
+
     if (!section) {
       // Only dispatch to Redux in standalone mode
       dispatch(removeFaqItem(index));
     }
   };
 
-  const handleUpdateFaqItem = (index: number, field: "question" | "answer", value: string) => {
+  const handleUpdateFaqItem = (
+    index: number,
+    field: "question" | "answer",
+    value: string
+  ) => {
     userHasInteractedRef.current = true;
-    setFaqData(prev => ({
+    setFaqData((prev) => ({
       ...prev,
-      faqs: prev.faqs.map((item, i) => 
+      faqs: prev.faqs.map((item, i) =>
         i === index ? { ...item, [field]: value } : item
-      )
+      ),
     }));
-    
+
     if (!section) {
       // Only dispatch to Redux in standalone mode
       dispatch(updateFaqItem({ index, field, value }));
@@ -240,16 +256,16 @@ const FaqManagerContent = ({
     setHasUnsavedChanges(false);
   };
 
-  const handleImageSelect = (media: { url: string }) => {
-    handleMainFieldUpdate('backgroundImage', media.url);
-    setSelectorOpen(false);
-  };
-  
-  if (status === 'loading' && !section && !faqData) {
+  // const handleImageSelect = (media: { url: string }) => {
+  //   handleMainFieldUpdate("backgroundImage", media.url);
+  //   setSelectorOpen(false);
+  // };
+
+  if (status === "loading" && !section && !faqData) {
     return <div className="p-8">Loading FAQ Manager...</div>;
   }
 
-  if (status === 'failed' && !section) {
+  if (status === "failed" && !section) {
     return <div className="p-8">Could not load data. Try refreshing.</div>;
   }
 
@@ -267,29 +283,33 @@ const FaqManagerContent = ({
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              className='bg-gray-200 cursor-pointer' 
-              size="sm" 
-              onClick={handleRefresh} 
-              disabled={status === 'loading'}
+            <Button
+              variant="outline"
+              className="bg-gray-200 cursor-pointer"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={status === "loading"}
             >
-              <RefreshCw className={`h-4 w-4 mr-2 ${status === 'loading' ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${
+                  status === "loading" ? "animate-spin" : ""
+                }`}
+              />
               Refresh
             </Button>
-            <Button 
-              onClick={handleSaveChanges} 
-              className='text-background cursor-pointer' 
-              disabled={status === 'loading'}
+            <Button
+              onClick={handleSaveChanges}
+              className="text-background cursor-pointer"
+              disabled={status === "loading"}
             >
               <Save className="h-4 w-4 mr-2" />
-              {status === 'loading' ? 'Saving...' : 'Save Changes'}
+              {status === "loading" ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </div>
       )}
 
-      <Tabs defaultValue="content">
+      {/* <Tabs defaultValue="content">
         <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
           <TabsTrigger 
             value="content" 
@@ -307,139 +327,177 @@ const FaqManagerContent = ({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="content" className="mt-4">
-          <Card className='py-6'>
-            <CardHeader>
-              <CardTitle>Section Header</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label>Title</Label>
-                <Input 
-                  value={faqData.title} 
-                  onChange={(e) => handleMainFieldUpdate('title', e.target.value)} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Description (Optional)</Label>
-                <RichTextEditor 
-                  value={faqData.description} 
-                  onEditorChange={(content) => handleMainFieldUpdate('description', content)} 
-                  id="faq-description"
-                />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Separator className="my-8" />
+        <TabsContent value="content" className="mt-4"> */}
+      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <CardTitle className="flex items-center text-gray-800 py-6">
+            <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+            Section Header
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-primary/90">Title</Label>
+            <Input
+              value={faqData.title}
+              onChange={(e) => handleMainFieldUpdate("title", e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-primary/90">Description (Optional)</Label>
+            <RichTextEditor
+              value={faqData.description}
+              onEditorChange={(content) =>
+                handleMainFieldUpdate("description", content)
+              }
+              id="faq-description"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-          <Card className='py-6'>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>FAQ Items</CardTitle>
-              <Button variant="outline" size="sm" onClick={addNewFaq}>
-                <Plus className="h-4 w-4 mr-2"/>
-                Add FAQ
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="faqs">
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                      {faqData.faqs.map((item, index) => (
-                        <Draggable key={item._id} draggableId={item._id} index={index}>
-                          {(provided) => (
-                            <div 
-                              ref={provided.innerRef} 
-                              {...provided.draggableProps} 
-                              className="p-4 border rounded-lg bg-white shadow-sm flex items-start gap-4"
-                            >
-                              <div 
-                                {...provided.dragHandleProps} 
-                                className="text-gray-400 hover:text-gray-600 cursor-grab pt-2"
-                              >
-                                <GripVertical/>
-                              </div>
-                              <div className='flex-grow space-y-4'>
-                                <div className="space-y-2">
-                                  <Label>Question</Label>
-                                  <Input 
-                                    value={item.question} 
-                                    onChange={(e) => handleUpdateFaqItem(index, 'question', e.target.value)} 
-                                  />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label>Answer</Label>
-                                  <RichTextEditor 
-                                    value={item.answer} 
-                                    onEditorChange={(content) => handleUpdateFaqItem(index, 'answer', content)} 
-                                    id={`faq-answer-${item._id}`}
-                                  />
-                                </div>
-                              </div>
-                              <div className="pt-2">
-                                <Button 
-                                  variant="destructive" 
-                                  size="icon" 
-                                  className="cursor-pointer"
-                                  onClick={() => handleRemoveFaq(index)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
+      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center text-gray-800 py-6">
+              <ImageIcon className="h-5 w-5 mr-2 text-blue-600" />
+              FAQ Items
+            </CardTitle>
+            <Button className="cursor-pointer" size="sm" onClick={addNewFaq}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Faq
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+            <Droppable droppableId="faqs">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="space-y-4"
+                >
+                  {faqData.faqs.map((item, index) => (
+                    <Draggable
+                      key={item._id}
+                      draggableId={item._id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          className="p-4 border rounded-lg bg-purple-50/30 ring-2 ring-primary/20 shadow-sm flex items-start gap-4 "
+                        >
+                          <div
+                            {...provided.dragHandleProps}
+                            className="text-gray-400 hover:text-gray-600 cursor-grab pt-2"
+                          >
+                            <GripVertical />
+                          </div>
+                          <div className="flex-grow space-y-4">
+                            <div className="space-y-2">
+                              <Label className="text-primary/90">
+                                Question
+                              </Label>
+                              <Input
+                                value={item.question}
+                                onChange={(e) =>
+                                  handleUpdateFaqItem(
+                                    index,
+                                    "question",
+                                    e.target.value
+                                  )
+                                }
+                              />
                             </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="image" className="mt-4">
-          <Card className="py-6">
-            <CardHeader>
-              <CardTitle>Section Background Image</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="w-full h-64 rounded-lg border border-dashed flex items-center justify-center bg-gray-100 overflow-hidden">
-                {faqData.backgroundImage ? (
-                  <Image 
-                    src={faqData.backgroundImage} 
-                    alt="Background Preview" 
-                    width={500} 
-                    height={256} 
-                    className="object-cover" 
-                  />
-                ) : (
-                  <ImageIcon className="h-16 w-16 text-gray-300"/>
-                )}
-              </div>
-              <Button 
-                className="w-full cursor-pointer" 
-                variant="outline" 
-                onClick={() => setSelectorOpen(true)}
-              >
-                Select Background Image
-              </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                            <div className="space-y-2">
+                              <Label className="text-primary/90">Answer</Label>
+                              <RichTextEditor
+                                value={item.answer}
+                                onEditorChange={(content) =>
+                                  handleUpdateFaqItem(index, "answer", content)
+                                }
+                                // id={`faq-answer-${item._id}`}
+                              />
+                            </div>
+                          </div>
+                          <div className="pt-2">
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="cursor-pointer"
+                              onClick={() => handleRemoveFaq(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </CardContent>
+      </Card>
+      {/* </TabsContent> */}
+
+      {/* // <TabsContent value="image" className="mt-4"> */}
+
+      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <CardTitle className="flex items-center text-gray-800 py-6">
+            <ImageIcon className="h-5 w-5 mr-2 text-blue-600" />
+            Section Background Image
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* <div className="w-full h-64 rounded-lg border-2 border-dashed hover:border-primary/90 transition-all duration-300 flex items-center justify-center bg-gray-100 overflow-hidden">
+            {faqData.backgroundImage ? (
+              <Image
+                src={faqData.backgroundImage}
+                alt="Background Preview"
+                width={500}
+                height={256}
+                className="object-cover"
+              />
+            ) : (
+              <ImageIcon className="h-16 w-16 text-gray-300" />
+            )}
+          </div> */}
+          {/* <Button
+            className="w-full cursor-pointer"
+            onClick={() => setSelectorOpen(true)}
+          >
+            Select Background Image
+          </Button> */}
+
+      <MediaSelectButton
+        value={faqData.backgroundImage}
+        onSelect={(value) => handleMainFieldUpdate("backgroundImage", value)}
+        mediaType="image"
+        label="Background Image"
+        placeholder="Select image with clouds..."
+      />
+        </CardContent>
+      </Card>
+      {/* </TabsContent>
+      </Tabs> */}
 
       {/* Advanced Media Selector */}
-      <AdvancedMediaSelector
+      {/* <AdvancedMediaSelector
         isOpen={isSelectorOpen}
         onOpenChange={setSelectorOpen}
         onSelect={handleImageSelect}
         mediaType="image"
         title="Select Background Image"
         selectedValue={faqData.backgroundImage}
-      />
+      /> */}
+
     </div>
   );
 };
@@ -455,7 +513,8 @@ export default function FaqManager({
     return (
       <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed">
         <p className="text-gray-600">
-          This manager can only be used within the global page management system.
+          This manager can only be used within the global page management
+          system.
         </p>
       </div>
     );
@@ -469,11 +528,11 @@ export default function FaqManager({
       title="FAQ Section"
       description="Manage frequently asked questions"
     >
-      <FaqManagerContent 
+      <FaqManagerContent
         section={section}
         onChange={onChange}
-        showSaveButton={false} 
+        showSaveButton={false}
       />
     </BaseSectionManager>
   );
-};
+}

@@ -104,17 +104,17 @@ export default function NovaaAdvantageSection({
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-6 left-8 md:top-0 md:-left-[5rem] lg:top-[-4] lg:left-8 xl:left-8 2xl:left-40`;
+        return `${baseClasses} top-6 left-8 md:top-[-1.2rem] md:left-[1.5rem] lg:top-[-4] lg:left-8 xl:left-8 2xl:left-40`;
       case "top-right":
-        return `${baseClasses} top-6 right-8 md:top-0 md:-right-[4rem] lg:top-[-4] lg:right-8 xl:right-8 2xl:right-40`;
+        return `${baseClasses} top-6 right-8 md:top-[-1.2rem] md:right-[1.5rem] lg:top-[-4] lg:right-8 xl:right-8 2xl:right-40`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 md:-left-[5rem] lg:left-[-2rem] xl:left-[-2rem] 2xl:left-[6rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-1.5rem] xl:left-[-2rem] 2xl:left-[6rem] transform -translate-y-1/2`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 md:-right-[5rem] lg:right-[-2rem] xl:right-[-2rem] 2xl:right-[6rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] lg:right-[-2rem] xl:right-[-2rem] 2xl:right-[6rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 md:bottom-0 md:-left-[4rem] lg:bottom-0 xl:bottom-[-2rem] lg:left-[2rem] xl:left-[1rem] 2xl:left-[9rem]`;
+        return `${baseClasses} bottom-8 left-8 md:bottom-[-2rem] md:left-[0.8rem] lg:bottom-[-2rem] xl:bottom-[-2rem] lg:left-[2rem] xl:left-[1rem] 2xl:left-[9rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:-right-[4rem] lg:bottom-0 lg:right-[2rem] xl:right-[1rem] 2xl:right-[9rem]`;
+        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:right-[0.5rem] lg:bottom-0 lg:right-[2rem] xl:right-[1rem] 2xl:right-[9rem]`;
       default:
         return baseClasses;
     }
@@ -274,10 +274,10 @@ export default function NovaaAdvantageSection({
                 <div
                   className={`${getContentPosition(
                     layout.position
-                  )} hidden md:flex gap-4 font-josefin max-w-[350px] lg:max-w-sm xl:max-w-[400px] space-x-2`}
+                  )} hidden md:flex gap-4 font-josefin max-w-[230px] lg:max-w-[300px] xl:max-w-[400px] space-x-2`}
                 >
                   <div className="font-josefin space-y-2">
-                    <h3 className="text-sm md:text-base lg:text-xl font-normal text-background">
+                    <h3 className="text-sm lg:text-xl font-normal text-background">
                       {advantage.title.split(" ").map((word, i) =>
                         i === 3 ? (
                           <>
@@ -290,13 +290,13 @@ export default function NovaaAdvantageSection({
                       )}{" "}
                     </h3>
                     <div
-                      className="text-[#303030] description-text"
+                      className="text-[#303030] text-xs lg:text-sm xl:text-base 2xl:text-lg font-light"
                       dangerouslySetInnerHTML={{
                         __html: advantage.description,
                       }}
                     />
                   </div>
-                  <div className="hidden flex-shrink-0 w-16 h-16 xl:w-24 xl:h-24 rounded-full md:flex items-center justify-center shadow-lg">
+                  <div className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-24 xl:h-24 rounded-full md:flex items-center justify-center shadow-lg">
                     <Image
                       src={advantage.icon}
                       width={100}

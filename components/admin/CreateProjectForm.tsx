@@ -491,7 +491,7 @@ export default function CreateProjectPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="container space-y-6">
       <div className="flex items-center gap-4">
         <Button
           variant="ghost"
@@ -761,6 +761,428 @@ export default function CreateProjectPage() {
                 placeholder="Select PDF brochure for download"
               />
             </div>
+          </CardContent>
+        </Card>
+        {/* Gateway Section */}
+        <Card className="py-6">
+          <CardHeader>
+            <CardTitle className="text-primary">Gateway Section</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Basic Gateway Settings */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="gatewayTitle" className="text-primary">
+                  Main Title
+                </Label>
+                <Input
+                  id="gatewayTitle"
+                  value={projectDetailData.gateway.title}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "title",
+                      e.target.value
+                    )
+                  }
+                  placeholder="A place to come home to"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gatewaySubtitle" className="text-primary">
+                  Subtitle
+                </Label>
+                <Input
+                  id="gatewaySubtitle"
+                  value={projectDetailData.gateway.subtitle}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "subtitle",
+                      e.target.value
+                    )
+                  }
+                  placeholder="and a location that"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gatewayHighlight" className="text-primary">
+                  Highlight Text
+                </Label>
+                <Input
+                  id="gatewayHighlight"
+                  value={projectDetailData.gateway.highlightText}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "highlightText",
+                      e.target.value
+                    )
+                  }
+                  placeholder="holds its value."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gatewaySectionTitle" className="text-primary">
+                  Section Title
+                </Label>
+                <Input
+                  id="gatewaySectionTitle"
+                  value={projectDetailData.gateway.sectionTitle}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "sectionTitle",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Your Gateway to Paradise"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-primary">Main Description</Label>
+              <div className="min-h-[150px]">
+                <Editor
+                  value={projectDetailData.gateway.description}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange("gateway", "description", content)
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-primary">Section Description</Label>
+              <div className="min-h-[150px]">
+                <Editor
+                  value={projectDetailData.gateway.sectionDescription}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "sectionDescription",
+                      content
+                    )
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.gateway.backgroundImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange("gateway", "backgroundImage", url)
+                  }
+                  mediaType="image"
+                  label="Background Image"
+                  placeholder="Select background image"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.gateway.mapImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange("gateway", "mapImage", url)
+                  }
+                  mediaType="image"
+                  label="Map Image"
+                  placeholder="Select map image"
+                />
+              </div>
+            </div>
+
+            {/* Add New Category */}
+            <Card className="border-dashed py-6">
+              <CardHeader>
+                <CardTitle className="text-sm">Add New Category</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="categoryTitle" className="text-primary">
+                      Category Title
+                    </Label>
+                    <Input
+                      id="categoryTitle"
+                      value={newGatewayCategory.title}
+                      onChange={(e) =>
+                        setNewGatewayCategory((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
+                      placeholder="Bangtao & Layan Beach"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="categoryDescription"
+                      className="text-primary"
+                    >
+                      Category Description
+                    </Label>
+                    <Input
+                      id="categoryDescription"
+                      value={newGatewayCategory.description}
+                      onChange={(e) =>
+                        setNewGatewayCategory((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
+                      placeholder="Pristine white sand beaches just 5 minutes away"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={newGatewayCategory.icon}
+                    onSelect={(url) =>
+                      setNewGatewayCategory((prev) => ({
+                        ...prev,
+                        icon: url,
+                      }))
+                    }
+                    mediaType="image"
+                    label="Category Icon"
+                    placeholder="Select category icon"
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={addGatewayCategory}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Category
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Existing Categories */}
+            {projectDetailData.gateway.categories.length > 0 && (
+              <div className="space-y-6">
+                <h4 className="font-medium">
+                  Gateway Categories (
+                  {projectDetailData.gateway.categories.length})
+                </h4>
+                {projectDetailData.gateway.categories.map(
+                  (category, categoryIndex) => (
+                    <div
+                      key={categoryIndex}
+                      className="border rounded-lg p-4 space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                            <img
+                              src={category.icon}
+                              alt={category.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">{category.title}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              {category.description}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeGatewayCategory(categoryIndex)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      {/* Add Location to Category */}
+                      <div className="border-t pt-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h5 className="font-medium">
+                            Locations ({category.locations.length})
+                          </h5>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setSelectedCategoryIndex(
+                                selectedCategoryIndex === categoryIndex
+                                  ? null
+                                  : categoryIndex
+                              )
+                            }
+                            className="text-primary cursor-pointer"
+                          >
+                            <Plus className="mr-2 h-3 w-3" />
+                            Add Location
+                          </Button>
+                        </div>
+
+                        {/* Add Location Form */}
+                        {selectedCategoryIndex === categoryIndex && (
+                          <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  Location Name
+                                </Label>
+                                <Input
+                                  value={newGatewayLocation.name}
+                                  onChange={(e) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      name: e.target.value,
+                                    }))
+                                  }
+                                  placeholder="Patong Beach"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <MediaSelectButton
+                                  value={newGatewayLocation.image}
+                                  onSelect={(url) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      image: url,
+                                    }))
+                                  }
+                                  mediaType="image"
+                                  label="Location Image"
+                                  placeholder="Select location image"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  Map Position (Top %)
+                                </Label>
+                                <Input
+                                  value={newGatewayLocation.coords.top}
+                                  onChange={(e) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      coords: {
+                                        ...prev.coords,
+                                        top: e.target.value,
+                                      },
+                                    }))
+                                  }
+                                  placeholder="33%"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  Map Position (Left %)
+                                </Label>
+                                <Input
+                                  value={newGatewayLocation.coords.left}
+                                  onChange={(e) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      coords: {
+                                        ...prev.coords,
+                                        left: e.target.value,
+                                      },
+                                    }))
+                                  }
+                                  placeholder="15%"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  addLocationToCategory(categoryIndex)
+                                }
+                                className="text-gray-900 cursor-pointer"
+                              >
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Location
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setSelectedCategoryIndex(null)}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Existing Locations */}
+                        {category.locations.length > 0 && (
+                          <div className="space-y-2">
+                            {category.locations.map(
+                              (location, locationIndex) => (
+                                <div
+                                  key={locationIndex}
+                                  className="flex items-center gap-4 p-2 border rounded"
+                                >
+                                  <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
+                                    <img
+                                      src={location.image}
+                                      alt={location.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="font-medium">
+                                      {location.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      Position: {location.coords.top} /{" "}
+                                      {location.coords.left}
+                                    </p>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      removeLocationFromCategory(
+                                        categoryIndex,
+                                        locationIndex
+                                      )
+                                    }
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -1277,7 +1699,10 @@ export default function CreateProjectPage() {
                     <MediaSelectButton
                       value={newMasterPlanTab.image}
                       onSelect={(url) =>
-                        setNewMasterPlanTab((prev) => ({ ...prev, image: url }))
+                        setNewMasterPlanTab((prev) => ({
+                          ...prev,
+                          image: url,
+                        }))
                       }
                       mediaType="image"
                       label="Select Tab Background Image *"
@@ -1520,426 +1945,6 @@ export default function CreateProjectPage() {
                     </Button>
                   </div>
                 ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Gateway Section */}
-        <Card className="py-6">
-          <CardHeader>
-            <CardTitle className="text-primary">Gateway Section</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Basic Gateway Settings */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="gatewayTitle" className="text-primary">
-                  Main Title
-                </Label>
-                <Input
-                  id="gatewayTitle"
-                  value={projectDetailData.gateway.title}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange(
-                      "gateway",
-                      "title",
-                      e.target.value
-                    )
-                  }
-                  placeholder="A place to come home to"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gatewaySubtitle" className="text-primary">
-                  Subtitle
-                </Label>
-                <Input
-                  id="gatewaySubtitle"
-                  value={projectDetailData.gateway.subtitle}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange(
-                      "gateway",
-                      "subtitle",
-                      e.target.value
-                    )
-                  }
-                  placeholder="and a location that"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gatewayHighlight" className="text-primary">
-                  Highlight Text
-                </Label>
-                <Input
-                  id="gatewayHighlight"
-                  value={projectDetailData.gateway.highlightText}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange(
-                      "gateway",
-                      "highlightText",
-                      e.target.value
-                    )
-                  }
-                  placeholder="holds its value."
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gatewaySectionTitle" className="text-primary">
-                  Section Title
-                </Label>
-                <Input
-                  id="gatewaySectionTitle"
-                  value={projectDetailData.gateway.sectionTitle}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange(
-                      "gateway",
-                      "sectionTitle",
-                      e.target.value
-                    )
-                  }
-                  placeholder="Your Gateway to Paradise"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary">Main Description</Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.gateway.description}
-                  onEditorChange={(content) =>
-                    handleProjectDetailChange("gateway", "description", content)
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary">Section Description</Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.gateway.sectionDescription}
-                  onEditorChange={(content) =>
-                    handleProjectDetailChange(
-                      "gateway",
-                      "sectionDescription",
-                      content
-                    )
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.backgroundImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("gateway", "backgroundImage", url)
-                  }
-                  mediaType="image"
-                  label="Background Image"
-                  placeholder="Select background image"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.mapImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("gateway", "mapImage", url)
-                  }
-                  mediaType="image"
-                  label="Map Image"
-                  placeholder="Select map image"
-                />
-              </div>
-            </div>
-
-            {/* Add New Category */}
-            <Card className="border-dashed py-6">
-              <CardHeader>
-                <CardTitle className="text-sm">Add New Category</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryTitle" className="text-primary">
-                      Category Title
-                    </Label>
-                    <Input
-                      id="categoryTitle"
-                      value={newGatewayCategory.title}
-                      onChange={(e) =>
-                        setNewGatewayCategory((prev) => ({
-                          ...prev,
-                          title: e.target.value,
-                        }))
-                      }
-                      placeholder="Bangtao & Layan Beach"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="categoryDescription"
-                      className="text-primary"
-                    >
-                      Category Description
-                    </Label>
-                    <Input
-                      id="categoryDescription"
-                      value={newGatewayCategory.description}
-                      onChange={(e) =>
-                        setNewGatewayCategory((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      placeholder="Pristine white sand beaches just 5 minutes away"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <MediaSelectButton
-                    value={newGatewayCategory.icon}
-                    onSelect={(url) =>
-                      setNewGatewayCategory((prev) => ({ ...prev, icon: url }))
-                    }
-                    mediaType="image"
-                    label="Category Icon"
-                    placeholder="Select category icon"
-                  />
-                </div>
-
-                <Button
-                  type="button"
-                  onClick={addGatewayCategory}
-                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Category
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Existing Categories */}
-            {projectDetailData.gateway.categories.length > 0 && (
-              <div className="space-y-6">
-                <h4 className="font-medium">
-                  Gateway Categories (
-                  {projectDetailData.gateway.categories.length})
-                </h4>
-                {projectDetailData.gateway.categories.map(
-                  (category, categoryIndex) => (
-                    <div
-                      key={categoryIndex}
-                      className="border rounded-lg p-4 space-y-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
-                            <img
-                              src={category.icon}
-                              alt={category.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div>
-                            <h4 className="font-medium">{category.title}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {category.description}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeGatewayCategory(categoryIndex)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-
-                      {/* Add Location to Category */}
-                      <div className="border-t pt-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h5 className="font-medium">
-                            Locations ({category.locations.length})
-                          </h5>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              setSelectedCategoryIndex(
-                                selectedCategoryIndex === categoryIndex
-                                  ? null
-                                  : categoryIndex
-                              )
-                            }
-                            className="text-primary cursor-pointer"
-                          >
-                            <Plus className="mr-2 h-3 w-3" />
-                            Add Location
-                          </Button>
-                        </div>
-
-                        {/* Add Location Form */}
-                        {selectedCategoryIndex === categoryIndex && (
-                          <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label className="text-primary">
-                                  Location Name
-                                </Label>
-                                <Input
-                                  value={newGatewayLocation.name}
-                                  onChange={(e) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      name: e.target.value,
-                                    }))
-                                  }
-                                  placeholder="Patong Beach"
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <MediaSelectButton
-                                  value={newGatewayLocation.image}
-                                  onSelect={(url) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      image: url,
-                                    }))
-                                  }
-                                  mediaType="image"
-                                  label="Location Image"
-                                  placeholder="Select location image"
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-primary">
-                                  Map Position (Top %)
-                                </Label>
-                                <Input
-                                  value={newGatewayLocation.coords.top}
-                                  onChange={(e) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      coords: {
-                                        ...prev.coords,
-                                        top: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  placeholder="33%"
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-primary">
-                                  Map Position (Left %)
-                                </Label>
-                                <Input
-                                  value={newGatewayLocation.coords.left}
-                                  onChange={(e) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      coords: {
-                                        ...prev.coords,
-                                        left: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  placeholder="15%"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="flex gap-2">
-                              <Button
-                                type="button"
-                                onClick={() =>
-                                  addLocationToCategory(categoryIndex)
-                                }
-                                className="text-gray-900 cursor-pointer"
-                              >
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add Location
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setSelectedCategoryIndex(null)}
-                              >
-                                Cancel
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Existing Locations */}
-                        {category.locations.length > 0 && (
-                          <div className="space-y-2">
-                            {category.locations.map(
-                              (location, locationIndex) => (
-                                <div
-                                  key={locationIndex}
-                                  className="flex items-center gap-4 p-2 border rounded"
-                                >
-                                  <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
-                                    <img
-                                      src={location.image}
-                                      alt={location.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="font-medium">
-                                      {location.name}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      Position: {location.coords.top} /{" "}
-                                      {location.coords.left}
-                                    </p>
-                                  </div>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() =>
-                                      removeLocationFromCategory(
-                                        categoryIndex,
-                                        locationIndex
-                                      )
-                                    }
-                                    className="text-red-500 hover:text-red-700"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )
-                )}
               </div>
             )}
           </CardContent>

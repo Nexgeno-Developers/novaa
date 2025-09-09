@@ -139,7 +139,7 @@ const MediaSelectButton = ({
             variant="outline"
             onClick={() => setSelectorOpen(true)}
             disabled={isMediaLoading}
-            className="w-full justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
+            className="w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
             {isMediaLoading || isResolvingMedia ? (
               <div className="flex items-center gap-3 w-full">
@@ -182,7 +182,7 @@ const MediaSelectButton = ({
                   )}
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-sm truncate">
+                  <p className="font-medium text-sm truncate group-hover:text-primary/90 transition-all duration-500">
                     {selectedMedia
                       ? formatFileName(selectedMedia.public_id, selectedMedia.format)
                       : value.split("/").pop()
@@ -211,7 +211,7 @@ const MediaSelectButton = ({
               variant="ghost"
               size="sm"
               onClick={() => onSelect("")}
-              className="text-red-500 hover:text-red-700"
+              className="text-red-500 hover:text-red-700 cursor-pointer"
             >
               <X className="h-4 w-4 mr-1" />
               Clear Selection

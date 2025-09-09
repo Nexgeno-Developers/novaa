@@ -12,6 +12,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -22,7 +32,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import {
   Upload,
   Search,
@@ -60,6 +69,7 @@ export default function MediaManagement() {
   const [deleteDialog, setDeleteDialog] = useState<MediaItem | null>(null);
   const [currentTab, setCurrentTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  // const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
   const { items, loading, query, type, hasMore, totalCount, cursor } =
@@ -267,7 +277,7 @@ export default function MediaManagement() {
     }
   };
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto bg-background p-4 rounded-xl">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -347,7 +357,7 @@ export default function MediaManagement() {
               <File className="h-5 w-5 text-orange-500" />
               <div>
                 <p className="text-sm text-gray-600">Documents</p>
-                <p className="text-xl font-bold">{stats.files}</p>
+                <p className="text-xl font-bold ">{stats.files}</p>
               </div>
             </div>
           </CardContent>
@@ -425,9 +435,13 @@ export default function MediaManagement() {
             <Card>
               <CardContent className="p-12 text-center">
                 <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No media files found</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No media files found
+                </h3>
                 <p className="text-gray-500">
-                  {searchQuery ? "Try adjusting your search terms" : "Upload some files to get started"}
+                  {searchQuery
+                    ? "Try adjusting your search terms"
+                    : "Upload some files to get started"}
                 </p>
               </CardContent>
             </Card>
@@ -460,7 +474,11 @@ export default function MediaManagement() {
               {/* Load More for fetching additional pages */}
               {hasMore && (
                 <div className="flex justify-center mt-8">
-                  <Button onClick={handleLoadMore} disabled={loading} variant="outline">
+                  <Button
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    variant="outline"
+                  >
                     {loading ? (
                       <>
                         <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -489,40 +507,32 @@ export default function MediaManagement() {
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog.Root
+      <AlertDialog
         open={!!deleteDialog}
         onOpenChange={() => setDeleteDialog(null)}
       >
-        <AlertDialog.Portal>
-          <AlertDialog.Overlay className="fixed inset-0 bg-black/50 data-[state=open]:animate-overlayShow" />
-          <AlertDialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-lg focus:outline-none data-[state=open]:animate-contentShow">
-            <AlertDialog.Title className="m-0 text-lg font-semibold text-gray-900">
-              Delete Media File
-            </AlertDialog.Title>
-            <AlertDialog.Description className="mb-5 mt-3 text-sm leading-normal text-gray-600">
-              Are you sure you want to delete this file? This action cannot be
-              undone.
-            </AlertDialog.Description>
-
-            <div className="flex justify-end gap-4">
-              <AlertDialog.Cancel asChild>
-                <button className="inline-flex h-9 items-center justify-center rounded-md bg-gray-200 px-4 font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 cursor-pointer">
-                  Cancel
-                </button>
-              </AlertDialog.Cancel>
-
-              <AlertDialog.Action asChild>
-                <button
-                  onClick={() => deleteDialog && handleDelete(deleteDialog)}
-                  className="inline-flex h-9 items-center justify-center rounded-md bg-red-500 px-4 font-medium text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 cursor-pointer"
-                >
-                  Delete
-                </button>
-              </AlertDialog.Action>
-            </div>
-          </AlertDialog.Content>
-        </AlertDialog.Portal>
-      </AlertDialog.Root>
+        <AlertDialogContent className="admin-theme">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-primary">
+              Are you sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className=" cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteDialog && handleDelete(deleteDialog)}
+              className="bg-destructive text-foreground cursor-pointer hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -768,7 +778,7 @@ function PreviewDialog({
         );
       } else {
         return (
-          <div className="w-full h-96 bg-gray-100 rounded-lg flex flex-col items-center justify-center">
+          <div className="admin-theme w-full h-96 bg-gray-100 rounded-lg flex flex-col items-center justify-center">
             <FileText className="h-16 w-16 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-700 mb-2">
               {file.format?.toUpperCase()} Document
@@ -802,7 +812,7 @@ function PreviewDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[90vh] overflow-hidden border-background">
+      <DialogContent className="max-w-3xl h-[90vh] overflow-hidden border-background admin-theme">
         {/* Header */}
         <DialogHeader>
           <div className="flex items-center justify-between px-3 pt-4">

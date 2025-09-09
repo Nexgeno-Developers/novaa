@@ -9,13 +9,13 @@ import PhuketPropertiesSection from "@/components/client/PhuketPropertiesSection
 import NovaaAdvantageSection from "@/components/client/NovaaAdvantageSection";
 import FaqSection from "@/components/client/FaqSection";
 import InvestorInsightsSection from "@/components/client/InvestorInsightsSection";
-import {EliteClientsTestimonials} from "@/components/client/Testimonials";
+import TestimonialsSection from "@/components/client/Testimonials";
 
 interface SectionContent {
   [key: string]: unknown; 
 }
 
-const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
+const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
   hero: HeroSection,
   'collection': CuratedCollection,
   'about': AboutPage,
@@ -23,7 +23,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   'phuket-properties': PhuketPropertiesSection,
   "advantage": NovaaAdvantageSection,
   faq: FaqSection,
-  testimonials: EliteClientsTestimonials,
+  testimonials: TestimonialsSection,
   insights: InvestorInsightsSection,
 };
 

@@ -1,4 +1,3 @@
-// app/project-detail/[id]/page.tsx
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
@@ -20,7 +19,7 @@ async function getProjectData(id: string) {
       return null;
     }
 
-    const project = await Project.findById(id).populate("category").lean<any>();
+    const project = await Project.findById(id).populate("category")
 
     if (!project || !project.isActive) {
       return null;

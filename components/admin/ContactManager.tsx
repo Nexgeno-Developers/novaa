@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MediaSelectorButton from "@/components/admin/MediaSelectButton";
 import type { Section } from "@/redux/slices/pageSlice";
+import { Contact, FormInput } from "lucide-react";
 
 interface ContactManagerProps {
   section: Section;
@@ -64,7 +65,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   const handleDataChange = (newData: Partial<ContactData>) => {
     const updatedData = { ...localData, ...newData };
     setLocalData(updatedData);
-    
+
     // Notify parent component of changes
     onChange({
       content: updatedData,
@@ -103,7 +104,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Contact Details Section</h1>
+          <h1 className="text-2xl font-bold text-primary/90">Contact Details Section</h1>
           <p className="text-muted-foreground">
             Manage contact details, form content, and map image
           </p>
@@ -111,29 +112,34 @@ const ContactManager: React.FC<ContactManagerProps> = ({
       </div>
 
       {/* Contact Details */}
-      <Card className="py-6">
-        <CardHeader>
-          <CardTitle>Contact Details</CardTitle>
+      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <CardTitle className="flex items-center text-gray-800 py-6">
+            <Contact className="h-5 w-5 mr-2 text-blue-600" />
+            Contact Details
+          </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {localData.details.map((detail, index) => (
             <div
               key={detail._id || index}
-              className="space-y-4 p-4 border rounded-lg"
+              className="space-y-4 p-4 border rounded-lg ring-2 ring-primary/20"
             >
-              <Label>Contact Detail {index + 1}</Label>
-              
+              <Label className="text-primary/90">
+                Contact Detail {index + 1}
+              </Label>
+
               {/* Icon Selection */}
               <div className="space-y-2">
                 <Label>Icon</Label>
                 <div className="flex items-center gap-4">
-                  {detail.icon && (
+                  {/* {detail.icon && (
                     <img
                       src={detail.icon}
                       alt={`Icon ${index + 1}`}
                       className="w-8 h-8 object-contain"
                     />
-                  )}
+                  )} */}
                   <MediaSelectorButton
                     label="Select Icon"
                     mediaType="image"
@@ -145,7 +151,12 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
               {/* Title */}
               <div>
-                <Label htmlFor={`detail-title-${index}`}>Title</Label>
+                <Label
+                  htmlFor={`detail-title-${index}`}
+                  className="pb-2 text-primary/90"
+                >
+                  Title
+                </Label>
                 <Input
                   id={`detail-title-${index}`}
                   value={detail.title}
@@ -158,7 +169,12 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
               {/* Description */}
               <div>
-                <Label htmlFor={`detail-desc-${index}`}>Description</Label>
+                <Label
+                  htmlFor={`detail-desc-${index}`}
+                  className="pb-2 text-primary/90"
+                >
+                  Description
+                </Label>
                 <Input
                   id={`detail-desc-${index}`}
                   value={detail.description}
@@ -174,34 +190,35 @@ const ContactManager: React.FC<ContactManagerProps> = ({
       </Card>
 
       {/* Contact Form Section */}
-      <Card className="py-6">
-        <CardHeader>
-          <CardTitle>Contact Form Section</CardTitle>
+      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <CardTitle className="flex items-center text-gray-800 py-6">
+            <FormInput className="h-5 w-5 mr-2 text-blue-600" />
+            Contact Form Section
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Map Image */}
           <div>
-            <Label>Map Image</Label>
-            <div className="flex flex-col items-start gap-4 mt-2">
-              {localData.mapImage && (
+            {/* <Label>Map Image</Label> */}
+            {/* {localData.mapImage && (
                 <img
                   src={localData.mapImage}
                   alt="Map"
                   className="w-48 h-auto rounded-md bg-gray-200"
                 />
-              )}
-              <MediaSelectorButton
-                label="Select Map Image"
-                mediaType="image"
-                value={localData.mapImage}
-                onSelect={handleMapImageSelect}
-              />
-            </div>
+              )} */}
+            <MediaSelectorButton
+              label="Select Map Image"
+              mediaType="image"
+              value={localData.mapImage}
+              onSelect={handleMapImageSelect}
+            />
           </div>
 
           {/* Form Title */}
           <div>
-            <Label>Form Title</Label>
+            <Label className="pb-2 text-primary/90">Form Title</Label>
             <Editor
               value={localData.formTitle || ""}
               onEditorChange={handleFormTitleChange}
@@ -210,7 +227,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
           {/* Form Description */}
           <div>
-            <Label>Form Description</Label>
+            <Label className="pb-2 text-primary/90">Form Description</Label>
             <Editor
               value={localData.formDescription || ""}
               onEditorChange={handleFormDescriptionChange}

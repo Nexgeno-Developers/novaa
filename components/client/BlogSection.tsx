@@ -16,7 +16,7 @@ import { RootState } from "@/redux";
 import { useRouter } from "next/navigation";
 
 interface BlogSectionProps {
-  pageSlug: string;
+  pageSlug?: string;
   title?: string;
   description?: string;
   showCategories?: boolean;

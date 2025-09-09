@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Plus, X, Image as ImageIcon } from "lucide-react";
+import { Loader2, Plus, X, Image as ImageIcon, SparklesIcon } from "lucide-react";
 import { RootState } from "@/redux";
 import { fetchCategories } from "@/redux/slices/categoriesSlice";
 import { fetchProjects } from "@/redux/slices/projectsSlice";
@@ -213,20 +213,25 @@ export default function CuratedCollectionManager({
   const sectionContent = (
     <div className="space-y-6">
       {/* Main Content Settings */}
-      <Card className="py-6">
-        <CardHeader>
-          <CardTitle>Content Settings</CardTitle>
+      <Card className="pb-6 bg-purple-50/30 ring-2 ring-primary/20">
+        <CardHeader className="flex items-center bg-gradient-to-r py-6 from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+          <SparklesIcon className="h-5 w-5 text-blue-600" />
+
+          <CardTitle className="text-gray-900">Content Settings</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Section Title</Label>
+                <Label htmlFor="title" className="text-primary/90">
+                  Section Title
+                </Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => handleInputChange("title", e.target.value)}
                   placeholder="Enter section title"
+                  className="bg-gray-50/50"
                 />
                 <p className="text-xs text-muted-foreground">
                   You can use HTML tags for styling (e.g., &lt;span
@@ -247,7 +252,9 @@ export default function CuratedCollectionManager({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description" className="text-primary/90">
+                Description
+              </Label>
               <div className="min-h-[200px]">
                 <Editor
                   value={formData.description}
@@ -262,9 +269,9 @@ export default function CuratedCollectionManager({
       </Card>
 
       {/* Project Selection */}
-      <Card className="py-6">
-        <CardHeader>
-          <CardTitle>Project Selection</CardTitle>
+      <Card className="pb-6 bg-gray-50/50 ring-2 ring-primary/20">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2 py-6">
+          <CardTitle className="text-primary/90">Project Selection</CardTitle>
           <p className="text-sm text-muted-foreground">
             Select projects to display in the curated collection by category
           </p>
@@ -274,20 +281,26 @@ export default function CuratedCollectionManager({
             {/* Category Selection */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="category">Categories</Label>
+                <Label htmlFor="category" className="text-primary/90">
+                  Categories
+                </Label>
                 <Select
                   value={selectedCategory}
                   onValueChange={setSelectedCategory}
                   disabled={categoriesLoading}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="cursor-pointer">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="admin-theme">
                     {categories
                       .filter((cat) => cat.isActive)
                       .map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
+                        <SelectItem
+                          key={category._id}
+                          value={category._id}
+                          className="cursor-pointer"
+                        >
                           {category.name}
                         </SelectItem>
                       ))}
@@ -296,7 +309,7 @@ export default function CuratedCollectionManager({
               </div>
 
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-sm text-gray-600">
+                <Badge variant="outline" className="text-sm text-primary/90">
                   Total Selected: {totalSelectedProjects} projects
                 </Badge>
               </div>
@@ -304,9 +317,9 @@ export default function CuratedCollectionManager({
 
             {/* Projects Selection for Selected Category */}
             {selectedCategory && (
-              <div className="space-y-4">
+              <div className="space-y-4 admin-theme">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-medium">
+                  <Label className="text-base font-medium text-primary/90">
                     Projects in{" "}
                     {categories.find((c) => c._id === selectedCategory)?.name}
                   </Label>
@@ -325,7 +338,7 @@ export default function CuratedCollectionManager({
                     No active projects found in this category
                   </div>
                 ) : (
-                  <ScrollArea className="h-64 w-full border rounded-lg p-4">
+                  <ScrollArea className="h-64 w-full border rounded-lg p-4 bg-gray-50/50  ring-2 ring-primary/20">
                     <div className="space-y-3">
                       {categoryProjects.map((project) => {
                         const isSelected = selectedProjects.some(
@@ -333,12 +346,13 @@ export default function CuratedCollectionManager({
                         );
 
                         return (
-                        <div
+                          <div
                             key={project._id}
-                            className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-gray-50"
+                            className="flex items-start space-x-3 p-3 border rounded-lg bg-purple-50/30 hover:bg-purple-50/50"
                           >
                             <Checkbox
                               checked={isSelected}
+                              className="cursor-pointer"
                               onCheckedChange={(checked) =>
                                 handleProjectToggle(project, checked as boolean)
                               }
@@ -373,7 +387,7 @@ export default function CuratedCollectionManager({
                               {project.badge && (
                                 <Badge
                                   variant="outline"
-                                  className="text-xs mt-1 text-background"
+                                  className="text-xs mt-1 text-primary"
                                 >
                                   {project.badge}
                                 </Badge>
@@ -393,9 +407,11 @@ export default function CuratedCollectionManager({
 
       {/* Selected Projects Summary */}
       {totalSelectedProjects > 0 && (
-        <Card className="py-6">
-          <CardHeader>
-            <CardTitle>Selected Projects Summary</CardTitle>
+        <Card className="pb-6 admin-theme ring-2 ring-primary/20">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2 py-6">
+            <CardTitle className="text-primary/90">
+              Selected Projects Summary
+            </CardTitle>
             <p className="text-sm text-muted-foreground">
               Review all selected projects across categories
             </p>
@@ -409,8 +425,10 @@ export default function CuratedCollectionManager({
                 return (
                   <div key={categoryId} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-sm">{category.name}</h4>
-                      <Badge variant="secondary">
+                      <h4 className="font-medium text-sm text-primary/90">
+                        {category.name}
+                      </h4>
+                      <Badge variant="secondary" className="text-primary/90">
                         {projects.length} project
                         {projects.length !== 1 ? "s" : ""}
                       </Badge>
@@ -446,7 +464,7 @@ export default function CuratedCollectionManager({
                             onClick={() =>
                               handleRemoveProject(categoryId, project._id)
                             }
-                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50 cursor-pointer"
                           >
                             <X className="h-3 w-3" />
                           </Button>

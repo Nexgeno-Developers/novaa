@@ -15,7 +15,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     dispatch(verifyAuth());

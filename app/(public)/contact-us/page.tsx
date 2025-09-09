@@ -3,7 +3,11 @@ import Section from '@/models/Section';
 import BreadcrumbsSection from '@/components/client/BreadcrumbsSection';
 import ContactSection from '@/components/client/ContactSection';
 
-const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
+interface SectionContent {
+  [key: string]: unknown; 
+}
+
+const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
   breadcrumb: BreadcrumbsSection,
   contact: ContactSection,
   // Add more Contact Us section components as needed

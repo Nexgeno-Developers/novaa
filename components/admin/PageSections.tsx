@@ -337,7 +337,8 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
         <div className="p-4 bg-gray-50 rounded border border-dashed border-gray-300">
           <div className="flex items-center justify-center text-gray-500">
             <Settings className="h-5 w-5 mr-2 text-primary" />
-            <span>Manager for {section.name} coming soon...</span>
+            
+           {section.name === "Project Content" ? <span>You can manage {section.name} from Project Management </span> :  <span>Manager for {section.name} coming soon...</span>}
           </div>
         </div>
       );
@@ -401,7 +402,7 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
       {/* Header with Actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight capitalize">
+          <h1 className="text-3xl font-bold tracking-tight capitalize text-primary">
             {pageSlug.replace(/-/g, " ")} Page Management
           </h1>
           <p className="text-muted-foreground">
@@ -425,7 +426,7 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
           <Button
             variant="outline"
             onClick={handleRefresh}
-            className="bg-gray-200 cursor-pointer"
+            className="bg-primary/90 text-gray-100 hover:bg-primary/80 cursor-pointer"
             disabled={isRefreshing}
           >
             <RefreshCw
@@ -436,7 +437,7 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
 
           <Button
             variant="outline"
-            className="bg-gray-200 cursor-pointer"
+            className="bg-primary/90 text-gray-100 hover:bg-primary/80 cursor-pointer"
             onClick={() => setIsOrderModalOpen(true)}
           >
             <ArrowUpDown className="h-4 w-4 mr-2" />
@@ -531,7 +532,7 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
 
       {/* Change Order Modal */}
       <Dialog open={isOrderModalOpen} onOpenChange={setIsOrderModalOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg admin-theme">
           <DialogHeader>
             <DialogTitle>Change Section Order</DialogTitle>
             <DialogDescription>

@@ -1,13 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Save, RotateCcw } from 'lucide-react';
-import type { Section } from '@/redux/slices/pageSlice';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Eye, EyeOff, Save, RotateCcw } from "lucide-react";
+import type { Section } from "@/redux/slices/pageSlice";
 
 interface BaseSectionManagerProps {
   section: Section;
@@ -24,48 +30,60 @@ export default function BaseSectionManager({
   showSaveButton = true,
   title,
   description,
-  children
+  children,
 }: BaseSectionManagerProps) {
   const [localChanges, setLocalChanges] = useState<Partial<Section>>({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Memoize the onChange callback to prevent infinite re-renders
-  const handleParentChange = useCallback((changes: Partial<Section>) => {
-    if (onChange) {
-      onChange(changes);
-    }
-  }, [onChange]);
+  const handleParentChange = useCallback(
+    (changes: Partial<Section>) => {
+      if (onChange) {
+        onChange(changes);
+      }
+    },
+    [onChange]
+  );
 
   // Update parent when local changes occur - use useCallback to memoize
-  const handleChange = useCallback((changes: Partial<Section>) => {
-    setLocalChanges(prevChanges => {
-      const newChanges = { ...prevChanges, ...changes };
-      return newChanges;
-    });
-    setHasUnsavedChanges(true);
-    
-    // Call parent onChange with the changes
-    handleParentChange(changes);
-  }, [handleParentChange]);
+  const handleChange = useCallback(
+    (changes: Partial<Section>) => {
+      setLocalChanges((prevChanges) => {
+        const newChanges = { ...prevChanges, ...changes };
+        return newChanges;
+      });
+      setHasUnsavedChanges(true);
+
+      // Call parent onChange with the changes
+      handleParentChange(changes);
+    },
+    [handleParentChange]
+  );
 
   // Handle visibility toggle - memoized to prevent re-renders
-  const handleVisibilityToggle = useCallback((isVisible: boolean) => {
-    const changes = {
-      settings: {
-        ...section.settings,
-        isVisible
-      }
-    };
-    handleChange(changes);
-  }, [section.settings, handleChange]);
+  const handleVisibilityToggle = useCallback(
+    (isVisible: boolean) => {
+      const changes = {
+        settings: {
+          ...section.settings,
+          isVisible,
+        },
+      };
+      handleChange(changes);
+    },
+    [section.settings, handleChange]
+  );
 
   // Handle status toggle - memoized to prevent re-renders
-  const handleStatusToggle = useCallback((active: boolean) => {
-    const changes = {
-      status: active ? 'active' as const : 'inactive' as const
-    };
-    handleChange(changes);
-  }, [handleChange]);
+  const handleStatusToggle = useCallback(
+    (active: boolean) => {
+      const changes = {
+        status: active ? ("active" as const) : ("inactive" as const),
+      };
+      handleChange(changes);
+    },
+    [handleChange]
+  );
 
   // Reset changes - memoized
   const handleReset = useCallback(() => {
@@ -82,8 +100,8 @@ export default function BaseSectionManager({
       ...localChanges,
       settings: {
         ...section.settings,
-        ...localChanges.settings
-      }
+        ...localChanges.settings,
+      },
     };
   }, [section, localChanges]);
 
@@ -91,7 +109,7 @@ export default function BaseSectionManager({
   const handleSave = useCallback(() => {
     // This would trigger individual save
     // Implementation depends on your save logic
-    console.log('Saving section:', currentSection);
+    console.log("Saving section:", currentSection);
     setHasUnsavedChanges(false);
   }, [currentSection]);
 
@@ -100,18 +118,26 @@ export default function BaseSectionManager({
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">{title || section.name}</h3>
+          <h3 className="text-lg font-semibold text-primary/90">{title || section.name}</h3>
           {description && (
             <p className="text-sm text-muted-foreground mt-1">{description}</p>
           )}
         </div>
-        
+
         <div className="flex items-center space-x-2">
-          <Badge className='text-background' variant={currentSection.status === 'active' ? 'default' : 'secondary'}>
+          <Badge
+            className="text-background"
+            variant={
+              currentSection.status === "active" ? "default" : "secondary"
+            }
+          >
             {currentSection.status}
           </Badge>
           {hasUnsavedChanges && (
-            <Badge variant="outline" className="bg-orange-50 text-orange-600 border-orange-200">
+            <Badge
+              variant="outline"
+              className="bg-orange-50 text-orange-600 border-orange-200"
+            >
               Unsaved
             </Badge>
           )}
@@ -119,7 +145,7 @@ export default function BaseSectionManager({
       </div>
 
       {/* Section Controls */}
-      {/* <Card className='py-6'>
+      {/* <Card className="py-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Section Settings</CardTitle>
           <CardDescription>
@@ -134,7 +160,10 @@ export default function BaseSectionManager({
               ) : (
                 <EyeOff className="h-4 w-4 text-gray-400" />
               )}
-              <Label htmlFor={`visibility-${section._id}`} className="text-sm font-medium">
+              <Label
+                htmlFor={`visibility-${section._id}`}
+                className="text-sm font-medium"
+              >
                 Show on Website
               </Label>
             </div>
@@ -147,17 +176,22 @@ export default function BaseSectionManager({
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Badge 
-                variant={currentSection.status === 'active' ? 'default' : 'secondary'}
+              <Badge
+                variant={
+                  currentSection.status === "active" ? "default" : "secondary"
+                }
                 className="w-2 h-2 p-0 rounded-full"
               />
-              <Label htmlFor={`status-${section._id}`} className="text-sm font-medium">
+              <Label
+                htmlFor={`status-${section._id}`}
+                className="text-sm font-medium"
+              >
                 Section Active
               </Label>
             </div>
             <Switch
               id={`status-${section._id}`}
-              checked={currentSection.status === 'active'}
+              checked={currentSection.status === "active"}
               onCheckedChange={handleStatusToggle}
             />
           </div>
@@ -165,17 +199,15 @@ export default function BaseSectionManager({
       </Card> */}
 
       {/* Section Content */}
-      <Card className='py-6'>
-        {/* <CardHeader className="pb-3">
-          <CardTitle className="text-base">Content Management</CardTitle>
+      {/* <Card className="py-6"> */}
+      {/* <CardHeader className="pb-3"> */}
+      {/* <CardTitle className="text-base">Content Management</CardTitle>
           <CardDescription>
             Edit the content and settings for this section
-          </CardDescription>
-        </CardHeader> */}
-        <CardContent>
-          {children}
-        </CardContent>
-      </Card>
+          </CardDescription> */}
+      {/* </CardHeader> */}
+      <div>{children}</div>
+      {/* </Card> */}
 
       {/* Individual Save Button (only show if showSaveButton is true) */}
       {showSaveButton && (
@@ -186,19 +218,15 @@ export default function BaseSectionManager({
                 variant="outline"
                 onClick={handleReset}
                 size="sm"
-                className='text-background'
+                className="text-background"
               >
                 <RotateCcw className="h-4 w-4 mr-2" />
                 Reset
               </Button>
             )}
           </div>
-          
-          <Button
-            onClick={handleSave}
-            disabled={!hasUnsavedChanges}
-            size="sm"
-          >
+
+          <Button onClick={handleSave} disabled={!hasUnsavedChanges} size="sm">
             <Save className="h-4 w-4 mr-2" />
             Save Section
           </Button>

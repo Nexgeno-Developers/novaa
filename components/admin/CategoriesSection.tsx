@@ -159,7 +159,7 @@ export default function CategoriesSection() {
   };
 
   return (
-    <Card className="py-6">
+    <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Categories Management
@@ -173,15 +173,15 @@ export default function CategoriesSection() {
                 Add Category
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-xl">
+            <DialogContent className="max-w-xl admin-theme">
               <DialogHeader>
-                <DialogTitle className="text-gradient-gold">
+                <DialogTitle className="text-primary">
                   {editingCategory ? "Edit Category" : "Add New Category"}
                 </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="categoryName" className="text-background ">
+                  <Label htmlFor="categoryName" className="text-primary ">
                     Category Name
                   </Label>
                   <Input
@@ -191,19 +191,19 @@ export default function CategoriesSection() {
                       setFormData((prev) => ({ ...prev, name: e.target.value }))
                     }
                     placeholder="Enter category name"
-                    className="text-background no-selection-highlight"
+                    className="text-gray-900"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="categoryOrder" className="text-background">
+                  <Label htmlFor="categoryOrder" className="text-primary">
                     Order
                   </Label>
                   <Input
                     id="categoryOrder"
                     type="number"
-                    className="text-background"
+                    className="text-gray-900"
                     value={formData.order}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -224,7 +224,7 @@ export default function CategoriesSection() {
                       setFormData((prev) => ({ ...prev, isActive: checked }))
                     }
                   />
-                  <Label htmlFor="categoryActive" className="text-background">
+                  <Label htmlFor="categoryActive" className="text-primary">
                     Active
                   </Label>
                 </div>
@@ -233,7 +233,7 @@ export default function CategoriesSection() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="bg-gray-300 hover:bg-gray-200 cursor-pointer"
+                    className="bg-gray-300 hover:bg-gray-300/50 hover:text-primary cursor-pointer"
                     onClick={() => setIsDialogOpen(false)}
                   >
                     Cancel
@@ -328,6 +328,7 @@ export default function CategoriesSection() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
+                                    className="cursor-pointer text-primary hover:text-primary/80"
                                     onClick={() => openEditDialog(category)}
                                   >
                                     <Edit className="h-4 w-4" />
@@ -335,10 +336,10 @@ export default function CategoriesSection() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => (
+                                    onClick={() =>
                                       setDeleteDialogId(category._id)
-                                    )}
-                                    className="text-destructive hover:text-destructive"
+                                    }
+                                    className="text-destructive hover:text-destructive cursor-pointer"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
@@ -360,20 +361,20 @@ export default function CategoriesSection() {
       {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={!!deleteDialogId}
-        onOpenChange={() => (
-          setDeleteDialogId(null)
-        )}
+        onOpenChange={() => setDeleteDialogId(null)}
       >
-        <AlertDialogContent className="bg-gray-300">
+        <AlertDialogContent className="admin-theme">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle className="text-primary">
+              Are you sure?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              enquiry and remove it from our servers.
+              project category and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-gray-100/90 cursor-pointer">
+            <AlertDialogCancel className=" cursor-pointer">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

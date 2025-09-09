@@ -45,6 +45,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Plus,
   Edit,
   Trash2,
@@ -67,6 +77,7 @@ import {
   deleteBlog,
   Blog,
 } from "@/redux/slices/blogsSlice";
+
 import {
   fetchBlogCategories,
   BlogCategory,
@@ -92,6 +103,7 @@ export default function BlogManager() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -178,30 +190,30 @@ export default function BlogManager() {
   };
 
   const openEditDialog = (blog: Blog) => {
-  setFormData({
-    title: blog.title,
-    slug: blog.slug,
-    description: blog.description,
-    content: blog.content,
-    image: blog.image,
-    category: blog.category._id,
-    categoryName: blog.categoryName,
-    isActive: blog.isActive,
-    order: blog.order,
-    tags: blog.tags || [],
-    seo: {
-      metaTitle: blog.seo?.metaTitle || "",
-      metaDescription: blog.seo?.metaDescription || "",
-      keywords: blog.seo?.keywords || [],
-    },
-    author: blog.author || {
-      name: "NOVAA Admin",
-      avatar: "",
-    },
-  });
-  setEditingBlog(blog);
-  setIsDialogOpen(true);
-};
+    setFormData({
+      title: blog.title,
+      slug: blog.slug,
+      description: blog.description,
+      content: blog.content,
+      image: blog.image,
+      category: blog.category._id,
+      categoryName: blog.categoryName,
+      isActive: blog.isActive,
+      order: blog.order,
+      tags: blog.tags || [],
+      seo: {
+        metaTitle: blog.seo?.metaTitle || "",
+        metaDescription: blog.seo?.metaDescription || "",
+        keywords: blog.seo?.keywords || [],
+      },
+      author: blog.author || {
+        name: "NOVAA Admin",
+        avatar: "",
+      },
+    });
+    setEditingBlog(blog);
+    setIsDialogOpen(true);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -278,15 +290,13 @@ export default function BlogManager() {
     }
   };
 
-  const handleDelete = async (id: string, title: string) => {
-    if (confirm(`Are you sure you want to delete "${title}"?`)) {
-      try {
-        await dispatch(deleteBlog(id)).unwrap();
-        toast.success("Blog deleted successfully");
-        fetchBlogsData();
-      } catch (error: any) {
-        toast.error(error || "Failed to delete blog");
-      }
+  const handleDelete = async (id: string) => {
+    try {
+      await dispatch(deleteBlog(id)).unwrap();
+      toast.success("Blog deleted successfully");
+      fetchBlogsData();
+    } catch (error: any) {
+      toast.error(error || "Failed to delete blog");
     }
   };
 
@@ -309,19 +319,19 @@ export default function BlogManager() {
     }
   };
 
-const handleNestedInputChange = (
-  parent: string,
-  field: string,
-  value: any
-) => {
-  setFormData((prev) => ({
-    ...prev,
-    [parent]: {
-      ...(prev[parent as keyof typeof prev] as object),
-      [field]: value,
-    },
-  }));
-};
+  const handleNestedInputChange = (
+    parent: string,
+    field: string,
+    value: any
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [parent]: {
+        ...(prev[parent as keyof typeof prev] as object),
+        [field]: value,
+      },
+    }));
+  };
 
   const handleImageSelect = (imageUrl: string) => {
     setFormData((prev) => ({
@@ -376,7 +386,7 @@ const handleNestedInputChange = (
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Blog Manager</h1>
+        <h1 className="text-3xl font-bold text-primary/90">Blog Manager</h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button
@@ -387,7 +397,7 @@ const handleNestedInputChange = (
               Add Blog
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[95vh] overflow-y-auto">
+          <DialogContent className="max-w-3xl max-h-[95vh] overflow-y-auto admin-theme">
             <DialogHeader>
               <DialogTitle className="text-primary">
                 {editingBlog ? "Edit Blog" : "Add New Blog"}
@@ -404,7 +414,7 @@ const handleNestedInputChange = (
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Enter blog title"
-                    className="text-gray-300"
+                    className="text-gray-900"
                     required
                   />
                 </div>
@@ -418,10 +428,10 @@ const handleNestedInputChange = (
                     value={formData.slug}
                     onChange={(e) => handleInputChange("slug", e.target.value)}
                     placeholder="blog-slug"
-                    className="text-gray-300"
+                    className="text-gray-900"
                     required
                   />
-                  <p className="text-xs text-gray-300">
+                  <p className="text-xs text-gray-900">
                     URL-friendly version of the title
                   </p>
                 </div>
@@ -437,7 +447,7 @@ const handleNestedInputChange = (
                       handleInputChange("description", e.target.value)
                     }
                     placeholder="Brief description of the blog (will be shown in blog list)"
-                    className="text-gray-300"
+                    className="text-gray-900"
                     rows={3}
                     required
                   />
@@ -451,7 +461,7 @@ const handleNestedInputChange = (
                         variant="outline"
                         role="combobox"
                         aria-expanded={categoryOpen}
-                        className="w-full justify-between text-gray-300"
+                        className="w-full justify-between text-gray-900"
                       >
                         {formData.category
                           ? categories.find(
@@ -507,7 +517,7 @@ const handleNestedInputChange = (
                       handleInputChange("order", parseInt(e.target.value) || 0)
                     }
                     placeholder="0"
-                    className="text-gray-300"
+                    className="text-gray-900"
                     min="0"
                   />
                 </div>
@@ -551,7 +561,7 @@ const handleNestedInputChange = (
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     placeholder="Add a tag"
-                    className="text-gray-300 mt-[2px]"
+                    className="text-gray-900 mt-[2px]"
                     onKeyPress={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())
                     }
@@ -560,7 +570,7 @@ const handleNestedInputChange = (
                     type="button"
                     onClick={addTag}
                     size="lg"
-                    className="text-background"
+                    className="text-background cursor-pointer"
                   >
                     Add
                   </Button>
@@ -606,7 +616,7 @@ const handleNestedInputChange = (
                           e.target.value
                         )
                       }
-                      className="text-gray-300"
+                      className="text-gray-900"
                       placeholder="SEO title for search engines"
                     />
                   </div>
@@ -625,7 +635,7 @@ const handleNestedInputChange = (
                           e.target.value
                         )
                       }
-                      className="text-gray-300"
+                      className="text-gray-900"
                       placeholder="Author name"
                     />
                   </div>
@@ -644,7 +654,7 @@ const handleNestedInputChange = (
                           e.target.value
                         )
                       }
-                      className="text-gray-300"
+                      className="text-gray-900"
                       placeholder="SEO description for search engines"
                       rows={2}
                     />
@@ -660,7 +670,9 @@ const handleNestedInputChange = (
                     handleInputChange("isActive", checked)
                   }
                 />
-                <Label htmlFor="blogActive" className="text-primary">Active</Label>
+                <Label htmlFor="blogActive" className="text-primary">
+                  Active
+                </Label>
               </div>
 
               <div className="flex justify-end space-x-2">
@@ -668,11 +680,15 @@ const handleNestedInputChange = (
                   type="button"
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="text-background cursor-pointer bg-gray-200"
+                  className="text-background hover:text-primary hover:bg-gray-100 cursor-pointer bg-gray-400"
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="text-background cursor-pointer">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="text-background cursor-pointer"
+                >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -691,8 +707,8 @@ const handleNestedInputChange = (
       </div>
 
       {/* Filters */}
-      <Card className="py-6">
-        <CardContent className="pt-6">
+      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
+        <CardContent>
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -701,7 +717,7 @@ const handleNestedInputChange = (
                   placeholder="Search blogs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
+                  className="pl-8 ring-2 ring-primary/20"
                 />
               </div>
             </div>
@@ -709,26 +725,38 @@ const handleNestedInputChange = (
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[200px] ring-2 ring-primary/20 cursor-pointer">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
+              <SelectContent className="font-poppins admin-theme ">
+                <SelectItem value="all" className="cursor-pointer">
+                  All Categories
+                </SelectItem>
                 {categories.map((category) => (
-                  <SelectItem key={category._id} value={category._id}>
+                  <SelectItem
+                    key={category._id}
+                    value={category._id}
+                    className="cursor-pointer"
+                  >
                     {category.title}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-[150px] ring-2 ring-primary/20 cursor-pointer">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
+              <SelectContent className="admin-theme">
+                <SelectItem value="all" className="cursor-pointer">
+                  All Status
+                </SelectItem>
+                <SelectItem value="active" className="cursor-pointer">
+                  Active
+                </SelectItem>
+                <SelectItem value="inactive" className="cursor-pointer">
+                  Inactive
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -736,9 +764,9 @@ const handleNestedInputChange = (
       </Card>
 
       {/* Blogs Table */}
-      <Card className="py-6">
+      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+          <CardTitle className="flex items-center justify-between text-primary">
             Blogs
             <span className="text-sm font-normal text-muted-foreground">
               {pagination.totalCount} total blogs
@@ -761,7 +789,7 @@ const handleNestedInputChange = (
             <div className="space-y-4">
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader className="bg-gray-300">
+                  <TableHeader className="bg-primary">
                     <TableRow>
                       <TableHead className="text-background">Image</TableHead>
                       <TableHead className="text-background">Title</TableHead>
@@ -805,7 +833,7 @@ const handleNestedInputChange = (
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-background">
+                          <Badge variant="outline" className="text-primary">
                             {blog.categoryName}
                           </Badge>
                         </TableCell>
@@ -834,7 +862,7 @@ const handleNestedInputChange = (
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-background"
+                              className="text-primary hover:text-primary/80 cursor-pointer"
                               onClick={() => openEditDialog(blog)}
                             >
                               <Edit className="h-4 w-4" />
@@ -842,8 +870,8 @@ const handleNestedInputChange = (
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDelete(blog._id, blog.title)}
-                              className="text-destructive hover:text-destructive"
+                              onClick={() => setDeleteDialogId(blog._id)}
+                              className="text-destructive hover:text-destructive cursor-pointer"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -890,6 +918,34 @@ const handleNestedInputChange = (
           )}
         </CardContent>
       </Card>
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deleteDialogId}
+        onOpenChange={() => setDeleteDialogId(null)}
+      >
+        <AlertDialogContent className="admin-theme">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-primary">
+              Are you sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              blog and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className=" cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteDialogId && handleDelete(deleteDialogId)}
+              className="bg-destructive text-foreground cursor-pointer hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

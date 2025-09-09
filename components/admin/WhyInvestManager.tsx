@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ImagePlus, Sparkles, Target, Images } from "lucide-react";
+import { ImagePlus, Sparkles, Target, Images, User } from "lucide-react";
 
 interface WhyInvestManagerProps {
   section?: any;
@@ -173,209 +173,209 @@ export default function WhyInvestManager({
                 </TabsTrigger>
               </TabsList> */}
 
-              {/* Content Tab */}
-              {/* <TabsContent value="content" className="space-y-6"> */}
-                {/* Main Section Card */}
-                <Card className=" bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 py-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <CardHeader className="relative bg-gradient-to-r from-slate-50 to-blue-50/50 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-600/50">
-                    <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
-                      <div className="w-2 h-8 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full"></div>
-                      <span>Main Section</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="relative space-y-6 p-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="mainTitle"
-                          className="text-sm font-semibold text-slate-700 dark:text-slate-300"
-                        >
-                          Main Title
-                        </Label>
-                        <Input
-                          id="mainTitle"
-                          value={localData.mainTitle}
-                          onChange={(e) =>
-                            handleUpdateMainField("mainTitle", e.target.value)
-                          }
-                          className="border-2 border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm focus:border-blue-500 focus:bg-white dark:focus:bg-slate-700 transition-all duration-300 px-4 py-3"
-                          placeholder="Enter main title..."
-                        />
-                      </div>
-                      <div className="space-y-3">
-                        <Label
-                          htmlFor="highlightedTitle"
-                          className="text-sm font-semibold text-slate-700 dark:text-slate-300"
-                        >
-                          Highlighted Title
-                        </Label>
-                        <Input
-                          id="highlightedTitle"
-                          value={localData.highlightedTitle}
-                          onChange={(e) =>
-                            handleUpdateMainField(
-                              "highlightedTitle",
-                              e.target.value
-                            )
-                          }
-                          className="border-2 border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm focus:border-purple-500 focus:bg-white dark:focus:bg-slate-700 transition-all duration-300 px-4 py-3"
-                          placeholder="Enter highlighted title..."
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                        Description
-                      </Label>
-                      <div className="rounded-xl overflow-hidden border-2 border-slate-200/60 dark:border-slate-600/60 bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm">
-                        <RichTextEditor
-                          value={localData.description}
-                          onEditorChange={(content) =>
-                            handleUpdateMainField("description", content)
-                          }
-                        />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Investment Points Card */}
-                <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 py-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <CardHeader className="relative bg-gradient-to-r from-slate-50 to-emerald-50/50 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-600/50">
-                    <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
-                      <div className="w-2 h-8 bg-gradient-to-b from-emerald-600 to-blue-600 rounded-full"></div>
-                      <span>Investment Points</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="relative space-y-6 p-8">
-                    <div className="grid gap-6">
-                      {localData.investmentPoints.map(
-                        (point: any, index: number) => (
-                          <div
-                            key={index}
-                            className="group/point relative p-6 border-2 border-slate-200/60 dark:border-slate-600/60 rounded-2xl bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-700/80 dark:to-slate-800/80 backdrop-blur-sm hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300"
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover/point:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-
-                            <div className="relative space-y-4">
-                              <div className="flex items-center">
-                                <h4 className="font-bold text-lg flex items-center space-x-2 text-slate-800 dark:text-slate-100">
-                                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                                    {index + 1}
-                                  </div>
-                                  <span>Investment Point {index + 1}</span>
-                                </h4>
-                              </div>
-
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                    Title
-                                  </Label>
-                                  <Input
-                                    value={point.title}
-                                    onChange={(e) =>
-                                      handleInvestmentPointChange(
-                                        index,
-                                        "title",
-                                        e.target.value
-                                      )
-                                    }
-                                    className="border border-slate-200 dark:border-slate-600 rounded-xl bg-white/80 dark:bg-slate-700/80 focus:border-purple-500 transition-all duration-300"
-                                    placeholder="Point title..."
-                                  />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                    Description
-                                  </Label>
-                                  <Textarea
-                                    value={point.description}
-                                    onChange={(e) =>
-                                      handleInvestmentPointChange(
-                                        index,
-                                        "description",
-                                        e.target.value
-                                      )
-                                    }
-                                    className="border border-slate-200 dark:border-slate-600 rounded-xl bg-white/80 dark:bg-slate-700/80 focus:border-emerald-500 transition-all duration-300 min-h-[80px]"
-                                    placeholder="Describe this investment point..."
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+            {/* Content Tab */}
+            {/* <TabsContent value="content" className="space-y-6"> */}
+            {/* Main Section Card */}
+            <Card className="ring-2 ring-primary/20 bg-purple-50/30 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 pb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <CardHeader className="relative bg-purple-200/50 dark:from-slate-800 dark:to-slate-700 border-b-2 border-b-gray-200 border-slate-200/50 dark:border-slate-600/50 py-6">
+                <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
+                  <Sparkles className="h-5 w-5 text-blue-600" />
+                  <span>Main Section</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative space-y-6 pb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="mainTitle"
+                      className="text-sm font-semibold text-primary/90 dark:text-slate-300"
+                    >
+                      Main Title
+                    </Label>
+                    <Input
+                      id="mainTitle"
+                      value={localData.mainTitle}
+                      onChange={(e) =>
+                        handleUpdateMainField("mainTitle", e.target.value)
+                      }
+                      className="border-2 border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm focus:border-blue-500 focus:bg-white dark:focus:bg-slate-700 transition-all duration-300 px-4 py-3"
+                      placeholder="Enter main title..."
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="highlightedTitle"
+                      className="text-sm font-semibold  text-primary/90 dark:text-slate-300"
+                    >
+                      Highlighted Title
+                    </Label>
+                    <Input
+                      id="highlightedTitle"
+                      value={localData.highlightedTitle}
+                      onChange={(e) =>
+                        handleUpdateMainField(
+                          "highlightedTitle",
+                          e.target.value
                         )
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-                {/* Background Images */}
-                <Card className="bg-white/70 py-6 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <CardHeader className="relative bg-gradient-to-r from-slate-50 to-violet-50/50 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200/50 dark:border-slate-600/50">
-                    <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
-                      <div className="w-2 h-8 bg-gradient-to-b from-violet-600 to-pink-600 rounded-full"></div>
-                      <span>Section Images</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="relative p-8">
-                    <p className="text-slate-600 dark:text-slate-400 mb-8 text-lg">
-                      Manage the four showcase images displayed in your
-                      investment grid.
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="group/image space-y-4">
-                          <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                              {index + 1}
-                            </div>
-                            <span>Image {index + 1}</span>
-                          </Label>
+                      }
+                      className="border-2 border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm focus:border-purple-500 focus:bg-white dark:focus:bg-slate-700 transition-all duration-300 px-4 py-3"
+                      placeholder="Enter highlighted title..."
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold  text-primary/90 dark:text-slate-300">
+                    Description
+                  </Label>
+                  <div className="rounded-xl overflow-hidden border-2 border-slate-200/60 dark:border-slate-600/60 bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm">
+                    <RichTextEditor
+                      value={localData.description}
+                      onEditorChange={(content) =>
+                        handleUpdateMainField("description", content)
+                      }
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-                          <div className="relative w-full aspect-video rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600 group-hover/image:border-violet-400 dark:group-hover/image:border-violet-500 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 overflow-hidden transition-all duration-300 group-hover/image:shadow-lg">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-pink-600/5 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300"></div>
-                            {localData.images[index] ? (
-                              <div className="relative w-full h-full group">
-                                <Image
-                                  src={localData.images[index]}
-                                  alt={`Selected Image ${index + 1}`}
-                                  width={400}
-                                  height={225}
-                                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                                />
-                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {/* Investment Points Card */}
+            <Card className="ring-2 ring-primary/20 bg-purple-50/30 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300 pb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <CardHeader className="relative bg-gradient-to-tl from-gray-200/50 to-emerald-200/50 dark:from-slate-800 dark:to-slate-700 border-b-2 border-b-purple-200/50 dark:border-slate-600/50 py-6">
+                <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
+                  <User className="h-5 w-5 text-blue-600" />
+                  <span>Investment Points</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative space-y-6 px-6">
+                <div className="grid gap-6">
+                  {localData.investmentPoints.map(
+                    (point: any, index: number) => (
+                      <div
+                        key={index}
+                        className="group/point relative p-6 border-2 border-slate-200/60 dark:border-slate-600/60 rounded-2xl bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-700/80 dark:to-slate-800/80 backdrop-blur-sm hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5 opacity-0 group-hover/point:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+
+                        <div className="relative space-y-4">
+                          <div className="flex items-center">
+                            <h4 className="font-bold text-lg flex items-center space-x-2 text-slate-800 dark:text-slate-100">
+                              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                {index + 1}
                               </div>
-                            ) : (
-                              <div className="text-center space-y-2">
-                                <ImagePlus className="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto group-hover/image:text-violet-500 transition-colors duration-300" />
-                                <span className="text-slate-500 dark:text-slate-400 font-medium">
-                                  No Image Selected
-                                </span>
-                              </div>
-                            )}
+                              <span>Investment Point </span>
+                            </h4>
                           </div>
 
-                          <Button
-                            variant="outline"
-                            className="w-full border-2 border-slate-200 dark:border-slate-600 hover:border-violet-500 dark:hover:border-violet-400 bg-white/80 dark:bg-slate-700/80 hover:bg-gradient-to-r hover:from-violet-50 hover:to-pink-50 dark:hover:from-violet-950/30 dark:hover:to-pink-950/30 rounded-2xl py-3 group/button transition-all duration-300"
-                            onClick={() => handleOpenSelector(index)}
-                          >
-                            <ImagePlus className="mr-2 h-4 w-4 group-hover/button:scale-110 transition-transform duration-300" />
-                            <span className="font-medium">Change Image</span>
-                          </Button>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-semibold text-primary/90 dark:text-slate-300">
+                                Title
+                              </Label>
+                              <Input
+                                value={point.title}
+                                onChange={(e) =>
+                                  handleInvestmentPointChange(
+                                    index,
+                                    "title",
+                                    e.target.value
+                                  )
+                                }
+                                className="border border-slate-200 dark:border-slate-600 rounded-xl bg-white/80 dark:bg-slate-700/80 focus:border-purple-500 transition-all duration-300"
+                                placeholder="Point title..."
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label className="text-sm font-semibold text-primary/90 dark:text-slate-300">
+                                Description
+                              </Label>
+                              <Textarea
+                                value={point.description}
+                                onChange={(e) =>
+                                  handleInvestmentPointChange(
+                                    index,
+                                    "description",
+                                    e.target.value
+                                  )
+                                }
+                                className="border border-slate-200 dark:border-slate-600 rounded-xl bg-white/80 dark:bg-slate-700/80 focus:border-emerald-500 transition-all duration-300 min-h-[80px]"
+                                placeholder="Describe this investment point..."
+                              />
+                            </div>
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              {/* </TabsContent> */}
+                      </div>
+                    )
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            {/* Background Images */}
+            <Card className="ring-2 ring-primary/20 bg-purple-50/30 pb-6 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <CardHeader className="relative bg-gradient-to-r from-violet-200/20 to-violet-100/50 py-6 border-b-2 border-b-violet-200">
+                <CardTitle className="flex items-center space-x-3 text-xl text-slate-800 dark:text-slate-100">
+                  <ImagePlus className="h-5 w-5 text-violet-500" />
+                  <span>Section Images</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative p-8">
+                <p className="text-slate-600 dark:text-slate-400 mb-8 text-lg">
+                  Manage the four showcase images displayed in your investment
+                  grid.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <div key={index} className="group/image space-y-4">
+                      <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          {index + 1}
+                        </div>
+                        <span className="text-primary/90">Image</span>
+                      </Label>
 
-              {/* Images Tab */}
-              {/* <TabsContent value="images">
+                      <div className="relative w-full aspect-video rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600 group-hover/image:border-violet-400 dark:group-hover/image:border-violet-500 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 overflow-hidden transition-all duration-300 group-hover/image:shadow-lg">
+                        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-pink-600/5 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300"></div>
+                        {localData.images[index] ? (
+                          <div className="relative w-full h-full group">
+                            <Image
+                              src={localData.images[index]}
+                              alt={`Selected Image ${index + 1}`}
+                              width={400}
+                              height={225}
+                              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                        ) : (
+                          <div className="text-center space-y-2">
+                            <ImagePlus className="w-12 h-12 text-slate-400 dark:text-slate-500 mx-auto group-hover/image:text-violet-500 transition-colors duration-300" />
+                            <span className="text-slate-500 dark:text-slate-400 font-medium">
+                              No Image Selected
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        className="w-full border-2 hover:text-violet-500 cursor-pointer border-slate-200 dark:border-slate-600 hover:border-violet-500 dark:hover:border-violet-400 bg-white/80 dark:bg-slate-700/80 hover:bg-gradient-to-r hover:from-violet-50 hover:to-pink-50 dark:hover:from-violet-950/30 dark:hover:to-pink-950/30 rounded-2xl py-3 group/button transition-all duration-300"
+                        onClick={() => handleOpenSelector(index)}
+                      >
+                        <ImagePlus className="mr-2 h-4 w-4 group-hover/button:scale-110 transition-transform duration-300" />
+                        <span className="font-medium">Change Image</span>
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            {/* </TabsContent> */}
+
+            {/* Images Tab */}
+            {/* <TabsContent value="images">
                 
               </TabsContent>
             </Tabs> */}

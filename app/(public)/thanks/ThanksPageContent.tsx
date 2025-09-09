@@ -122,7 +122,7 @@ export default function ThanksPageContent() {
                     Email Confirmation
                   </h4>
                   <p className="font-josefin text-sm text-white/70">
-                    You'll receive a confirmation email shortly
+                    You&apos;ll receive a confirmation email shortly
                   </p>
                 </div>
               </div>

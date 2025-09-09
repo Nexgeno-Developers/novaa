@@ -4,8 +4,12 @@ import Section from "@/models/Section";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import OurStorySection from "@/components/client/OurStorySection";
 
+interface SectionContent {
+  [key: string]: unknown; 
+}
+
 const sectionComponentMap: {
-  [key: string]: React.ComponentType<any>;
+  [key: string]: React.ComponentType<SectionContent>;
 } = {
   breadcrumb: BreadcrumbsSection,
   "our-story": OurStorySection,

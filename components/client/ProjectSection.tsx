@@ -12,7 +12,7 @@ import {
 } from "@/redux/slices/collectionSlice";
 
 interface ProjectSectionProps {
-  pageSlug: string;
+  pageSlug?: string;
   displayMode?: "grid" | "carousel";
   isLocationVisible?: boolean;
   showRegionTabs?: boolean;

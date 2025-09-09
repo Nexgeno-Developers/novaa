@@ -307,16 +307,16 @@ export default function OurStoryManager({
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Content Section */}
-            <Card className="shadow-sm border-0 bg-white">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+            <Card className="shadow-sm border-0 bg-white ring-2 ring-primary/20">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-2 border-b-indigo-200">
                 <CardTitle className="flex items-center text-gray-800 py-6">
                   <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
                   Content
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 space-y-6">
+              <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="title" className="text-sm font-medium text-primary/90">
                     Title
                   </Label>
                   <Input
@@ -329,7 +329,7 @@ export default function OurStoryManager({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Description</Label>
+                  <Label className="text-sm font-medium text-primary/90">Description</Label>
                   <div className="border border-gray-300 rounded-lg">
                     <Editor
                       value={localData.description}
@@ -341,8 +341,8 @@ export default function OurStoryManager({
             </Card>
 
             {/* Media Section */}
-            <Card className="shadow-sm border-0 bg-white">
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl">
+            <Card className="shadow-sm border-0 bg-white ring-2 ring-primary/20">
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-xl border-b-2 border-b-indigo-200">
                 <CardTitle className="flex items-center text-gray-800 py-6">
                   <Images className="h-5 w-5 mr-2 text-purple-600" />
                   Media (Image or Video)
@@ -350,7 +350,7 @@ export default function OurStoryManager({
               </CardHeader>
               <CardContent className="p-6 space-y-6">
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-700">Media Type</Label>
+                  <Label className="text-sm font-medium text-primary/90">Media Type</Label>
                   <RadioGroup
                     value={localData.mediaType}
                     onValueChange={handleMediaTypeChange}

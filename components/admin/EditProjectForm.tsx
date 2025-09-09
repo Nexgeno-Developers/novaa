@@ -651,8 +651,7 @@ export default function EditProjectPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* The rest of the form is identical to the create page, so I'll include the same structure */}
-        {/* Basic Information */}
+         {/* Basic Information */}
         <Card className="py-6">
           <CardHeader>
             <CardTitle className="text-primary">Basic Information</CardTitle>
@@ -667,7 +666,7 @@ export default function EditProjectPage() {
                   id="projectName"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  className="text-gray-300"
+                  className="text-gray-900"
                   placeholder="Enter project name"
                   required
                 />
@@ -681,7 +680,7 @@ export default function EditProjectPage() {
                   id="projectPrice"
                   value={formData.price}
                   onChange={(e) => handleInputChange("price", e.target.value)}
-                  className="text-gray-300"
+                  className="text-gray-900"
                   placeholder="e.g., ₹ 4.8 Cr"
                   required
                 />
@@ -694,8 +693,10 @@ export default function EditProjectPage() {
                 <Input
                   id="projectLocation"
                   value={formData.location}
-                  onChange={(e) => handleInputChange("location", e.target.value)}
-                  className="text-gray-300"
+                  onChange={(e) =>
+                    handleInputChange("location", e.target.value)
+                  }
+                  className="text-gray-900"
                   placeholder="Enter location"
                   required
                 />
@@ -709,7 +710,7 @@ export default function EditProjectPage() {
                   id="projectBadge"
                   value={formData.badge}
                   onChange={(e) => handleInputChange("badge", e.target.value)}
-                  className="text-gray-300"
+                  className="text-gray-900"
                   placeholder="e.g., Elora, Featured"
                 />
               </div>
@@ -720,10 +721,15 @@ export default function EditProjectPage() {
                 </Label>
                 <Select
                   value={formData.category}
-                  onValueChange={(value) => handleInputChange("category", value)}
+                  onValueChange={(value) =>
+                    handleInputChange("category", value)
+                  }
                 >
-                  <SelectTrigger className="text-gray-300 cursor-pointer">
-                    <SelectValue placeholder="Select category" className="text-gray-300 placeholder:text-gray-300" />
+                  <SelectTrigger className="text-gray-900 cursor-pointer">
+                    <SelectValue
+                      placeholder="Select category"
+                      className="text-gray-900 placeholder:text-gray-900"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {categories
@@ -744,9 +750,11 @@ export default function EditProjectPage() {
                 <Input
                   id="projectOrder"
                   type="number"
-                  className="text-gray-300"
+                  className="text-gray-900"
                   value={formData.order}
-                  onChange={(e) => handleInputChange("order", parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleInputChange("order", parseInt(e.target.value) || 0)
+                  }
                   placeholder="0"
                   min="0"
                 />
@@ -771,7 +779,9 @@ export default function EditProjectPage() {
               <div className="min-h-[200px]">
                 <Editor
                   value={formData.description}
-                  onEditorChange={(content) => handleInputChange("description", content)}
+                  onEditorChange={(content) =>
+                    handleInputChange("description", content)
+                  }
                 />
               </div>
             </div>
@@ -780,7 +790,9 @@ export default function EditProjectPage() {
               <Switch
                 id="projectActive"
                 checked={formData.isActive}
-                onCheckedChange={(checked) => handleInputChange("isActive", checked)}
+                onCheckedChange={(checked) =>
+                  handleInputChange("isActive", checked)
+                }
               />
               <Label htmlFor="projectActive" className="text-primary">
                 Active
@@ -788,7 +800,6 @@ export default function EditProjectPage() {
             </div>
           </CardContent>
         </Card>
-
 
         {/* Hero Section */}
         <Card className="py-6">
@@ -804,8 +815,10 @@ export default function EditProjectPage() {
                 <Input
                   id="heroTitle"
                   value={projectDetailData.hero.title}
-                  className="text-gray-300"
-                  onChange={(e) => handleProjectDetailChange("hero", "title", e.target.value)}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange("hero", "title", e.target.value)
+                  }
                   placeholder="Will use project name if empty"
                 />
               </div>
@@ -817,8 +830,14 @@ export default function EditProjectPage() {
                 <Input
                   id="heroSubtitle"
                   value={projectDetailData.hero.subtitle}
-                  className="text-gray-300"
-                  onChange={(e) => handleProjectDetailChange("hero", "subtitle", e.target.value)}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "hero",
+                      "subtitle",
+                      e.target.value
+                    )
+                  }
                   placeholder="Enter subtitle"
                 />
               </div>
@@ -829,9 +848,15 @@ export default function EditProjectPage() {
                 </Label>
                 <Input
                   id="scheduleMeetingButton"
-                  className="text-gray-300"
+                  className="text-gray-900"
                   value={projectDetailData.hero.scheduleMeetingButton}
-                  onChange={(e) => handleProjectDetailChange("hero", "scheduleMeetingButton", e.target.value)}
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "hero",
+                      "scheduleMeetingButton",
+                      e.target.value
+                    )
+                  }
                   placeholder="Schedule a meeting"
                 />
               </div>
@@ -843,9 +868,15 @@ export default function EditProjectPage() {
                 <Input
                   id="getBrochureButton"
                   value={projectDetailData.hero.getBrochureButton}
-                  onChange={(e) => handleProjectDetailChange("hero", "getBrochureButton", e.target.value)}
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "hero",
+                      "getBrochureButton",
+                      e.target.value
+                    )
+                  }
                   placeholder="Get Brochure"
-                  className="text-gray-300"
+                  className="text-gray-900"
                 />
               </div>
             </div>
@@ -853,7 +884,9 @@ export default function EditProjectPage() {
             <div className="space-y-2">
               <MediaSelectButton
                 value={projectDetailData.hero.backgroundImage}
-                onSelect={(url) => handleProjectDetailChange("hero", "backgroundImage", url)}
+                onSelect={(url) =>
+                  handleProjectDetailChange("hero", "backgroundImage", url)
+                }
                 mediaType="image"
                 label="Hero Background Image"
                 placeholder="Select background image for hero section"
@@ -863,12 +896,436 @@ export default function EditProjectPage() {
             <div className="space-y-2">
               <MediaSelectButton
                 value={projectDetailData.hero.brochurePdf}
-                onSelect={(url) => handleProjectDetailChange("hero", "brochurePdf", url)}
+                onSelect={(url) =>
+                  handleProjectDetailChange("hero", "brochurePdf", url)
+                }
                 mediaType="pdf"
                 label="Brochure PDF"
                 placeholder="Select PDF brochure for download"
               />
             </div>
+          </CardContent>
+        </Card>
+        {/* Gateway Section */}
+        <Card className="py-6">
+          <CardHeader>
+            <CardTitle className="text-primary">Gateway Section</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Basic Gateway Settings */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="gatewayTitle" className="text-primary">
+                  Main Title
+                </Label>
+                <Input
+                  id="gatewayTitle"
+                  value={projectDetailData.gateway.title}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "title",
+                      e.target.value
+                    )
+                  }
+                  placeholder="A place to come home to"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gatewaySubtitle" className="text-primary">
+                  Subtitle
+                </Label>
+                <Input
+                  id="gatewaySubtitle"
+                  value={projectDetailData.gateway.subtitle}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "subtitle",
+                      e.target.value
+                    )
+                  }
+                  placeholder="and a location that"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gatewayHighlight" className="text-primary">
+                  Highlight Text
+                </Label>
+                <Input
+                  id="gatewayHighlight"
+                  value={projectDetailData.gateway.highlightText}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "highlightText",
+                      e.target.value
+                    )
+                  }
+                  placeholder="holds its value."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gatewaySectionTitle" className="text-primary">
+                  Section Title
+                </Label>
+                <Input
+                  id="gatewaySectionTitle"
+                  value={projectDetailData.gateway.sectionTitle}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "sectionTitle",
+                      e.target.value
+                    )
+                  }
+                  placeholder="Your Gateway to Paradise"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-primary">Main Description</Label>
+              <div className="min-h-[150px]">
+                <Editor
+                  value={projectDetailData.gateway.description}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange("gateway", "description", content)
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-primary">Section Description</Label>
+              <div className="min-h-[150px]">
+                <Editor
+                  value={projectDetailData.gateway.sectionDescription}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "gateway",
+                      "sectionDescription",
+                      content
+                    )
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.gateway.backgroundImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange("gateway", "backgroundImage", url)
+                  }
+                  mediaType="image"
+                  label="Background Image"
+                  placeholder="Select background image"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.gateway.mapImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange("gateway", "mapImage", url)
+                  }
+                  mediaType="image"
+                  label="Map Image"
+                  placeholder="Select map image"
+                />
+              </div>
+            </div>
+
+            {/* Add New Category */}
+            <Card className="border-dashed py-6">
+              <CardHeader>
+                <CardTitle className="text-sm">Add New Category</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="categoryTitle" className="text-primary">
+                      Category Title
+                    </Label>
+                    <Input
+                      id="categoryTitle"
+                      value={newGatewayCategory.title}
+                      onChange={(e) =>
+                        setNewGatewayCategory((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
+                      placeholder="Bangtao & Layan Beach"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="categoryDescription"
+                      className="text-primary"
+                    >
+                      Category Description
+                    </Label>
+                    <Input
+                      id="categoryDescription"
+                      value={newGatewayCategory.description}
+                      onChange={(e) =>
+                        setNewGatewayCategory((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
+                      placeholder="Pristine white sand beaches just 5 minutes away"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={newGatewayCategory.icon}
+                    onSelect={(url) =>
+                      setNewGatewayCategory((prev) => ({
+                        ...prev,
+                        icon: url,
+                      }))
+                    }
+                    mediaType="image"
+                    label="Category Icon"
+                    placeholder="Select category icon"
+                  />
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={addGatewayCategory}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Category
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Existing Categories */}
+            {projectDetailData.gateway.categories.length > 0 && (
+              <div className="space-y-6">
+                <h4 className="font-medium">
+                  Gateway Categories (
+                  {projectDetailData.gateway.categories.length})
+                </h4>
+                {projectDetailData.gateway.categories.map(
+                  (category, categoryIndex) => (
+                    <div
+                      key={categoryIndex}
+                      className="border rounded-lg p-4 space-y-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                            <img
+                              src={category.icon}
+                              alt={category.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">{category.title}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              {category.description}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeGatewayCategory(categoryIndex)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+
+                      {/* Add Location to Category */}
+                      <div className="border-t pt-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h5 className="font-medium">
+                            Locations ({category.locations.length})
+                          </h5>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              setSelectedCategoryIndex(
+                                selectedCategoryIndex === categoryIndex
+                                  ? null
+                                  : categoryIndex
+                              )
+                            }
+                            className="text-primary cursor-pointer"
+                          >
+                            <Plus className="mr-2 h-3 w-3" />
+                            Add Location
+                          </Button>
+                        </div>
+
+                        {/* Add Location Form */}
+                        {selectedCategoryIndex === categoryIndex && (
+                          <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  Location Name
+                                </Label>
+                                <Input
+                                  value={newGatewayLocation.name}
+                                  onChange={(e) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      name: e.target.value,
+                                    }))
+                                  }
+                                  placeholder="Patong Beach"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <MediaSelectButton
+                                  value={newGatewayLocation.image}
+                                  onSelect={(url) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      image: url,
+                                    }))
+                                  }
+                                  mediaType="image"
+                                  label="Location Image"
+                                  placeholder="Select location image"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  Map Position (Top %)
+                                </Label>
+                                <Input
+                                  value={newGatewayLocation.coords.top}
+                                  onChange={(e) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      coords: {
+                                        ...prev.coords,
+                                        top: e.target.value,
+                                      },
+                                    }))
+                                  }
+                                  placeholder="33%"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  Map Position (Left %)
+                                </Label>
+                                <Input
+                                  value={newGatewayLocation.coords.left}
+                                  onChange={(e) =>
+                                    setNewGatewayLocation((prev) => ({
+                                      ...prev,
+                                      coords: {
+                                        ...prev.coords,
+                                        left: e.target.value,
+                                      },
+                                    }))
+                                  }
+                                  placeholder="15%"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  addLocationToCategory(categoryIndex)
+                                }
+                                className="text-gray-900 cursor-pointer"
+                              >
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Location
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setSelectedCategoryIndex(null)}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Existing Locations */}
+                        {category.locations.length > 0 && (
+                          <div className="space-y-2">
+                            {category.locations.map(
+                              (location, locationIndex) => (
+                                <div
+                                  key={locationIndex}
+                                  className="flex items-center gap-4 p-2 border rounded"
+                                >
+                                  <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
+                                    <img
+                                      src={location.image}
+                                      alt={location.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="font-medium">
+                                      {location.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      Position: {location.coords.top} /{" "}
+                                      {location.coords.left}
+                                    </p>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      removeLocationFromCategory(
+                                        categoryIndex,
+                                        locationIndex
+                                      )
+                                    }
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -881,7 +1338,13 @@ export default function EditProjectPage() {
             <div className="space-y-2">
               <MediaSelectButton
                 value={projectDetailData.projectHighlights.backgroundImage}
-                onSelect={(url) => handleProjectDetailChange("projectHighlights", "backgroundImage", url)}
+                onSelect={(url) =>
+                  handleProjectDetailChange(
+                    "projectHighlights",
+                    "backgroundImage",
+                    url
+                  )
+                }
                 mediaType="image"
                 label="Project Highlights Background Image"
                 placeholder="Select background image"
@@ -889,26 +1352,41 @@ export default function EditProjectPage() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-primary">Project Highlights Description</Label>
+              <Label className="text-primary">
+                Project Highlights Description
+              </Label>
               <div className="min-h-[150px]">
                 <Editor
                   value={projectDetailData.projectHighlights.description}
-                  onEditorChange={(content) => handleProjectDetailChange("projectHighlights", "description", content)}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "projectHighlights",
+                      "description",
+                      content
+                    )
+                  }
                 />
               </div>
             </div>
 
             {/* Add New Project Highlight */}
-            <Card className="border-dashed">
+            <Card className="border-dashed py-6">
               <CardHeader>
-                <CardTitle className="text-sm">Add New Project Highlight</CardTitle>
+                <CardTitle className="text-sm">
+                  Add New Project Highlight
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <MediaSelectButton
                       value={newProjectHighlight.image}
-                      onSelect={(url) => setNewProjectHighlight((prev) => ({ ...prev, image: url }))}
+                      onSelect={(url) =>
+                        setNewProjectHighlight((prev) => ({
+                          ...prev,
+                          image: url,
+                        }))
+                      }
                       mediaType="image"
                       label="Select Highlight Image"
                       placeholder="Select highlight image"
@@ -922,13 +1400,22 @@ export default function EditProjectPage() {
                     <Input
                       id="highlightTitle"
                       value={newProjectHighlight.title}
-                      onChange={(e) => setNewProjectHighlight((prev) => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) =>
+                        setNewProjectHighlight((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                       placeholder="Enter highlight title"
                     />
                   </div>
                 </div>
 
-                <Button type="button" onClick={addProjectHighlight} className="w-full text-background cursor-pointer">
+                <Button
+                  type="button"
+                  onClick={addProjectHighlight}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Project Highlight
                 </Button>
@@ -938,26 +1425,38 @@ export default function EditProjectPage() {
             {/* Existing Project Highlights */}
             {projectDetailData.projectHighlights.highlights.length > 0 && (
               <div className="space-y-4">
-                <h4 className="font-medium">Current Project Highlights ({projectDetailData.projectHighlights.highlights.length})</h4>
-                {projectDetailData.projectHighlights.highlights.map((highlight, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
-                    <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                      <img src={highlight.image} alt={highlight.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{highlight.title}</p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeProjectHighlight(index)}
-                      className="text-red-500 hover:text-red-700"
+                <h4 className="font-medium">
+                  Current Project Highlights (
+                  {projectDetailData.projectHighlights.highlights.length})
+                </h4>
+                {projectDetailData.projectHighlights.highlights.map(
+                  (highlight, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-4 border rounded-lg"
                     >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                      <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
+                        <img
+                          src={highlight.image}
+                          alt={highlight.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{highlight.title}</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeProjectHighlight(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )
+                )}
               </div>
             )}
           </CardContent>
@@ -972,7 +1471,13 @@ export default function EditProjectPage() {
             <div className="space-y-2">
               <MediaSelectButton
                 value={projectDetailData.keyHighlights.backgroundImage}
-                onSelect={(url) => handleProjectDetailChange("keyHighlights", "backgroundImage", url)}
+                onSelect={(url) =>
+                  handleProjectDetailChange(
+                    "keyHighlights",
+                    "backgroundImage",
+                    url
+                  )
+                }
                 mediaType="image"
                 label="Key Highlights Background Image"
                 placeholder="Select background image"
@@ -984,13 +1489,19 @@ export default function EditProjectPage() {
               <div className="min-h-[150px]">
                 <Editor
                   value={projectDetailData.keyHighlights.description}
-                  onEditorChange={(content) => handleProjectDetailChange("keyHighlights", "description", content)}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "keyHighlights",
+                      "description",
+                      content
+                    )
+                  }
                 />
               </div>
             </div>
 
             {/* Add New Key Highlight */}
-            <Card className="border-dashed">
+            <Card className="border-dashed py-6">
               <CardHeader>
                 <CardTitle className="text-sm">Add New Key Highlight</CardTitle>
               </CardHeader>
@@ -1002,12 +1513,18 @@ export default function EditProjectPage() {
                   <Input
                     id="keyHighlightText"
                     value={newKeyHighlight.text}
-                    onChange={(e) => setNewKeyHighlight({ text: e.target.value })}
+                    onChange={(e) =>
+                      setNewKeyHighlight({ text: e.target.value })
+                    }
                     placeholder="e.g., 1 & 2 BHK premium apartments"
                   />
                 </div>
 
-                <Button type="button" onClick={addKeyHighlight} className="w-full text-background cursor-pointer">
+                <Button
+                  type="button"
+                  onClick={addKeyHighlight}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Key Highlight
                 </Button>
@@ -1017,21 +1534,29 @@ export default function EditProjectPage() {
             {/* Existing Key Highlights */}
             {projectDetailData.keyHighlights.highlights.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium">Current Key Highlights ({projectDetailData.keyHighlights.highlights.length})</h4>
-                {projectDetailData.keyHighlights.highlights.map((highlight, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <span>{highlight.text}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeKeyHighlight(index)}
-                      className="text-red-500 hover:text-red-700"
+                <h4 className="font-medium">
+                  Current Key Highlights (
+                  {projectDetailData.keyHighlights.highlights.length})
+                </h4>
+                {projectDetailData.keyHighlights.highlights.map(
+                  (highlight, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 border rounded-lg"
                     >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                      <span>{highlight.text}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeKeyHighlight(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )
+                )}
               </div>
             )}
           </CardContent>
@@ -1050,8 +1575,14 @@ export default function EditProjectPage() {
               <Input
                 id="amenitiesTitle"
                 value={projectDetailData.modernAmenities.title}
-                onChange={(e) => handleProjectDetailChange("modernAmenities", "title", e.target.value)}
-                className="text-gray-300"
+                onChange={(e) =>
+                  handleProjectDetailChange(
+                    "modernAmenities",
+                    "title",
+                    e.target.value
+                  )
+                }
+                className="text-gray-900"
                 placeholder="Section title"
               />
             </div>
@@ -1061,13 +1592,19 @@ export default function EditProjectPage() {
               <div className="min-h-[150px]">
                 <Editor
                   value={projectDetailData.modernAmenities.description}
-                  onEditorChange={(content) => handleProjectDetailChange("modernAmenities", "description", content)}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "modernAmenities",
+                      "description",
+                      content
+                    )
+                  }
                 />
               </div>
             </div>
 
             {/* Add New Amenity */}
-            <Card className="border-dashed">
+            <Card className="border-dashed py-6">
               <CardHeader>
                 <CardTitle className="text-sm">Add New Amenity</CardTitle>
               </CardHeader>
@@ -1076,7 +1613,9 @@ export default function EditProjectPage() {
                   <div className="space-y-2">
                     <MediaSelectButton
                       value={newAmenity.image}
-                      onSelect={(url) => setNewAmenity((prev) => ({ ...prev, image: url }))}
+                      onSelect={(url) =>
+                        setNewAmenity((prev) => ({ ...prev, image: url }))
+                      }
                       mediaType="image"
                       label="Select Amenity Image"
                       placeholder="Select amenity image"
@@ -1090,13 +1629,22 @@ export default function EditProjectPage() {
                     <Input
                       id="amenityTitle"
                       value={newAmenity.title}
-                      onChange={(e) => setNewAmenity((prev) => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) =>
+                        setNewAmenity((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                       placeholder="Enter amenity title"
                     />
                   </div>
                 </div>
 
-                <Button type="button" onClick={addAmenity} className="w-full text-background cursor-pointer">
+                <Button
+                  type="button"
+                  onClick={addAmenity}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Amenity
                 </Button>
@@ -1106,26 +1654,38 @@ export default function EditProjectPage() {
             {/* Existing Amenities */}
             {projectDetailData.modernAmenities.amenities.length > 0 && (
               <div className="space-y-4">
-                <h4 className="font-medium">Current Amenities ({projectDetailData.modernAmenities.amenities.length})</h4>
-                {projectDetailData.modernAmenities.amenities.map((amenity, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
-                    <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                      <img src={amenity.image} alt={amenity.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{amenity.title}</p>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeAmenity(index)}
-                      className="text-red-500 hover:text-red-700"
+                <h4 className="font-medium">
+                  Current Amenities (
+                  {projectDetailData.modernAmenities.amenities.length})
+                </h4>
+                {projectDetailData.modernAmenities.amenities.map(
+                  (amenity, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-4 border rounded-lg"
                     >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                      <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
+                        <img
+                          src={amenity.image}
+                          alt={amenity.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{amenity.title}</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeAmenity(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )
+                )}
               </div>
             )}
           </CardContent>
@@ -1145,8 +1705,14 @@ export default function EditProjectPage() {
                 <Input
                   id="masterPlanTitle"
                   value={projectDetailData.masterPlan.title}
-                  onChange={(e) => handleProjectDetailChange("masterPlan", "title", e.target.value)}
-                  className="text-gray-300"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "masterPlan",
+                      "title",
+                      e.target.value
+                    )
+                  }
+                  className="text-gray-900"
                   placeholder="Enter master plan title"
                 />
               </div>
@@ -1158,8 +1724,14 @@ export default function EditProjectPage() {
                 <Input
                   id="masterPlanSubtitle"
                   value={projectDetailData.masterPlan.subtitle}
-                  onChange={(e) => handleProjectDetailChange("masterPlan", "subtitle", e.target.value)}
-                  className="text-gray-300"
+                  onChange={(e) =>
+                    handleProjectDetailChange(
+                      "masterPlan",
+                      "subtitle",
+                      e.target.value
+                    )
+                  }
+                  className="text-gray-900"
                   placeholder="Enter master plan subtitle"
                 />
               </div>
@@ -1170,7 +1742,13 @@ export default function EditProjectPage() {
               <div className="min-h-[200px]">
                 <Editor
                   value={projectDetailData.masterPlan.description}
-                  onEditorChange={(content) => handleProjectDetailChange("masterPlan", "description", content)}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "masterPlan",
+                      "description",
+                      content
+                    )
+                  }
                 />
               </div>
             </div>
@@ -1178,7 +1756,13 @@ export default function EditProjectPage() {
             <div className="space-y-2">
               <MediaSelectButton
                 value={projectDetailData.masterPlan.backgroundImage}
-                onSelect={(url) => handleProjectDetailChange("masterPlan", "backgroundImage", url)}
+                onSelect={(url) =>
+                  handleProjectDetailChange(
+                    "masterPlan",
+                    "backgroundImage",
+                    url
+                  )
+                }
                 mediaType="image"
                 label="Master Plan Background Image"
                 placeholder="Select background image"
@@ -1186,44 +1770,70 @@ export default function EditProjectPage() {
             </div>
 
             {/* Add New Master Plan Tab */}
-            <Card className="border-dashed">
+            <Card className="border-dashed py-6">
               <CardHeader>
-                <CardTitle className="text-sm">Add New Master Plan Tab</CardTitle>
+                <CardTitle className="text-sm">
+                  Add New Master Plan Tab
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="masterPlanTabTitle" className="text-primary">
+                    <Label
+                      htmlFor="masterPlanTabTitle"
+                      className="text-primary"
+                    >
                       Tab Title *
                     </Label>
                     <Input
                       id="masterPlanTabTitle"
                       value={newMasterPlanTab.title}
-                      onChange={(e) => setNewMasterPlanTab((prev) => ({ ...prev, title: e.target.value }))}
+                      onChange={(e) =>
+                        setNewMasterPlanTab((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., Luxury Condominiums"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="masterPlanTabSubtitle" className="text-primary">
+                    <Label
+                      htmlFor="masterPlanTabSubtitle"
+                      className="text-primary"
+                    >
                       Tab Subtitle (Optional)
                     </Label>
                     <Input
                       id="masterPlanTabSubtitle"
                       value={newMasterPlanTab.subtitle}
-                      onChange={(e) => setNewMasterPlanTab((prev) => ({ ...prev, subtitle: e.target.value }))}
+                      onChange={(e) =>
+                        setNewMasterPlanTab((prev) => ({
+                          ...prev,
+                          subtitle: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., Shopping Centre"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="masterPlanTabSubtitle2" className="text-primary">
+                    <Label
+                      htmlFor="masterPlanTabSubtitle2"
+                      className="text-primary"
+                    >
                       Tab Subtitle 2 (Optional)
                     </Label>
                     <Input
                       id="masterPlanTabSubtitle2"
                       value={newMasterPlanTab.subtitle2}
-                      onChange={(e) => setNewMasterPlanTab((prev) => ({ ...prev, subtitle2: e.target.value }))}
+                      onChange={(e) =>
+                        setNewMasterPlanTab((prev) => ({
+                          ...prev,
+                          subtitle2: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., Spa & Villa"
                     />
                   </div>
@@ -1231,7 +1841,12 @@ export default function EditProjectPage() {
                   <div className="space-y-2">
                     <MediaSelectButton
                       value={newMasterPlanTab.image}
-                      onSelect={(url) => setNewMasterPlanTab((prev) => ({ ...prev, image: url }))}
+                      onSelect={(url) =>
+                        setNewMasterPlanTab((prev) => ({
+                          ...prev,
+                          image: url,
+                        }))
+                      }
                       mediaType="image"
                       label="Select Tab Background Image *"
                       placeholder="Select tab background image"
@@ -1239,7 +1854,11 @@ export default function EditProjectPage() {
                   </div>
                 </div>
 
-                <Button type="button" onClick={addMasterPlanTab} className="w-full text-background cursor-pointer">
+                <Button
+                  type="button"
+                  onClick={addMasterPlanTab}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Master Plan Tab
                 </Button>
@@ -1249,16 +1868,34 @@ export default function EditProjectPage() {
             {/* Existing Master Plan Tabs */}
             {projectDetailData.masterPlan.tabs.length > 0 && (
               <div className="space-y-4">
-                <h4 className="font-medium">Current Master Plan Tabs ({projectDetailData.masterPlan.tabs.length})</h4>
+                <h4 className="font-medium">
+                  Current Master Plan Tabs (
+                  {projectDetailData.masterPlan.tabs.length})
+                </h4>
                 {projectDetailData.masterPlan.tabs.map((tab, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 p-4 border rounded-lg"
+                  >
                     <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                      <img src={tab.image} alt={tab.title} className="w-full h-full object-cover" />
+                      <img
+                        src={tab.image}
+                        alt={tab.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">{tab.title}</p>
-                      {tab.subtitle && <p className="text-sm text-gray-600">C1 - {tab.subtitle}</p>}
-                      {tab.subtitle2 && <p className="text-sm text-gray-600">C2 - {tab.subtitle2}</p>}
+                      {tab.subtitle && (
+                        <p className="text-sm text-gray-600">
+                          C1 - {tab.subtitle}
+                        </p>
+                      )}
+                      {tab.subtitle2 && (
+                        <p className="text-sm text-gray-600">
+                          C2 - {tab.subtitle2}
+                        </p>
+                      )}
                     </div>
                     <Button
                       type="button"
@@ -1289,18 +1926,32 @@ export default function EditProjectPage() {
               <Input
                 id="investmentPlansTitle"
                 value={projectDetailData.investmentPlans.title}
-                onChange={(e) => handleProjectDetailChange("investmentPlans", "title", e.target.value)}
-                className="text-gray-300"
+                onChange={(e) =>
+                  handleProjectDetailChange(
+                    "investmentPlans",
+                    "title",
+                    e.target.value
+                  )
+                }
+                className="text-gray-900"
                 placeholder="Section title"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-primary">Investment Plans Description</Label>
+              <Label className="text-primary">
+                Investment Plans Description
+              </Label>
               <div className="min-h-[150px]">
                 <Editor
                   value={projectDetailData.investmentPlans.description}
-                  onEditorChange={(content) => handleProjectDetailChange("investmentPlans", "description", content)}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange(
+                      "investmentPlans",
+                      "description",
+                      content
+                    )
+                  }
                 />
               </div>
             </div>
@@ -1308,7 +1959,13 @@ export default function EditProjectPage() {
             <div className="space-y-2">
               <MediaSelectButton
                 value={projectDetailData.investmentPlans.backgroundImage}
-                onSelect={(url) => handleProjectDetailChange("investmentPlans", "backgroundImage", url)}
+                onSelect={(url) =>
+                  handleProjectDetailChange(
+                    "investmentPlans",
+                    "backgroundImage",
+                    url
+                  )
+                }
                 mediaType="image"
                 label="Investment Plans Background Image"
                 placeholder="Select background image"
@@ -1316,9 +1973,11 @@ export default function EditProjectPage() {
             </div>
 
             {/* Add New Investment Plan */}
-            <Card className="border-dashed">
+            <Card className="border-dashed py-6">
               <CardHeader>
-                <CardTitle className="text-sm">Add New Investment Plan</CardTitle>
+                <CardTitle className="text-sm">
+                  Add New Investment Plan
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1329,7 +1988,12 @@ export default function EditProjectPage() {
                     <Input
                       id="paymentPlan"
                       value={newInvestmentPlan.paymentPlan}
-                      onChange={(e) => setNewInvestmentPlan((prev) => ({ ...prev, paymentPlan: e.target.value }))}
+                      onChange={(e) =>
+                        setNewInvestmentPlan((prev) => ({
+                          ...prev,
+                          paymentPlan: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., 35% within 30 days"
                     />
                   </div>
@@ -1341,7 +2005,12 @@ export default function EditProjectPage() {
                     <Input
                       id="guaranteedReturn"
                       value={newInvestmentPlan.guaranteedReturn}
-                      onChange={(e) => setNewInvestmentPlan((prev) => ({ ...prev, guaranteedReturn: e.target.value }))}
+                      onChange={(e) =>
+                        setNewInvestmentPlan((prev) => ({
+                          ...prev,
+                          guaranteedReturn: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., 7%"
                     />
                   </div>
@@ -1353,13 +2022,22 @@ export default function EditProjectPage() {
                     <Input
                       id="returnStartDate"
                       value={newInvestmentPlan.returnStartDate}
-                      onChange={(e) => setNewInvestmentPlan((prev) => ({ ...prev, returnStartDate: e.target.value }))}
+                      onChange={(e) =>
+                        setNewInvestmentPlan((prev) => ({
+                          ...prev,
+                          returnStartDate: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., 5 years post-possession (End of 2027)"
                     />
                   </div>
                 </div>
 
-                <Button type="button" onClick={addInvestmentPlan} className="w-full text-background cursor-pointer">
+                <Button
+                  type="button"
+                  onClick={addInvestmentPlan}
+                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Investment Plan
                 </Button>
@@ -1369,9 +2047,15 @@ export default function EditProjectPage() {
             {/* Existing Investment Plans */}
             {projectDetailData.investmentPlans.plans.length > 0 && (
               <div className="space-y-4">
-                <h4 className="font-medium">Current Investment Plans ({projectDetailData.investmentPlans.plans.length})</h4>
+                <h4 className="font-medium">
+                  Current Investment Plans (
+                  {projectDetailData.investmentPlans.plans.length})
+                </h4>
                 {projectDetailData.investmentPlans.plans.map((plan, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 p-4 border rounded-lg"
+                  >
                     <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold">
                       {String(index + 1).padStart(2, "0")}
                     </div>
@@ -1381,11 +2065,15 @@ export default function EditProjectPage() {
                         <p className="font-medium">{plan.paymentPlan}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Guaranteed Return</p>
+                        <p className="text-sm text-gray-500">
+                          Guaranteed Return
+                        </p>
                         <p className="font-medium">{plan.guaranteedReturn}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Return Start Date</p>
+                        <p className="text-sm text-gray-500">
+                          Return Start Date
+                        </p>
                         <p className="font-medium">{plan.returnStartDate}</p>
                       </div>
                     </div>
@@ -1404,301 +2092,6 @@ export default function EditProjectPage() {
             )}
           </CardContent>
         </Card>
-
-        {/* Gateway Section */}
-        <Card className="py-6">
-          <CardHeader>
-            <CardTitle className="text-primary">Gateway Section</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Basic Gateway Settings */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="gatewayTitle" className="text-primary">
-                  Main Title
-                </Label>
-                <Input
-                  id="gatewayTitle"
-                  value={projectDetailData.gateway.title}
-                  className="text-gray-300"
-                  onChange={(e) => handleProjectDetailChange("gateway", "title", e.target.value)}
-                  placeholder="A place to come home to"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gatewaySubtitle" className="text-primary">
-                  Subtitle
-                </Label>
-                <Input
-                  id="gatewaySubtitle"
-                  value={projectDetailData.gateway.subtitle}
-                  className="text-gray-300"
-                  onChange={(e) => handleProjectDetailChange("gateway", "subtitle", e.target.value)}
-                  placeholder="and a location that"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gatewayHighlight" className="text-primary">
-                  Highlight Text
-                </Label>
-                <Input
-                  id="gatewayHighlight"
-                  value={projectDetailData.gateway.highlightText}
-                  className="text-gray-300"
-                  onChange={(e) => handleProjectDetailChange("gateway", "highlightText", e.target.value)}
-                  placeholder="holds its value."
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gatewaySectionTitle" className="text-primary">
-                  Section Title
-                </Label>
-                <Input
-                  id="gatewaySectionTitle"
-                  value={projectDetailData.gateway.sectionTitle}
-                  className="text-gray-300"
-                  onChange={(e) => handleProjectDetailChange("gateway", "sectionTitle", e.target.value)}
-                  placeholder="Your Gateway to Paradise"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary">Main Description</Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.gateway.description}
-                  onEditorChange={(content) => handleProjectDetailChange("gateway", "description", content)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary">Section Description</Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.gateway.sectionDescription}
-                  onEditorChange={(content) => handleProjectDetailChange("gateway", "sectionDescription", content)}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.backgroundImage}
-                  onSelect={(url) => handleProjectDetailChange("gateway", "backgroundImage", url)}
-                  mediaType="image"
-                  label="Background Image"
-                  placeholder="Select background image"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.mapImage}
-                  onSelect={(url) => handleProjectDetailChange("gateway", "mapImage", url)}
-                  mediaType="image"
-                  label="Map Image"
-                  placeholder="Select map image"
-                />
-              </div>
-            </div>
-
-            {/* Add New Category */}
-            <Card className="border-dashed">
-              <CardHeader>
-                <CardTitle className="text-sm">Add New Category</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryTitle" className="text-primary">
-                      Category Title
-                    </Label>
-                    <Input
-                      id="categoryTitle"
-                      value={newGatewayCategory.title}
-                      onChange={(e) => setNewGatewayCategory((prev) => ({ ...prev, title: e.target.value }))}
-                      placeholder="Bangtao & Layan Beach"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="categoryDescription" className="text-primary">
-                      Category Description
-                    </Label>
-                    <Input
-                      id="categoryDescription"
-                      value={newGatewayCategory.description}
-                      onChange={(e) => setNewGatewayCategory((prev) => ({ ...prev, description: e.target.value }))}
-                      placeholder="Pristine white sand beaches just 5 minutes away"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <MediaSelectButton
-                    value={newGatewayCategory.icon}
-                    onSelect={(url) => setNewGatewayCategory((prev) => ({ ...prev, icon: url }))}
-                    mediaType="image"
-                    label="Category Icon"
-                    placeholder="Select category icon"
-                  />
-                </div>
-
-                <Button type="button" onClick={addGatewayCategory} className="w-full text-background cursor-pointer">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Category
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Existing Categories */}
-            {projectDetailData.gateway.categories.length > 0 && (
-              <div className="space-y-6">
-                <h4 className="font-medium">Gateway Categories ({projectDetailData.gateway.categories.length})</h4>
-                {projectDetailData.gateway.categories.map((category, categoryIndex) => (
-                  <div key={categoryIndex} className="border rounded-lg p-4 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
-                          <img src={category.icon} alt={category.title} className="w-full h-full object-cover" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium">{category.title}</h4>
-                          <p className="text-sm text-muted-foreground">{category.description}</p>
-                        </div>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeGatewayCategory(categoryIndex)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    {/* Add Location to Category */}
-                    <div className="border-t pt-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <h5 className="font-medium">Locations ({category.locations.length})</h5>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setSelectedCategoryIndex(selectedCategoryIndex === categoryIndex ? null : categoryIndex)}
-                          className="text-primary cursor-pointer"
-                        >
-                          <Plus className="mr-2 h-3 w-3" />
-                          Add Location
-                        </Button>
-                      </div>
-
-                      {/* Add Location Form */}
-                      {selectedCategoryIndex === categoryIndex && (
-                        <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-primary">Location Name</Label>
-                              <Input
-                                value={newGatewayLocation.name}
-                                onChange={(e) => setNewGatewayLocation((prev) => ({ ...prev, name: e.target.value }))}
-                                placeholder="Patong Beach"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <MediaSelectButton
-                                value={newGatewayLocation.image}
-                                onSelect={(url) => setNewGatewayLocation((prev) => ({ ...prev, image: url }))}
-                                mediaType="image"
-                                label="Location Image"
-                                placeholder="Select location image"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-primary">Map Position (Top %)</Label>
-                              <Input
-                                value={newGatewayLocation.coords.top}
-                                onChange={(e) => setNewGatewayLocation((prev) => ({ ...prev, coords: { ...prev.coords, top: e.target.value } }))}
-                                placeholder="33%"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label className="text-primary">Map Position (Left %)</Label>
-                              <Input
-                                value={newGatewayLocation.coords.left}
-                                onChange={(e) => setNewGatewayLocation((prev) => ({ ...prev, coords: { ...prev.coords, left: e.target.value } }))}
-                                placeholder="15%"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2">
-                            <Button
-                              type="button"
-                              onClick={() => addLocationToCategory(categoryIndex)}
-                              className="text-background cursor-pointer"
-                            >
-                              <Plus className="mr-2 h-4 w-4" />
-                              Add Location
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => setSelectedCategoryIndex(null)}
-                            >
-                              Cancel
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Existing Locations */}
-                      {category.locations.length > 0 && (
-                        <div className="space-y-2">
-                          {category.locations.map((location, locationIndex) => (
-                            <div key={locationIndex} className="flex items-center gap-4 p-2 border rounded">
-                              <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
-                                <img src={location.image} alt={location.name} className="w-full h-full object-cover" />
-                              </div>
-                              <div className="flex-1">
-                                <p className="font-medium">{location.name}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  Position: {location.coords.top} / {location.coords.left}
-                                </p>
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeLocationFromCategory(categoryIndex, locationIndex)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <X className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Note: The rest of the form sections (Hero, Project Highlights, etc.) would be identical to the create page */}
-        {/* For brevity, I'm showing the structure but the actual implementation would include all sections */}
         
         {/* Submit Button */}
         <div className="flex justify-end space-x-4 pt-6 border-t">
@@ -1706,7 +2099,7 @@ export default function EditProjectPage() {
             type="button"
             variant="outline"
             onClick={() => router.push("/admin/projects")}
-            className="text-background cursor-pointer bg-gray-300"
+            className="text-gray-900 hover:text-gray-900 cursor-pointer bg-gray-300 hover:bg-gray-300/50"
           >
             Cancel
           </Button>

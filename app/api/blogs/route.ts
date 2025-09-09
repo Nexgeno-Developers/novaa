@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status'); // 'active', 'inactive', or 'all'
     
     // Build query
-    let query: any = {};
+    const query: any = {};
     
     if (category && category !== 'all') {
       query.category = category;

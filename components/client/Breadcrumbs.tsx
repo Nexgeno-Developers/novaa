@@ -15,7 +15,7 @@ interface BreadcrumbsProps {
   title: string;
   description: string;
   backgroundImageUrl: string;
-  pageSlug: string;
+  pageSlug?: string;
 }
 
 // Helper: convert "contact-us" > "Contact Us"

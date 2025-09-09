@@ -10,6 +10,16 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -24,14 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Loader2,
-  Search,
-  ArrowUpDown,
-} from "lucide-react";
+import { Plus, Edit, Trash2, Loader2, Search, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { RootState } from "@/redux";
 import {
@@ -50,8 +53,11 @@ export default function BlogCategoriesManager() {
   );
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<BlogCategory | null>(null);
+  const [editingCategory, setEditingCategory] = useState<BlogCategory | null>(
+    null
+  );
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -71,8 +77,8 @@ export default function BlogCategoriesManager() {
   const generateSlug = (title: string) => {
     return title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
   };
 
   const resetForm = () => {
@@ -134,20 +140,20 @@ export default function BlogCategoriesManager() {
       setIsDialogOpen(false);
       resetForm();
     } catch (error: any) {
-      toast.error(error || `Failed to ${editingCategory ? "update" : "create"} category`);
+      toast.error(
+        error || `Failed to ${editingCategory ? "update" : "create"} category`
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string, title: string) => {
-    if (confirm(`Are you sure you want to delete "${title}"?`)) {
-      try {
-        await dispatch(deleteBlogCategory(id)).unwrap();
-        toast.success("Category deleted successfully");
-      } catch (error: any) {
-        toast.error(error || "Failed to delete category");
-      }
+  const handleDelete = async (id: string) => {
+    try {
+      await dispatch(deleteBlogCategory(id)).unwrap();
+      toast.success("Category deleted successfully");
+    } catch (error: any) {
+      toast.error(error || "Failed to delete category");
     }
   };
 
@@ -167,23 +173,29 @@ export default function BlogCategoriesManager() {
   };
 
   // Filter categories based on search
-  const filteredCategories = categories.filter((category) =>
-    category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCategories = categories.filter(
+    (category) =>
+      category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Blog Categories Manager</h1>
+        <h1 className="text-3xl font-bold text-primary/90">
+          Blog Categories Manager
+        </h1>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="text-background cursor-pointer">
+            <Button
+              onClick={openCreateDialog}
+              className="text-background cursor-pointer"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add Category
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto admin-theme">
             <DialogHeader>
               <DialogTitle className="text-primary">
                 {editingCategory ? "Edit Category" : "Add New Category"}
@@ -192,26 +204,30 @@ export default function BlogCategoriesManager() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="categoryTitle" className="text-primary">Category Title *</Label>
+                  <Label htmlFor="categoryTitle" className="text-primary">
+                    Category Title *
+                  </Label>
                   <Input
                     id="categoryTitle"
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                     placeholder="Enter category title"
                     required
-                    className="text-gray-300"
+                    className="text-black ring-2 ring-primary/20"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="categorySlug" className="text-primary">Category Slug *</Label>
+                  <Label htmlFor="categorySlug" className="text-primary">
+                    Category Slug *
+                  </Label>
                   <Input
                     id="categorySlug"
                     value={formData.slug}
                     onChange={(e) => handleInputChange("slug", e.target.value)}
                     placeholder="category-slug"
                     required
-                    className="text-gray-300"
+                    className="text-black ring-2 ring-primary/20"
                   />
                   <p className="text-xs text-gray-200">
                     URL-friendly version of the title (automatically generated)
@@ -219,19 +235,25 @@ export default function BlogCategoriesManager() {
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="categoryDescription" className="text-primary">Description (Optional)</Label>
+                  <Label htmlFor="categoryDescription" className="text-primary">
+                    Description (Optional)
+                  </Label>
                   <Textarea
                     id="categoryDescription"
                     value={formData.description}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("description", e.target.value)
+                    }
                     placeholder="Brief description of the category"
                     rows={3}
-                    className="text-gray-300"
+                    className="text-black ring-2 ring-primary/20"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="categoryOrder" className="text-primary">Display Order</Label>
+                  <Label htmlFor="categoryOrder" className="text-primary">
+                    Display Order
+                  </Label>
                   <Input
                     id="categoryOrder"
                     type="number"
@@ -241,7 +263,7 @@ export default function BlogCategoriesManager() {
                     }
                     placeholder="0"
                     min="0"
-                    className="text-gray-300"
+                    className="text-black ring-2 ring-primary/20"
                   />
                 </div>
 
@@ -254,7 +276,9 @@ export default function BlogCategoriesManager() {
                       handleInputChange("isActive", checked)
                     }
                   />
-                  <Label htmlFor="categoryActive" className="text-primary">Active</Label>
+                  <Label htmlFor="categoryActive" className="text-primary">
+                    Active
+                  </Label>
                 </div>
               </div>
 
@@ -262,12 +286,16 @@ export default function BlogCategoriesManager() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="bg-gray-300 cursor-pointer"
+                  className="bg-gray-300 hover:bg-gray-300/50 text-gray-800 hover:text-black cursor-pointer"
                   onClick={() => setIsDialogOpen(false)}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="text-background cursor-pointer">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="text-background cursor-pointer"
+                >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -286,8 +314,8 @@ export default function BlogCategoriesManager() {
       </div>
 
       {/* Search */}
-      <Card className="py-6">
-        <CardContent className="pt-6">
+      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
+        <CardContent className="">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -296,7 +324,7 @@ export default function BlogCategoriesManager() {
                   placeholder="Search categories..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
+                  className="pl-8 ring-2 ring-primary/20"
                 />
               </div>
             </div>
@@ -305,9 +333,9 @@ export default function BlogCategoriesManager() {
       </Card>
 
       {/* Categories Table */}
-      <Card className="py-6">
+      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+          <CardTitle className="flex items-center justify-between text-primary/90">
             Blog Categories
             <span className="text-sm font-normal text-muted-foreground">
               {filteredCategories.length} of {categories.length} categories
@@ -329,14 +357,18 @@ export default function BlogCategoriesManager() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="bg-gray-300">
+                <TableHeader className="bg-primary">
                   <TableRow>
                     <TableHead className="text-background">Title</TableHead>
                     <TableHead className="text-background">Slug</TableHead>
-                    <TableHead className="text-background">Description</TableHead>
+                    <TableHead className="text-background">
+                      Description
+                    </TableHead>
                     <TableHead className="text-background">Order</TableHead>
                     <TableHead className="text-background">Status</TableHead>
-                    <TableHead className="text-right text-background">Actions</TableHead>
+                    <TableHead className="text-right text-background">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -362,7 +394,8 @@ export default function BlogCategoriesManager() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className="text-background"
+                        <Badge
+                          className="text-background"
                           variant={category.isActive ? "default" : "secondary"}
                         >
                           {category.isActive ? "Active" : "Inactive"}
@@ -373,7 +406,7 @@ export default function BlogCategoriesManager() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-background"
+                            className="text-primary hover:text-primary/80 cursor-pointer"
                             onClick={() => openEditDialog(category)}
                           >
                             <Edit className="h-4 w-4" />
@@ -382,10 +415,10 @@ export default function BlogCategoriesManager() {
                             variant="ghost"
                             size="sm"
                             onClick={() =>
-                              handleDelete(category._id, category.title)
+                              setDeleteDialogId(category._id)
                             }
-                            className="text-destructive hover:text-destructive"
-                          >
+                            className="text-destructive hover:text-destructive cursor-pointer"
+                          > 
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -398,6 +431,32 @@ export default function BlogCategoriesManager() {
           )}
         </CardContent>
       </Card>
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={!!deleteDialogId}
+        onOpenChange={() => setDeleteDialogId(null)}
+      >
+        <AlertDialogContent className="admin-theme">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-primary">Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              blog category and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className=" cursor-pointer">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteDialogId && handleDelete(deleteDialogId)}
+              className="bg-destructive text-background cursor-pointer hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
