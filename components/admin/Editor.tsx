@@ -22,6 +22,7 @@ export default function RichTextEditor({
       apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY} // Store your API key in .env.local
       value={value}
       init={{
+        licenseKey: "gpl",
         height: 200,
         menubar: false,
         plugins: [
