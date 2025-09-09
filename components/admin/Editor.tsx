@@ -19,7 +19,7 @@ export default function RichTextEditor({
   return (
     <Editor
       id={id ?? autoId} // ensure uniqueness
-      apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY} // Store your API key in .env.local
+      apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY} // API key in .env.local
       value={value}
       init={{
         licenseKey: "gpl",

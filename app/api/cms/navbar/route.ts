@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Navbar from '@/models/Navbar';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 
+export const revalidate = 1;
 // GET - Fetch navbar data (public)
 export async function GET() {
   try {

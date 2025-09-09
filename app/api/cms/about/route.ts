@@ -7,10 +7,10 @@ import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 // GET handler to fetch the About Us page content
 export async function GET(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(request);
-    if (!token || !verifyToken(token)) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
+    // const token = getTokenFromRequest(request);
+    // if (!token || !verifyToken(token)) {
+    //   return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    // }
 
     await connectDB();
 
