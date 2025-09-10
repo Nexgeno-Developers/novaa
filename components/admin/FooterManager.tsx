@@ -571,7 +571,7 @@ const FooterManagerPage = () => {
     setFormData((prev) => {
       if (!prev) return null;
       const updatedLinks = [...prev.quickLinks.links];
-      updatedLinks[index][field] = value;
+
       return {
         ...prev,
         quickLinks: {
@@ -587,7 +587,7 @@ const FooterManagerPage = () => {
     setFormData((prev) => {
       if (!prev) return null;
       const updatedLinks = [...prev.socials.links];
-      updatedLinks[index].url = value;
+      updatedLinks[index] = { ...updatedLinks[index], url: value };
       return {
         ...prev,
         socials: {
