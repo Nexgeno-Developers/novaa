@@ -1,8 +1,11 @@
 import dbConnect from '@/lib/mongodb';
 import Footer from '@/models/Footer';
-import { cache } from 'react';
+import { unstable_noStore as noStore } from 'next/cache';
 
-export const getFooterData = cache(async () => {
+
+export const getFooterData = async () => {
+    noStore();
+
   try {
     await dbConnect();
     
@@ -22,4 +25,4 @@ export const getFooterData = cache(async () => {
     console.error("Failed to get footer data:", error);
     return null;
   }
-});
+};
