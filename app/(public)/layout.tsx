@@ -4,8 +4,8 @@ import { getFooterData } from '@/lib/data/getFooterData';
 import { getNavbarData } from '@/lib/data/getNavbarData';
 
 // Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// export const dynamic = 'force-dynamic';
+// export const revalidate = 0;
 
 export default async function PublicLayout({
   children,
