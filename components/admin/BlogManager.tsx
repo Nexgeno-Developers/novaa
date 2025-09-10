@@ -471,7 +471,7 @@ export default function BlogManager() {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
+                    <PopoverContent className="w-full p-0 admin-theme">
                       <Command>
                         <CommandInput placeholder="Search categories..." />
                         <CommandEmpty>No category found.</CommandEmpty>
@@ -480,7 +480,7 @@ export default function BlogManager() {
                             .filter((cat) => cat.isActive)
                             .map((category) => (
                               <CommandItem
-                                className="text-background"
+                                className=" text-primary"
                                 key={category._id}
                                 value={category.title}
                                 onSelect={() => {
@@ -490,7 +490,7 @@ export default function BlogManager() {
                               >
                                 <Check
                                   className={cn(
-                                    "mr-2 h-4 w-4",
+                                    "mr-2 h-4 w-4 text-primary/90",
                                     formData.category === category._id
                                       ? "opacity-100"
                                       : "opacity-0"

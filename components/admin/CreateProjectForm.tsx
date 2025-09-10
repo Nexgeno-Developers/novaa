@@ -588,11 +588,11 @@ export default function CreateProjectPage() {
                       className="text-gray-900 placeholder:text-gray-900"
                     />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="admin-theme">
                     {categories
                       .filter((cat) => cat.isActive)
                       .map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
+                        <SelectItem key={category._id} value={category._id} className="cursor-pointer">
                           {category.name}
                         </SelectItem>
                       ))}
@@ -647,6 +647,7 @@ export default function CreateProjectPage() {
               <Switch
                 id="projectActive"
                 checked={formData.isActive}
+                className="cursor-pointer"
                 onCheckedChange={(checked) =>
                   handleInputChange("isActive", checked)
                 }

@@ -169,16 +169,16 @@ export default function BlogSection({
 
                   {/* Overlay */}
                   <div className="absolute bottom-0 left-0 p-4 z-10 text-white">
-                    <h3 className="w-full sm:w-4/5 text-lg sm:text-[20px] leading-[126%] font-medium">
+                    <h3 className="w-full sm:w-4/5 text-lg sm:text-[20px] leading-[126%] font-medium font-josefin">
                       {blog.title}
                     </h3>
                     <div className="w-full sm:w-3/4 h-px bg-[#CDB04E] my-2" />
-                    <p className="description-text">
+                    <p className="description-text font-josefin">
                       {truncateText(blog.description)}
                     </p>
                     
                     {/* Author and Date Info */}
-                    <div className="flex items-center gap-4 text-sm text-white/80 mt-3">
+                    <div className="flex items-center gap-4 text-sm text-white/80 mt-3 font-josefin">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full bg-[#CDB04E] flex items-center justify-center">
                           <span className="text-[#01292B] text-xs font-semibold">

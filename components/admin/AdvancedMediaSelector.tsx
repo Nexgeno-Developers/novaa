@@ -459,7 +459,7 @@ export function AdvancedMediaSelector({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[95vh] p-0">
+        <DialogContent className="max-w-4xl max-h-[95vh] p-0 admin-theme">
           <DialogHeader className="p-6 pb-0">
             <div className="flex items-center justify-between">
               <DialogTitle className="text-xl font-semibold">
@@ -657,7 +657,7 @@ export function AdvancedMediaSelector({
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
-                className="bg-gray-200 cursor-pointer"
+                className=" cursor-pointer"
                 onClick={() => onOpenChange(false)}
               >
                 Cancel
@@ -680,7 +680,7 @@ export function AdvancedMediaSelector({
 
       {/* Preview Dialog */}
       <Dialog open={!!previewItem} onOpenChange={() => setPreviewItem(null)}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-2xl admin-theme">
           <DialogHeader>
             <DialogTitle>
               {previewItem &&

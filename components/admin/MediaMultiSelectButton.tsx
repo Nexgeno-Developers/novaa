@@ -45,7 +45,9 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
   const [query, setQuery] = useState("");
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [selectedUrls, setSelectedUrls] = useState<string[]>(selectedImages);
-  const [imageLoadingStates, setImageLoadingStates] = useState<Record<string, boolean>>({});
+  const [imageLoadingStates, setImageLoadingStates] = useState<
+    Record<string, boolean>
+  >({});
 
   // Fetch media
   const fetchMedia = async (cursor?: string, reset = false) => {
@@ -115,15 +117,15 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
   };
 
   const handleImageLoad = (assetId: string) => {
-    setImageLoadingStates(prev => ({ ...prev, [assetId]: false }));
+    setImageLoadingStates((prev) => ({ ...prev, [assetId]: false }));
   };
 
   const handleImageLoadStart = (assetId: string) => {
-    setImageLoadingStates(prev => ({ ...prev, [assetId]: true }));
+    setImageLoadingStates((prev) => ({ ...prev, [assetId]: true }));
   };
 
   const handleImageError = (assetId: string) => {
-    setImageLoadingStates(prev => ({ ...prev, [assetId]: false }));
+    setImageLoadingStates((prev) => ({ ...prev, [assetId]: false }));
   };
 
   const formatFileName = (publicId: string, format: string) => {
@@ -143,7 +145,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-start h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors"
+            className=" w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
             {selectedImages.length > 0 ? (
               <div className="flex items-center gap-3 w-full">
@@ -168,9 +170,12 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-sm text-primary">
-                    {selectedImages.length} {selectedImages.length === 1 ? 'item' : 'items'} selected
+                    {selectedImages.length}{" "}
+                    {selectedImages.length === 1 ? "item" : "items"} selected
                   </p>
-                  <p className="text-xs text-gray-500">Click to change selection</p>
+                  <p className="text-xs text-gray-500">
+                    Click to change selection
+                  </p>
                 </div>
               </div>
             ) : (
@@ -182,7 +187,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="max-w-3xl max-h-[90vh]">
+        <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col overflow-hidden admin-theme">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>Select Media</span>
@@ -194,7 +199,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -216,88 +221,67 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
             )}
           </div>
 
-          <ScrollArea className="h-[500px]">
-            {loading && media.length === 0 ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-3 text-gray-400" />
-                  <p className="text-sm text-gray-500">Loading media...</p>
-                </div>
-              </div>
-            ) : media.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <ImageIcon className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                <p>No media found</p>
-                {query && (
-                  <p className="text-sm mt-1">Try adjusting your search terms</p>
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 p-1">
-                {media.map((file) => {
-                  const isSelected = selectedUrls.includes(file.secure_url);
-                  const isLoading = imageLoadingStates[file.asset_id];
-                  
-                  return (
-                    <div
-                      key={file.asset_id}
-                      className={`relative group border-2 rounded-lg cursor-pointer overflow-hidden transition-all hover:shadow-md ${
-                        isSelected ? "ring-2 ring-blue-500 border-blue-500" : "border-gray-200 hover:border-gray-300"
-                      }`}
-                      onClick={() => toggleSelect(file)}
-                    >
-                      <div className="aspect-square relative bg-gray-100">
-                        {isLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-                            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-                          </div>
-                        )}
-                        
-                        {file.resource_type === "image" ? (
-                          <img
-                            src={file.secure_url}
-                            alt={file.public_id}
-                            className="w-full h-full object-cover"
-                            onLoad={() => handleImageLoad(file.asset_id)}
-                            onError={() => handleImageError(file.asset_id)}
-                            onLoadStart={() => handleImageLoadStart(file.asset_id)}
-                            style={{ display: isLoading ? "none" : "block" }}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                            <Video className="h-8 w-8 text-gray-400" />
-                          </div>
-                        )}
-                        
-                        {/* Selection indicator */}
-                        {isSelected && (
-                          <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1 shadow-lg">
-                            <Check className="w-3 h-3" />
-                          </div>
-                        )}
-                        
-                        {/* Format badge */}
-                        <div className="absolute bottom-2 left-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                          {file.format.toUpperCase()}
+          <ScrollArea className="h-[50vh]">
+            {" "}
+            {/* make the grid scrollable */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 p-1">
+              {media.map((file) => {
+                const isSelected = selectedUrls.includes(file.secure_url);
+                const isLoading = imageLoadingStates[file.asset_id];
+
+                return (
+                  <div
+                    key={file.asset_id}
+                    className={`relative group border-2 rounded-lg cursor-pointer overflow-hidden transition-all hover:shadow-md ${
+                      isSelected
+                        ? "ring-2 ring-blue-500 border-blue-500"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                    onClick={() => toggleSelect(file)}
+                  >
+                    <div className="aspect-square relative bg-gray-100 overflow-hidden">
+                      {isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                         </div>
-                      </div>
-                      
-                      {/* File info */}
-                      <div className="p-2 bg-white">
-                        <p className="text-xs font-medium truncate" title={formatFileName(file.public_id, file.format)}>
-                          {formatFileName(file.public_id, file.format)}
-                        </p>
-                        {file.bytes && (
-                          <p className="text-xs text-gray-500">
-                            {formatFileSize(file.bytes)}
-                          </p>
-                        )}
-                      </div>
+                      )}
+
+                      {file.resource_type === "image" ? (
+                        <img
+                          src={file.secure_url}
+                          alt={file.public_id}
+                          className="w-full h-full object-cover"
+                          onLoad={() => handleImageLoad(file.asset_id)}
+                          onError={() => handleImageError(file.asset_id)}
+                          onLoadStart={() =>
+                            handleImageLoadStart(file.asset_id)
+                          }
+                          style={{ display: isLoading ? "none" : "block" }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                          <Video className="h-8 w-8 text-gray-400" />
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                    {/* File info */}
+                    <div className="p-2 bg-white">
+                      <p
+                        className="text-xs font-medium truncate"
+                        title={formatFileName(file.public_id, file.format)}
+                      >
+                        {formatFileName(file.public_id, file.format)}
+                      </p>
+                      {file.bytes && (
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(file.bytes)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </ScrollArea>
 
           {/* Load more button */}
@@ -325,15 +309,19 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
           <div className="flex justify-between items-center pt-4 border-t">
             <div className="text-sm text-gray-500">
               {selectedUrls.length > 0 && (
-                <span>{selectedUrls.length} {selectedUrls.length === 1 ? 'item' : 'items'} selected</span>
+                <span>
+                  {selectedUrls.length}{" "}
+                  {selectedUrls.length === 1 ? "item" : "items"} selected
+                </span>
               )}
             </div>
             <div className="flex gap-2">
-              <Button type="button" variant="outline" onClick={handleCancel}>
+              <Button type="button" className="cursor-pointer" variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button 
-                type="button" 
+              <Button
+                type="button"
+                className="cursor-pointer"
                 onClick={handleSave}
                 disabled={selectedUrls.length === 0}
               >
@@ -347,13 +335,15 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
       {/* Selected images preview */}
       {selectedImages.length > 0 && (
         <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm font-medium mb-2">Selected Images ({selectedImages.length})</p>
+          <p className="text-sm font-medium mb-2">
+            Selected Images ({selectedImages.length})
+          </p>
           <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
             {selectedImages.map((url, index) => (
               <div key={index} className="relative group">
                 <div className="aspect-square rounded overflow-hidden bg-gray-200">
-                  <img 
-                    src={url} 
+                  <img
+                    src={url}
                     alt={`Selected ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
@@ -365,7 +355,9 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
                   className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
                     e.stopPropagation();
-                    const newImages = selectedImages.filter((_, i) => i !== index);
+                    const newImages = selectedImages.filter(
+                      (_, i) => i !== index
+                    );
                     onImagesSelect(newImages);
                   }}
                 >
