@@ -10,6 +10,9 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getProjectData(id: string) {
   try {
     await connectDB();

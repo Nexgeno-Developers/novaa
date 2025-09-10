@@ -7,6 +7,9 @@ interface SectionContent {
   [key: string]: unknown; 
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
   breadcrumb: BreadcrumbsSection,
   contact: ContactSection,

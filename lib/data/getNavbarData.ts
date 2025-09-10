@@ -1,8 +1,11 @@
 import dbConnect from '@/lib/mongodb';
 import Navbar from '@/models/Navbar';
-import { cache } from 'react';
+import { unstable_noStore as noStore } from 'next/cache';
 
-export const getNavbarData = cache(async () => {
+export const getNavbarData = async () => {
+
+  noStore()
+
   try {
     await dbConnect();
     
@@ -32,4 +35,4 @@ export const getNavbarData = cache(async () => {
     console.error("Failed to get navbar data:", error);
     return null;
   }
-});
+};

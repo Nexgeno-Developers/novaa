@@ -6,6 +6,9 @@ import Section from '@/models/Section';
 import BreadcrumbsSection from '@/components/client/BreadcrumbsSection';
 import BlogDetailClient from '@/components/client/BlogDetailClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getBlogBySlug(slug: string) {
   try {
     await connectDB();

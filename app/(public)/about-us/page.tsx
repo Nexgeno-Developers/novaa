@@ -5,8 +5,11 @@ import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import OurStorySection from "@/components/client/OurStorySection";
 
 interface SectionContent {
-  [key: string]: unknown; 
+  [key: string]: unknown;
 }
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const sectionComponentMap: {
   [key: string]: React.ComponentType<SectionContent>;
