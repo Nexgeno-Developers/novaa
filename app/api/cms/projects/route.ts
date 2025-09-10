@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
   try {
@@ -109,6 +110,13 @@ export async function POST(request: Request) {
     const populatedProject = await Project.findById(project._id).populate(
       "category"
     );
+
+    // Revalidate caches that depend on projects
+    revalidateTag("projects");
+    revalidateTag("project-sections");
+    revalidateTag("sections");
+    revalidateTag("project-details"); // For all project detail pages
+
     return NextResponse.json({ success: true, data: populatedProject });
   } catch (error) {
     console.error("Error creating project:", error);

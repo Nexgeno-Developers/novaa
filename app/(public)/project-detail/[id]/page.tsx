@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import ProjectHeroSection from "@/components/client/ProjectHeroSection";
@@ -10,32 +11,43 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Create a cached version of the function for individual project data
+const getCachedProjectData = (id: string) =>
+  unstable_cache(
+    async () => {
+      try {
+        await connectDB();
+
+        // Make sure the ID is valid MongoDB ObjectId
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+          return null;
+        }
+
+        const project = await Project.findById(id).populate("category");
+
+        if (!project || !project.isActive) {
+          return null;
+        }
+
+        // Convert all BSON/ObjectId fields into plain strings
+        const plainProject = JSON.parse(JSON.stringify(project));
+
+        return plainProject;
+      } catch (error) {
+        console.error("Failed to fetch project data:", error);
+        return null;
+      }
+    },
+    [`project-detail-${id}`], // Cache key specific to this project
+    {
+      tags: [`project-${id}`, "projects", "project-details"], // Cache tags for revalidation
+      revalidate: 3600, // Revalidate every hour (fallback)
+    }
+  );
 
 async function getProjectData(id: string) {
-  try {
-    await connectDB();
-
-    // Make sure the ID is valid MongoDB ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return null;
-    }
-
-    const project = await Project.findById(id).populate("category")
-
-    if (!project || !project.isActive) {
-      return null;
-    }
-
-    // Convert all BSON/ObjectId fields into plain strings
-    const plainProject = JSON.parse(JSON.stringify(project));
-
-    return plainProject;
-  } catch (error) {
-    console.error("Failed to fetch project data:", error);
-    return null;
-  }
+  const cachedFunction = getCachedProjectData(id);
+  return cachedFunction();
 }
 
 export default async function ProjectDetailPage({
@@ -160,7 +172,7 @@ export default async function ProjectDetailPage({
   );
 }
 
-// Generate metadata for SEO
+// Generate metadata for SEO with caching
 export async function generateMetadata({
   params,
 }: {

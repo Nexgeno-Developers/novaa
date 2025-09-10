@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import BlogCategory from "@/models/BlogCategory";
 import Blog from "@/models/Blog";
+import { revalidateTag } from 'next/cache';
 
 export async function PUT(
   request: NextRequest,
@@ -25,21 +26,34 @@ export async function PUT(
       );
     }
 
-    const category = await BlogCategory.findByIdAndUpdate(id, data, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!category) {
+    // Get the old category data before updating
+    const oldCategory = await BlogCategory.findById(id);
+    if (!oldCategory) {
       return NextResponse.json(
         { success: false, error: "Blog category not found" },
         { status: 404 }
       );
     }
 
-    // Update category name in all related blogs
-    if (data.title && data.title !== category.title) {
+    const category = await BlogCategory.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
+    });
+
+    // Update category name in all related blogs if title changed
+    if (data.title && data.title !== oldCategory.title) {
       await Blog.updateMany({ category: id }, { categoryName: data.title });
+    }
+
+    // Revalidate all related caches
+    revalidateTag('blog-categories');
+    revalidateTag('blog-sections'); // Blog listing page
+    revalidateTag('blogs'); // Blog data that includes category info
+    
+    // If slug changed, revalidate any specific category-related caches
+    if (data.slug && data.slug !== oldCategory.slug) {
+      revalidateTag(`category-${oldCategory.slug}`);
+      revalidateTag(`category-${data.slug}`);
     }
 
     return NextResponse.json({
@@ -61,7 +75,16 @@ export async function DELETE(
 ) {
   try {
     await connectDB();
-    const { id } = await params; // ✅ await params
+    const { id } = await params;
+
+    // Get category info before deleting for cache invalidation
+    const category = await BlogCategory.findById(id);
+    if (!category) {
+      return NextResponse.json(
+        { success: false, error: "Blog category not found" },
+        { status: 404 }
+      );
+    }
 
     // Check if category is being used by any blogs
     const blogsUsingCategory = await Blog.countDocuments({ category: id });
@@ -76,14 +99,13 @@ export async function DELETE(
       );
     }
 
-    const category = await BlogCategory.findByIdAndDelete(id);
+    await BlogCategory.findByIdAndDelete(id);
 
-    if (!category) {
-      return NextResponse.json(
-        { success: false, error: "Blog category not found" },
-        { status: 404 }
-      );
-    }
+    // Revalidate all related caches
+    revalidateTag('blog-categories');
+    revalidateTag('blog-sections'); // Blog listing page
+    revalidateTag('blogs'); // Blog data that includes category info
+    revalidateTag(`category-${category.slug}`); // Specific category cache
 
     return NextResponse.json({
       success: true,

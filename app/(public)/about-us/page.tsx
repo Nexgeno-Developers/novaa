@@ -1,15 +1,15 @@
-// app/about-us/page.tsx
 import connectDB from "@/lib/mongodb";
 import Section from "@/models/Section";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import OurStorySection from "@/components/client/OurStorySection";
+import { getSectionData } from "@/lib/data/getSectionData";
 
 interface SectionContent {
   [key: string]: unknown;
 }
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// export const dynamic = "force-dynamic";
+// export const revalidate = 0;
 
 const sectionComponentMap: {
   [key: string]: React.ComponentType<SectionContent>;
@@ -18,28 +18,28 @@ const sectionComponentMap: {
   "our-story": OurStorySection,
 };
 
-async function getAboutPageData() {
-  try {
-    await connectDB();
+// async function getAboutPageData() {
+//   try {
+//     await connectDB();
 
-    // Fetch all active sections for the 'about-us' page and sort them by order
-    const sections = await Section.find({
-      pageSlug: "about-us",
-      status: "active",
-      "settings.isVisible": true, // Only fetch visible sections
-    })
-      .sort({ order: 1 })
-      .lean();
+//     // Fetch all active sections for the 'about-us' page and sort them by order
+//     const sections = await Section.find({
+//       pageSlug: "about-us",
+//       status: "active",
+//       "settings.isVisible": true, // Only fetch visible sections
+//     })
+//       .sort({ order: 1 })
+//       .lean();
 
-    return sections;
-  } catch (error) {
-    console.error("Failed to fetch about page data:", error);
-    return [];
-  }
-}
+//     return sections;
+//   } catch (error) {
+//     console.error("Failed to fetch about page data:", error);
+//     return [];
+//   }
+// }
 
 export default async function AboutUsPage() {
-  const sections = await getAboutPageData();
+  const sections = await getSectionData("about-us");
 
   console.log("About Us Sections:", sections);
 

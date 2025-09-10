@@ -1,5 +1,6 @@
 import connectDB from '@/lib/mongodb';
 import Section from '@/models/Section';
+import { unstable_cache } from 'next/cache';
 
 import CuratedCollection from "@/components/client/CuratedCollection";
 import HeroSection from "@/components/client/HeroSection";
@@ -10,13 +11,34 @@ import NovaaAdvantageSection from "@/components/client/NovaaAdvantageSection";
 import FaqSection from "@/components/client/FaqSection";
 import InvestorInsightsSection from "@/components/client/InvestorInsightsSection";
 import TestimonialsSection from "@/components/client/Testimonials";
+import { getSectionData } from '@/lib/data/getSectionData';
 
+// Define proper TypeScript interfaces based on your Section model
 interface SectionContent {
-  [key: string]: unknown; 
+  [key: string]: any; // Mixed type from Mongoose
 }
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+interface Section {
+  _id: string;
+  name: string;
+  slug: string;
+  type: string;
+  order: number;
+  pageSlug: string;
+  component: string;
+  status: 'active' | 'inactive';
+  settings: {
+    isVisible: boolean;
+    backgroundColor?: string;
+    padding?: string;
+    margin?: string;
+    customCSS?: string;
+    animation?: string;
+  };
+  content: SectionContent;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
   hero: HeroSection,
@@ -30,27 +52,10 @@ const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> 
   insights: InvestorInsightsSection,
 };
 
-async function getHomePageData() {
-  try {
-    await connectDB();
-
-    // Fetch all active sections for the 'home' page and SORT them by the 'order' field.
-    const sections = await Section.find({ pageSlug: 'home', status: 'active' })
-      .sort({ order: 1 })
-      .lean(); // .lean() improves performance
-
-    return sections;
-  } catch (error) {
-    console.error("Failed to fetch homepage data:", error);
-    // Return an empty array or handle the error as needed
-    return [];
-  }
-}
-
 export default async function Home() {
-  const sections = await getHomePageData();
+  const sections: Section[] = await getSectionData('home');
 
-  console.log("Sections" , sections)
+  console.log("Sections", sections);
 
   if (!sections || sections.length === 0) {
     return (
@@ -62,14 +67,18 @@ export default async function Home() {
 
   return (
     <main className="relative overflow-hidden">
-      {sections.map(section => {
-        // console.log("Section" , section)
-        // console.log("Section type" , section.type)
+      {sections.map((section: Section) => {
         const Component = sectionComponentMap[section.type];
-        console.log("Componet" , Component)
+        console.log("Component", Component);
+        console.log("Section type", section.type);
+        
         // If a component is found, render it. Otherwise, render nothing.
-        // This prevents the page from crashing if a section type has no matching component.
-        return Component ? <Component key={section._id} {...(section.content.heroSection || section.content)} /> : null;
+        return Component ? (
+          <Component 
+            key={section._id} 
+            {...(section.content.heroSection || section.content)} 
+          />
+        ) : null;
       })}
     </main>
   );

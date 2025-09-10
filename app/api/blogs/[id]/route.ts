@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import BlogCategory from '@/models/BlogCategory';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(
   request: NextRequest,
@@ -42,13 +43,22 @@ export async function PUT(
     const data = await request.json();
     const { id } = await params;
     
-    // Check if slug already exists for other blogs
-    const existingBlog = await Blog.findOne({ 
+    //  Get the CURRENT blog data before updating
+    const currentBlog = await Blog.findById(id);
+    if (!currentBlog) {
+      return NextResponse.json(
+        { success: false, error: 'Blog not found' },
+        { status: 404 }
+      );
+    }
+    
+    // Check if slug already exists for OTHER blogs (conflict check)
+    const slugConflict = await Blog.findOne({ 
       slug: data.slug,
       _id: { $ne: id }
     });
     
-    if (existingBlog) {
+    if (slugConflict) {
       return NextResponse.json(
         { success: false, error: 'Blog with this slug already exists' },
         { status: 400 }
@@ -67,22 +77,27 @@ export async function PUT(
       data.categoryName = category.title;
     }
     
-    const blog = await Blog.findByIdAndUpdate(
+    const updatedBlog = await Blog.findByIdAndUpdate(
       id,
       data,
       { new: true, runValidators: true }
     ).populate('category', 'title slug');
     
-    if (!blog) {
-      return NextResponse.json(
-        { success: false, error: 'Blog not found' },
-        { status: 404 }
-      );
+    // Revalidate caches
+    revalidateTag('blogs');
+    revalidateTag('blog-sections'); // This will revalidate blog listing page
+
+    // Invalidate cache for the CURRENT blog's slug (before update)
+    revalidateTag(`blog-${currentBlog.slug}`);
+    
+    // If slug changed, also invalidate new slug cache
+    if (updatedBlog.slug !== currentBlog.slug) {
+      revalidateTag(`blog-${updatedBlog.slug}`);
     }
     
     return NextResponse.json({
       success: true,
-      data: blog
+      data: updatedBlog
     });
   } catch (error) {
     console.error('Error updating blog:', error);
@@ -101,7 +116,8 @@ export async function DELETE(
     await connectDB();
     const { id } = await params;
     
-    const blog = await Blog.findByIdAndDelete(id);
+    // : Get blog data BEFORE deleting for better cache invalidation
+    const blog = await Blog.findById(id);
     
     if (!blog) {
       return NextResponse.json(
@@ -109,6 +125,16 @@ export async function DELETE(
         { status: 404 }
       );
     }
+    
+    // Now delete the blog
+    await Blog.findByIdAndDelete(id);
+    
+    // Revalidate caches
+    revalidateTag('blogs');
+    revalidateTag('blog-sections'); // This will revalidate blog listing page
+    
+    // Invalidate specific blog detail page cache
+    revalidateTag(`blog-${blog.slug}`);
     
     return NextResponse.json({
       success: true,

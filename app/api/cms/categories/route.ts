@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Category from '@/models/Category';
+import { revalidateTag } from 'next/cache';
 
 export async function GET() {
   try {
@@ -24,6 +25,11 @@ export async function POST(request: Request) {
       isActive,
       order
     });
+
+    // Revalidate caches that depend on categories
+    revalidateTag('categories');
+    revalidateTag('project-sections');
+    revalidateTag('sections');
     
     return NextResponse.json({ success: true, data: category });
   } catch (error) {

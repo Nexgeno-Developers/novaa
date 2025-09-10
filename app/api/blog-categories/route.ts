@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import BlogCategory from '@/models/BlogCategory';
+import { revalidateTag } from 'next/cache';
 
 export async function GET() {
   try {
@@ -36,6 +37,10 @@ export async function POST(request: NextRequest) {
     
     const category = new BlogCategory(data);
     await category.save();
+
+    // Revalidate caches
+    revalidateTag('blog-categories');
+    revalidateTag('blog-sections'); // This will revalidate blog listing page
     
     return NextResponse.json({
       success: true,

@@ -2,13 +2,11 @@ import connectDB from '@/lib/mongodb';
 import Section from '@/models/Section';
 import BreadcrumbsSection from '@/components/client/BreadcrumbsSection';
 import ContactSection from '@/components/client/ContactSection';
+import { getSectionData } from '@/lib/data/getSectionData';
 
 interface SectionContent {
   [key: string]: unknown; 
 }
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> } = {
   breadcrumb: BreadcrumbsSection,
@@ -16,28 +14,28 @@ const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> 
   // Add more Contact Us section components as needed
 };
 
-async function getContactPageData() {
-  try {
-    await connectDB();
+// async function getContactPageData() {
+//   try {
+//     await connectDB();
 
-    // Fetch all active sections for the 'contact-us' page and sort them by order
-    const sections = await Section.find({ 
-      pageSlug: 'contact-us', 
-      status: 'active',
-      'settings.isVisible': true  // Only fetch visible sections
-    })
-      .sort({ order: 1 })
-      .lean();
+//     // Fetch all active sections for the 'contact-us' page and sort them by order
+//     const sections = await Section.find({ 
+//       pageSlug: 'contact-us', 
+//       status: 'active',
+//       'settings.isVisible': true  // Only fetch visible sections
+//     })
+//       .sort({ order: 1 })
+//       .lean();
 
-    return sections;
-  } catch (error) {
-    console.error("Failed to fetch contact page data:", error);
-    return [];
-  }
-}
+//     return sections;
+//   } catch (error) {
+//     console.error("Failed to fetch contact page data:", error);
+//     return [];
+//   }
+// }
 
 export default async function ContactUsPage() {
-  const sections = await getContactPageData();
+  const sections = await getSectionData('contact-us');
 
   console.log("Contact Us Sections:", sections);
 
