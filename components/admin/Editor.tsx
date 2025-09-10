@@ -23,7 +23,7 @@ export default function RichTextEditor({
       value={value}
       init={{
         licenseKey: "gpl",
-        height: 200,
+        height: 300,
         menubar: false,
         plugins: [
           "advlist",

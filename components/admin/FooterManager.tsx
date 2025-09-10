@@ -571,6 +571,7 @@ const FooterManagerPage = () => {
     setFormData((prev) => {
       if (!prev) return null;
       const updatedLinks = [...prev.quickLinks.links];
+      updatedLinks[index] = { ...updatedLinks[index], [field]: value };
 
       return {
         ...prev,
