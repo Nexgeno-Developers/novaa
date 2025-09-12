@@ -4,12 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setRegion } from "@/redux/slices/collectionSlice";
+import { setRegionTabLoading } from "@/redux/slices/loadingSlice";
+import { useCallback } from "react";
 
 export default function RegionTabs() {
   const dispatch = useAppDispatch();
   const { selectedRegion, categories, allProjects, collection, dataSource } = useAppSelector(
     (state) => state.curated
   );
+
+  const handleRegionChange = useCallback((regionName: string) => {
+    if (selectedRegion === regionName) return; // Don't reload if same region
+    
+    dispatch(setRegionTabLoading(true));
+    
+    // Add a small delay to show the loading animation
+    setTimeout(() => {
+      dispatch(setRegion(regionName));
+      
+      // Stop loading after a short delay to allow content to render
+      setTimeout(() => {
+        dispatch(setRegionTabLoading(false));
+      }, 300);
+    }, 100);
+  }, [dispatch, selectedRegion]);
 
   // Filter active categories that have projects and sort by order
   const activeCategories = categories
@@ -50,7 +68,7 @@ export default function RegionTabs() {
         return (
           <Button
             key={category._id}
-            onClick={() => dispatch(setRegion(category.name))}
+            onClick={() => handleRegionChange(category.name)}
             variant="ghost"
             className={`font-josefin cursor-pointer text-base sm:text-[22px] relative rounded-none px-5 sm:px-10 py-6 sm:py-8 font-medium border-y-2 transition-colors duration-300
               ${

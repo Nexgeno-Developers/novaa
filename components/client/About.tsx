@@ -5,6 +5,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { setNavigationLoading } from "@/redux/slices/loadingSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 interface AboutSectionProps {
   title?: string;
@@ -35,15 +37,15 @@ export default function AboutPage({
   bottomOverlay = true,
   ...props
 }: AboutSectionProps) {
-
- const containerRef = useRef<HTMLElement>(null);
-const { scrollYProgress } = useScroll({
-  target: containerRef,
-  offset: ["start end", "end start"],
-});
+  const dispatch = useAppDispatch();
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
 
   // Re-enabled animations
-  const novaY = useTransform(scrollYProgress, [0, 0.3], [100 , -155]);
+  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -155]);
   const novaOpacity = useTransform(scrollYProgress, [0.1, 0.35], [0, 1]);
 
   return (
@@ -101,7 +103,7 @@ const { scrollYProgress } = useScroll({
       {/* Animated Background Text */}
       {subtitle && (
         <motion.div
-          className="hidden sm:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none transition-all duration-1500"
+          className="hidden md:absolute inset-0 z-30 sm:flex items-center justify-center pointer-events-none transition-all duration-1500"
           style={{ y: novaY, opacity: novaOpacity }}
         >
           <div className="relative inline-block select-none">
@@ -125,13 +127,13 @@ const { scrollYProgress } = useScroll({
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-center mb-16 lg:mb-24"
+          className="text-center mb-10 lg:mb-28"
         >
-          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white mb-5">
+          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white mb-2">
             {title}
           </h1>
           {subtitle && (
-            <h2 className="sm:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-7xl xs:text-8xl">
+            <h2 className="md:hidden font-cinzel font-bold leading-none select-none text-transparent bg-clip-text bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] text-7xl xs:text-8xl">
               {subtitle}
             </h2>
           )}

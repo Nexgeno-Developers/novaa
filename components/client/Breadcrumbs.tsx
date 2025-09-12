@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { Josefin_Sans } from "next/font/google";
 import Link from "next/link";
-import parse from 'html-react-parser'; 
+import parse from "html-react-parser";
+import { setNavigationLoading } from "@/redux/slices/loadingSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 const josefin = Josefin_Sans({
   weight: "500",
@@ -21,14 +23,17 @@ interface BreadcrumbsProps {
 // Helper: convert "contact-us" > "Contact Us"
 function formatSlug(slug?: string) {
   if (!slug) return "";
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-
-export default function Breadcrumbs({ title, description, backgroundImageUrl, pageSlug }: BreadcrumbsProps) {
-  const pageName = formatSlug(pageSlug)
+export default function Breadcrumbs({
+  title,
+  description,
+  backgroundImageUrl,
+  pageSlug,
+}: BreadcrumbsProps) {
+  const dispatch = useAppDispatch()
+  const pageName = formatSlug(pageSlug);
   return (
     <section className="relative w-full h-[438px]">
       {/* Dynamic background image */}
@@ -46,14 +51,12 @@ export default function Breadcrumbs({ title, description, backgroundImageUrl, pa
         >
           {title}
         </h1>
-        
+
         {/* Dynamic Description (rendered from HTML) */}
-        <div className="mt-4 text-lg max-w-2xl">
-            {parse(description)}
-        </div>
+        <div className="mt-4 text-lg max-w-2xl">{parse(description)}</div>
 
         <div className="absolute bottom-4 mb-7 mt-4 flex items-center justify-center pb-2 px-6 py-3 rounded-[20px] backdrop-blur-md bg-[#CDB04E1A]">
-          <Link href="/">
+          <Link href="/" onClick={() => dispatch(setNavigationLoading(true))}>
             <span className="text-[16px] font-semibold text-white cursor-pointer">
               HOME
             </span>

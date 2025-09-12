@@ -7,6 +7,10 @@ import Link from "next/link";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { setNavigationLoading } from "@/redux/slices/loadingSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
+
 
 // Define the component's props types
 interface NavbarItem {
@@ -33,7 +37,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ data }: NavbarProps) {
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const router = useNavigationRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -99,6 +104,7 @@ export default function Navbar({ data }: NavbarProps) {
                       pathname === item.href && "text-[#F0DE9C]",
                       isLast && "pr-8"
                     )}
+                    // onClick={() => dispatch(setNavigationLoading(true))}
                   >
                     {item.label}
                   </Link>
@@ -114,7 +120,10 @@ export default function Navbar({ data }: NavbarProps) {
                   background:
                     "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                 }}
-                onClick={() => router.replace("/contact-us")}
+                onClick={() => (
+                  router.replace("/contact-us"),
+                  dispatch(setNavigationLoading(true))
+                )}
               >
                 {contactItem?.label}
                 <ArrowRight className="w-5 h-5 pb-1" />

@@ -11,9 +11,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/hooks";
 import { fetchBlogs, Blog, setBlogs } from "@/redux/slices/blogsSlice";
-import { fetchBlogCategories, setCategories } from "@/redux/slices/blogCategoriesSlice";
+import {
+  fetchBlogCategories,
+  setCategories,
+} from "@/redux/slices/blogCategoriesSlice";
 import { RootState } from "@/redux";
 import { useRouter } from "next/navigation";
+import { setNavigationLoading } from "@/redux/slices/loadingSlice";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 interface BlogSectionProps {
   pageSlug?: string;
@@ -61,13 +66,14 @@ export default function BlogSection({
   blogData,
   ...props
 }: BlogSectionProps) {
-
-  console.log("Blog data" , blogData)
+  console.log("Blog data", blogData);
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const router = useNavigationRouter();
   const { blogs, loading } = useSelector((state: RootState) => state.blogs);
-  const { categories } = useSelector((state: RootState) => state.blogCategories);
-  
+  const { categories } = useSelector(
+    (state: RootState) => state.blogCategories
+  );
+
   // State for client-side loading when no server data is provided
   const [isClientLoading, setIsClientLoading] = useState(!blogData);
 
@@ -80,11 +86,13 @@ export default function BlogSection({
     } else {
       // Fallback to client-side fetching if no server data
       setIsClientLoading(true);
-      dispatch(fetchBlogs({ 
-        status: "active", 
-        limit: maxBlogs,
-      }));
-      
+      dispatch(
+        fetchBlogs({
+          status: "active",
+          limit: maxBlogs,
+        })
+      );
+
       if (showCategories) {
         dispatch(fetchBlogCategories());
       }
@@ -128,7 +136,9 @@ export default function BlogSection({
             {title}
           </h2>
           <p className="text-muted-foreground mb-8">{description}</p>
-          <p className="text-muted-foreground">No blogs available at the moment.</p>
+          <p className="text-muted-foreground">
+            No blogs available at the moment.
+          </p>
         </div>
       </section>
     );
@@ -150,6 +160,7 @@ export default function BlogSection({
                 <div
                   className="relative w-full max-w-[615px] h-[440px] sm:h-[720px] rounded-[40px] overflow-hidden group cursor-pointer"
                   onClick={() => {
+                    // dispatch(setNavigationLoading(true));
                     router.push(`/blog/${blog.slug}`);
                   }}
                 >
@@ -159,7 +170,7 @@ export default function BlogSection({
                     fill
                     className="object-cover rounded-[40px] group-hover:scale-105 transition-all duration-500"
                   />
-                  
+
                   {/* Category Badge - Top Right */}
                   <div className="absolute top-4 right-4 z-20">
                     <Badge className="bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90">
@@ -176,7 +187,7 @@ export default function BlogSection({
                     <p className="description-text font-josefin">
                       {truncateText(blog.description)}
                     </p>
-                    
+
                     {/* Author and Date Info */}
                     <div className="flex items-center gap-4 text-sm text-white/80 mt-3 font-josefin">
                       <div className="flex items-center gap-2">
@@ -211,6 +222,7 @@ export default function BlogSection({
                   className="relative w-full max-w-[615px] h-[440px] sm:h-[540px] rounded-[40px] overflow-hidden group cursor-pointer"
                   onClick={() => {
                     router.push(`/blog/${blog.slug}`);
+                    // dispatch(setNavigationLoading(true));
                   }}
                 >
                   <Image
@@ -219,7 +231,7 @@ export default function BlogSection({
                     fill
                     className="object-cover rounded-[40px] group-hover:scale-105 transition-all duration-500"
                   />
-                  
+
                   {/* Category Badge - Top Right */}
                   <div className="absolute top-4 right-4 z-20">
                     <Badge className="bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90">
@@ -236,7 +248,7 @@ export default function BlogSection({
                     <p className="description-text">
                       {truncateText(blog.description)}
                     </p>
-                    
+
                     {/* Author and Date Info */}
                     <div className="flex items-center gap-4 text-sm text-white/80 mt-3">
                       <div className="flex items-center gap-2">
@@ -266,13 +278,10 @@ export default function BlogSection({
 
         {/* Read More Button */}
         {showReadMore && blogs.length >= maxBlogs && (
-          <motion.div 
-            variants={itemVariants}
-            className="text-center mt-12"
-          >
+          <motion.div variants={itemVariants} className="text-center mt-12">
             <Link href="/blog">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90 px-8 py-3"
               >
                 View All Blogs

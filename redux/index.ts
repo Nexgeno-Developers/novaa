@@ -19,9 +19,10 @@ import contactReducer from "./slices/contactSlice";
 import curatedCollectionReducer from "./slices/curatedSlice";
 import categoriesReducer from "./slices/categoriesSlice";
 import projectsReducer from "./slices/projectsSlice";
-import enquiryReducer from "./slices/enquirySlice"
-import blogCategoriesReducer from './slices/blogCategoriesSlice';
-import blogsReducer from './slices/blogsSlice';
+import enquiryReducer from "./slices/enquirySlice";
+import blogCategoriesReducer from "./slices/blogCategoriesSlice";
+import blogsReducer from "./slices/blogsSlice";
+import loadingReducer from './slices/loadingSlice'
 
 export const store = configureStore({
   reducer: {
@@ -42,12 +43,13 @@ export const store = configureStore({
     infoSection: infoSectionReducer,
     footer: footerReducer,
     contact: contactReducer,
-    collection : curatedCollectionReducer,
-    categories : categoriesReducer,
-    projects : projectsReducer,
-    enquiry : enquiryReducer,
-     blogCategories: blogCategoriesReducer,
+    collection: curatedCollectionReducer,
+    categories: categoriesReducer,
+    projects: projectsReducer,
+    enquiry: enquiryReducer,
+    blogCategories: blogCategoriesReducer,
     blogs: blogsReducer,
+    loading: loadingReducer, // Add this line
   },
 });
 

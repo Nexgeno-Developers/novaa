@@ -5,11 +5,10 @@ import { useState, useEffect, useCallback, Key } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { setNavigationLoading } from "@/redux/slices/loadingSlice";
 import useEmblaCarousel from 'embla-carousel-react';
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-// import Autoplay from 'embla-carousel-autoplay';
-
 
 interface CardProps {
   isLocationVisible: boolean;
@@ -21,29 +20,44 @@ export default function CollectionCard({
   displayMode = 'carousel'
 }: CardProps) {
   const router = useRouter();
-  const { selectedRegion, categories, allProjects, collection, dataSource } = useAppSelector((state) => state.curated);
+  const dispatch = useAppDispatch();
+  const { selectedRegion, categories, allProjects, collection, dataSource, loading } = useAppSelector((state) => state.curated);
 
   const [currentImageIndex, setCurrentImageIndex] = useState<Record<string, number>>({});
   const [cardsPerView, setCardsPerView] = useState(3); 
 
   // Embla Carousel setup
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { 
-      loop: true,
-      slidesToScroll: 1,
-      align: 'start',
-      containScroll: 'trimSnaps',
-      breakpoints: {
-        '(max-width: 768px)': { slidesToScroll: 1 },
-        '(max-width: 1024px)': { slidesToScroll: 1 },
-      }
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    slidesToScroll: 1,
+    align: 'start',
+    containScroll: 'trimSnaps',
+    breakpoints: {
+      '(max-width: 768px)': { slidesToScroll: 1 },
+      '(max-width: 1024px)': { slidesToScroll: 1 },
     }
-     // [Autoplay({ delay: 5000, stopOnInteraction: true })]
-
-  );
+  });
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+
+  // Handle navigation with loading state
+  const handleNavigation = useCallback((projectId: string) => {
+    dispatch(setNavigationLoading(true));
+    
+    // Add a small delay to show loading animation
+    setTimeout(() => {
+      router.push(`/project-detail/${projectId}`);
+      // Loading state will be reset when the new page loads or in useEffect cleanup
+    }, 100);
+  }, [router, dispatch]);
+
+  // Reset loading state when component unmounts or navigation completes
+  useEffect(() => {
+    return () => {
+      dispatch(setNavigationLoading(false));
+    };
+  }, [dispatch]);
 
   // Get current projects based on data source
   const currentProjects = (() => {
@@ -53,17 +67,12 @@ export default function CollectionCard({
     if (!selectedCategory) return [];
     
     if (dataSource === 'curated' && collection) {
-      // For curated collection, use the selected projects from collection.items
       return collection.items[selectedCategory._id] || [];
     } else {
-      // For projects page, use all active projects from the category
       let categoryProjects = allProjects.filter(
         project => project.category._id === selectedCategory._id && project.isActive
       );
-      
-      // Sort by order
       categoryProjects.sort((a, b) => (a.order || 0) - (b.order || 0));
-      
       return categoryProjects;
     }
   })();
@@ -155,7 +164,7 @@ export default function CollectionCard({
     >
       <div
         className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"
-        onClick={() => router.push(`/project-detail/${property._id}`)}
+        onClick={() => handleNavigation(property._id)}
       >
         {/* Background Images */}
         <div className="relative w-full h-full">
@@ -345,22 +354,6 @@ export default function CollectionCard({
           ))}
         </div>
       </div>
-
-      {currentProjects.length > cardsPerView && (
-        <div className="flex justify-center mt-6 space-x-2">
-          {Array.from({ length: Math.max(1, currentProjects.length - cardsPerView + 1) }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => emblaApi?.scrollTo(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                emblaApi?.selectedScrollSnap() === index
-                  ? "bg-primary scale-125"
-                  : "bg-gray-300 hover:bg-gray-400"
-              }`}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
