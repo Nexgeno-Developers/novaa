@@ -174,6 +174,20 @@ export default async function ProjectDetailPage({
   );
 }
 
+export async function generateStaticParams() {
+  try {
+    await connectDB();
+    const projects = await Project.find({ isActive: true }).select('_id').lean();
+    
+    return projects.map((project : any) => ({
+      id: project._id.toString(), // Convert ObjectId to string
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 // Generate metadata for SEO with caching
 export async function generateMetadata({
   params,

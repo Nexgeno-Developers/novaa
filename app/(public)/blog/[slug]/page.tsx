@@ -134,7 +134,7 @@ async function getBreadcrumbData() {
   }
 }
 
-// Add generateStaticParams for better production performance
+// generateStaticParams for better production performance
 export async function generateStaticParams() {
   try {
     await connectDB();
