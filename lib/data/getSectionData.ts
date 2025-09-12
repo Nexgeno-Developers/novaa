@@ -44,18 +44,56 @@ export const getSectionData = async (pageSlug: string): Promise<SectionData[]> =
           .sort({ order: 1 })
           .lean();
 
-        // Check if any section is a curated collection that might need fresh project data
+        // Check if any section is a curated collection that needs fresh project data
         const hasCollectionSection = sections.some(section => section.type === 'collection');
         
         let sectionsWithFreshData = sections;
 
-        // If we have a collection section and this is the home page, 
-        // we might want to ensure the project data in the section content is fresh
-        if (hasCollectionSection && pageSlug === 'home') {
-          // For now, we'll just ensure the cache gets invalidated when projects change
-          // The actual project data merging can be handled in the component or 
-          // through section content updates in your CMS
-          console.log('Home page has collection section - will invalidate when projects change');
+        // If we have a collection section, fetch fresh project data and merge it
+        if (hasCollectionSection) {
+          try {
+            // Fetch fresh project and category data
+            const [categories, projects] = await Promise.all([
+              Category.find({ isActive: true }).sort({ order: 1 }).lean(),
+              Project.find({ isActive: true })
+                .populate('category')
+                .sort({ order: 1 })
+                .lean(),
+            ]);
+
+            // Group projects by category for the collection
+            const projectsByCategory: Record<string, any[]> = {};
+            projects.forEach((project) => {
+              const categoryId = project.category._id.toString();
+              if (!projectsByCategory[categoryId]) {
+                projectsByCategory[categoryId] = [];
+              }
+              projectsByCategory[categoryId].push(project);
+            });
+
+            // Update collection sections with fresh project data
+            sectionsWithFreshData = sections.map(section => {
+              if (section.type === 'collection') {
+                return {
+                  ...section,
+                  content: {
+                    ...section.content,
+                    // Merge fresh project data into the section content
+                    items: projectsByCategory,
+                    categories: categories,
+                    projects: projects,
+                    // Keep the original CMS content (title, description, etc.)
+                  }
+                };
+              }
+              return section;
+            });
+
+            console.log('Updated collection section with fresh project data');
+          } catch (projectError) {
+            console.error('Failed to fetch fresh project data:', projectError);
+            // Continue with original sections if project fetch fails
+          }
         }
 
         return JSON.parse(JSON.stringify(sectionsWithFreshData));
@@ -66,13 +104,13 @@ export const getSectionData = async (pageSlug: string): Promise<SectionData[]> =
     },
     [`${pageSlug}-page-sections`],
     {
-      // IMPORTANT: Include project and category tags so this cache gets invalidated
-      // when project data changes from your CMS
+      // Include project and category tags so this cache gets invalidated
+      // when project data changes from CMS
       tags: [
         `${pageSlug}-sections`, 
         'sections', 
-        'projects',      // Add this tag
-        'categories'     // Add this tag
+        'projects',     
+        'categories'
       ],
       revalidate: 3600,
     }
