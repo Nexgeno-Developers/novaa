@@ -175,6 +175,7 @@ export default async function ProjectDetailPage({
 }
 
 export const dynamicParams = true;
+export const revalidate = false; 
 
 export async function generateStaticParams() {
   try {
