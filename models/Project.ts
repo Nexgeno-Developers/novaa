@@ -101,7 +101,7 @@ const projectSchema = new mongoose.Schema(
           },
         ],
       },
-// New Gateway Section
+      // New Gateway Section
       gateway: {
         title: { type: String, default: "A place to come home to" },
         subtitle: { type: String, default: "and a location that" },

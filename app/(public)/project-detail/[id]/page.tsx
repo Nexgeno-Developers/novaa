@@ -29,6 +29,8 @@ const getCachedProjectData = (id: string) =>
           return null;
         }
 
+        // console.log("Project", project);
+
         // Convert all BSON/ObjectId fields into plain strings
         const plainProject = JSON.parse(JSON.stringify(project));
 

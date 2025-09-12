@@ -29,6 +29,7 @@ interface Section {
   };
   content: SectionContent;
   blogData: { blogData: any };
+
   createdAt: Date;
   updatedAt: Date;
 }
