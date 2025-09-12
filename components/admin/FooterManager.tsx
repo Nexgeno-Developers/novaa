@@ -629,13 +629,13 @@ const FooterManagerPage = () => {
   }
 
   return (
-    <div className="p-8 space-y-6 font-poppins">
+    <div className="sm:p-8 space-y-6 font-poppins">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Footer Manager</h1>
       </div>
 
       <Tabs defaultValue="tagline">
-        <TabsList className="grid w-full h-15 grid-cols-3 bg-background dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg ring-2 ring-primary/20">
+        {/* <TabsList className="grid w-full h-15 grid-cols-3 bg-background dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg ring-2 ring-primary/20">
           <TabsTrigger
             value="tagline"
             className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-primary data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white  data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
@@ -658,9 +658,9 @@ const FooterManagerPage = () => {
             <Copyright className="w-4 h-4" />
             <span className="font-medium">Copyright</span>
           </TabsTrigger>
-        </TabsList>
+        </TabsList> */}
 
-        <TabsContent value="tagline">
+        {/* <TabsContent value="tagline"> */}
           <Card className="py-6 mt-2 bg-sidebar ring-2 ring-primary/20">
             <CardHeader>
               <CardTitle className="text-accent">Footer Tagline</CardTitle>
@@ -721,7 +721,7 @@ const FooterManagerPage = () => {
           </Card>
           <Card className="py-6 mt-6 ring-2 ring-primary/20 bg-sidebar">
             <CardHeader>
-              <CardTitle>Background Images</CardTitle>
+              <CardTitle className="text-accent">Background Images</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <MediaSelectButton
@@ -753,9 +753,9 @@ const FooterManagerPage = () => {
               />
             </CardContent>
           </Card>
-        </TabsContent>
+        {/* </TabsContent> */}
 
-        <TabsContent value="content">
+        {/* <TabsContent value="content"> */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* About Us */}
             <Card className="py-6 mt-4 bg-sidebar ring-2 ring-primary/20">
@@ -905,9 +905,9 @@ const FooterManagerPage = () => {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        {/* </TabsContent> */}
 
-        <TabsContent value="copyright">
+        {/* <TabsContent value="copyright"> */}
           <Card className="mt-4 py-6 bg-sidebar ring-2 ring-primary/20">
             <CardHeader>
               <CardTitle className="text-accent">Copyright Text</CardTitle>
@@ -922,7 +922,7 @@ const FooterManagerPage = () => {
               />
             </CardContent>
           </Card>
-        </TabsContent>
+        {/* </TabsContent> */}
       </Tabs>
 
       {/* Floating Save/Discard Buttons - Show when there are changes */}

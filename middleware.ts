@@ -1,22 +1,42 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { verifyToken } from './lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-  const token = request.cookies.get('admin_token')?.value;
+  const { pathname } = request.nextUrl;
 
-  // Protect /admin/dashboard
-  if (pathname.startsWith('/admin/dashboard')) {
-    if (!token || !(await verifyToken(token))) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+  // Check if this is an admin route
+  if (pathname.startsWith('/admin')) {
+    // Allow access to login page
+    if (pathname === '/admin/login') {
+      // If user is already authenticated, redirect to dashboard
+      const token = request.cookies.get('admin_token')?.value;
+      if (token) {
+        const decoded = await verifyToken(token);
+        if (decoded) {
+          return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+        }
+      }
+      return NextResponse.next();
     }
-  }
 
-  // Redirect logged-in users away from login
-  if (pathname === '/admin/login') {
-    if (token && (await verifyToken(token))) {
-      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+    // For all other admin routes, check authentication
+    const token = request.cookies.get('admin_token')?.value;
+    
+    if (!token) {
+      const loginUrl = new URL('/admin/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const decoded = await verifyToken(token);
+    if (!decoded) {
+      const loginUrl = new URL('/admin/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      
+      // Clear invalid token
+      const response = NextResponse.redirect(loginUrl);
+      response.cookies.delete('admin_token');
+      return response;
     }
   }
 
@@ -24,5 +44,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: [
+    '/admin/:path*',
+  ],
 };
