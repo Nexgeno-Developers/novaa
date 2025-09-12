@@ -174,6 +174,8 @@ export default async function ProjectDetailPage({
   );
 }
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   try {
     await connectDB();
