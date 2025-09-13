@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
+import ClientWrapper from '@/components/admin/ClientWrapper';
 import EnquiriesManager from '@/components/admin/EnquiriesManager';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Enquiries Management | Admin Dashboard',
@@ -7,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function EnquiriesPage() {
-  return <EnquiriesManager />;
+  return (
+    <ClientWrapper>
+      <EnquiriesManager />
+    </ClientWrapper>
+  );
 }

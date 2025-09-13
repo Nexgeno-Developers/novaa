@@ -1,60 +1,3 @@
-// 'use client';
-
-// import { useState } from 'react';
-// import { usePathname } from 'next/navigation';
-// import AuthGuard from '@/components/auth/AuthGuard';
-// import AdminHeader from '@/components/admin/AdminHeader';
-// import AdminSidebar from '@/components/admin/AdminSidebar';
-// import { useAuth } from '@/hooks/useAuth';
-
-// export default function AdminLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-//   const { user } = useAuth();
-//   const pathname = usePathname();
-
-//   // Don't show header/sidebar on login page
-//   const isLoginPage = pathname === '/admin/login';
-
-//   if (isLoginPage) {
-//     return <>{children}</>;
-//   }
-
-//   return (
-//     <AuthGuard>
-//       <div className="flex h-screen admin-theme">
-//         {/* Sidebar */}
-//         <AdminSidebar 
-//           isCollapsed={sidebarCollapsed} 
-//           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-//         />
-        
-//         {/* Main content area */}
-//         <div 
-//           className={`flex flex-1 flex-col transition-all duration-500 ${
-//             sidebarCollapsed ? 'ml-20' : 'ml-72'
-//           }`}
-//         >
-//           {/* Header */}
-//           <header className="h-20 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6">
-//             <AdminHeader user={user} />
-//           </header>
-          
-//           {/* Main content */}
-//           <main className="flex-1 overflow-auto">
-//             <div className="container mx-auto py-8 px-6">
-//               {children}
-//             </div>
-//           </main>
-//         </div>
-//       </div>
-//     </AuthGuard>
-//   );
-// }
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -66,6 +9,9 @@ import AuthGuard from '@/components/auth/AuthGuard';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import { useAuth } from '@/hooks/useAuth';
+
+// Force dynamic rendering for all admin pages - this needs to be at the top
+export const dynamic = 'force-dynamic';
 
 interface AdminLayoutProps {
   children: React.ReactNode;

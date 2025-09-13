@@ -1,15 +1,12 @@
-'use client';
+import ClientWrapper from '@/components/admin/ClientWrapper';
+import AdminPageContent from './AdminPageContent';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+export const dynamic = 'force-dynamic';
 
 export default function AdminPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace('/admin/dashboard');
-  }, [router]);
-
-  return <LoadingSpinner message="Redirecting to dashboard..." />;
+  return (
+    <ClientWrapper>
+      <AdminPageContent />
+    </ClientWrapper>
+  );
 }
