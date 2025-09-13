@@ -681,7 +681,7 @@ const EnquiriesManager = () => {
                   Cancel
                 </Button>
                 <Button
-                  onClick={() => handleUpdateEnquiry}
+                  onClick={() => handleUpdateEnquiry(editingEnquiry as EnquiryUpdateData)}
                   disabled={loading}
                   className="text-background cursor-pointer"
                 >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux";
 import { fetchNavbar, updateNavbar } from "@/redux/slices/navbarSlice";
 import { Button } from "@/components/ui/button";
