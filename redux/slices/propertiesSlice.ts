@@ -24,6 +24,7 @@ interface PhuketPropertiesData {
   description: string;
   explorerHeading: string;
   explorerDescription: string;
+  backgroundImage: string;
   categories: Category[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -122,6 +123,11 @@ const propertiesSlice = createSlice({
         }
       }
     },
+     updateBackgroundImage: (state, action: PayloadAction<string>) => { 
+      if (state.data) {
+        state.data.backgroundImage = action.payload;
+      }
+    },
     updateLocation: (state, action: PayloadAction<{ 
       categoryId: string; 
       locationId: string; 
@@ -206,6 +212,7 @@ export const {
   updateExplorerDescription,
   updateCategoryTitle,
   updateLocation,
+  updateBackgroundImage, 
   addLocation,
   deleteLocation,
   reorderLocations,

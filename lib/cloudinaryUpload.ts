@@ -45,7 +45,7 @@ export interface CloudinarySearchResult {
 export type SearchFilesParams = {
   query?: string;
   resourceType?: "image" | "video" | "raw" | "file"; // Added "raw" and "file"
-  maxResults?: number;   // default 20
+  maxResults?: number; // default 20
   nextCursor?: string;
 };
 
@@ -69,9 +69,9 @@ export class CloudinaryService {
 
       // UPDATED: Better resource type detection
       let resourceType: "image" | "video" | "raw" = "raw";
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith("image/")) {
         resourceType = "image";
-      } else if (file.type.startsWith('video/')) {
+      } else if (file.type.startsWith("video/")) {
         resourceType = "video";
       } else {
         // Documents, PDFs, etc. should be uploaded as 'raw'
@@ -131,64 +131,58 @@ export class CloudinaryService {
     query?: string,
     resourceType?: "image" | "video" | "file" | "raw" | "auto",
     maxResults: number = 20,
-    nextCursor?: string,
-    resource_type?: "image" | "video" | "raw" | "auto" // New parameter
+    nextCursor?: string
   ): Promise<CloudinarySearchResult> {
     try {
-      console.log("Search params:", { query, resourceType, resource_type, maxResults, nextCursor });
-      
+      console.log("Search params:", {
+        query,
+        resourceType,
+        maxResults,
+        nextCursor,
+      });
+
       let searchExpression = `folder:${this.folder}`;
 
-      // Use resource_type parameter if provided, otherwise fall back to resourceType
-      const typeFilter = resource_type || resourceType;
-      
-      if (typeFilter) {
-        if (typeFilter === 'file') {
+      // Handle resource type filtering
+      if (resourceType && resourceType !== "auto") {
+        if (resourceType === "file") {
           // For 'file' type, search for 'raw' resource type
           searchExpression += ` AND resource_type:raw`;
         } else {
-          searchExpression += ` AND resource_type:${typeFilter}`;
+          searchExpression += ` AND resource_type:${resourceType}`;
         }
       } else {
-        // If no type specified, include all types
+        // If no type specified or 'auto', include all types
         searchExpression += ` AND (resource_type:image OR resource_type:video OR resource_type:raw)`;
       }
 
+      // Add query filter if provided
       if (query && query.trim()) {
+        const queryTerm = query.trim();
         // Search in both filename and public_id
-        searchExpression += ` AND (filename:*${query.trim()}* OR public_id:*${query.trim()}*)`;
+        searchExpression += ` AND (filename:*${queryTerm}* OR public_id:*${queryTerm}*)`;
       }
 
       console.log("Final search expression:", searchExpression);
 
-      const searchParams: {
-        expression: string;
-        sort_by: [string, "asc" | "desc"][];
-        max_results: number;
-        next_cursor?: string;
-      } = {
-        expression: searchExpression,
-        sort_by: [["created_at", "desc"]],
-        max_results: maxResults,
-      };
-
-      if (nextCursor) {
-        searchParams.next_cursor = nextCursor;
-      }
-
-      const searchResult = await cloudinary.search
+      const searchBuilder = cloudinary.search
         .expression(searchExpression)
         .sort_by("created_at", "desc")
-        .max_results(maxResults)
-        .next_cursor(nextCursor)
-        .execute();
+        .max_results(maxResults);
 
-      console.log("Search result:", {
-        found: searchResult.resources?.length || 0,
-        total: searchResult.total_count || 0,
-        resourceTypes: [...new Set(searchResult.resources?.map((r: any) => r.resource_type) || [])],
-        formats: [...new Set(searchResult.resources?.map((r: any) => r.format) || [])]
-      });
+      if (nextCursor) {
+        searchBuilder.next_cursor(nextCursor);
+      }
+
+      const searchResult = await searchBuilder.execute();
+
+      // console.log("Search result:", {
+      //   found: searchResult.resources?.length || 0,
+      //   total: searchResult.total_count || 0,
+      //   hasNextCursor: !!searchResult.next_cursor,
+      //   resourceTypes: [...new Set(searchResult.resources?.map((r: any) => r.resource_type) || [])],
+      //   formats: [...new Set(searchResult.resources?.map((r: any) => r.format) || [])]
+      // });
 
       return {
         resources: searchResult.resources || [],
@@ -205,7 +199,6 @@ export class CloudinaryService {
       };
     }
   }
-
   // UPDATED: Alternative search method with enhanced filtering
   async searchFilesAlternative(
     query?: string,
@@ -220,9 +213,9 @@ export class CloudinaryService {
 
       // Use resource_type parameter if provided, otherwise fall back to resourceType
       const typeFilter = resource_type || resourceType;
-      
+
       if (typeFilter) {
-        if (typeFilter === 'file') {
+        if (typeFilter === "file") {
           searchExpression += ` AND resource_type:raw`;
         } else {
           searchExpression += ` AND resource_type:${typeFilter}`;
@@ -232,7 +225,7 @@ export class CloudinaryService {
         searchExpression += ` AND (resource_type:image OR resource_type:video OR resource_type:raw)`;
       }
 
-      console.log("Alternative search expression:", searchExpression);
+      // console.log("Alternative search expression:", searchExpression);
 
       const searchResult = await cloudinary.search
         .expression(searchExpression)
@@ -246,10 +239,12 @@ export class CloudinaryService {
       // If query provided, filter results locally
       if (query && query.trim()) {
         const queryLower = query.trim().toLowerCase();
-        filteredResources = filteredResources.filter((resource: { public_id: string; }) => {
-          const filename = resource.public_id.split('/').pop() || '';
-          return filename.toLowerCase().includes(queryLower);
-        });
+        filteredResources = filteredResources.filter(
+          (resource: { public_id: string }) => {
+            const filename = resource.public_id.split("/").pop() || "";
+            return filename.toLowerCase().includes(queryLower);
+          }
+        );
       }
 
       // Limit results if we filtered locally
@@ -260,13 +255,17 @@ export class CloudinaryService {
       console.log("Alternative search result:", {
         found: filteredResources.length,
         total: query ? filteredResources.length : searchResult.total_count,
-        resourceTypes: [...new Set(filteredResources.map((r: any) => r.resource_type))],
-        formats: [...new Set(filteredResources.map((r: any) => r.format))]
+        resourceTypes: [
+          ...new Set(filteredResources.map((r: any) => r.resource_type)),
+        ],
+        formats: [...new Set(filteredResources.map((r: any) => r.format))],
       });
 
       return {
         resources: filteredResources,
-        total_count: query ? filteredResources.length : searchResult.total_count,
+        total_count: query
+          ? filteredResources.length
+          : searchResult.total_count,
         time: searchResult.time || 0,
         next_cursor: query ? undefined : searchResult.next_cursor, // Disable pagination for searches
       };

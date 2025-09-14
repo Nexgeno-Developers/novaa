@@ -57,6 +57,7 @@ interface PhuketPropertiesData {
   description: string;
   explorerHeading: string;
   explorerDescription: string;
+  backgroundImage: string;
   mapImage: string;
   categories: Category[];
 }
@@ -74,7 +75,7 @@ export default function PhuketPropertiesManager({
 }: PhuketPropertiesManagerProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const isInitializedRef = useRef(false);
   const initialDataSetRef = useRef(false);
   const userHasInteractedRef = useRef(false);
@@ -83,14 +84,19 @@ export default function PhuketPropertiesManager({
   const defaultData: PhuketPropertiesData = {
     mainHeading: "DISCOVER PRIME PROPERTIES",
     subHeading: "ACROSS PHUKET",
-    description: "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
+    description:
+      "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
     explorerHeading: "Phuket Explorer",
-    explorerDescription: "<p>Navigate through different property categories and locations.</p>",
+    explorerDescription:
+      "<p>Navigate through different property categories and locations.</p>",
+    backgroundImage: "/images/background.jpg",
+
     mapImage: "/images/map2.png",
     categories: [],
   };
 
-  const [propertiesData, setPropertiesData] = useState<PhuketPropertiesData>(defaultData);
+  const [propertiesData, setPropertiesData] =
+    useState<PhuketPropertiesData>(defaultData);
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [newCategoryName, setNewCategoryName] = useState<string>("");
 
@@ -169,22 +175,27 @@ export default function PhuketPropertiesManager({
     userHasInteractedRef.current = true;
   }, [newCategoryName]);
 
-  const handleDeleteCategory = useCallback((categoryId: string) => {
-    setPropertiesData((prev) => ({
-      ...prev,
-      categories: prev.categories.filter((cat) => cat.id !== categoryId),
-    }));
+  const handleDeleteCategory = useCallback(
+    (categoryId: string) => {
+      setPropertiesData((prev) => ({
+        ...prev,
+        categories: prev.categories.filter((cat) => cat.id !== categoryId),
+      }));
 
-    // If deleting active category, set new active category
-    if (activeCategory === categoryId) {
-      const remainingCategories = propertiesData.categories.filter(
-        (cat) => cat.id !== categoryId
-      );
-      setActiveCategory(remainingCategories.length > 0 ? remainingCategories[0].id : "");
-    }
+      // If deleting active category, set new active category
+      if (activeCategory === categoryId) {
+        const remainingCategories = propertiesData.categories.filter(
+          (cat) => cat.id !== categoryId
+        );
+        setActiveCategory(
+          remainingCategories.length > 0 ? remainingCategories[0].id : ""
+        );
+      }
 
-    userHasInteractedRef.current = true;
-  }, [activeCategory, propertiesData.categories]);
+      userHasInteractedRef.current = true;
+    },
+    [activeCategory, propertiesData.categories]
+  );
 
   const handleCategoryTitleUpdate = useCallback(
     (categoryId: string, title: string) => {
@@ -212,19 +223,22 @@ export default function PhuketPropertiesManager({
     []
   );
 
-  const handleCategoryDragEnd = useCallback((result: DropResult) => {
-    if (!result.destination) return;
+  const handleCategoryDragEnd = useCallback(
+    (result: DropResult) => {
+      if (!result.destination) return;
 
-    const newCategories = Array.from(propertiesData.categories);
-    const [reorderedCategory] = newCategories.splice(result.source.index, 1);
-    newCategories.splice(result.destination.index, 0, reorderedCategory);
+      const newCategories = Array.from(propertiesData.categories);
+      const [reorderedCategory] = newCategories.splice(result.source.index, 1);
+      newCategories.splice(result.destination.index, 0, reorderedCategory);
 
-    setPropertiesData((prev) => ({
-      ...prev,
-      categories: newCategories,
-    }));
-    userHasInteractedRef.current = true;
-  }, [propertiesData.categories]);
+      setPropertiesData((prev) => ({
+        ...prev,
+        categories: newCategories,
+      }));
+      userHasInteractedRef.current = true;
+    },
+    [propertiesData.categories]
+  );
 
   // Location Management Functions
   const handleAddLocation = useCallback((categoryId: string) => {
@@ -333,7 +347,7 @@ export default function PhuketPropertiesManager({
         )}
 
         {/* <Tabs defaultValue="content" className="space-y-6"> */}
-          {/* <TabsList className="grid w-full h-15 grid-cols-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
+        {/* <TabsList className="grid w-full h-15 grid-cols-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
             <TabsTrigger
               value="content"
               className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
@@ -357,374 +371,407 @@ export default function PhuketPropertiesManager({
             </TabsTrigger>
           </TabsList> */}
 
-          {/* Content Tab */}
-          {/* <TabsContent value="content" className="space-y-6"> */}
-            <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-              <CardTitle className="flex items-center text-gray-800 py-6">
-                <BookAIcon className="h-5 w-5 mr-2 text-blue-600" />
-                Page Content
-              </CardTitle>
-            </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="mainHeading" className="pb-2 text-primary/90">
-                    Main Heading
-                  </Label>
-                  <Input
-                    id="mainHeading"
-                    value={propertiesData.mainHeading || ""}
-                    onChange={(e) =>
-                      handleFieldUpdate("mainHeading", e.target.value)
-                    }
-                    placeholder="DISCOVER PRIME PROPERTIES"
-                  />
-                </div>
+        {/* Content Tab */}
+        {/* <TabsContent value="content" className="space-y-6"> */}
+        <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+            <CardTitle className="flex items-center text-gray-800 py-6">
+              <BookAIcon className="h-5 w-5 mr-2 text-blue-600" />
+              Page Content
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="mainHeading" className="pb-2 text-primary/90">
+                Main Heading
+              </Label>
+              <Input
+                id="mainHeading"
+                value={propertiesData.mainHeading || ""}
+                onChange={(e) =>
+                  handleFieldUpdate("mainHeading", e.target.value)
+                }
+                placeholder="DISCOVER PRIME PROPERTIES"
+              />
+            </div>
 
-                <div>
-                  <Label htmlFor="subHeading" className="pb-2 text-primary/90">
-                    Sub Heading
-                  </Label>
-                  <Input
-                    id="subHeading"
-                    value={propertiesData.subHeading || ""}
-                    onChange={(e) =>
-                      handleFieldUpdate("subHeading", e.target.value)
-                    }
-                    placeholder="ACROSS PHUKET"
-                  />
-                </div>
+            <div>
+              <Label htmlFor="subHeading" className="pb-2 text-primary/90">
+                Sub Heading
+              </Label>
+              <Input
+                id="subHeading"
+                value={propertiesData.subHeading || ""}
+                onChange={(e) =>
+                  handleFieldUpdate("subHeading", e.target.value)
+                }
+                placeholder="ACROSS PHUKET"
+              />
+            </div>
 
-                <div>
-                  <Label htmlFor="description" className="pb-2 text-primary/90">
-                    Description
-                  </Label>
-                  <RichTextEditor
-                    value={propertiesData.description || ""}
-                    onEditorChange={(content) =>
-                      handleFieldUpdate("description", content)
-                    }
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            <div>
+              <Label htmlFor="description" className="pb-2 text-primary/90">
+                Description
+              </Label>
+              <RichTextEditor
+                value={propertiesData.description || ""}
+                onEditorChange={(content) =>
+                  handleFieldUpdate("description", content)
+                }
+              />
+            </div>
+            {/* Background Image Selection */}
+            <div>
+              <MediaSelectButton
+                label="Background Image"
+                mediaType="image"
+                value={propertiesData.backgroundImage}
+                onSelect={(imageUrl) =>
+                  handleFieldUpdate("backgroundImage", imageUrl)
+                }
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="pb-6 ring-2 ring-primary/20 bg-pink-50/30">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-              <CardTitle className="flex items-center text-gray-800 py-6">
-                <SparkleIcon className="h-5 w-5 mr-2 text-blue-600" />
-                Phuket Explorer Section
-              </CardTitle>
-            </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="explorerHeading" className="pb-2 text-primary/90">
-                    Explorer Heading
-                  </Label>
-                  <Input
-                    id="explorerHeading"
-                    value={propertiesData.explorerHeading || ""}
-                    onChange={(e) =>
-                      handleFieldUpdate("explorerHeading", e.target.value)
-                    }
-                    placeholder="Phuket Explorer"
-                  />
-                </div>
+        <Card className="pb-6 ring-2 ring-primary/20 bg-pink-50/30">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+            <CardTitle className="flex items-center text-gray-800 py-6">
+              <SparkleIcon className="h-5 w-5 mr-2 text-blue-600" />
+              Phuket Explorer Section
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="explorerHeading" className="pb-2 text-primary/90">
+                Explorer Heading
+              </Label>
+              <Input
+                id="explorerHeading"
+                value={propertiesData.explorerHeading || ""}
+                onChange={(e) =>
+                  handleFieldUpdate("explorerHeading", e.target.value)
+                }
+                placeholder="Phuket Explorer"
+              />
+            </div>
 
-                <div>
-                  <Label htmlFor="explorerDescription" className="pb-2 text-primary/90">
-                    Explorer Description
-                  </Label>
-                  <RichTextEditor
-                    value={propertiesData.explorerDescription || ""}
-                    onEditorChange={(content) =>
-                      handleFieldUpdate("explorerDescription", content)
-                    }
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          {/* </TabsContent> */}
+            <div>
+              <Label
+                htmlFor="explorerDescription"
+                className="pb-2 text-primary/90"
+              >
+                Explorer Description
+              </Label>
+              <RichTextEditor
+                value={propertiesData.explorerDescription || ""}
+                onEditorChange={(content) =>
+                  handleFieldUpdate("explorerDescription", content)
+                }
+              />
+            </div>
+          </CardContent>
+        </Card>
+        {/* </TabsContent> */}
 
-          {/* Categories Tab */}
-          {/* <TabsContent value="categories" className="space-y-6"> */}
-            <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-              <CardTitle className="flex items-center text-gray-800 py-6">
-                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-                Category Management
-              </CardTitle>
-            </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Add New Category */}
-                <div className="flex gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary/60 transition-colors duration-300">
-                  <div className="flex-1">
-                    <Label className="pb-2 text-primary/90">Add New Category</Label>
-                    <Input
-                      value={newCategoryName}
-                      onChange={(e) => setNewCategoryName(e.target.value)}
-                      placeholder="Enter category name..."
-                      onKeyPress={(e) => e.key === "Enter" && handleAddCategory()}
-                    />
+        {/* Categories Tab */}
+        {/* <TabsContent value="categories" className="space-y-6"> */}
+        <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+            <CardTitle className="flex items-center text-gray-800 py-6">
+              <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
+              Category Management
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Add New Category */}
+            <div className="flex gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary/60 transition-colors duration-300">
+              <div className="flex-1">
+                <Label className="pb-2 text-primary/90">Add New Category</Label>
+                <Input
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="Enter category name..."
+                  onKeyPress={(e) => e.key === "Enter" && handleAddCategory()}
+                />
+              </div>
+              <Button
+                onClick={handleAddCategory}
+                disabled={!newCategoryName.trim()}
+                className="mt-6 text-background cursor-pointer"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Category
+              </Button>
+            </div>
+
+            {/* Categories List */}
+            <DragDropContext onDragEnd={handleCategoryDragEnd}>
+              <Droppable droppableId="categories">
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="space-y-4"
+                  >
+                    {propertiesData.categories.map((category, index) => (
+                      <Draggable
+                        key={category.id}
+                        draggableId={category.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className="p-4 border rounded-lg bg-white shadow-sm"
+                          >
+                            <div className="flex items-center space-x-4">
+                              <div
+                                {...provided.dragHandleProps}
+                                className="cursor-grab hover:cursor-grabbing"
+                              >
+                                <GripVertical className="w-5 h-5 text-gray-400" />
+                              </div>
+
+                              <Badge
+                                variant="outline"
+                                className="text-primary/90"
+                              >
+                                {index + 1}
+                              </Badge>
+
+                              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <Label className="pt-1 mb-2 text-primary/90">
+                                    Category Title
+                                  </Label>
+                                  <Input
+                                    value={category.title}
+                                    onChange={(e) =>
+                                      handleCategoryTitleUpdate(
+                                        category.id,
+                                        e.target.value
+                                      )
+                                    }
+                                    placeholder="Category Title"
+                                  />
+                                </div>
+
+                                <div>
+                                  <MediaSelectButton
+                                    label="Category Icon"
+                                    mediaType="image"
+                                    value={category.icon}
+                                    onSelect={(iconUrl) =>
+                                      handleCategoryIconUpdate(
+                                        category.id,
+                                        iconUrl
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="text-sm text-gray-500">
+                                {category.locations.length} locations
+                              </div>
+
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() =>
+                                  handleDeleteCategory(category.id)
+                                }
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </CardContent>
+        </Card>
+        {/* </TabsContent> */}
+
+        {/* Map Management Tab */}
+        {/* <TabsContent value="map" className="space-y-6"> */}
+        <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
+            <CardTitle className="flex items-center text-gray-800 py-6">
+              <Map className="h-5 w-5 mr-2 text-blue-600" />
+              Map Configuration
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Map Image Selection */}
+            <div>
+              <MediaSelectButton
+                label="Map Background Image"
+                mediaType="image"
+                value={propertiesData.mapImage}
+                onSelect={(imageUrl) => handleFieldUpdate("mapImage", imageUrl)}
+              />
+            </div>
+
+            {/* Category Selection for Locations */}
+            <div className="mb-4">
+              <Label className="text-primary/90">
+                Select Category for Location Management
+              </Label>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {propertiesData.categories.map((category) => (
                   <Button
-                    onClick={handleAddCategory}
-                    disabled={!newCategoryName.trim()}
-                    className="mt-6 text-background cursor-pointer"
+                    key={category.id}
+                    variant={
+                      activeCategory === category.id ? "default" : "outline"
+                    }
+                    onClick={() => setActiveCategory(category.id)}
+                    size="sm"
+                    className="cursor-pointer"
+                  >
+                    {category.title}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Location Management */}
+            {getCurrentCategory() && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-primary/90">
+                    {getCurrentCategory()?.title} Locations
+                  </h3>
+                  <Button
+                    onClick={() => handleAddLocation(activeCategory)}
+                    size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Category
+                    Add Location
                   </Button>
                 </div>
 
-                {/* Categories List */}
-                <DragDropContext onDragEnd={handleCategoryDragEnd}>
-                  <Droppable droppableId="categories">
+                <DragDropContext onDragEnd={handleLocationDragEnd}>
+                  <Droppable droppableId="locations">
                     {(provided) => (
                       <div
                         {...provided.droppableProps}
                         ref={provided.innerRef}
-                        className="space-y-4"
+                        className="space-y-2"
                       >
-                        {propertiesData.categories.map((category, index) => (
-                          <Draggable
-                            key={category.id}
-                            draggableId={category.id}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                className="p-4 border rounded-lg bg-white shadow-sm"
-                              >
-                                <div className="flex items-center space-x-4">
-                                  <div
-                                    {...provided.dragHandleProps}
-                                    className="cursor-grab hover:cursor-grabbing"
-                                  >
-                                    <GripVertical className="w-5 h-5 text-gray-400" />
-                                  </div>
-
-                                  <Badge variant="outline" className="text-primary/90">{index + 1}</Badge>
-
-                                  <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label className="pt-1 mb-2 text-primary/90">Category Title</Label>
-                                      <Input
-                                        value={category.title}
-                                        onChange={(e) =>
-                                          handleCategoryTitleUpdate(
-                                            category.id,
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Category Title"
-
-                                      />
-                                    </div>
-
-                                    <div>
-                                      <MediaSelectButton
-                                        label="Category Icon"
-                                        mediaType="image"
-                                        value={category.icon}
-                                        onSelect={(iconUrl) =>
-                                          handleCategoryIconUpdate(category.id, iconUrl)
-                                        }
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="text-sm text-gray-500">
-                                    {category.locations.length} locations
-                                  </div>
-
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => handleDeleteCategory(category.id)}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </DragDropContext>
-              </CardContent>
-            </Card>
-          {/* </TabsContent> */}
-
-          {/* Map Management Tab */}
-          {/* <TabsContent value="map" className="space-y-6"> */}
-            <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
-               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-              <CardTitle className="flex items-center text-gray-800 py-6">
-                <Map className="h-5 w-5 mr-2 text-blue-600" />
-                Map Configuration
-              </CardTitle>
-            </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Map Image Selection */}
-                <div>
-                  <MediaSelectButton
-                    label="Map Background Image"
-                    mediaType="image"
-                    value={propertiesData.mapImage}
-                    onSelect={(imageUrl) => handleFieldUpdate("mapImage", imageUrl)}
-                  />
-                </div>
-
-                {/* Category Selection for Locations */}
-                <div className="mb-4">
-                  <Label className="text-primary/90">Select Category for Location Management</Label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {propertiesData.categories.map((category) => (
-                      <Button
-                        key={category.id}
-                        variant={
-                          activeCategory === category.id ? "default" : "outline"
-                        }
-                        onClick={() => setActiveCategory(category.id)}
-                        size="sm"
-                        className="cursor-pointer"
-                      >
-                        {category.title}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Location Management */}
-                {getCurrentCategory() && (
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-semibold text-primary/90">
-                        {getCurrentCategory()?.title} Locations
-                      </h3>
-                      <Button
-                        onClick={() => handleAddLocation(activeCategory)}
-                        size="sm"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Location
-                      </Button>
-                    </div>
-
-                    <DragDropContext onDragEnd={handleLocationDragEnd}>
-                      <Droppable droppableId="locations">
-                        {(provided) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className="space-y-2"
-                          >
-                            {getCurrentCategory()?.locations.map(
-                              (location, index) => (
-                                <Draggable
-                                  key={location.id}
-                                  draggableId={location.id}
-                                  index={index}
+                        {getCurrentCategory()?.locations.map(
+                          (location, index) => (
+                            <Draggable
+                              key={location.id}
+                              draggableId={location.id}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  className="p-4 border rounded-lg bg-white"
                                 >
-                                  {(provided) => (
+                                  <div className="flex items-start space-x-4">
                                     <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      className="p-4 border rounded-lg bg-white"
+                                      {...provided.dragHandleProps}
+                                      className="cursor-grab hover:cursor-grabbing mt-8"
                                     >
-                                      <div className="flex items-start space-x-4">
-                                        <div
-                                          {...provided.dragHandleProps}
-                                          className="cursor-grab hover:cursor-grabbing mt-8"
-                                        >
-                                          <GripVertical className="w-4 h-4 text-gray-400" />
+                                      <GripVertical className="w-4 h-4 text-gray-400" />
+                                    </div>
+
+                                    <div className="flex-1 space-y-4">
+                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                          <Label className="pb-2 text-primary/90">
+                                            Location Name
+                                          </Label>
+                                          <Input
+                                            value={location.name}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                { name: e.target.value }
+                                              )
+                                            }
+                                          />
                                         </div>
 
-                                        <div className="flex-1 space-y-4">
-                                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <div>
-                                              <Label className="pb-2 text-primary/90">Location Name</Label>
-                                              <Input
-                                                value={location.name}
-                                                onChange={(e) =>
-                                                  handleUpdateLocation(
-                                                    activeCategory,
-                                                    location.id,
-                                                    { name: e.target.value }
-                                                  )
+                                        <div>
+                                          <Label className="pb-2 text-primary/90">
+                                            Top Position (%)
+                                          </Label>
+                                          <Input
+                                            value={location.coords.top.replace(
+                                              "%",
+                                              ""
+                                            )}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                {
+                                                  coords: {
+                                                    ...location.coords,
+                                                    top: `${e.target.value}%`,
+                                                  },
                                                 }
-                                              />
-                                            </div>
+                                              )
+                                            }
+                                            placeholder="50"
+                                          />
+                                        </div>
 
-                                            <div>
-                                              <Label className="pb-2 text-primary/90">Top Position (%)</Label>
-                                              <Input
-                                                value={location.coords.top.replace(
-                                                  "%",
-                                                  ""
-                                                )}
-                                                onChange={(e) =>
-                                                  handleUpdateLocation(
-                                                    activeCategory,
-                                                    location.id,
-                                                    {
-                                                      coords: {
-                                                        ...location.coords,
-                                                        top: `${e.target.value}%`,
-                                                      },
-                                                    }
-                                                  )
+                                        <div>
+                                          <Label className="pb-2 text-primary/90">
+                                            Left Position (%)
+                                          </Label>
+                                          <Input
+                                            value={location.coords.left.replace(
+                                              "%",
+                                              ""
+                                            )}
+                                            onChange={(e) =>
+                                              handleUpdateLocation(
+                                                activeCategory,
+                                                location.id,
+                                                {
+                                                  coords: {
+                                                    ...location.coords,
+                                                    left: `${e.target.value}%`,
+                                                  },
                                                 }
-                                                placeholder="50"
-                                              />
-                                            </div>
+                                              )
+                                            }
+                                            placeholder="50"
+                                          />
+                                        </div>
+                                      </div>
 
-                                            <div>
-                                              <Label className="pb-2 text-primary/90">Left Position (%)</Label>
-                                              <Input
-                                                value={location.coords.left.replace(
-                                                  "%",
-                                                  ""
-                                                )}
-                                                onChange={(e) =>
-                                                  handleUpdateLocation(
-                                                    activeCategory,
-                                                    location.id,
-                                                    {
-                                                      coords: {
-                                                        ...location.coords,
-                                                        left: `${e.target.value}%`,
-                                                      },
-                                                    }
-                                                  )
-                                                }
-                                                placeholder="50"
-                                              />
-                                            </div>
-                                          </div>
+                                      <div>
+                                        <MediaSelectButton
+                                          label="Location Image"
+                                          mediaType="image"
+                                          value={location.image}
+                                          onSelect={(imageUrl) =>
+                                            handleUpdateLocation(
+                                              activeCategory,
+                                              location.id,
+                                              { image: imageUrl }
+                                            )
+                                          }
+                                        />
+                                      </div>
 
-                                          <div>
-                                            <MediaSelectButton
-                                              label="Location Image"
-                                              mediaType="image"
-                                              value={location.image}
-                                              onSelect={(imageUrl) =>
-                                                handleUpdateLocation(
-                                                  activeCategory,
-                                                  location.id,
-                                                  { image: imageUrl }
-                                                )
-                                              }
-                                            />
-                                          </div>
-
-                                          {/* {location.image && (
+                                      {/* {location.image && (
                                             <div className="mt-2">
                                               <img
                                                 src={location.image}
@@ -738,48 +785,51 @@ export default function PhuketPropertiesManager({
                                             </div>
                                           )} */}
 
-                                          <div className="p-2 bg-gray-50 rounded text-sm">
-                                            <strong>Position:</strong> Top:{" "}
-                                            {location.coords.top}, Left:{" "}
-                                            {location.coords.left}
-                                          </div>
-                                        </div>
-
-                                        <Button
-                                          variant="destructive"
-                                          size="sm"
-                                          onClick={() =>
-                                            handleDeleteLocation(
-                                              activeCategory,
-                                              location.id
-                                            )
-                                          }
-                                        >
-                                          <Trash2 className="w-4 h-4" />
-                                        </Button>
+                                      <div className="p-2 bg-gray-50 rounded text-sm">
+                                        <strong>Position:</strong> Top:{" "}
+                                        {location.coords.top}, Left:{" "}
+                                        {location.coords.left}
                                       </div>
                                     </div>
-                                  )}
-                                </Draggable>
-                              )
-                            )}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
-                  </div>
-                )}
 
-                {propertiesData.categories.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No categories available. Please add categories first in the Categories tab.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          {/* </TabsContent> */}
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleDeleteLocation(
+                                          activeCategory,
+                                          location.id
+                                        )
+                                      }
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                            </Draggable>
+                          )
+                        )}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </div>
+            )}
+
+            {propertiesData.categories.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>
+                  No categories available. Please add categories first in the
+                  Categories tab.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+        {/* </TabsContent> */}
         {/* </Tabs> */}
       </div>
     );

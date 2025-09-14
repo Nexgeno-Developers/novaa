@@ -55,7 +55,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> 
 export default async function Home() {
   const sections: Section[] = await getSectionData('home');
 
-  console.log("Sections", sections);
+  // console.log("Sections", sections);
 
   if (!sections || sections.length === 0) {
     return (

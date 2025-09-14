@@ -25,6 +25,7 @@ import Editor from "@/components/admin/Editor";
 import MediaMultiSelectButton from "@/components/admin/MediaMultiSelectButton";
 import MediaSelectButton from "@/components/admin/MediaSelectButton";
 import { useAppDispatch } from "@/redux/hooks";
+import { fetchMedia } from "@/redux/slices/mediaSlice";
 
 // Interfaces
 interface ProjectHighlight {
@@ -78,6 +79,17 @@ export default function CreateProjectPage() {
   const { projects } = useSelector((state: RootState) => state.projects);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // Fetch categories (existing)
+    dispatch(fetchCategories());
+
+    // Initialize media - fetch all media types initially
+    dispatch(fetchMedia({ limit: 100, reset: true, fetchAll: true }));
+
+    // Set form order (existing)
+    setFormData((prev) => ({ ...prev, order: projects.length }));
+  }, [dispatch, projects.length]);
 
   // Basic form data
   const [formData, setFormData] = useState({
@@ -592,7 +604,11 @@ export default function CreateProjectPage() {
                     {categories
                       .filter((cat) => cat.isActive)
                       .map((category) => (
-                        <SelectItem key={category._id} value={category._id} className="cursor-pointer">
+                        <SelectItem
+                          key={category._id}
+                          value={category._id}
+                          className="cursor-pointer"
+                        >
                           {category.name}
                         </SelectItem>
                       ))}
@@ -667,9 +683,17 @@ export default function CreateProjectPage() {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="heroTitle" className="text-primary">
+                {/* <Label htmlFor="heroTitle" className="text-primary">
                   Hero Title
-                </Label>
+                </Label> */}
+                <div className="min-h-[150px]">
+                <Editor
+                  value={projectDetailData.hero.title}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange("hero", "title", content)
+                  }
+                />
+              </div>
                 <Input
                   id="heroTitle"
                   value={projectDetailData.hero.title}

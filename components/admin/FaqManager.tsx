@@ -481,7 +481,7 @@ const FaqManagerContent = ({
         onSelect={(value) => handleMainFieldUpdate("backgroundImage", value)}
         mediaType="image"
         label="Background Image"
-        placeholder="Select image with clouds..."
+        placeholder="Select background Image"
       />
         </CardContent>
       </Card>

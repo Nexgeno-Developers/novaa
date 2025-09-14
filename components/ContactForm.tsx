@@ -194,7 +194,7 @@ const ContactForm = () => {
           <motion.form
             variants={containerVariants}
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4 max-w-2xl mx-auto"
+            className="space-y-4 max-w-2xl mx-auto font-josefin"
           >
             {/* Full Name and Email Row */}
             <div className="grid grid-cols-1 gap-4">

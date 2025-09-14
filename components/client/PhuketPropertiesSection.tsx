@@ -27,6 +27,7 @@ interface PhuketPropertiesSectionProps {
   description?: string;
   explorerHeading?: string;
   explorerDescription?: string;
+  backgroundImage?: string;
   mapImage?: string;
   categories?: Category[];
   [key: string]: unknown;
@@ -75,6 +76,7 @@ export default function PhuketPropertiesSection({
   description = "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
   explorerHeading = "PHUKET EXPLORER",
   explorerDescription = "<p>Navigate through different property categories and locations.</p>",
+  backgroundImage = "/images/background.jpg",
   mapImage = "/images/map2.png",
   categories = [],
   ...props
@@ -103,8 +105,8 @@ export default function PhuketPropertiesSection({
     return null;
   }
 
-  const currentCategory = categories.find(cat => cat.id === activeCategory);
-  
+  const currentCategory = categories.find((cat) => cat.id === activeCategory);
+
   // Helper function to render HTML content safely
   const createMarkup = (html: string) => {
     return { __html: html };
@@ -113,7 +115,7 @@ export default function PhuketPropertiesSection({
   return (
     <section className="relative overflow-hidden">
       <Image
-        src="/images/background.jpg"
+        src={backgroundImage}
         alt="Phuket Properties Section"
         fill
         className="object-cover"
@@ -130,7 +132,7 @@ export default function PhuketPropertiesSection({
       <div className="absolute inset-x-0 top-0 w-full h-1/6 z-10 bg-gradient-to-b from-[#01292B] to-[#01292B00]" />
       {/* Bottom gradient overlay */}
       <div className="absolute inset-x-0 bottom-0 w-full h-1/6 z-10 bg-gradient-to-t from-[#01292B] to-[#01292B00]" />
-      
+
       <div className="relative z-20 container py-10 lg:py-20">
         {/* Main Heading */}
         <motion.div
@@ -171,7 +173,7 @@ export default function PhuketPropertiesSection({
               <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
                 {explorerHeading}
               </h3>
-              <div 
+              <div
                 className="text-[#FFFFFFE5] description-text border-b-[0.5px] border-b-white lg:w-[80%] pb-4 text-center sm:text-left"
                 dangerouslySetInnerHTML={createMarkup(explorerDescription)}
               />
@@ -252,7 +254,7 @@ export default function PhuketPropertiesSection({
                   </span>
                 </motion.h4>
               </AnimatePresence>
-              
+
               <div className="space-y-3">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -285,7 +287,7 @@ export default function PhuketPropertiesSection({
               </div>
             </motion.div>
           </motion.div>
-          
+
           {/* Right Side - Map */}
           <div className="w-full h-[400px] xs:h-[500px] sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
             <motion.div

@@ -66,6 +66,10 @@ const PropertiesSchema: Schema = new Schema({
     type: String, 
     default: 'Discover the beauty and development of Phuket Island' 
   },
+  backgroundImage: { 
+    type: String,
+    default: '/images/background.jpg'
+  },
   categories: {
     type: [CategorySchema],
     default: [

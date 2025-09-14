@@ -5,7 +5,6 @@ import { CloudinaryService } from '@/lib/cloudinaryUpload';
 const cloudinaryService = new CloudinaryService();
 
 // GET - Fetch media files with pagination and search
-
 export async function GET(request: NextRequest) {
   try {
     // Verify admin authentication
@@ -28,18 +27,21 @@ export async function GET(request: NextRequest) {
 
     console.log('API received params:', { query, resource_type, limit, cursor });
 
-    // Use the resource_type parameter directly for Cloudinary search
-    const result = query 
-      ? await cloudinaryService.searchFilesAlternative(query, resource_type, limit, cursor)
-      : await cloudinaryService.searchFiles(undefined, resource_type, limit, cursor);
+    // FIXED: Use only one search method consistently
+    const result = await cloudinaryService.searchFiles(
+      query,
+      resource_type,
+      limit,
+      cursor
+    );
 
-    console.log("API sending result:", {
-      resourceCount: result.resources.length,
-      totalCount: result.total_count,
-      hasNextCursor: !!result.next_cursor,
-      resourceTypes: [...new Set(result.resources.map((r: any) => r.resource_type))],
-      formats: [...new Set(result.resources.map((r: any) => r.format))]
-    });
+    // console.log("API sending result:", {
+    //   resourceCount: result.resources.length,
+    //   totalCount: result.total_count,
+    //   hasNextCursor: !!result.next_cursor,
+    //   resourceTypes: [...new Set(result.resources.map((r: any) => r.resource_type))],
+    //   formats: [...new Set(result.resources.map((r: any) => r.format))]
+    // });
 
     return NextResponse.json({
       success: true,
@@ -54,7 +56,6 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
-
 // POST - Upload new media file
 export async function POST(request: NextRequest) {
   try {

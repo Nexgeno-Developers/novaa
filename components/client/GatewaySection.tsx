@@ -492,7 +492,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
       </div>
       
       {/* Category indicator dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 lg:hidden">
+      {/* <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 lg:hidden">
         <div className="flex space-x-2">
           {categories.map((_, index) => (
             <button
@@ -506,7 +506,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
     </section>
   );
 };

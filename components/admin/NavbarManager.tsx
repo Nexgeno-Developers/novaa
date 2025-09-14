@@ -514,7 +514,7 @@ export default function NavbarManager() {
           <Button
             onClick={handleSaveChanges}
             disabled={saving}
-            className="shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 text-background"
+            className="cursor-pointer shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 text-background"
           >
             {saving ? (
               <>

@@ -25,8 +25,8 @@ interface MediaFile {
 }
 
 interface MediaMultiSelectButtonProps {
-  onImagesSelect: (urls: string[]) => void; // Changed to match ProjectsManager
-  selectedImages: string[]; // Changed to match ProjectsManager
+  onImagesSelect: (urls: string[]) => void;
+  selectedImages: string[];
   multiple?: boolean;
   label?: string;
   mediaType?: "image" | "video" | "all";
@@ -145,7 +145,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
           <Button
             type="button"
             variant="outline"
-            className=" w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
+            className="w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
             {selectedImages.length > 0 ? (
               <div className="flex items-center gap-3 w-full">
@@ -187,8 +187,8 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col overflow-hidden admin-theme">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col overflow-hidden admin-theme">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex items-center justify-between">
               <span>Select Media</span>
               {selectedUrls.length > 0 && (
@@ -199,7 +199,8 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex gap-2 mb-2">
+          {/* Search bar - Fixed at top */}
+          <div className="flex gap-2 mb-4 flex-shrink-0">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -221,9 +222,8 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
             )}
           </div>
 
+          {/* Media grid - Scrollable area */}
           <ScrollArea className="h-[50vh]">
-            {" "}
-            {/* make the grid scrollable */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 p-1">
               {media.map((file) => {
                 const isSelected = selectedUrls.includes(file.secure_url);
@@ -263,7 +263,15 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
                           <Video className="h-8 w-8 text-gray-400" />
                         </div>
                       )}
+
+                      {/* Selection indicator */}
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1">
+                          <Check className="h-3 w-3" />
+                        </div>
+                      )}
                     </div>
+
                     {/* File info */}
                     <div className="p-2 bg-white">
                       <p
@@ -282,31 +290,32 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
                 );
               })}
             </div>
+
+            {/* Load more button inside scroll area */}
+            {nextCursor && (
+              <div className="flex justify-center mt-6 pb-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fetchMedia(nextCursor)}
+                  disabled={loading}
+                  className="cursor-pointer"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    "Load More"
+                  )}
+                </Button>
+              </div>
+            )}
           </ScrollArea>
 
-          {/* Load more button */}
-          {nextCursor && (
-            <div className="flex justify-center mt-4 pt-4 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fetchMedia(nextCursor)}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  "Load More"
-                )}
-              </Button>
-            </div>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex justify-between items-center pt-4 border-t">
+          {/* Action buttons - Sticky at bottom */}
+          <div className="flex justify-between items-center flex-shrink-0">
             <div className="text-sm text-gray-500">
               {selectedUrls.length > 0 && (
                 <span>
@@ -316,7 +325,12 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
               )}
             </div>
             <div className="flex gap-2">
-              <Button type="button" className="cursor-pointer" variant="outline" onClick={handleCancel}>
+              <Button
+                type="button"
+                className="cursor-pointer"
+                variant="outline"
+                onClick={handleCancel}
+              >
                 Cancel
               </Button>
               <Button
@@ -325,7 +339,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
                 onClick={handleSave}
                 disabled={selectedUrls.length === 0}
               >
-                Save Selection
+                Save Selection ({selectedUrls.length})
               </Button>
             </div>
           </div>

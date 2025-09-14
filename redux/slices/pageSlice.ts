@@ -85,8 +85,8 @@ export const fetchPages = createAsyncThunk(
       }
       
       const data = await response.json();
-      console.log('fetchPages success, data length:', data.length);
-      console.log('fetchPages data sample:', data.slice(0, 2));
+      // console.log('fetchPages success, data length:', data.length);
+      // console.log('fetchPages data sample:', data.slice(0, 2));
       
       return data;
     } catch (error) {
@@ -114,7 +114,7 @@ export const fetchPageSections = createAsyncThunk(
       }
       
       const data = await response.json();
-      console.log("DAta " ,data);
+      // console.log("DAta " ,data);
       return data;
     } catch (error) {
       console.error('Fetch sections error:', error);

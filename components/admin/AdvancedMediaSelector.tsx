@@ -64,6 +64,7 @@ export function AdvancedMediaSelector({
   const {
     items: mediaItems,
     loading,
+    cursor,
     query,
     type,
     hasMore,
@@ -138,15 +139,102 @@ export function AdvancedMediaSelector({
   }, [mediaItems, mediaType, activeTab]);
 
   // Initialize media type filter
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     // Fetch media if not already loaded
+  //     if (mediaItems.length === 0) {
+  //       dispatch(fetchMedia({ limit: 100, reset: true }));
+  //     }
+  //   }
+  // }, [isOpen, dispatch, mediaItems.length]);
+
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     // Only fetch if we don't have media items or if we need a specific type
+  //     const needsTypeSpecificFetch =
+  //       mediaType !== "all" && filteredMedia.length === 0;
+  //     const hasNoMediaItems = mediaItems.length === 0;
+
+  //     if (hasNoMediaItems || needsTypeSpecificFetch) {
+  //       let searchType: string | undefined;
+
+  //       if (mediaType !== "all") {
+  //         if (mediaType === "file" || mediaType === "pdf") {
+  //           searchType = "raw";
+  //         } else {
+  //           searchType = mediaType;
+  //         }
+  //       }
+
+  //       // Only reset if we really need to fetch different data
+  //       if (needsTypeSpecificFetch) {
+  //         dispatch(resetMedia());
+  //       }
+
+  //       dispatch(
+  //         fetchMedia({
+  //           limit: 100,
+  //           reset: needsTypeSpecificFetch,
+  //           type: searchType,
+  //         })
+  //       );
+  //     }
+  //   }
+  // }, [isOpen, dispatch, mediaType, mediaItems.length, filteredMedia.length]);
+
   useEffect(() => {
     if (isOpen) {
-      // Fetch media if not already loaded
-      if (mediaItems.length === 0) {
-        dispatch(fetchMedia({ limit: 100, reset: true }));
+      // Check if we have the right type of media already loaded
+      const hasRightTypeOfMedia =
+        mediaType === "all" ||
+        filteredMedia.some((item) => {
+          if (mediaType === "file" || mediaType === "pdf") {
+            const documentFormats = [
+              "pdf",
+              "doc",
+              "docx",
+              "xls",
+              "xlsx",
+              "ppt",
+              "pptx",
+              "txt",
+              "rtf",
+            ];
+            return (
+              documentFormats.includes(item.format?.toLowerCase()) ||
+              (item.resource_type !== "image" && item.resource_type !== "video")
+            );
+          }
+          return item.resource_type === mediaType;
+        });
+
+      // Only fetch if we don't have appropriate media or no media at all
+      if (mediaItems.length === 0 || !hasRightTypeOfMedia) {
+        let searchType: string | undefined;
+
+        if (mediaType !== "all") {
+          if (mediaType === "file" || mediaType === "pdf") {
+            searchType = "raw";
+          } else {
+            searchType = mediaType;
+          }
+        }
+
+        // Only reset if we really need different data
+        if (!hasRightTypeOfMedia && mediaItems.length > 0) {
+          dispatch(resetMedia());
+        }
+
+        dispatch(
+          fetchMedia({
+            limit: 100,
+            reset: !hasRightTypeOfMedia && mediaItems.length > 0,
+            type: searchType,
+          })
+        );
       }
     }
-  }, [isOpen, dispatch, mediaItems.length]);
-
+  }, [isOpen, dispatch, mediaType]);
   // Handle search with debouncing
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -154,31 +242,27 @@ export function AdvancedMediaSelector({
       dispatch(resetMedia());
 
       let searchType: string | undefined;
-      let searchResourceType: string | undefined;
 
       if (mediaType !== "all") {
-        if (mediaType === "file" || mediaType === "raw") {
-          searchResourceType = "raw"; // Cloudinary stores documents as 'raw'
-          searchType = undefined;
+        if (mediaType === "file" || mediaType === "pdf") {
+          searchType = "raw"; // Cloudinary stores documents as 'raw'
         } else {
-          searchResourceType = mediaType;
           searchType = mediaType;
         }
       } else if (activeTab !== "all") {
         if (activeTab === "file") {
-          searchResourceType = "raw";
-          searchType = undefined;
+          searchType = "raw";
         } else {
-          searchResourceType = activeTab;
           searchType = activeTab;
         }
       }
 
       dispatch(
         fetchMedia({
-          query: localQuery,
+          query: localQuery || undefined,
           type: searchType,
           reset: true,
+          limit: 100, // Add limit to ensure consistent behavior
         })
       );
     }, 300);
@@ -266,6 +350,8 @@ export function AdvancedMediaSelector({
         fetchMedia({
           query: localQuery || undefined,
           type: searchType,
+          cursor: cursor,
+          reset: false,
         })
       );
     }
@@ -633,7 +719,7 @@ export function AdvancedMediaSelector({
                   onClick={handleLoadMore}
                   disabled={loading}
                   variant="outline"
-                  className="bg-gray-200"
+                  className="bg-gray-200 cursor-pointer"
                 >
                   {loading ? (
                     <>

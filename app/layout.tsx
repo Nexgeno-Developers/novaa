@@ -3,6 +3,7 @@ import { Josefin_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/lib/providers";
 // const josefin_sans = Josefin_Sans({ subsets: ["latin"] });
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Novaa Global Properties",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body>
         <Providers>
           {children}
+          <Toaster position="top-right" richColors closeButton />
         </Providers>
       </body>
     </html>

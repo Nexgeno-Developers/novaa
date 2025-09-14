@@ -58,7 +58,7 @@ export default function HeroSection({
   subtitleGradient = "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
   ...props
 }: HeroSectionProps) {
-  console.log("Props", props.heroSection);
+  // console.log("Props", props.heroSection);
 
   // const getTitleStyle = () => {
   //   if (titleGradient && titleGradient !== "none") {

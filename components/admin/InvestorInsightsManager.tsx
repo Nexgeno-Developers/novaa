@@ -152,12 +152,12 @@ export default function InvestorInsightsManager({
 
   // Initial load - section data first, then Redux fallback
   useEffect(() => {
-    console.log(section);
+    // console.log(section);
     if (section?.content && !initialDataSetRef.current) {
       // console.log("inside if")
       const sectionData = section.content;
 
-      console.log("Section investor data ", sectionData);
+      // console.log("Section investor data ", sectionData);
 
       // If data is already flat, just set it directly
       setContentForm({
@@ -173,7 +173,7 @@ export default function InvestorInsightsManager({
       initialDataSetRef.current = true;
       isInitializedRef.current = true;
     } else if (!section?.content && !initialDataSetRef.current) {
-      console.log("inside else");
+      // console.log("inside else");
       if (data?.content) {
         setContentForm(data?.content);
       }
@@ -413,7 +413,7 @@ export default function InvestorInsightsManager({
     }
   }, [error, dispatch]);
 
-  console.log("Content form ", contentForm);
+  // console.log("Content form ", contentForm);
 
   // Require section prop for global save mode
   if (!section || !onChange) {

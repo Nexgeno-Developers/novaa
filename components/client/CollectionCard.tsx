@@ -7,50 +7,63 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { setNavigationLoading } from "@/redux/slices/loadingSlice";
-import useEmblaCarousel from 'embla-carousel-react';
+import useEmblaCarousel from "embla-carousel-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+// import AutoPlay from "embla-carousel-autoplay";
 
 interface CardProps {
   isLocationVisible: boolean;
-  displayMode?: 'carousel' | 'grid';
+  displayMode?: "carousel" | "grid";
 }
 
-export default function CollectionCard({ 
-  isLocationVisible, 
-  displayMode = 'carousel'
+export default function CollectionCard({
+  isLocationVisible,
+  displayMode = "carousel",
 }: CardProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { selectedRegion, categories, allProjects, collection, dataSource, loading } = useAppSelector((state) => state.curated);
+  const {
+    selectedRegion,
+    categories,
+    allProjects,
+    collection,
+    dataSource,
+    loading,
+  } = useAppSelector((state) => state.curated);
 
-  const [currentImageIndex, setCurrentImageIndex] = useState<Record<string, number>>({});
-  const [cardsPerView, setCardsPerView] = useState(3); 
+  const [currentImageIndex, setCurrentImageIndex] = useState<
+    Record<string, number>
+  >({});
+  const [cardsPerView, setCardsPerView] = useState(3);
 
   // Embla Carousel setup
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     slidesToScroll: 1,
-    align: 'start',
-    containScroll: 'trimSnaps',
+    align: "start",
+    containScroll: "trimSnaps",
     breakpoints: {
-      '(max-width: 768px)': { slidesToScroll: 1 },
-      '(max-width: 1024px)': { slidesToScroll: 1 },
-    }
+      "(max-width: 768px)": { slidesToScroll: 1 },
+      "(max-width: 1024px)": { slidesToScroll: 1 },
+    },
   });
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
   // Handle navigation with loading state
-  const handleNavigation = useCallback((projectId: string) => {
-    dispatch(setNavigationLoading(true));
-    
-    // Add a small delay to show loading animation
-    setTimeout(() => {
-      router.push(`/project-detail/${projectId}`);
-      // Loading state will be reset when the new page loads or in useEffect cleanup
-    }, 100);
-  }, [router, dispatch]);
+  const handleNavigation = useCallback(
+    (projectId: string) => {
+      dispatch(setNavigationLoading(true));
+
+      // Add a small delay to show loading animation
+      setTimeout(() => {
+        router.push(`/project-detail/${projectId}`);
+        // Loading state will be reset when the new page loads or in useEffect cleanup
+      }, 100);
+    },
+    [router, dispatch]
+  );
 
   // Reset loading state when component unmounts or navigation completes
   useEffect(() => {
@@ -62,15 +75,18 @@ export default function CollectionCard({
   // Get current projects based on data source
   const currentProjects = (() => {
     if (!selectedRegion) return [];
-    
-    const selectedCategory = categories.find((c) => c.name === selectedRegion && c.isActive);
+
+    const selectedCategory = categories.find(
+      (c) => c.name === selectedRegion && c.isActive
+    );
     if (!selectedCategory) return [];
-    
-    if (dataSource === 'curated' && collection) {
+
+    if (dataSource === "curated" && collection) {
       return collection.items[selectedCategory._id] || [];
     } else {
       let categoryProjects = allProjects.filter(
-        project => project.category._id === selectedCategory._id && project.isActive
+        (project) =>
+          project.category._id === selectedCategory._id && project.isActive
       );
       categoryProjects.sort((a, b) => (a.order || 0) - (b.order || 0));
       return categoryProjects;
@@ -91,8 +107,8 @@ export default function CollectionCard({
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Embla carousel scroll handlers
@@ -113,11 +129,12 @@ export default function CollectionCard({
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
   }, [emblaApi, onSelect]);
 
-  const slideWidth = cardsPerView === 1 ? '100%' : cardsPerView === 2 ? '50%' : '33.333%';
+  const slideWidth =
+    cardsPerView === 1 ? "100%" : cardsPerView === 2 ? "50%" : "33.333%";
 
   const nextImage = (propertyId: string) => {
     const property = currentProjects.find((p) => p._id === propertyId);
@@ -137,7 +154,8 @@ export default function CollectionCard({
     if (!property) return;
 
     const currentIndex = currentImageIndex[propertyId] || 0;
-    const prevIndex = currentIndex === 0 ? property.images.length - 1 : currentIndex - 1;
+    const prevIndex =
+      currentIndex === 0 ? property.images.length - 1 : currentIndex - 1;
 
     setCurrentImageIndex((prev) => ({
       ...prev,
@@ -146,10 +164,11 @@ export default function CollectionCard({
   };
 
   if (currentProjects.length === 0) {
-    const emptyMessage = dataSource === 'curated' 
-      ? "No curated projects in this category." 
-      : "No projects available in this category.";
-      
+    const emptyMessage =
+      dataSource === "curated"
+        ? "No curated projects in this category."
+        : "No projects available in this category.";
+
     return (
       <div className="w-full text-center py-12">
         <p className="text-muted-foreground">{emptyMessage}</p>
@@ -159,34 +178,34 @@ export default function CollectionCard({
 
   // Project Card Component
   const ProjectCard = ({ property }: { property: any }) => (
-    <motion.div
-      className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin"
-    >
+    <motion.div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
       <div
         className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"
         onClick={() => handleNavigation(property._id)}
       >
         {/* Background Images */}
         <div className="relative w-full h-full">
-          {property.images.map((imageSrc: string | StaticImport, imgIndex: number) => (
-            <div
-              key={`${property._id}-${imgIndex}`}
-              className={`absolute inset-0 transition-opacity duration-300 ${
-                (currentImageIndex[property._id] || 0) === imgIndex 
-                  ? 'opacity-100' 
-                  : 'opacity-0'
-              }`}
-            >
-              <Image
-                src={imageSrc}
-                alt={`${property.name} - Image ${imgIndex + 1}`}
-                fill
-                className="object-cover h-full group-hover:scale-105 transition-all duration-300"
-                priority={imgIndex === 0}
-                placeholder="empty"
-              />
-            </div>
-          ))}
+          {property.images.map(
+            (imageSrc: string | StaticImport, imgIndex: number) => (
+              <div
+                key={`${property._id}-${imgIndex}`}
+                className={`absolute inset-0 transition-opacity duration-300 ${
+                  (currentImageIndex[property._id] || 0) === imgIndex
+                    ? "opacity-100"
+                    : "opacity-0"
+                }`}
+              >
+                <Image
+                  src={imageSrc}
+                  alt={`${property.name} - Image ${imgIndex + 1}`}
+                  fill
+                  className="object-cover h-full group-hover:scale-105 transition-all duration-300"
+                  priority={imgIndex === 0}
+                  placeholder="empty"
+                />
+              </div>
+            )
+          )}
         </div>
 
         {/* Dark gradient overlay */}
@@ -202,9 +221,9 @@ export default function CollectionCard({
               {property.price}
             </span>
           </div>
-          
+
           {isLocationVisible && (
-            <div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[60%] xl:w-[55%] rounded-[8px] bg-[#CDB04E1A]">
+            <div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[60%] xl:min-w-[55%] rounded-[8px] bg-[#CDB04E1A]">
               <div className="relative w-[10px] h-[10px] xl:w-[15px] xl:h-[15px]">
                 <Image
                   src={"/icons/map-pin.svg"}
@@ -231,7 +250,7 @@ export default function CollectionCard({
               <div className="w-1/2 bg-primary"></div>
               <div className="w-1/2 bg-[#FFFFFF80]"></div>
             </div>
-            <div 
+            <div
               className="description-text text-[#FFFFFF] pt-3 pb-4 xl:pb-2 line-clamp-2"
               dangerouslySetInnerHTML={{ __html: property.description }}
             />
@@ -300,7 +319,7 @@ export default function CollectionCard({
   );
 
   // Grid mode rendering
-  if (displayMode === 'grid') {
+  if (displayMode === "grid") {
     return (
       <div className="w-full">
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -321,11 +340,11 @@ export default function CollectionCard({
             onClick={scrollPrev}
             disabled={!canScrollPrev}
             className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
-              canScrollPrev 
-                ? "bg-white/90 text-gray-700 hover:bg-white hover:text-primary shadow-lg cursor-pointer" 
+              canScrollPrev
+                ? "bg-white/90 text-gray-700 hover:bg-white hover:text-primary shadow-lg cursor-pointer"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
-            style={{ marginLeft: '-20px' }}
+            style={{ marginLeft: "-20px" }}
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -334,11 +353,11 @@ export default function CollectionCard({
             onClick={scrollNext}
             disabled={!canScrollNext}
             className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
-              canScrollNext 
-                ? "bg-white/90 text-gray-700 hover:bg-white hover:text-primary shadow-lg cursor-pointer" 
+              canScrollNext
+                ? "bg-white/90 text-gray-700 hover:bg-white hover:text-primary shadow-lg cursor-pointer"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
-            style={{ marginRight: '-20px' }}
+            style={{ marginRight: "-20px" }}
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -348,7 +367,11 @@ export default function CollectionCard({
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {currentProjects.map((property) => (
-            <div key={property._id} className="flex-shrink-0 px-3" style={{ width: slideWidth }}>
+            <div
+              key={property._id}
+              className="flex-shrink-0 px-3"
+              style={{ width: slideWidth }}
+            >
               <ProjectCard property={property} />
             </div>
           ))}

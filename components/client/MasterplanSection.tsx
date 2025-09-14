@@ -68,16 +68,16 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
             variants={itemVariants}
             className="text-center mb-4 sm:mb-16 px-6"
           >
-            {masterPlan.title && (
+            {masterPlan.title && masterPlan.subtitle && (
               <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-4 px-4">
-                {masterPlan.title}
+                {masterPlan.title} {" "}  <span className="text-primary">{masterPlan.subtitle}</span>
               </h2>
             )}
-            {masterPlan.subtitle && (
+            {/* {masterPlan.subtitle && (
               <h3 className="font-cinzel text-xl sm:text-2xl lg:text-[35px] font-normal text-primary mb-4 px-4">
-                {masterPlan.subtitle}
+               
               </h3>
-            )}
+            )} */}
             {masterPlan.description && (
               <div 
                 className="font-josefin text-white max-w-4xl mx-auto description-text"

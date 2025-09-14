@@ -140,16 +140,18 @@ export default function EditProjectPage() {
   const router = useRouter();
   const params = useParams();
   const projectId = params.id as string;
-  
+
   const dispatch = useAppDispatch();
-  const { projects, loading } = useSelector((state: RootState) => state.projects);
+  const { projects, loading } = useSelector(
+    (state: RootState) => state.projects
+  );
   const { categories } = useSelector((state: RootState) => state.categories);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [projectLoaded, setProjectLoaded] = useState(false);
 
   // Find the current project
-  const currentProject = projects.find(p => p._id === projectId);
+  const currentProject = projects.find((p) => p._id === projectId);
 
   // Basic form data
   const [formData, setFormData] = useState({
@@ -199,7 +201,8 @@ export default function EditProjectPage() {
     },
     investmentPlans: {
       title: "LIMITED-TIME INVESTMENT PLANS",
-      description: "Secure high returns with exclusive, time-sensitive opportunities.",
+      description:
+        "Secure high returns with exclusive, time-sensitive opportunities.",
       backgroundImage: "",
       plans: [] as InvestmentPlan[],
     },
@@ -207,9 +210,11 @@ export default function EditProjectPage() {
       title: "A place to come home to",
       subtitle: "and a location that",
       highlightText: "holds its value.",
-      description: "Set between Layan and Bangtao, this address offers more than scenery.",
+      description:
+        "Set between Layan and Bangtao, this address offers more than scenery.",
       sectionTitle: "Your Gateway to Paradise",
-      sectionDescription: "Perfectly positioned where tropical elegance meets modern convenience.",
+      sectionDescription:
+        "Perfectly positioned where tropical elegance meets modern convenience.",
       backgroundImage: "",
       mapImage: "",
       categories: [] as GatewayCategory[],
@@ -246,7 +251,9 @@ export default function EditProjectPage() {
     coords: { top: "50%", left: "50%" },
     icon: "/icons/map-pin.svg",
   });
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number | null>(null);
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     if (projects.length === 0) {
@@ -275,49 +282,86 @@ export default function EditProjectPage() {
       if (currentProject.projectDetail) {
         setProjectDetailData({
           hero: {
-            backgroundImage: currentProject.projectDetail.hero?.backgroundImage || "",
+            backgroundImage:
+              currentProject.projectDetail.hero?.backgroundImage || "",
             title: currentProject.projectDetail.hero?.title || "",
             subtitle: currentProject.projectDetail.hero?.subtitle || "",
-            scheduleMeetingButton: currentProject.projectDetail.hero?.scheduleMeetingButton || "Schedule a meeting",
-            getBrochureButton: currentProject.projectDetail.hero?.getBrochureButton || "Get Brochure",
+            scheduleMeetingButton:
+              currentProject.projectDetail.hero?.scheduleMeetingButton ||
+              "Schedule a meeting",
+            getBrochureButton:
+              currentProject.projectDetail.hero?.getBrochureButton ||
+              "Get Brochure",
             brochurePdf: currentProject.projectDetail.hero?.brochurePdf || "",
           },
           projectHighlights: {
-            backgroundImage: currentProject.projectDetail.projectHighlights?.backgroundImage || "",
-            description: currentProject.projectDetail.projectHighlights?.description || "",
-            highlights: currentProject.projectDetail.projectHighlights?.highlights || [],
+            backgroundImage:
+              currentProject.projectDetail.projectHighlights?.backgroundImage ||
+              "",
+            description:
+              currentProject.projectDetail.projectHighlights?.description || "",
+            highlights:
+              currentProject.projectDetail.projectHighlights?.highlights || [],
           },
           keyHighlights: {
-            backgroundImage: currentProject.projectDetail.keyHighlights?.backgroundImage || "",
-            description: currentProject.projectDetail.keyHighlights?.description || "",
-            highlights: currentProject.projectDetail.keyHighlights?.highlights || [],
+            backgroundImage:
+              currentProject.projectDetail.keyHighlights?.backgroundImage || "",
+            description:
+              currentProject.projectDetail.keyHighlights?.description || "",
+            highlights:
+              currentProject.projectDetail.keyHighlights?.highlights || [],
           },
           modernAmenities: {
-            title: currentProject.projectDetail.modernAmenities?.title || "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
-            description: currentProject.projectDetail.modernAmenities?.description || "",
-            amenities: currentProject.projectDetail.modernAmenities?.amenities || [],
+            title:
+              currentProject.projectDetail.modernAmenities?.title ||
+              "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
+            description:
+              currentProject.projectDetail.modernAmenities?.description || "",
+            amenities:
+              currentProject.projectDetail.modernAmenities?.amenities || [],
           },
           masterPlan: {
             title: currentProject.projectDetail.masterPlan?.title || "",
             subtitle: currentProject.projectDetail.masterPlan?.subtitle || "",
-            description: currentProject.projectDetail.masterPlan?.description || "",
-            backgroundImage: currentProject.projectDetail.masterPlan?.backgroundImage || "",
+            description:
+              currentProject.projectDetail.masterPlan?.description || "",
+            backgroundImage:
+              currentProject.projectDetail.masterPlan?.backgroundImage || "",
             tabs: currentProject.projectDetail.masterPlan?.tabs || [],
           },
           investmentPlans: {
-            title: currentProject.projectDetail.investmentPlans?.title || "LIMITED-TIME INVESTMENT PLANS",
-            description: currentProject.projectDetail.investmentPlans?.description || "Secure high returns with exclusive, time-sensitive opportunities.",
-            backgroundImage: currentProject.projectDetail.investmentPlans?.backgroundImage || "",
+            title:
+              currentProject.projectDetail.investmentPlans?.title ||
+              "LIMITED-TIME INVESTMENT PLANS",
+            description:
+              currentProject.projectDetail.investmentPlans?.description ||
+              "Secure high returns with exclusive, time-sensitive opportunities.",
+            backgroundImage:
+              currentProject.projectDetail.investmentPlans?.backgroundImage ||
+              "",
             plans: currentProject.projectDetail.investmentPlans?.plans || [],
           },
           gateway: {
-            title: currentProject.projectDetail.gateway?.title || "A place to come home to",
-            subtitle: currentProject.projectDetail.gateway?.subtitle || "and a location that",
-            highlightText: currentProject.projectDetail.gateway?.highlightText || "holds its value.",
-            description: currentProject.projectDetail.gateway?.description || "Set between Layan and Bangtao, this address offers more than scenery.",
-            sectionTitle: currentProject.projectDetail.gateway?.sectionTitle || "Your Gateway to Paradise",
-            sectionDescription: currentProject.projectDetail.gateway?.sectionDescription || "Perfectly positioned where tropical elegance meets modern convenience.",
-            backgroundImage: currentProject.projectDetail.gateway?.backgroundImage || "",
+            title:
+              currentProject.projectDetail.gateway?.title ||
+              "A place to come home to",
+            subtitle:
+              currentProject.projectDetail.gateway?.subtitle ||
+              "and a location that",
+            highlightText:
+              currentProject.projectDetail.gateway?.highlightText ||
+              "holds its value.",
+            description:
+              currentProject.projectDetail.gateway?.description ||
+              "Set between Layan and Bangtao, this address offers more than scenery.",
+            sectionTitle:
+              currentProject.projectDetail.gateway?.sectionTitle ||
+              "Your Gateway to Paradise",
+            sectionDescription:
+              currentProject.projectDetail.gateway?.sectionDescription ||
+              "Perfectly positioned where tropical elegance meets modern convenience.",
+            backgroundImage:
+              currentProject.projectDetail.gateway?.backgroundImage || "",
             mapImage: currentProject.projectDetail.gateway?.mapImage || "",
             categories: currentProject.projectDetail.gateway?.categories || [],
           },
@@ -343,7 +387,11 @@ export default function EditProjectPage() {
     }));
   };
 
-  const handleProjectDetailChange = (section: string, field: string, value: any) => {
+  const handleProjectDetailChange = (
+    section: string,
+    field: string,
+    value: any
+  ) => {
     setProjectDetailData((prev) => ({
       ...prev,
       [section]: {
@@ -367,7 +415,10 @@ export default function EditProjectPage() {
         ...prev,
         projectHighlights: {
           ...prev.projectHighlights,
-          highlights: [...prev.projectHighlights.highlights, newProjectHighlight],
+          highlights: [
+            ...prev.projectHighlights.highlights,
+            newProjectHighlight,
+          ],
         },
       }));
       setNewProjectHighlight({ image: "", title: "" });
@@ -381,7 +432,9 @@ export default function EditProjectPage() {
       ...prev,
       projectHighlights: {
         ...prev.projectHighlights,
-        highlights: prev.projectHighlights.highlights.filter((_, i) => i !== index),
+        highlights: prev.projectHighlights.highlights.filter(
+          (_, i) => i !== index
+        ),
       },
     }));
   };
@@ -500,7 +553,11 @@ export default function EditProjectPage() {
   };
 
   const addGatewayCategory = () => {
-    if (newGatewayCategory.title && newGatewayCategory.description && newGatewayCategory.icon) {
+    if (
+      newGatewayCategory.title &&
+      newGatewayCategory.description &&
+      newGatewayCategory.icon
+    ) {
       setProjectDetailData((prev) => ({
         ...prev,
         gateway: {
@@ -554,12 +611,15 @@ export default function EditProjectPage() {
     }
   };
 
-  const removeLocationFromCategory = (categoryIndex: number, locationIndex: number) => {
+  const removeLocationFromCategory = (
+    categoryIndex: number,
+    locationIndex: number
+  ) => {
     setProjectDetailData((prev) => {
       const updatedCategories = [...prev.gateway.categories];
-      updatedCategories[categoryIndex].locations = updatedCategories[categoryIndex].locations.filter(
-        (_, i) => i !== locationIndex
-      );
+      updatedCategories[categoryIndex].locations = updatedCategories[
+        categoryIndex
+      ].locations.filter((_, i) => i !== locationIndex);
       return {
         ...prev,
         gateway: {
@@ -586,7 +646,9 @@ export default function EditProjectPage() {
     setIsSubmitting(true);
 
     try {
-      const selectedCategoryObj = categories.find((cat) => cat._id === formData.category);
+      const selectedCategoryObj = categories.find(
+        (cat) => cat._id === formData.category
+      );
 
       if (!selectedCategoryObj) {
         toast.error("Invalid category selected.");
@@ -612,11 +674,13 @@ export default function EditProjectPage() {
         projectDetail: finalProjectDetailData,
       };
 
-      await dispatch(updateProject({
-        id: projectId,
-        data: projectData,
-      })).unwrap();
-      
+      await dispatch(
+        updateProject({
+          id: projectId,
+          data: projectData,
+        })
+      ).unwrap();
+
       toast.success("Project updated successfully");
       router.push("/admin/projects");
     } catch (error) {
@@ -651,7 +715,7 @@ export default function EditProjectPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-         {/* Basic Information */}
+        {/* Basic Information */}
         <Card className="py-6">
           <CardHeader>
             <CardTitle className="text-primary">Basic Information</CardTitle>
@@ -807,23 +871,17 @@ export default function EditProjectPage() {
             <CardTitle className="text-primary">Hero Section</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="heroTitle" className="text-primary">
-                  Hero Title
-                </Label>
-                <Input
-                  id="heroTitle"
-                  value={projectDetailData.hero.title}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange("hero", "title", e.target.value)
-                  }
-                  placeholder="Will use project name if empty"
-                />
-              </div>
+                <Label className="text-primary">Hero Title</Label>
 
-              <div className="space-y-2">
+                <Editor
+                  value={projectDetailData.hero.title}
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange("hero", "title", content)
+                  }
+                />
+
                 <Label htmlFor="heroSubtitle" className="text-primary">
                   Hero Subtitle
                 </Label>
@@ -840,7 +898,21 @@ export default function EditProjectPage() {
                   }
                   placeholder="Enter subtitle"
                 />
+                {/* <Input
+                  id="heroTitle"
+                  value={projectDetailData.hero.title}
+                  className="text-gray-900"
+                  onChange={(e) =>
+                    handleProjectDetailChange("hero", "title", e.target.value)
+                  }
+                  placeholder="Will use project name if empty"
+                /> */}
               </div>
+
+              {/* <div className="space-y-2">
+                              {/* <Label htmlFor="heroTitle" className="text-primary">
+                                Hero Title
+                              </Label> */}
 
               <div className="space-y-2">
                 <Label htmlFor="scheduleMeetingButton" className="text-primary">
@@ -2092,7 +2164,7 @@ export default function EditProjectPage() {
             )}
           </CardContent>
         </Card>
-        
+
         {/* Submit Button */}
         <div className="flex justify-end space-x-4 pt-6 border-t">
           <Button
@@ -2103,7 +2175,11 @@ export default function EditProjectPage() {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting} className="text-background cursor-pointer">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="text-background cursor-pointer"
+          >
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
