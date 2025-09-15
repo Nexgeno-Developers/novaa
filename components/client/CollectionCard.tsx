@@ -9,7 +9,7 @@ import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { setNavigationLoading } from "@/redux/slices/loadingSlice";
 import useEmblaCarousel from "embla-carousel-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-// import AutoPlay from "embla-carousel-autoplay";
+import Autoplay from "embla-carousel-autoplay";
 
 interface CardProps {
   isLocationVisible: boolean;
@@ -37,16 +37,19 @@ export default function CollectionCard({
   const [cardsPerView, setCardsPerView] = useState(3);
 
   // Embla Carousel setup
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    slidesToScroll: 1,
-    align: "start",
-    containScroll: "trimSnaps",
-    breakpoints: {
-      "(max-width: 768px)": { slidesToScroll: 1 },
-      "(max-width: 1024px)": { slidesToScroll: 1 },
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      slidesToScroll: 1,
+      align: "center",
+      // containScroll: "trimSnaps",
+      breakpoints: {
+        "(max-width: 768px)": { slidesToScroll: 1 },
+        "(max-width: 1024px)": { slidesToScroll: 1 },
+      },
     },
-  });
+    [Autoplay({ delay: 3000, stopOnInteraction : true })] // 👈 Autoplay added
+  );
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -113,12 +116,24 @@ export default function CollectionCard({
 
   // Embla carousel scroll handlers
   const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
+  if (!emblaApi) return;
 
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
+  // Stop autoplay when user interacts
+  const autoplay = emblaApi.plugins()?.autoplay;
+  autoplay && autoplay.stop();
+
+  emblaApi.scrollPrev();
+}, [emblaApi]);
+
+const scrollNext = useCallback(() => {
+  if (!emblaApi) return;
+
+  // Stop autoplay when user interacts
+  const autoplay = emblaApi.plugins()?.autoplay;
+  autoplay && autoplay.stop();
+
+  emblaApi.scrollNext();
+}, [emblaApi]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -171,14 +186,14 @@ export default function CollectionCard({
 
     return (
       <div className="w-full text-center py-12">
-        <p className="text-muted-foreground">{emptyMessage}</p>
+        <p className="text-muted-foreground font-josefin">{emptyMessage}</p>
       </div>
     );
   }
 
   // Project Card Component
   const ProjectCard = ({ property }: { property: any }) => (
-    <motion.div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
+    <div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
       <div
         className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"
         onClick={() => handleNavigation(property._id)}
@@ -315,7 +330,7 @@ export default function CollectionCard({
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 
   // Grid mode rendering
@@ -339,12 +354,11 @@ export default function CollectionCard({
           <button
             onClick={scrollPrev}
             disabled={!canScrollPrev}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
+            className={`absolute sm:-ml-15 left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
               canScrollPrev
-                ? "bg-white/90 text-gray-700 hover:bg-white hover:text-primary shadow-lg cursor-pointer"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                ? "bg-primary/90 text-gray-700 hover:bg-primary/80 hover:text-background shadow-lg cursor-pointer"
+                : "bg-primary text-gray-400 cursor-not-allowed"
             }`}
-            style={{ marginLeft: "-20px" }}
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -352,12 +366,11 @@ export default function CollectionCard({
           <button
             onClick={scrollNext}
             disabled={!canScrollNext}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
+            className={`absolute right-0 sm:-mr-15 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
               canScrollNext
-                ? "bg-white/90 text-gray-700 hover:bg-white hover:text-primary shadow-lg cursor-pointer"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                ? "bg-primary/90 text-gray-700 hover:bg-primary/80 hover:text-background shadow-lg cursor-pointer"
+                : "bg-primary text-gray-400 cursor-not-allowed"
             }`}
-            style={{ marginRight: "-20px" }}
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -369,10 +382,13 @@ export default function CollectionCard({
           {currentProjects.map((property) => (
             <div
               key={property._id}
-              className="flex-shrink-0 px-3"
+              className="flex-shrink-0"
               style={{ width: slideWidth }}
             >
+              <div className="px-3">
+
               <ProjectCard property={property} />
+              </div>
             </div>
           ))}
         </div>

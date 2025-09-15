@@ -126,7 +126,7 @@ export default function WhyInvestSection({
             {images[0] && (
               <motion.div
                 variants={imageVariants}
-                className="relative h-80 lg:h-110 basis-[48%] md:basis-[48.5%] lg:basis-[52%] xl:basis-[54%] rounded-3xl overflow-hidden"
+                className="relative h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[52%] xl:basis-[54%] rounded-3xl overflow-hidden"
               >
                 <Image
                   src={images[0]}
@@ -156,7 +156,7 @@ export default function WhyInvestSection({
             {images[2] && (
               <motion.div
                 variants={imageVariants}
-                className="relative h-80 lg:h-110 basis-[48%] md:basis-[48.5%] lg:basis-[58%] xl:basis-[60%] rounded-3xl overflow-hidden shadow-lg"
+                className="relative h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[58%] xl:basis-[60%] rounded-3xl overflow-hidden shadow-lg"
               >
                 <Image
                   src={images[2]}
