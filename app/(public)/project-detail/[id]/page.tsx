@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { unstable_cache } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import ProjectHeroSection from "@/components/client/ProjectHeroSection";
@@ -11,45 +10,33 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-// Create a cached version of the function for individual project data
-const getCachedProjectData = (id: string) =>
-  unstable_cache(
-    async () => {
-      try {
-        await connectDB();
-
-        // Make sure the ID is valid MongoDB ObjectId
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-          return null;
-        }
-
-        const project = await Project.findById(id).populate("category");
-
-        if (!project || !project.isActive) {
-          return null;
-        }
-
-        // console.log("Project", project);
-
-        // Convert all BSON/ObjectId fields into plain strings
-        const plainProject = JSON.parse(JSON.stringify(project));
-
-        return plainProject;
-      } catch (error) {
-        console.error("Failed to fetch project data:", error);
-        return null;
-      }
-    },
-    [`project-detail-${id}`], // Cache key specific to this project
-    {
-      tags: [`project-${id}`, "projects", "project-details"], // Cache tags for revalidation
-      revalidate: 3600, // Revalidate every hour (fallback)
-    }
-  );
-
 async function getProjectData(id: string) {
-  const cachedFunction = getCachedProjectData(id);
-  return cachedFunction();
+  try {
+    await connectDB();
+
+    // Make sure the ID is valid MongoDB ObjectId
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.log("Invalid MongoDB ObjectId format:", id);
+      return null;
+    }
+
+    const project = await Project.findById(id).populate("category")
+
+    if (!project || !project.isActive) {
+      console.log("Project not found or inactive:", id);
+      return null;
+    }
+
+    console.log("Project found:", project.name);
+
+    // Convert all BSON/ObjectId fields into plain strings
+    const plainProject = JSON.parse(JSON.stringify(project));
+
+    return plainProject;
+  } catch (error) {
+    console.error("Failed to fetch project data:", error);
+    return null;
+  }
 }
 
 export default async function ProjectDetailPage({
@@ -58,6 +45,7 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  console.log("Project detail page requested for ID:", id);
 
   const project = await getProjectData(id);
 
@@ -174,16 +162,15 @@ export default async function ProjectDetailPage({
   );
 }
 
-export const dynamicParams = true;
-export const revalidate = false; 
-
 export async function generateStaticParams() {
   try {
     await connectDB();
     const projects = await Project.find({ isActive: true }).select('_id').lean();
     
-    return projects.map((project : any) => ({
-      id: project._id.toString(), // Convert ObjectId to string
+    console.log("Generated static params for projects:", projects.length);
+    
+    return projects.map((project: any) => ({
+      id: project._id.toString(),
     }));
   } catch (error) {
     console.error('Error generating static params:', error);
@@ -191,30 +178,38 @@ export async function generateStaticParams() {
   }
 }
 
-// Generate metadata for SEO with caching
+// Generate metadata for SEO
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const project = await getProjectData(id);
+  
+  try {
+    const project = await getProjectData(id);
 
-  if (!project) {
+    if (!project) {
+      return {
+        title: "Project Not Found",
+      };
+    }
+
+    return {
+      title: `${project.name} - ${project.location} | Real Estate`,
+      description: project.description.replace(/<[^>]*>/g, "").substring(0, 160),
+      openGraph: {
+        title: project.name,
+        description: project.description
+          .replace(/<[^>]*>/g, "")
+          .substring(0, 160),
+        images: project.images.slice(0, 1),
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
     return {
       title: "Project Not Found",
     };
   }
-
-  return {
-    title: `${project.name} - ${project.location} | Real Estate`,
-    description: project.description.replace(/<[^>]*>/g, "").substring(0, 160),
-    openGraph: {
-      title: project.name,
-      description: project.description
-        .replace(/<[^>]*>/g, "")
-        .substring(0, 160),
-      images: project.images.slice(0, 1),
-    },
-  };
 }

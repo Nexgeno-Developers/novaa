@@ -69,8 +69,8 @@ export default async function Home() {
     <main className="relative overflow-hidden">
       {sections.map((section: Section) => {
         const Component = sectionComponentMap[section.type];
-        console.log("Component", Component);
-        console.log("Section type", section.type);
+        // console.log("Component", Component);
+        // console.log("Section Data", section);
         
         // If a component is found, render it. Otherwise, render nothing.
         return Component ? (
