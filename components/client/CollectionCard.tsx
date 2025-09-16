@@ -10,6 +10,7 @@ import { setNavigationLoading } from "@/redux/slices/loadingSlice";
 import useEmblaCarousel from "embla-carousel-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Autoplay from "embla-carousel-autoplay";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 interface CardProps {
   isLocationVisible: boolean;
@@ -20,7 +21,7 @@ export default function CollectionCard({
   isLocationVisible,
   displayMode = "carousel",
 }: CardProps) {
-  const router = useRouter();
+  const router = useNavigationRouter();
   const dispatch = useAppDispatch();
   const {
     selectedRegion,
