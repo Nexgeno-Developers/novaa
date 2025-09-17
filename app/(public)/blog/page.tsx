@@ -101,7 +101,7 @@ const getCachedBlogPageData = unstable_cache(
   ["blog-page-sections"], // Cache key
   {
     tags: ["blog-sections", "sections", "blogs", "blog-categories"], // Cache tags for revalidation
-    revalidate: 3600, // Revalidate every hour (fallback)
+    revalidate: false,
   }
 );
 
