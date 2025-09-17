@@ -420,7 +420,3 @@ export default async function ProjectDetailPage({
     notFound();
   }
 }
-
-// Remove generateStaticParams entirely - let it be fully dynamic
-export const dynamicParams = true;
-export const revalidate = false;
