@@ -222,13 +222,13 @@ const getCachedProjectById = (id: string) =>
       try {
         await connectDB();
 
-        // console.log("Fetching project with ID:", id);
+        console.log("Fetching project with ID:", id);
 
-        // // Validate ObjectId format
-        // if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-        //   console.log("Invalid ObjectId format:", id);
-        //   return null;
-        // }
+        // Validate ObjectId format
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+          console.log("Invalid ObjectId format:", id);
+          return null;
+        }
 
         const project = await Project.findOne({ _id: id, isActive: true })
           .populate("category", "name _id")
@@ -422,5 +422,4 @@ export default async function ProjectDetailPage({
 }
 
 // Remove generateStaticParams entirely - let it be fully dynamic
-export const dynamicParams = true;
-export const revalidate = false;
+export const dynamic = "force-dynamic";
