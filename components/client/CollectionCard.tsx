@@ -49,7 +49,7 @@ export default function CollectionCard({
         "(max-width: 1024px)": { slidesToScroll: 1 },
       },
     },
-    [Autoplay({ delay: 3000, stopOnInteraction : true })] // 👈 Autoplay added
+    [Autoplay({ delay: 3000, stopOnInteraction : true })] // Autoplay added
   );
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);

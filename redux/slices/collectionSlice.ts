@@ -204,6 +204,7 @@
 
 // export const { setRegion, resetState } = curatedSlice.actions;
 // export default curatedSlice.reducer;
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export type PropertyType = {

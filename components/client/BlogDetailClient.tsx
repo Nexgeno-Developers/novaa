@@ -309,6 +309,7 @@ import { Calendar, Clock, Eye, Share2, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 interface BlogData {
   _id: string;
@@ -359,6 +360,7 @@ const sidebarVariants: Variants = {
 };
 
 export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClientProps) {
+  const router = useNavigationRouter()
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -596,15 +598,14 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                 
                 {relatedBlogs.length > 0 && (
                   <motion.div variants={itemVariants} className="mt-6 pt-4 border-t border-[#CDB04E]/30">
-                    <Link href="/blog">
                       <Button 
                         variant="outline" 
+                        onClick={() => router.push('/blog')}
                         className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B]"
                       >
                         View All Blogs
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
-                    </Link>
                   </motion.div>
                 )}
               </div>

@@ -714,10 +714,10 @@ export async function POST(request: NextRequest) {
           title: "Latest Insights",
           description:
             "Discover expert insights on real estate investment, market trends, and property management strategies.",
-          showCategories: true,
-          maxBlogs: 6,
-          displayMode: "grid",
-          showReadMore: true,
+          // showCategories: true,
+          // maxBlogs: 6,
+          // displayMode: "grid",
+          // showReadMore: true,
         },
       },
     ];

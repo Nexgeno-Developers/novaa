@@ -63,7 +63,7 @@ import CuratedCollectionManager from "@/components/admin/CuratedCollectionManage
 import BreadcrumbManager from "@/components/admin/BreadcrumbManager";
 import OurStoryManager from "@/components/admin/OurStoryManager";
 import ContactManager from "@/components/admin/ContactManager";
-import BlogSectionManager from "@/components/admin/BlogSectionManager";
+// import BlogSectionManager from "@/components/admin/BlogSectionManager";
 
 interface PageSectionsProps {
   pageSlug: string;
@@ -93,7 +93,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   contact: ContactManager,
 
   // Blog Manager
-  blog: BlogSectionManager, // You'll need to create this component
+  // blog: BlogSectionManager,
 };
 
 export default function PageSections({ pageSlug }: PageSectionsProps) {

@@ -47,23 +47,30 @@ const getCachedBlogPageData = unstable_cache(
     try {
       await connectDB();
 
-      // Fetch sections, blog categories, and blogs in parallel
-      const [sections, blogCategories, blogs] = await Promise.all([
-        Section.find({
-          pageSlug: "blog",
-          status: "active",
-          "settings.isVisible": true,
-        })
-          .sort({ order: 1 })
-          .lean(),
+      // Fetch sections first to get blog section configuration
+      const sections = await Section.find({
+        pageSlug: "blog",
+        status: "active",
+        "settings.isVisible": true,
+      })
+        .sort({ order: 1 })
+        .lean();
 
+      // Find blog section to get its configuration
+      const blogSection = sections.find(section => section.type === "blog");
+      
+      // Get initial blog limit from section content or default to 10
+      const initialBlogLimit = blogSection?.content?.initialBlogs || 10;
+
+      // Fetch blog categories and blogs in parallel
+      const [blogCategories, blogs] = await Promise.all([
         BlogCategory.find({ isActive: true }).sort({ order: 1 }).lean(),
 
         Blog.find({ isActive: true })
           .populate("category")
           .populate("author")
           .sort({ createdAt: -1 })
-          .limit(6) // maxBlogs
+          .limit(initialBlogLimit) // Use configured initial limit
           .lean(),
       ]);
 
