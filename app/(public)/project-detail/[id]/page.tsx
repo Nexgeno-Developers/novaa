@@ -557,7 +557,7 @@ const getCachedProjectById = (id: string) =>
     {
       // Use the SAME cache tags as your API routes for proper revalidation
       tags: ["projects", `project-${id}`, "project-details", "categories"],
-      revalidate: 3600, // 1 hour cache, but will be revalidated when you update from CMS
+      revalidate: 1, // 1 hour cache, but will be revalidated when you update from CMS
     }
   );
 
