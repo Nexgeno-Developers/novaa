@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import ProjectHeroSection from "@/components/client/ProjectHeroSection";
@@ -10,33 +11,34 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
+// Cached project fetcher
+const getCachedProjectData = (id: string) =>
+  unstable_cache(
+    async () => {
+      try {
+        await connectDB();
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) return null;
+
+        const project = await Project.findById(id).populate("category");
+        if (!project || !project.isActive) return null;
+
+        return JSON.parse(JSON.stringify(project));
+      } catch (error) {
+        console.error("Failed to fetch project data:", error);
+        return null;
+      }
+    },
+    [`project-detail-${id}`],
+    {
+      tags: [`project-${id}`, "projects", "project-details" ,  "categories"],
+      revalidate: 3600,
+    }
+  );
+
 async function getProjectData(id: string) {
-  try {
-    await connectDB();
-
-    // Make sure the ID is valid MongoDB ObjectId
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      console.log("Invalid MongoDB ObjectId format:", id);
-      return null;
-    }
-
-    const project = await Project.findById(id).populate("category")
-
-    if (!project || !project.isActive) {
-      console.log("Project not found or inactive:", id);
-      return null;
-    }
-
-    console.log("Project found:", project.name);
-
-    // Convert all BSON/ObjectId fields into plain strings
-    const plainProject = JSON.parse(JSON.stringify(project));
-
-    return plainProject;
-  } catch (error) {
-    console.error("Failed to fetch project data:", error);
-    return null;
-  }
+  const cachedFunction = getCachedProjectData(id);
+  return cachedFunction();
 }
 
 export default async function ProjectDetailPage({
@@ -45,8 +47,6 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  console.log("Project detail page requested for ID:", id);
-
   const project = await getProjectData(id);
 
   if (!project) {
@@ -54,7 +54,6 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  // Serialize the project data for client components
   const serializedProject = {
     _id: project._id.toString(),
     name: project.name,
@@ -126,90 +125,79 @@ export default async function ProjectDetailPage({
 
   return (
     <main className="relative">
-      {/* Hero Section */}
       <ProjectHeroSection project={serializedProject} />
 
-      {/* Gateway section  */}
       {serializedProject.projectDetail?.gateway?.categories?.length > 0 && (
         <GatewaySection project={serializedProject} />
       )}
 
-      {/* Project Highlights Section - Only render if has highlights */}
       {serializedProject.projectDetail?.projectHighlights?.highlights?.length >
         0 && <ProjectHighlights project={serializedProject} />}
 
-      {/* Key Highlights Section - Only render if has highlights */}
-      {serializedProject.projectDetail?.keyHighlights?.highlights?.length >
-        0 && <Highlights project={serializedProject} />}
+      {serializedProject.projectDetail?.keyHighlights?.highlights?.length > 0 && (
+        <Highlights project={serializedProject} />
+      )}
 
-      {/* Modern Amenities Section - Only render if has amenities */}
       {serializedProject.projectDetail?.modernAmenities?.amenities?.length >
         0 && <ModernAmenities project={serializedProject} />}
 
-      {/* Investment Plans Section - Only render if has plans */}
       {serializedProject.projectDetail?.investmentPlans?.plans?.length > 0 && (
         <InvestmentPlans project={serializedProject} />
       )}
 
-      {/* Master Plan Section - Only render if has tabs */}
       {serializedProject.projectDetail?.masterPlan?.tabs?.length > 0 && (
         <MasterPlanSection project={serializedProject} />
       )}
 
-      {/* Contact Form */}
       <ContactForm />
     </main>
   );
 }
 
+export const dynamicParams = true;
+export const revalidate = false;
+
 export async function generateStaticParams() {
   try {
     await connectDB();
-    const projects = await Project.find({ isActive: true }).select('_id').lean();
-    
-    console.log("Generated static params for projects:", projects.length);
-    
+    const projects = await Project.find({ isActive: true })
+      .select("_id")
+      .lean();
+
     return projects.map((project: any) => ({
       id: project._id.toString(),
     }));
   } catch (error) {
-    console.error('Error generating static params:', error);
+    console.error("Error generating static params:", error);
     return [];
   }
 }
 
-// Generate metadata for SEO
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  
-  try {
-    const project = await getProjectData(id);
+  const project = await getProjectData(id);
 
-    if (!project) {
-      return {
-        title: "Project Not Found",
-      };
-    }
-
-    return {
-      title: `${project.name} - ${project.location} | Real Estate`,
-      description: project.description.replace(/<[^>]*>/g, "").substring(0, 160),
-      openGraph: {
-        title: project.name,
-        description: project.description
-          .replace(/<[^>]*>/g, "")
-          .substring(0, 160),
-        images: project.images.slice(0, 1),
-      },
-    };
-  } catch (error) {
-    console.error("Error generating metadata:", error);
+  if (!project) {
     return {
       title: "Project Not Found",
     };
   }
+
+  const description = project.description
+    .replace(/<[^>]*>/g, "")
+    .substring(0, 160);
+
+  return {
+    title: `${project.name} - ${project.location} | Real Estate`,
+    description,
+    openGraph: {
+      title: project.name,
+      description,
+      images: project.images.slice(0, 1),
+    },
+  };
 }

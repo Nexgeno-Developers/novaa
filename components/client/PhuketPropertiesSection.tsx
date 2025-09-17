@@ -147,7 +147,7 @@ export default function PhuketPropertiesSection({
           </h2>
         </motion.div>
 
-        <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-20 items-start">
+        <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-20 items-start">
           {/* Left Content */}
           <motion.div
             className="space-y-4 sm:space-y-8"
@@ -168,7 +168,7 @@ export default function PhuketPropertiesSection({
               initial="hidden"
               animate={controls}
               variants={itemVariants}
-              className="space-y-2 lg:space-y-4 font-josefin text-center lg:text-left"
+              className="space-y-2 lg:space-y-4 font-josefin text-center md:text-left"
             >
               <h3 className="text-white font-medium text-2xl sm:text-3xl lg:text-4xl">
                 {explorerHeading}
@@ -219,7 +219,7 @@ export default function PhuketPropertiesSection({
                           />
                         </div>
                       </div>
-                      <span className="text-base sm:text-xl lg:text-3xl font-medium font-josefin line-clamp-1">
+                      <span className="text-left text-base sm:text-xl lg:text-3xl font-medium font-josefin line-clamp-1">
                         {category.title}
                       </span>
                     </button>
@@ -240,7 +240,7 @@ export default function PhuketPropertiesSection({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3 }}
-                  className="border-t-[0.5px] border-b-white w-full lg:w-[80%] flex items-center justify-center lg:justify-start space-x-3 text-xl text-white font-cinzel"
+                  className="border-t-[0.5px] border-b-white w-full lg:w-[80%] flex items-center justify-center md:justify-start space-x-3 text-xl text-white font-cinzel"
                 >
                   <Image
                     src={"/icons/map-pin.svg"}
@@ -289,7 +289,7 @@ export default function PhuketPropertiesSection({
           </motion.div>
 
           {/* Right Side - Map */}
-          <div className="w-full h-[400px] xs:h-[500px] sm:h-[600px] md:h-full lg:h-full lg:mt-20 flex px-10 sm:px-0 items-center justify-center">
+          <div className="w-full h-[400px] xs:h-[500px] sm:h-[600px] lg:h-[1000px] 2xl:h-[1100px] flex px-10 sm:px-0 items-center justify-center">
             <motion.div
               className="relative w-full max-w-md sm:max-w-lg md:max-w-xl h-full"
               initial={{ opacity: 0, scale: 0.9 }}

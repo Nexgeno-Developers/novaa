@@ -236,6 +236,7 @@ export type CuratedCollectionType = {
   title: string;
   description: string;
   isActive: boolean;
+  selectedRegion? : string;
   items: {
     [categoryId: string]: PropertyType[];
   };

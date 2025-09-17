@@ -45,7 +45,7 @@ export default function AboutPage({
   });
 
   // Re-enabled animations
-  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -155]);
+  const novaY = useTransform(scrollYProgress, [0, 0.3], [100, -175]);
   const novaOpacity = useTransform(scrollYProgress, [0.1, 0.35], [0, 1]);
 
   return (
@@ -121,7 +121,7 @@ export default function AboutPage({
       )}
 
       {/* Content Layer */}
-      <div className="container py-10 sm:py-20 relative z-50 flex flex-col justify-between sm:justify-center">
+      <div className="container py-10 sm:pb-20 sm:pt-15 relative z-50 flex flex-col justify-between sm:justify-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +129,7 @@ export default function AboutPage({
           viewport={{ once: true }}
           className="text-center mb-10 lg:mb-28"
         >
-          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white mb-2">
+          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white pb-10">
             {title}
           </h1>
           {subtitle && (
@@ -146,7 +146,7 @@ export default function AboutPage({
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true, amount: 0.3 }}
-              className="font-josefin max-w-2xl text-[#FFFFFFCC] text-center sm:text-left description-text min-h-[230px]"
+              className="font-josefin max-w-3xl text-[#FFFFFFCC] text-center sm:text-left font-light text-base leading-[24px] sm:text-xl sm:leading-[28px] min-h-[230px]"
               dangerouslySetInnerHTML={{ __html: description }}
             />
 

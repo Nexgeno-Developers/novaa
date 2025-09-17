@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/index";
 import CollectionCard from "@/components/client/CollectionCard";
@@ -20,6 +20,8 @@ interface CuratedCollectionProps {
   description?: string;
   isActive?: boolean;
   items?: Record<string, any[]>;
+  _categories?: any[]; // Fresh categories from getSectionData
+  _projects?: any[]; // All fresh projects from getSectionData
   [key: string]: unknown;
 }
 
@@ -29,12 +31,17 @@ export default function CuratedCollection({
   description,
   isActive,
   items,
+  _categories,
+  _projects,
   ...props
 }: CuratedCollectionProps) {
   const dispatch = useAppDispatch();
-  const { collection } = useSelector(
-    (state: RootState) => state.curated
-  );
+  const { collection } = useSelector((state: RootState) => state.curated);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     // Only proceed if we have the required props data
@@ -44,31 +51,76 @@ export default function CuratedCollection({
       // Set data source to 'curated' so components know to use curated data
       dispatch(setDataSource('curated'));
       
+      // Use fresh items data if available, fallback to original items
+      const itemsToUse = items;
+      
       // Set the collection data
       const collectionData = {
         title,
         description,
         isActive,
-        items,
+        items: itemsToUse,
         ...props
       };
       dispatch(setCuratedCollectionData(collectionData));
       
-      // Extract and set categories from the items
-      const categories = Object.keys(items).map(categoryId => {
-        // Get category info from first item in that category
-        const firstItem = items[categoryId]?.[0];
-        if (firstItem?.category) {
-          return firstItem.category;
-        }
-        return null;
-      }).filter(Boolean);
+      // Use fresh categories if available, otherwise extract from items
+      let categories = [];
+      
+      if (_categories) {
+        // Filter categories that have items in the curated collection
+        categories = _categories.filter(category => {
+          const categoryId = category._id.toString();
+          return itemsToUse[categoryId] && itemsToUse[categoryId].length > 0;
+        });
+        
+        console.log('Using fresh categories:', {
+          allCategories: _categories.map(c => ({ id: c._id.toString(), name: c.name })),
+          itemKeys: Object.keys(itemsToUse),
+          filteredCategories: categories.map(c => ({ id: c._id.toString(), name: c.name }))
+        });
+      } else {
+        // Fallback: extract categories from the items
+        const categoryMap = new Map(); // Use Map to prevent duplicates
+        
+        Object.keys(itemsToUse).forEach(categoryId => {
+          const firstItem = itemsToUse[categoryId]?.[0];
+          if (firstItem?.category) {
+            categoryMap.set(firstItem.category._id.toString(), firstItem.category);
+          }
+        });
+        
+        categories = Array.from(categoryMap.values());
+        
+        // console.log('Extracted categories from items:', {
+        //   itemKeys: Object.keys(itemsToUse),
+        //   extractedCategories: categories.map(c => ({ id: c._id.toString(), name: c.name }))
+        // });
+      }
       
       // Sort categories by order and set them
       const sortedCategories = categories.sort((a, b) => (a.order || 0) - (b.order || 0));
       dispatch(setCategories(sortedCategories));
+      
+      // Set initial region if categories exist
+      if (sortedCategories.length > 0 && !collection?.selectedRegion) {
+        dispatch(setRegion(sortedCategories[0].name));
+      }
     }
-  }, [dispatch, title, description, isActive, items]);
+  }, [dispatch, title, description, isActive, items, _categories, _projects]);
+
+  // Don't render on server to avoid hydration mismatch
+  if (!isMounted) {
+    return (
+      <section className="py-10 sm:py-20 bg-secondary">
+        <div className="container">
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-pulse text-muted-foreground">Loading...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   // No loading state needed since data comes from props
   if (!title || !isActive) {

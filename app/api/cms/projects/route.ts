@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -111,11 +111,32 @@ export async function POST(request: Request) {
       "category"
     );
 
-    // Revalidate caches that depend on projects
-    revalidateTag("projects");
-    revalidateTag("project-sections");
-    revalidateTag("sections");
-    revalidateTag("project-details"); // For all project detail pages
+    // Revalidate ALL caches that depend on projects
+    const tagsToRevalidate = [
+      "projects",           // Project data cache
+      "categories",         // Category data cache  
+      "project-sections",   // Project page sections cache
+      "sections",           // General sections cache
+      "home-sections",
+      "home-page-sections",
+      "project-details"     // Project detail pages cache
+    ];
+
+    // Revalidate cache tags
+    tagsToRevalidate.forEach(tag => {
+      console.log(`Revalidating tag: ${tag}`);
+      revalidateTag(tag);
+    });
+
+    // Also revalidate specific paths for good measure
+    revalidatePath('/'); // Home page
+    revalidatePath('/project'); // Projects page
+
+    console.log('Project created and caches revalidated:', {
+      projectId: project._id,
+      revalidatedTags: tagsToRevalidate,
+      timestamp: new Date().toISOString()
+    });
 
     return NextResponse.json({ success: true, data: populatedProject });
   } catch (error) {

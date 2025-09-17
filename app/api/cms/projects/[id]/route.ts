@@ -2,7 +2,38 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
+
+// Helper function to revalidate all project-related caches
+function revalidateProjectCaches(projectId?: string) {
+  const tagsToRevalidate = [
+    "projects", // Project data cache
+    "categories", // Category data cache
+    "project-sections", // Project page sections cache
+    "sections", // General sections cache
+    "home-sections", // Home page sections cache - KEY FIX!
+    "home-page-sections", // Alternative home page cache key - KEY FIX!
+    "project-details", // Project detail pages cache
+  ];
+
+  // Add specific project cache tag if projectId provided
+  if (projectId) {
+    tagsToRevalidate.push(`project-${projectId}`);
+  }
+
+  // Revalidate cache tags
+  tagsToRevalidate.forEach((tag) => {
+    console.log(`Revalidating tag: ${tag}`);
+    revalidateTag(tag);
+  });
+
+  // Also revalidate specific paths for good measure
+  revalidatePath(`/project-detail/${projectId}`);
+  revalidatePath("/"); // Home page
+  revalidatePath("/project"); // Projects page
+
+  return tagsToRevalidate;
+}
 
 export async function GET(
   request: Request,
@@ -85,11 +116,15 @@ export async function PUT(
       );
     }
 
-    revalidateTag("projects");
-    revalidateTag("project-sections");
-    revalidateTag("sections");
-    revalidateTag(`project-${id}`); // Revalidate specific project detail page
-    revalidateTag('project-details');
+    // Revalidate ALL project-related caches including home page
+    const revalidatedTags = revalidateProjectCaches(id);
+
+    console.log("Project updated and caches revalidated:", {
+      projectId: id,
+      projectName: project.name,
+      revalidatedTags,
+      timestamp: new Date().toISOString(),
+    });
 
     return NextResponse.json({ success: true, data: project });
   } catch (error) {
@@ -118,9 +153,15 @@ export async function DELETE(
       );
     }
 
-    revalidateTag("projects");
-    revalidateTag("project-sections");
-    revalidateTag("sections");
+    // Revalidate ALL project-related caches including home page
+    const revalidatedTags = revalidateProjectCaches();
+
+    console.log("Project deleted and caches revalidated:", {
+      projectId: id,
+      deletedProject: project.name,
+      revalidatedTags,
+      timestamp: new Date().toISOString(),
+    });
 
     return NextResponse.json({
       success: true,
