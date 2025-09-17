@@ -201,7 +201,6 @@
 //     },
 //   };
 // }
-
 import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import connectDB from "@/lib/mongodb";
@@ -329,6 +328,25 @@ async function getProjectById(id: string) {
   }
 }
 
+// Re-add generateStaticParams - this is crucial for production
+export async function generateStaticParams() {
+  try {
+    await connectDB();
+    const projects = await Project.find({ isActive: true })
+      .select("_id")
+      .lean();
+
+    console.log("Generating static params for projects:", projects.length);
+    
+    return projects.map((project: any) => ({
+      id: project._id.toString(),
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -421,5 +439,6 @@ export default async function ProjectDetailPage({
   }
 }
 
-// Remove generateStaticParams entirely - let it be fully dynamic
-export const dynamic = "force-dynamic";
+// These settings should match your blog configuration
+export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
+export const revalidate = false; // Don't auto-revalidate
