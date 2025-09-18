@@ -325,8 +325,10 @@ interface BlogSectionProps {
   description?: string;
   showCategories?: boolean;
   maxBlogs?: number;
+  initialBlogs?: number;
   displayMode?: "grid" | "list";
   showReadMore?: boolean;
+  enableLoadMore?: boolean;
   blogData?: {
     categories: any[];
     blogs: any[];
@@ -359,9 +361,11 @@ export default function BlogSection({
   title = "Our Blog",
   description = "Stay updated with the latest insights and news",
   showCategories = true,
-  maxBlogs = 10, // Changed default to 10
+  maxBlogs = 10,
+  initialBlogs = 10,
   displayMode = "grid",
   showReadMore = true,
+  enableLoadMore = true,
   blogData,
   ...props
 }: BlogSectionProps) {
@@ -389,8 +393,8 @@ export default function BlogSection({
       dispatch(setCategories(blogData.categories));
       setAllBlogs(blogData.blogs);
       setIsClientLoading(false);
-      // Check if there are more blogs to load
-      setHasMore(blogData.blogs.length >= 10);
+      // Check if there are more blogs to load based on initialBlogs setting
+      setHasMore(blogData.blogs.length >= initialBlogs && enableLoadMore);
     } else {
       // Fallback to client-side fetching if no server data
       setIsClientLoading(true);
@@ -414,7 +418,7 @@ export default function BlogSection({
     const nextPage = currentPage + 1;
 
     try {
-      const response = await fetch(`/api/blogs?status=active&limit=10&page=${nextPage}`);
+      const response = await fetch(`/api/blogs?status=active&limit=${maxBlogs}&page=${nextPage}`);
       const data = await response.json();
 
       if (data.success && data.data.length > 0) {
@@ -479,7 +483,7 @@ export default function BlogSection({
           <p className="text-muted-foreground">
             No blogs available at the moment.
           </p> */}
-           <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin mr-2" />
             <span>Loading blogs...</span>
           </div>
@@ -623,7 +627,7 @@ export default function BlogSection({
         </motion.div>
 
         {/* Load More Button */}
-        {hasMore && (
+        {enableLoadMore && hasMore && (
           <motion.div variants={itemVariants} className="text-center mt-12">
             <Button
               size="lg"

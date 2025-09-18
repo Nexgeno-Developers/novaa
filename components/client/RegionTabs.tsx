@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setRegion } from "@/redux/slices/collectionSlice";
+import { setRegion, resetVisibleItems } from "@/redux/slices/collectionSlice";
 import { setRegionTabLoading } from "@/redux/slices/loadingSlice";
 import { useCallback } from "react";
 
 export default function RegionTabs() {
   const dispatch = useAppDispatch();
-  const { selectedRegion, categories, allProjects, collection, dataSource } = useAppSelector(
+  const { selectedRegion, categories, allProjects, collection, dataSource, itemsPerPage } = useAppSelector(
     (state) => state.curated
   );
 
@@ -21,6 +21,9 @@ export default function RegionTabs() {
     // Add a small delay to show the loading animation
     setTimeout(() => {
       dispatch(setRegion(regionName));
+      
+      // Reset visible items for the new category to initial count
+      dispatch(resetVisibleItems(regionName));
       
       // Stop loading after a short delay to allow content to render
       setTimeout(() => {

@@ -1,4 +1,3 @@
-// components/admin/BlogSectionManager.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -10,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
-  SelectItem,
+SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -22,8 +21,10 @@ interface BlogSectionData {
   description: string;
   showCategories: boolean;
   maxBlogs: number;
+  initialBlogs: number;
   displayMode: "grid" | "list";
   showReadMore: boolean;
+  enableLoadMore: boolean;
 }
 
 interface BlogSectionManagerProps {
@@ -48,9 +49,11 @@ export default function BlogSectionManager({
     title: section?.content?.title || "Our Blog",
     description: section?.content?.description || "Stay updated with the latest insights and news",
     showCategories: section?.content?.showCategories ?? true,
-    maxBlogs: section?.content?.maxBlogs || 6,
+    maxBlogs: section?.content?.maxBlogs || 10,
+    initialBlogs: section?.content?.initialBlogs || 10,
     displayMode: section?.content?.displayMode || "grid",
     showReadMore: section?.content?.showReadMore ?? true,
+    enableLoadMore: section?.content?.enableLoadMore ?? true,
   });
 
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
@@ -62,9 +65,11 @@ export default function BlogSectionManager({
         title: section.content.title || "Our Blog",
         description: section.content.description || "Stay updated with the latest insights and news",
         showCategories: section.content.showCategories ?? true,
-        maxBlogs: section.content.maxBlogs || 6,
+        maxBlogs: section.content.maxBlogs || 10,
+        initialBlogs: section.content.initialBlogs || 10,
         displayMode: section.content.displayMode || "grid",
         showReadMore: section.content.showReadMore ?? true,
+        enableLoadMore: section.content.enableLoadMore ?? true,
       };
       setLocalData(newData);
       initialDataSetRef.current = true;
@@ -104,7 +109,7 @@ export default function BlogSectionManager({
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Section Header */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="blogTitle" className="text-sm font-medium text-primary/90">
                     Section Title
@@ -118,18 +123,34 @@ export default function BlogSectionManager({
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="initialBlogs" className="text-sm font-medium text-primary/90">
+                    Initial Blogs to Show
+                  </Label>
+                  <Input
+                    id="initialBlogs"
+                    type="number"
+                    value={localData.initialBlogs}
+                    onChange={(e) =>
+                      handleFieldChange("initialBlogs", parseInt(e.target.value) || 10)
+                    }
+                    min="1"
+                    max="50"
+                    className="border-gray-300 focus:border-primary focus:ring-primary"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="maxBlogs" className="text-sm font-medium text-primary/90">
-                    Maximum Blogs to Show
+                    Max Blogs per Load More
                   </Label>
                   <Input
                     id="maxBlogs"
                     type="number"
                     value={localData.maxBlogs}
                     onChange={(e) =>
-                      handleFieldChange("maxBlogs", parseInt(e.target.value) || 6)
+                      handleFieldChange("maxBlogs", parseInt(e.target.value) || 10)
                     }
                     min="1"
-                    max="100"
+                    max="50"
                     className="border-gray-300 focus:border-primary focus:ring-primary"
                   />
                 </div>
@@ -189,6 +210,19 @@ export default function BlogSectionManager({
 
                 <div className="flex items-center space-x-2">
                   <Switch
+                    id="enableLoadMore"
+                    checked={localData.enableLoadMore}
+                    onCheckedChange={(checked) =>
+                      handleFieldChange("enableLoadMore", checked)
+                    }
+                  />
+                  <Label htmlFor="enableLoadMore" className="text-sm font-medium text-primary/90">
+                    Enable Load More Functionality
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
                     id="showReadMore"
                     checked={localData.showReadMore}
                     onCheckedChange={(checked) =>
@@ -206,7 +240,8 @@ export default function BlogSectionManager({
                 <h3 className="font-semibold mb-2 text-primary/90">Preview Settings:</h3>
                 <ul className="text-sm space-y-1 text-gray-600">
                   <li>• Title: "{localData.title}"</li>
-                  <li>• Shows up to {localData.maxBlogs} blogs</li>
+                  <li>• Initial blogs displayed: {localData.initialBlogs}</li>
+                  <li>• Blogs loaded per "Load More": {localData.maxBlogs}</li>
                   <li>
                     • Display mode:{" "}
                     {localData.displayMode === "grid" ? "Grid" : "List"} layout
@@ -216,7 +251,10 @@ export default function BlogSectionManager({
                     {localData.showCategories ? "Enabled" : "Disabled"}
                   </li>
                   <li>
-                    • Read more button: {localData.showReadMore ? "Shown" : "Hidden"}
+                    • Load more functionality: {localData.enableLoadMore ? "Enabled" : "Disabled"}
+                  </li>
+                  <li>
+                    • View all blogs button: {localData.showReadMore ? "Shown" : "Hidden"}
                   </li>
                 </ul>
               </div>

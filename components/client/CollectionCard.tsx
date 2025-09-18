@@ -3,14 +3,16 @@
 import Image from "next/image";
 import { useState, useEffect, useCallback, Key } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { setNavigationLoading } from "@/redux/slices/loadingSlice";
+import { setLoadingMore } from "@/redux/slices/collectionSlice";
 import useEmblaCarousel from "embla-carousel-react";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Autoplay from "embla-carousel-autoplay";
 import { useNavigationRouter } from "@/hooks/useNavigationRouter";
+import { Button } from "@/components/ui/button";
 
 interface CardProps {
   isLocationVisible: boolean;
@@ -30,6 +32,9 @@ export default function CollectionCard({
     collection,
     dataSource,
     loading,
+    visibleItemsPerCategory,
+    itemsPerPage,
+    loadingMore,
   } = useAppSelector((state) => state.curated);
 
   const [currentImageIndex, setCurrentImageIndex] = useState<
@@ -49,7 +54,7 @@ export default function CollectionCard({
         "(max-width: 1024px)": { slidesToScroll: 1 },
       },
     },
-    [Autoplay({ delay: 3000, stopOnInteraction : true })] // Autoplay added
+    [Autoplay({ delay: 3000, stopOnInteraction : true })] // 👈 Autoplay added
   );
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -77,25 +82,63 @@ export default function CollectionCard({
   }, [dispatch]);
 
   // Get current projects based on data source
-  const currentProjects = (() => {
-    if (!selectedRegion) return [];
+  const { currentProjects, totalProjects } = (() => {
+    if (!selectedRegion) return { currentProjects: [], totalProjects: 0 };
+
+    // console.log("Selected region" , selectedRegion)
 
     const selectedCategory = categories.find(
       (c) => c.name === selectedRegion && c.isActive
     );
-    if (!selectedCategory) return [];
+    if (!selectedCategory) return { currentProjects: [], totalProjects: 0 };
+
+    let allCategoryProjects: any[] = [];
 
     if (dataSource === "curated" && collection) {
-      return collection.items[selectedCategory._id] || [];
+      allCategoryProjects = collection.items[selectedCategory._id] || [];
     } else {
       let categoryProjects = allProjects.filter(
         (project) =>
           project.category._id === selectedCategory._id && project.isActive
       );
       categoryProjects.sort((a, b) => (a.order || 0) - (b.order || 0));
-      return categoryProjects;
+      allCategoryProjects = categoryProjects;
     }
+
+    // Get the number of visible items for this category
+    const visibleCount = visibleItemsPerCategory[selectedRegion] || itemsPerPage;
+    
+    // Return visible projects and total count
+    return {
+      currentProjects: allCategoryProjects.slice(0, visibleCount),
+      totalProjects: allCategoryProjects.length
+    };
   })();
+
+  // Handle Load More functionality
+  const handleLoadMore = useCallback(() => {
+    dispatch(setLoadingMore(true));
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      const currentVisible = visibleItemsPerCategory[selectedRegion] || itemsPerPage;
+      const newVisibleCount = currentVisible + itemsPerPage;
+      
+      // Update visible items count
+      dispatch({
+        type: 'curated/loadMoreProjects',
+        payload: selectedRegion
+      });
+      
+      dispatch(setLoadingMore(false));
+    }, 800);
+  }, [dispatch, selectedRegion, visibleItemsPerCategory, itemsPerPage]);
+
+  // Check if Load More button should be shown
+  const shouldShowLoadMore = () => {
+    const visibleCount = visibleItemsPerCategory[selectedRegion] || itemsPerPage;
+    return displayMode === "grid" && totalProjects > visibleCount;
+  };
 
   // Handle responsive cards per view
   useEffect(() => {
@@ -117,24 +160,24 @@ export default function CollectionCard({
 
   // Embla carousel scroll handlers
   const scrollPrev = useCallback(() => {
-  if (!emblaApi) return;
+    if (!emblaApi) return;
 
-  // Stop autoplay when user interacts
-  const autoplay = emblaApi.plugins()?.autoplay;
-  autoplay && autoplay.stop();
+    // Stop autoplay when user interacts
+    const autoplay = emblaApi.plugins()?.autoplay;
+    autoplay && autoplay.stop();
 
-  emblaApi.scrollPrev();
-}, [emblaApi]);
+    emblaApi.scrollPrev();
+  }, [emblaApi]);
 
-const scrollNext = useCallback(() => {
-  if (!emblaApi) return;
+  const scrollNext = useCallback(() => {
+    if (!emblaApi) return;
 
-  // Stop autoplay when user interacts
-  const autoplay = emblaApi.plugins()?.autoplay;
-  autoplay && autoplay.stop();
+    // Stop autoplay when user interacts
+    const autoplay = emblaApi.plugins()?.autoplay;
+    autoplay && autoplay.stop();
 
-  emblaApi.scrollNext();
-}, [emblaApi]);
+    emblaApi.scrollNext();
+  }, [emblaApi]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -334,6 +377,29 @@ const scrollNext = useCallback(() => {
     </div>
   );
 
+  // Load More Button Component
+  const LoadMoreButton = () => (
+    <div className="w-full flex justify-center mt-8">
+      <Button
+        onClick={handleLoadMore}
+        size={"lg"}
+        disabled={loadingMore}
+        className="cursor-pointer px-8 py-3 bg-primary hover:bg-primary/90 text-background font-josefin text-lg font-medium rounded-full transition-all duration-300 hover:scale-105 disabled:hover:scale-100 disabled:opacity-70 ring-2 ring-primary"
+      >
+        {loadingMore ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Loading more...
+          </span>
+        ) : (
+          <span>
+            Load More ({Math.min(itemsPerPage, totalProjects - (visibleItemsPerCategory[selectedRegion] || itemsPerPage))} more)
+          </span>
+        )}
+      </Button>
+    </div>
+  );
+
   // Grid mode rendering
   if (displayMode === "grid") {
     return (
@@ -343,11 +409,21 @@ const scrollNext = useCallback(() => {
             <ProjectCard key={property._id} property={property} />
           ))}
         </div>
+        
+        {/* Load More Button for Grid Mode */}
+        {shouldShowLoadMore() && <LoadMoreButton />}
+        
+        {/* Show total count for reference */}
+        {displayMode === "grid" && totalProjects > 0 && (
+          <div className="text-center mt-4 text-sm text-muted-foreground font-josefin">
+            Showing {currentProjects.length} of {totalProjects} projects
+          </div>
+        )}
       </div>
     );
   }
 
-  // Carousel mode rendering
+  // Carousel mode rendering (no Load More for carousel as it shows all items)
   return (
     <div className="w-full relative">
       {currentProjects.length > cardsPerView && (
@@ -387,8 +463,7 @@ const scrollNext = useCallback(() => {
               style={{ width: slideWidth }}
             >
               <div className="px-3">
-
-              <ProjectCard property={property} />
+                <ProjectCard property={property} />
               </div>
             </div>
           ))}

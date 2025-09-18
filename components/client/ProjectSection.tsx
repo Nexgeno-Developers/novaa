@@ -59,7 +59,7 @@ export default function ProjectSection({
       <div className="container">
         {showRegionTabs && (
           <div className="flex flex-col sm:flex-row justify-around items-center">
-            <div className="flex justify-center items-center sm:mb-10 gap-6 py-2 sm:py-3 px-8">
+            <div className="flex justify-center items-center gap-6 py-2 sm:py-3 px-8">
               <RegionTabs />
             </div>
           </div>
