@@ -304,14 +304,17 @@ export default function NovaaAdvantageSection({
                       background:
                         "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                     }}
-                    className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-24 xl:h-24 bg-[#C3912F] rounded-full md:flex items-center justify-center shadow-lg"
+                    className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-24 xl:h-24 
+             bg-[#C3912F] rounded-full md:flex items-center justify-center shadow-lg relative"
                   >
-                    <Image
-                      src={advantage.icon}
-                      width={40}
-                      height={40}
-                      alt="icon"
-                    />
+                    <div className="w-[50%] h-[50%] relative">
+                      <Image
+                        src={advantage.icon}
+                        alt="icon"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -338,9 +341,10 @@ export default function NovaaAdvantageSection({
                   <div className="flex items-center justify-between gap-4 py-2">
                     <Image
                       src={advantage.icon}
-                      width={60}
-                      height={60}
+                      width={70}
+                      height={50}
                       alt="icon"
+                      className="pl-4"
                     />
                     <div className="flex flex-col">
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-800">

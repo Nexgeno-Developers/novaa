@@ -378,11 +378,53 @@ export async function POST(request: NextRequest) {
         },
       },
       {
+        name: "Counter Section",
+        slug: "counter-section",
+        type: "counter",
+        component: "CounterManager",
+        order: 8, // Adjust based on where you want it in your home page
+        pageSlug: "home",
+        status: "active",
+        settings: {
+          isVisible: true,
+          backgroundColor: "#f8f9fa",
+          padding: "64px 0",
+          margin: "0",
+        },
+        content: {
+          title: "Why Choose NOVAAA?",
+          subtitle:
+            "Trusted Real Estate Partner Delivering Value, Transparency & Growth",
+          cards: [
+            {
+              number: "120+",
+              title: "Projects Delivered",
+              description: "Residential & Commercial Success Stories",
+            },
+            {
+              number: "500+",
+              title: "Happy Clients",
+              description: "Families & Investors Trust Novaaa",
+            },
+            {
+              number: "15+",
+              title: "Years of Excellence",
+              description: "Years of Expertise in Real Estate",
+            },
+            {
+              number: "120+",
+              title: "Properties Listed",
+              description: "Verified Prime Properties",
+            },
+          ],
+        },
+      },
+      {
         name: "Testimonials Section",
         slug: "testimonials-section",
         type: "testimonials",
         component: "TestimonialsManager",
-        order: 8,
+        order: 9,
         pageSlug: "home",
         status: "active",
         settings: {
@@ -440,7 +482,7 @@ export async function POST(request: NextRequest) {
         slug: "investor-insights-section",
         type: "insights",
         component: "InvestorInsightsManager",
-        order: 9,
+        order: 10,
         pageSlug: "home",
         status: "active",
         settings: {

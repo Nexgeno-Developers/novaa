@@ -64,6 +64,7 @@ import BreadcrumbManager from "@/components/admin/BreadcrumbManager";
 import OurStoryManager from "@/components/admin/OurStoryManager";
 import ContactManager from "@/components/admin/ContactManager";
 import BlogSectionManager from "@/components/admin/BlogSectionManager";
+import CounterManager from "@/components/admin/CounterManager";
 
 interface PageSectionsProps {
   pageSlug: string;
@@ -82,6 +83,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<any> } = {
   "why-invest": WhyInvestManager,
   advantage: NovaaAdvantageManager,
   faq: FaqManager,
+  counter: CounterManager,
   testimonials: TestimonialsManager,
   insights: InvestorInsightsManager,
 

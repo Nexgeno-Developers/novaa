@@ -129,7 +129,7 @@ export default function AboutPage({
           viewport={{ once: true }}
           className="text-center mb-10 lg:mb-28"
         >
-          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white pb-20">
+          <h1 className="font-josefin text-3xl sm:text-6xl lg:text-[80px] font-normal text-white pb-10 xl:pb-20">
             {title}
           </h1>
           {subtitle && (

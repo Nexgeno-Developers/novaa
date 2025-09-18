@@ -174,7 +174,7 @@ projectSchema.pre("save", async function (next) {
 
     // Check for existing slugs and append number if needed
     while (true) {
-    const existingProject = await Project.findOne({
+      const existingProject = await Project.findOne({
         slug,
         _id: { $ne: this._id }, //Exclude current doc when editing
       });

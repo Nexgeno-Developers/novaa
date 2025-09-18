@@ -168,6 +168,59 @@ body {
   mask-repeat: no-repeat;
 }
 
+
+
+@keyframes bg-spin {
+  to {
+    --border-angle: 1turn;
+  }
+}
+
+.gradient-border-card {
+  --border-angle: 0turn;
+  --main-bg: conic-gradient(
+      from var(--border-angle),
+      #ffffff,
+      #ffffff 5%,
+      #ffffff 60%,
+      #ffffff 95%
+    );
+  
+  border: solid 2px transparent;
+  border-radius: 24px;
+  --gradient-border: conic-gradient(
+    from var(--border-angle), 
+    transparent 15%, 
+    #C3912F, 
+    #F5E7A8 50%, 
+    #C3912F 75%, 
+    transparent 99%
+  );
+  
+   background: 
+    var(--main-bg) padding-box,
+    var(--gradient-border) border-box, 
+    var(--main-bg) border-box;
+
+  background-position: center center;
+
+  animation: bg-spin 2s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+.gradient-border-card.active {
+  animation-play-state: running;
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+
 /* Only remove selection highlight for this input */
 .no-selection-highlight::selection {
   background-color: transparent !important;

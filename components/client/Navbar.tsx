@@ -83,7 +83,7 @@ export default function Navbar({ data }: NavbarProps) {
                 height={60}
                 alt={data.logo.alt}
                 priority
-                className="w-[140px] sm:w-[155px] h-auto pt-[7px]"
+                className="w-[140px] sm:w-[155px] 2xl:w-[180px] h-auto pt-[7px]"
               />
             ) : (
               <span className="text-xl font-bold">Novaa</span>
@@ -91,7 +91,7 @@ export default function Navbar({ data }: NavbarProps) {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center space-x-10 h-full 2xl:pr-40">
+          <div className="hidden lg:flex items-center space-x-10 h-full">
             <nav className="flex items-center space-x-10 font-josefin text-lg font-normal">
               {mainNavItems.map((item, idx) => {
                 const isLast = idx === mainNavItems.length - 1;
@@ -102,7 +102,7 @@ export default function Navbar({ data }: NavbarProps) {
                     className={cn(
                       "hover:text-[#F0DE9C] transition-colors",
                       pathname === item.href && "text-[#F0DE9C]",
-                      isLast && "pr-8"
+                      isLast && "pr-10 2xl:pr-40"
                     )}
                     // onClick={() => dispatch(setNavigationLoading(true))}
                   >
@@ -111,7 +111,7 @@ export default function Navbar({ data }: NavbarProps) {
                 );
               })}
             </nav>
-            <div className="flex items-center justify-center h-full relative z-10">
+            <div className="flex items-center justify-center h-full relative z-10  2xl:pr-15">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

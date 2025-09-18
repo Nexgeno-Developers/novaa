@@ -12,6 +12,7 @@ import FaqSection from "@/components/client/FaqSection";
 import InvestorInsightsSection from "@/components/client/InvestorInsightsSection";
 import TestimonialsSection from "@/components/client/Testimonials";
 import { getSectionData } from '@/lib/data/getSectionData';
+import CounterSection from '@/components/client/CounterSection';
 
 // Define proper TypeScript interfaces based on your Section model
 interface SectionContent {
@@ -48,6 +49,7 @@ const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> 
   'phuket-properties': PhuketPropertiesSection,
   "advantage": NovaaAdvantageSection,
   faq: FaqSection,
+  counter: CounterSection,
   testimonials: TestimonialsSection,
   insights: InvestorInsightsSection,
 };
