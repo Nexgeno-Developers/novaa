@@ -42,29 +42,28 @@ export default function NovaaAdvantageSection({
   advantages = [],
   ...props
 }: NovaaAdvantageSectionProps) {
-
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loadingStates, setLoadingStates] = useState({
     background: false,
-    logo: false
+    logo: false,
   });
 
-  console.log("Props", props);
-  console.log("Background Image", backgroundImage);
-  console.log("logoImage", logoImage);
+  // console.log("Props", props);
+  // console.log("Background Image", backgroundImage);
+  // console.log("logoImage", logoImage);
 
   // Preload images
   useEffect(() => {
     const preloadImages = async () => {
       try {
         const promises = [];
-        
+
         // Preload background image
         if (backgroundImage) {
           const bgPromise = new Promise((resolve, reject) => {
             const img = new window.Image();
             img.onload = () => {
-              setLoadingStates(prev => ({ ...prev, background: true }));
+              setLoadingStates((prev) => ({ ...prev, background: true }));
               resolve(img);
             };
             img.onerror = reject;
@@ -78,7 +77,7 @@ export default function NovaaAdvantageSection({
           const logoPromise = new Promise((resolve, reject) => {
             const img = new window.Image();
             img.onload = () => {
-              setLoadingStates(prev => ({ ...prev, logo: true }));
+              setLoadingStates((prev) => ({ ...prev, logo: true }));
               resolve(img);
             };
             img.onerror = reject;
@@ -173,7 +172,9 @@ export default function NovaaAdvantageSection({
   };
 
   // Sort advantages by order
-  const sortedAdvantages = [...advantages].sort((a, b) => (a.order || 0) - (b.order || 0));
+  const sortedAdvantages = [...advantages].sort(
+    (a, b) => (a.order || 0) - (b.order || 0)
+  );
 
   return (
     <section className="font-cinzel relative bg-secondary py-10 lg:py-20 overflow-hidden">
@@ -186,7 +187,9 @@ export default function NovaaAdvantageSection({
             width={400}
             height={400}
             priority
-            onLoad={() => setLoadingStates(prev => ({ ...prev, background: true }))}
+            onLoad={() =>
+              setLoadingStates((prev) => ({ ...prev, background: true }))
+            }
           />
         )}
         {logoImage && (
@@ -196,7 +199,7 @@ export default function NovaaAdvantageSection({
             width={400}
             height={400}
             priority
-            onLoad={() => setLoadingStates(prev => ({ ...prev, logo: true }))}
+            onLoad={() => setLoadingStates((prev) => ({ ...prev, logo: true }))}
           />
         )}
       </div>
@@ -244,7 +247,7 @@ export default function NovaaAdvantageSection({
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                   </div>
                 )}
-                
+
                 {/* Water effect image - only render when images are loaded */}
                 {imagesLoaded && (
                   <WaterEffectImage
@@ -296,11 +299,17 @@ export default function NovaaAdvantageSection({
                       }}
                     />
                   </div>
-                  <div className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-24 xl:h-24 rounded-full md:flex items-center justify-center shadow-lg">
+                  <div
+                    style={{
+                      background:
+                        "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                    }}
+                    className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-24 xl:h-24 bg-[#C3912F] rounded-full md:flex items-center justify-center shadow-lg"
+                  >
                     <Image
                       src={advantage.icon}
-                      width={100}
-                      height={100}
+                      width={40}
+                      height={40}
                       alt="icon"
                     />
                   </div>

@@ -27,21 +27,20 @@ export default function WhyInvestSection({
   investmentPoints = [],
   images = [
     "/images/invest1.jpg",
-    "/images/invest2.jpg", 
+    "/images/invest2.jpg",
     "/images/invest3.jpg",
-    "/images/invest4.jpg"
+    "/images/invest4.jpg",
   ],
   ...props
 }: WhyInvestSectionProps) {
-
-  console.log("Props of why invest " , props)
+  console.log("Props of why invest ", props);
 
   // Framer-motion variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
-  
+
   const itemVariants: Variants = {
     hidden: { opacity: 0, x: -50 },
     visible: {
@@ -50,7 +49,7 @@ export default function WhyInvestSection({
       transition: { duration: 0.6, ease: "easeOut" },
     },
   };
-  
+
   const imageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
@@ -98,7 +97,13 @@ export default function WhyInvestSection({
                   variants={itemVariants}
                   className="flex items-start gap-6 group py-2"
                 >
-                  <div className="flex-shrink-0 h-15 w-15 sm:w-20 sm:h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300">
+                  <div
+                    className="flex-shrink-0 h-15 w-15 sm:w-20 sm:h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300"
+                    style={{
+                      background: "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                      
+                    }}
+                  >
                     <Image src={point.icon} width={30} height={30} alt="icon" />
                   </div>
                   <div className="flex-1 space-y-2 font-josefin">
@@ -136,7 +141,7 @@ export default function WhyInvestSection({
                 />
               </motion.div>
             )}
-            
+
             {/* Image 2 */}
             {images[1] && (
               <motion.div
@@ -151,7 +156,7 @@ export default function WhyInvestSection({
                 />
               </motion.div>
             )}
-            
+
             {/* Image 3 */}
             {images[2] && (
               <motion.div
@@ -166,7 +171,7 @@ export default function WhyInvestSection({
                 />
               </motion.div>
             )}
-            
+
             {/* Image 4 */}
             {images[3] && (
               <motion.div

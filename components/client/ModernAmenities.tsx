@@ -23,26 +23,26 @@ interface ModernAmenitiesProps {
 
 const ModernAmenities: React.FC<ModernAmenitiesProps> = ({ project }) => {
   const amenitiesData = project.projectDetail?.modernAmenities;
-  
+
   // Default values
-  const title = amenitiesData?.title || "MODERN AMENITIES FOR A BALANCED LIFESTYLE";
-  const description = amenitiesData?.description || 
+  const title =
+    amenitiesData?.title || "MODERN AMENITIES FOR A BALANCED LIFESTYLE";
+  const description =
+    amenitiesData?.description ||
     "Thoughtfully designed spaces that promote wellness, comfort, and everyday ease.";
-  
+
   const amenities = amenitiesData?.amenities || [];
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: "center",
-      containScroll: "trimSnaps",
-      slidesToScroll: 1,
-      breakpoints: {
-        "(min-width: 768px)": { slidesToScroll: 1 },
-        "(min-width: 1024px)": { slidesToScroll: 1 },
-      },
-    }
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "center",
+    containScroll: "trimSnaps",
+    slidesToScroll: 1,
+    breakpoints: {
+      "(min-width: 768px)": { slidesToScroll: 1 },
+      "(min-width: 1024px)": { slidesToScroll: 1 },
+    },
+  });
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -99,16 +99,23 @@ const ModernAmenities: React.FC<ModernAmenitiesProps> = ({ project }) => {
           variants={containerVariants}
         >
           {/* Header */}
-          <motion.div variants={itemVariants} className="text-center mb-4 sm:mb-16">
+          <motion.div
+            variants={itemVariants}
+            className="text-center mb-4 sm:mb-16"
+          >
             <h2 className="font-cinzel text-2xl md:text-4xl lg:text-[50px] font-normal text-white mb-6">
-              {title.split(' ').map((word, index) => {
-                if (word === 'BALANCED' || word === 'LIFESTYLE') {
-                  return <span key={index} className="text-primary font-bold">{word} </span>;
+              {title.split(" ").map((word, index) => {
+                if (word === "BALANCED" || word === "LIFESTYLE") {
+                  return (
+                    <span key={index} className="text-primary font-bold">
+                      {word}{" "}
+                    </span>
+                  );
                 }
                 return `${word} `;
               })}
             </h2>
-            <div 
+            <div
               className="font-josefin text-white max-w-3xl mx-auto description-text"
               dangerouslySetInnerHTML={{ __html: description }}
             />
@@ -156,6 +163,10 @@ const ModernAmenities: React.FC<ModernAmenitiesProps> = ({ project }) => {
             {/* Navigation Buttons */}
             <div className="flex justify-center items-center space-x-4 mt-6 sm:mt-12">
               <motion.button
+                style={{
+                  background:
+                    "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={scrollPrev}
@@ -166,6 +177,10 @@ const ModernAmenities: React.FC<ModernAmenitiesProps> = ({ project }) => {
               </motion.button>
 
               <motion.button
+                style={{
+                  background:
+                    "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={scrollNext}

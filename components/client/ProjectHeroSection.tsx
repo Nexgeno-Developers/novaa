@@ -80,7 +80,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
               transition={{ duration: 1 }}
               className="text-[40px] xs:text-[50px] sm:text-[60px] leading-[100%] tracking-[0%] font-cinzel font-bold"
             >
-             {title && <div>{parse(title)}</div>}
+              {title && <div>{parse(title)}</div>}
             </motion.h2>
             <motion.h3
               initial={{ opacity: 0, y: 40 }}
@@ -88,7 +88,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
               transition={{ duration: 1 }}
               className="flex items-center gap-4 font-josefin font-light text-xs sm:text-md md:text-base text-white mt-2 pl-1"
             >
-              {subtitle && <div className="text-white">{parse(subtitle)}</div>}
+              {subtitle && <div className="text-white font-light">{parse(subtitle)}</div>}
             </motion.h3>
           </div>
 

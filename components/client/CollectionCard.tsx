@@ -54,7 +54,7 @@ export default function CollectionCard({
         "(max-width: 1024px)": { slidesToScroll: 1 },
       },
     },
-    [Autoplay({ delay: 3000, stopOnInteraction : true })] // 👈 Autoplay added
+    [Autoplay({ delay: 3000, stopOnInteraction: true })] // 👈 Autoplay added
   );
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -106,37 +106,40 @@ export default function CollectionCard({
     }
 
     // Get the number of visible items for this category
-    const visibleCount = visibleItemsPerCategory[selectedRegion] || itemsPerPage;
-    
+    const visibleCount =
+      visibleItemsPerCategory[selectedRegion] || itemsPerPage;
+
     // Return visible projects and total count
     return {
       currentProjects: allCategoryProjects.slice(0, visibleCount),
-      totalProjects: allCategoryProjects.length
+      totalProjects: allCategoryProjects.length,
     };
   })();
 
   // Handle Load More functionality
   const handleLoadMore = useCallback(() => {
     dispatch(setLoadingMore(true));
-    
+
     // Simulate loading delay for better UX
     setTimeout(() => {
-      const currentVisible = visibleItemsPerCategory[selectedRegion] || itemsPerPage;
+      const currentVisible =
+        visibleItemsPerCategory[selectedRegion] || itemsPerPage;
       const newVisibleCount = currentVisible + itemsPerPage;
-      
+
       // Update visible items count
       dispatch({
-        type: 'curated/loadMoreProjects',
-        payload: selectedRegion
+        type: "curated/loadMoreProjects",
+        payload: selectedRegion,
       });
-      
+
       dispatch(setLoadingMore(false));
     }, 800);
   }, [dispatch, selectedRegion, visibleItemsPerCategory, itemsPerPage]);
 
   // Check if Load More button should be shown
   const shouldShowLoadMore = () => {
-    const visibleCount = visibleItemsPerCategory[selectedRegion] || itemsPerPage;
+    const visibleCount =
+      visibleItemsPerCategory[selectedRegion] || itemsPerPage;
     return displayMode === "grid" && totalProjects > visibleCount;
   };
 
@@ -318,7 +321,13 @@ export default function CollectionCard({
 
         {/* Badge */}
         {property.badge && (
-          <div className="absolute font-josefin top-15 right-0 bg-[#D4AF37] text-background pl-5 pr-4 pt-2 pb-1 rounded-l-[20px] text-lg font-medium z-20">
+          <div
+            className="absolute font-josefin top-15 right-0 bg-[#D4AF37] text-background pl-5 pr-4 pt-2 pb-1 rounded-l-[20px] text-lg font-medium z-20"
+            style={{
+              background:
+                "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+            }}
+          >
             {property.badge}
           </div>
         )}
@@ -393,7 +402,13 @@ export default function CollectionCard({
           </span>
         ) : (
           <span>
-            Load More ({Math.min(itemsPerPage, totalProjects - (visibleItemsPerCategory[selectedRegion] || itemsPerPage))} more)
+            Load More (
+            {Math.min(
+              itemsPerPage,
+              totalProjects -
+                (visibleItemsPerCategory[selectedRegion] || itemsPerPage)
+            )}{" "}
+            more)
           </span>
         )}
       </Button>
@@ -409,10 +424,10 @@ export default function CollectionCard({
             <ProjectCard key={property._id} property={property} />
           ))}
         </div>
-        
+
         {/* Load More Button for Grid Mode */}
         {shouldShowLoadMore() && <LoadMoreButton />}
-        
+
         {/* Show total count for reference */}
         {displayMode === "grid" && totalProjects > 0 && (
           <div className="text-center mt-4 text-sm text-muted-foreground font-josefin">

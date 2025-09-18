@@ -18,7 +18,13 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Plus, X, Image as ImageIcon, SparklesIcon } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  X,
+  Image as ImageIcon,
+  SparklesIcon,
+} from "lucide-react";
 import { RootState } from "@/redux";
 import { fetchCategories } from "@/redux/slices/categoriesSlice";
 import { fetchProjects } from "@/redux/slices/projectsSlice";
@@ -415,8 +421,13 @@ export default function CuratedCollectionManager({
             <p className="text-sm text-muted-foreground">
               Review all selected projects across categories
             </p>
+            
           </CardHeader>
           <CardContent>
+            <p className="text-sm text-destructive pb-2">
+              You can only select max 9 projects in each category to show on
+              curated collection
+            </p>
             <div className="space-y-4">
               {Object.entries(formData.items).map(([categoryId, projects]) => {
                 const category = categories.find((c) => c._id === categoryId);

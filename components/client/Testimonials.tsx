@@ -86,7 +86,7 @@ const TestimonialCard = ({ testimonial, isActive }: TestimonialCardProps) => {
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
-            className="w-14 h-14 rounded-full object-cover border border-[#CDB04E] bg-white"
+            className="w-18 h-18 rounded-full object-cover border border-[#CDB04E] bg-white"
           />
         </div>
       </div>
@@ -206,6 +206,10 @@ export default function EliteClientsTestimonials({
                 className="flex items-center justify-center gap-4 mt-10"
               >
                 <button
+                  style={{
+                    background:
+                      "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                  }}
                   onClick={scrollPrev}
                   className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg cursor-pointer"
                 >
@@ -213,6 +217,10 @@ export default function EliteClientsTestimonials({
                 </button>
 
                 <button
+                  style={{
+                    background:
+                      "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                  }}
                   onClick={scrollNext}
                   className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg cursor-pointer"
                 >

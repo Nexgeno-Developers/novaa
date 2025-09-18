@@ -290,28 +290,28 @@ export async function POST(request: NextRequest) {
               title: "Scouting Excellence",
               description:
                 "<p>We identify prime properties in high-growth areas, ensuring maximum returns and flexibility.</p>",
-              icon: "/advantage-section-images/icon-one.png",
+              icon: "/advantage-section-images/icon-one.svg",
               order: 0,
             },
             {
               title: "Freehold & Rental Income Support",
               description:
                 "<p>Secure freehold ownership and set up rentals or your rental income with guaranteed returns.</p>",
-              icon: "/advantage-section-images/icon-two.png",
+              icon: "/advantage-section-images/icon-two.svg",
               order: 1,
             },
             {
               title: "Unmatched Transparency",
               description:
                 "<p>Every transaction is clear and documented, ensuring you gain the complete peace of mind.</p>",
-              icon: "/advantage-section-images/icon-three.png",
+              icon: "/advantage-section-images/icon-three.svg",
               order: 2,
             },
             {
               title: "Bureaucratic Ease",
               description:
                 "<p>We manage all regulatory processes, so you can focus on enjoying your investment.</p>",
-              icon: "/advantage-section-images/icon-four.png",
+              icon: "/advantage-section-images/icon-four.svg",
               order: 3,
             },
             {
@@ -325,7 +325,7 @@ export async function POST(request: NextRequest) {
               title: "Expert Curation",
               description:
                 "<p>Early property selection and exclusive access to the best developments of the global elite.</p>",
-              icon: "/advantage-section-images/icon-six.png",
+              icon: "/advantage-section-images/icon-six.svg",
               order: 5,
             },
           ],
