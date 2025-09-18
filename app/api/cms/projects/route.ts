@@ -24,9 +24,10 @@ export async function POST(request: Request) {
     await connectDB();
     const data = await request.json();
 
-    // Extract all fields including projectDetail with gateway section
+    // Extract all fields including slug and projectDetail
     const {
       name,
+      slug, // Add this line
       price,
       images,
       location,
@@ -39,7 +40,29 @@ export async function POST(request: Request) {
       projectDetail,
     } = data;
 
-    // Create default project detail structure with gateway section
+    // Validate required fields
+    if (!name) {
+      return NextResponse.json(
+        { success: false, error: "Project name is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!description) {
+      return NextResponse.json(
+        { success: false, error: "Project description is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!slug) {
+      return NextResponse.json(
+        { success: false, error: "Project slug is required" },
+        { status: 400 }
+      );
+    }
+
+    // Create default project detail structure
     const defaultProjectDetail = {
       hero: {
         backgroundImage: "",
@@ -95,6 +118,7 @@ export async function POST(request: Request) {
 
     const project = await Project.create({
       name,
+      slug, // Add this line
       price,
       images,
       location,
@@ -113,13 +137,15 @@ export async function POST(request: Request) {
 
     // Revalidate ALL caches that depend on projects
     const tagsToRevalidate = [
-      "projects",           // Project data cache
-      "categories",         // Category data cache  
-      "project-sections",   // Project page sections cache
-      "sections",           // General sections cache
+      "projects",
+      "categories",
+      "project-sections",
+      "sections",
       "home-sections",
       "home-page-sections",
-      "project-details"     // Project detail pages cache
+      "project-details",
+      `project-slug-${slug}`, // Add slug-specific cache tag
+      `project-detail-${slug}` // Add slug-specific cache tag
     ];
 
     // Revalidate cache tags
@@ -128,19 +154,39 @@ export async function POST(request: Request) {
       revalidateTag(tag);
     });
 
-    // Also revalidate specific paths for good measure
+    // Revalidate specific paths
     revalidatePath('/'); // Home page
     revalidatePath('/project'); // Projects page
+    revalidatePath(`/project-detail/${slug}`); // New project detail page
 
     console.log('Project created and caches revalidated:', {
       projectId: project._id,
+      projectSlug: slug,
       revalidatedTags: tagsToRevalidate,
       timestamp: new Date().toISOString()
     });
 
     return NextResponse.json({ success: true, data: populatedProject });
-  } catch (error) {
+  } catch (error : any) {
     console.error("Error creating project:", error);
+    
+    // Handle specific validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+      return NextResponse.json(
+        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    // Handle duplicate key errors (slug already exists)
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { success: false, error: "Project with this slug already exists" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { success: false, error: "Failed to create project" },
       { status: 500 }

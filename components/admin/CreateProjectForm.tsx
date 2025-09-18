@@ -94,6 +94,7 @@ export default function CreateProjectPage() {
   // Basic form data
   const [formData, setFormData] = useState({
     name: "",
+    slug: "",
     price: "",
     images: [] as string[],
     location: "",
@@ -104,7 +105,6 @@ export default function CreateProjectPage() {
     isActive: true,
     order: 0,
   });
-
   // Project detail form data
   const [projectDetailData, setProjectDetailData] = useState({
     hero: {
@@ -159,6 +159,9 @@ export default function CreateProjectPage() {
     },
   });
 
+  const [isGeneratingSlug, setIsGeneratingSlug] = useState(false);
+  const [slugExists, setSlugExists] = useState(false);
+
   // Temporary states for adding new items
   const [newProjectHighlight, setNewProjectHighlight] = useState({
     image: "",
@@ -203,6 +206,64 @@ export default function CreateProjectPage() {
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Function to generate slug from name
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "") // Remove special characters
+      .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  };
+
+  // Function to check if slug exists
+  const checkSlugExists = async (slug: string) => {
+    if (!slug) return false;
+
+    try {
+      const response = await fetch(
+        `/api/cms/projects/check-slug?slug=${encodeURIComponent(slug)}`
+      );
+      const result = await response.json();
+      return result.exists;
+    } catch (error) {
+      console.error("Error checking slug:", error);
+      return false;
+    }
+  };
+
+  // Handle name change and auto-generate slug
+  const handleNameChange = async (name: string) => {
+    handleInputChange("name", name);
+
+    if (name.trim()) {
+      setIsGeneratingSlug(true);
+      const newSlug = generateSlug(name);
+      handleInputChange("slug", newSlug);
+
+      // Check if slug exists
+      const exists = await checkSlugExists(newSlug);
+      setSlugExists(exists);
+      setIsGeneratingSlug(false);
+    } else {
+      handleInputChange("slug", "");
+      setSlugExists(false);
+    }
+  };
+
+  // Handle manual slug change
+  const handleSlugChange = async (slug: string) => {
+    const cleanSlug = generateSlug(slug);
+    handleInputChange("slug", cleanSlug);
+
+    if (cleanSlug) {
+      const exists = await checkSlugExists(cleanSlug);
+      setSlugExists(exists);
+    } else {
+      setSlugExists(false);
+    }
   };
 
   const handleProjectDetailChange = (
@@ -461,6 +522,18 @@ export default function CreateProjectPage() {
       return;
     }
 
+    if (!formData.slug.trim()) {
+      toast.error("Please enter a valid slug");
+      return;
+    }
+
+    if (slugExists) {
+      toast.error(
+        "This slug already exists. Please choose a different project name or modify the slug."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -534,13 +607,41 @@ export default function CreateProjectPage() {
                 <Input
                   id="projectName"
                   value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  onChange={(e) => handleNameChange(e.target.value)}
                   className="text-gray-900"
                   placeholder="Enter project name"
                   required
                 />
               </div>
-
+              <div className="space-y-2">
+                <Label htmlFor="projectSlug" className="text-primary">
+                  URL Slug *
+                  {isGeneratingSlug && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      Generating...
+                    </span>
+                  )}
+                </Label>
+                <Input
+                  id="projectSlug"
+                  value={formData.slug}
+                  onChange={(e) => handleSlugChange(e.target.value)}
+                  className={`text-gray-900 ${
+                    slugExists ? "border-red-500" : ""
+                  }`}
+                  placeholder="project-url-slug"
+                  required
+                />
+                {slugExists && (
+                  <p className="text-red-500 text-xs">
+                    This slug already exists. Please choose a different name or
+                    modify the slug.
+                  </p>
+                )}
+                <p className="text-xs text-gray-500">
+                  URL: /project-detail/{formData.slug || "your-project-slug"}
+                </p>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="projectPrice" className="text-primary">
                   Price *
@@ -554,7 +655,6 @@ export default function CreateProjectPage() {
                   required
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="projectLocation" className="text-primary">
                   Location *
@@ -570,7 +670,6 @@ export default function CreateProjectPage() {
                   required
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="projectBadge" className="text-primary">
                   Badge (Optional)
@@ -583,7 +682,6 @@ export default function CreateProjectPage() {
                   placeholder="e.g., Elora, Featured"
                 />
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="projectCategory" className="text-primary">
                   Category *
@@ -615,7 +713,6 @@ export default function CreateProjectPage() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-2">
                 <Label htmlFor="projectOrder" className="text-primary">
                   Display Order
@@ -687,13 +784,13 @@ export default function CreateProjectPage() {
                   Hero Title
                 </Label> */}
                 <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.hero.title}
-                  onEditorChange={(content) =>
-                    handleProjectDetailChange("hero", "title", content)
-                  }
-                />
-              </div>
+                  <Editor
+                    value={projectDetailData.hero.title}
+                    onEditorChange={(content) =>
+                      handleProjectDetailChange("hero", "title", content)
+                    }
+                  />
+                </div>
                 <Input
                   id="heroTitle"
                   value={projectDetailData.hero.title}

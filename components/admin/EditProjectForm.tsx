@@ -72,6 +72,7 @@ interface GatewayCategory {
 
 interface Project {
   _id: string;
+  slug: string;
   name: string;
   price: string;
   images: string[];
@@ -156,6 +157,7 @@ export default function EditProjectPage() {
   // Basic form data
   const [formData, setFormData] = useState({
     name: "",
+    slug: "",
     price: "",
     images: [] as string[],
     location: "",
@@ -166,6 +168,10 @@ export default function EditProjectPage() {
     isActive: true,
     order: 0,
   });
+
+  const [isGeneratingSlug, setIsGeneratingSlug] = useState(false);
+  const [slugExists, setSlugExists] = useState(false);
+  const [originalSlug, setOriginalSlug] = useState("");
 
   // Project detail form data with the same structure as create page
   const [projectDetailData, setProjectDetailData] = useState({
@@ -267,6 +273,7 @@ export default function EditProjectPage() {
     if (currentProject && !projectLoaded) {
       setFormData({
         name: currentProject.name,
+        slug: currentProject.slug || generateSlug(currentProject.name),
         price: currentProject.price,
         images: currentProject.images,
         location: currentProject.location,
@@ -277,6 +284,8 @@ export default function EditProjectPage() {
         isActive: currentProject.isActive,
         order: currentProject.order,
       });
+
+      setOriginalSlug(currentProject.slug || generateSlug(currentProject.name));
 
       // Set project detail data if exists
       if (currentProject.projectDetail) {
@@ -379,6 +388,66 @@ export default function EditProjectPage() {
       router.push("/admin/projects");
     }
   }, [loading, projects.length, currentProject, router]);
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "") // Remove special characters
+      .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  };
+
+  const checkSlugExists = async (slug: string, excludeId?: string) => {
+    if (!slug) return false;
+
+    try {
+      const url = `/api/cms/projects/check-slug?slug=${encodeURIComponent(
+        slug
+      )}${excludeId ? `&excludeId=${excludeId}` : ""}`;
+      const response = await fetch(url);
+      const result = await response.json();
+      return result.exists;
+    } catch (error) {
+      console.error("Error checking slug:", error);
+      return false;
+    }
+  };
+
+  const handleNameChange = async (name: string) => {
+    handleInputChange("name", name);
+
+    if (name.trim()) {
+      setIsGeneratingSlug(true);
+      const newSlug = generateSlug(name);
+      handleInputChange("slug", newSlug);
+
+      // Check if slug exists (exclude current project)
+      const exists = await checkSlugExists(newSlug, projectId);
+      setSlugExists(exists);
+      setIsGeneratingSlug(false);
+    } else {
+      handleInputChange("slug", "");
+      setSlugExists(false);
+    }
+  };
+
+  const handleSlugChange = async (slug: string) => {
+    const cleanSlug = generateSlug(slug);
+    handleInputChange("slug", cleanSlug);
+
+    if (cleanSlug) {
+      // Only check if slug is different from original
+      if (cleanSlug !== originalSlug) {
+        const exists = await checkSlugExists(cleanSlug, projectId);
+        setSlugExists(exists);
+      } else {
+        setSlugExists(false);
+      }
+    } else {
+      setSlugExists(false);
+    }
+  };
 
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({
@@ -643,6 +712,18 @@ export default function EditProjectPage() {
       return;
     }
 
+    if (!formData.slug.trim()) {
+      toast.error("Please enter a valid slug");
+      return;
+    }
+
+    if (slugExists) {
+      toast.error(
+        "This slug already exists. Please choose a different project name or modify the slug."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -729,11 +810,47 @@ export default function EditProjectPage() {
                 <Input
                   id="projectName"
                   value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  onChange={(e) => handleNameChange(e.target.value)}
                   className="text-gray-900"
                   placeholder="Enter project name"
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="projectSlug" className="text-primary">
+                  URL Slug *
+                  {isGeneratingSlug && (
+                    <span className="text-xs text-gray-500 ml-2">
+                      Generating...
+                    </span>
+                  )}
+                </Label>
+                <Input
+                  id="projectSlug"
+                  value={formData.slug}
+                  onChange={(e) => handleSlugChange(e.target.value)}
+                  className={`text-gray-900 ${
+                    slugExists ? "border-red-500" : ""
+                  }`}
+                  placeholder="project-url-slug"
+                  required
+                />
+                {slugExists && (
+                  <p className="text-red-500 text-xs">
+                    This slug already exists. Please choose a different name or
+                    modify the slug.
+                  </p>
+                )}
+                <p className="text-xs text-gray-500">
+                  URL: /project-detail/{formData.slug || "your-project-slug"}
+                </p>
+                {originalSlug && originalSlug !== formData.slug && (
+                  <p className="text-xs text-amber-600">
+                    Warning: Changing the slug will break existing links to this
+                    project.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">

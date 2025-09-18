@@ -1,9 +1,25 @@
 import mongoose from "mongoose";
 
+// Function to generate slug from name
+function generateSlug(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+}
+
 const projectSchema = new mongoose.Schema(
   {
     // Existing basic fields
     name: { type: String, required: true },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    }, // New slug field
     price: { type: String, required: true },
     images: [{ type: String, required: true }],
     location: { type: String, required: true },
@@ -18,7 +34,7 @@ const projectSchema = new mongoose.Schema(
     isActive: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
 
-    // New project detail fields
+    // Project detail fields (keeping existing structure)
     projectDetail: {
       // Hero Section
       hero: {
@@ -27,7 +43,7 @@ const projectSchema = new mongoose.Schema(
         subtitle: { type: String, default: "" },
         scheduleMeetingButton: { type: String, default: "Schedule a meeting" },
         getBrochureButton: { type: String, default: "Get Brochure" },
-        brochurePdf: { type: String, default: "" }, // PDF file URL
+        brochurePdf: { type: String, default: "" },
       },
 
       // Project Highlights Section
@@ -68,7 +84,7 @@ const projectSchema = new mongoose.Schema(
         ],
       },
 
-      // Master Plan Section - Updated with tabs
+      // Master Plan Section
       masterPlan: {
         title: { type: String, default: "" },
         subtitle: { type: String, default: "" },
@@ -101,7 +117,8 @@ const projectSchema = new mongoose.Schema(
           },
         ],
       },
-      // New Gateway Section
+
+      // Gateway Section
       gateway: {
         title: { type: String, default: "A place to come home to" },
         subtitle: { type: String, default: "and a location that" },
@@ -144,6 +161,36 @@ const projectSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Pre-save middleware to generate slug
+projectSchema.pre("save", async function (next) {
+  // Only generate slug if name is modified or it's a new document
+  if (this.isModified("name") || this.isNew) {
+    let baseSlug = generateSlug(this.name);
+    let slug = baseSlug;
+    let counter = 1;
+
+    const Project = mongoose.model("Project");
+
+    // Check for existing slugs and append number if needed
+    while (true) {
+    const existingProject = await Project.findOne({
+        slug,
+        _id: { $ne: this._id }, //Exclude current doc when editing
+      });
+
+      if (!existingProject) {
+        break;
+      }
+
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    this.slug = slug;
+  }
+  next();
+});
 
 export default mongoose.models.Project ||
   mongoose.model("Project", projectSchema);

@@ -1,24 +1,30 @@
-// api/cms/projects/[id]/route.ts
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import { revalidateTag, revalidatePath } from "next/cache";
 
 // Helper function to revalidate all project-related caches
-function revalidateProjectCaches(projectId?: string) {
+function revalidateProjectCaches(projectSlug?: string, oldSlug?: string) {
   const tagsToRevalidate = [
-    "projects", // Project data cache
-    "categories", // Category data cache
-    "project-sections", // Project page sections cache
-    "sections", // General sections cache
-    "home-sections", // Home page sections cache - KEY FIX!
-    "home-page-sections", // Alternative home page cache key - KEY FIX!
-    "project-details", // Project detail pages cache
+    "projects",
+    "categories",
+    "project-sections",
+    "sections",
+    "home-sections",
+    "home-page-sections",
+    "project-details",
   ];
 
-  // Add specific project cache tag if projectId provided
-  if (projectId) {
-    tagsToRevalidate.push(`project-${projectId}`);
+  // Add slug-specific cache tags
+  if (projectSlug) {
+    tagsToRevalidate.push(`project-slug-${projectSlug}`);
+    tagsToRevalidate.push(`project-detail-${projectSlug}`);
+  }
+
+  // Also clear old slug cache if slug changed
+  if (oldSlug && oldSlug !== projectSlug) {
+    tagsToRevalidate.push(`project-slug-${oldSlug}`);
+    tagsToRevalidate.push(`project-detail-${oldSlug}`);
   }
 
   // Revalidate cache tags
@@ -27,10 +33,18 @@ function revalidateProjectCaches(projectId?: string) {
     revalidateTag(tag);
   });
 
-  // Also revalidate specific paths for good measure
-  revalidatePath(`/project-detail/${projectId}`);
-  revalidatePath("/"); // Home page
-  revalidatePath("/project"); // Projects page
+  // Revalidate specific slug-based paths
+  if (projectSlug) {
+    revalidatePath(`/project-detail/${projectSlug}`);
+  }
+
+  // Also revalidate old slug path if changed
+  if (oldSlug && oldSlug !== projectSlug) {
+    revalidatePath(`/project-detail/${oldSlug}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/project");
 
   return tagsToRevalidate;
 }
@@ -71,9 +85,21 @@ export async function PUT(
     const { id } = await params;
     const data = await request.json();
 
-    // Extract all fields including projectDetail
+    // Get the current project to check if slug changed
+    const currentProject = await Project.findById(id);
+    if (!currentProject) {
+      return NextResponse.json(
+        { success: false, error: "Project not found" },
+        { status: 404 }
+      );
+    }
+
+    const oldSlug = currentProject.slug;
+
+    // Extract all fields including slug and projectDetail
     const {
       name,
+      slug,
       price,
       images,
       location,
@@ -86,8 +112,31 @@ export async function PUT(
       projectDetail,
     } = data;
 
+    // Validate required fields
+    if (!name) {
+      return NextResponse.json(
+        { success: false, error: "Project name is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!description) {
+      return NextResponse.json(
+        { success: false, error: "Project description is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!slug) {
+      return NextResponse.json(
+        { success: false, error: "Project slug is required" },
+        { status: 400 }
+      );
+    }
+
     const updateData: any = {
       name,
+      slug, // Add this line
       price,
       images,
       location,
@@ -116,19 +165,40 @@ export async function PUT(
       );
     }
 
-    // Revalidate ALL project-related caches including home page
-    const revalidatedTags = revalidateProjectCaches(id);
+    // Revalidate ALL project-related caches including old and new slug paths
+    const revalidatedTags = revalidateProjectCaches(project.slug, oldSlug);
 
     console.log("Project updated and caches revalidated:", {
       projectId: id,
       projectName: project.name,
+      newSlug: project.slug,
+      oldSlug: oldSlug,
+      slugChanged: oldSlug !== project.slug,
       revalidatedTags,
       timestamp: new Date().toISOString(),
     });
 
     return NextResponse.json({ success: true, data: project });
-  } catch (error) {
+  } catch (error : any) {
     console.error("Error updating project:", error);
+    
+    // Handle specific validation errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+      return NextResponse.json(
+        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    // Handle duplicate key errors (slug already exists)
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { success: false, error: "Project with this slug already exists" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { success: false, error: "Failed to update project" },
       { status: 500 }
@@ -153,12 +223,13 @@ export async function DELETE(
       );
     }
 
-    // Revalidate ALL project-related caches including home page
-    const revalidatedTags = revalidateProjectCaches();
+    // Revalidate ALL project-related caches including the deleted project's slug
+    const revalidatedTags = revalidateProjectCaches(project.slug);
 
     console.log("Project deleted and caches revalidated:", {
       projectId: id,
       deletedProject: project.name,
+      deletedSlug: project.slug,
       revalidatedTags,
       timestamp: new Date().toISOString(),
     });

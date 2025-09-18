@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface ProjectHighlight {
   image: string;
@@ -44,7 +44,6 @@ interface GatewayCategory {
   locations: GatewayLocation[];
 }
 
-
 interface ProjectDetail {
   hero: {
     backgroundImage: string;
@@ -82,7 +81,7 @@ interface ProjectDetail {
     backgroundImage: string;
     plans: InvestmentPlan[];
   };
-   gateway: {
+  gateway: {
     title: string;
     subtitle: string;
     highlightText: string;
@@ -97,6 +96,7 @@ interface ProjectDetail {
 
 interface Project {
   _id: string;
+  slug: string;
   name: string;
   price: string;
   images: string[];
@@ -126,9 +126,9 @@ const initialState: AdminProjectsState = {
 };
 
 export const fetchProjects = createAsyncThunk(
-  'adminProjects/fetchProjects',
+  "adminProjects/fetchProjects",
   async () => {
-    const response = await fetch('/api/cms/projects');
+    const response = await fetch("/api/cms/projects");
     const result = await response.json();
     if (!result.success) throw new Error(result.error);
     return result.data;
@@ -136,7 +136,7 @@ export const fetchProjects = createAsyncThunk(
 );
 
 export const fetchProjectById = createAsyncThunk(
-  'adminProjects/fetchProjectById',
+  "adminProjects/fetchProjectById",
   async (id: string) => {
     const response = await fetch(`/api/cms/projects/${id}`);
     const result = await response.json();
@@ -144,13 +144,23 @@ export const fetchProjectById = createAsyncThunk(
     return result.data;
   }
 );
+// Add new async thunk to fetch project by slug
+export const fetchProjectBySlug = createAsyncThunk(
+  "adminProjects/fetchProjectBySlug",
+  async (slug: string) => {
+    const response = await fetch(`/api/cms/projects/slug/${slug}`);
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error);
+    return result.data;
+  }
+);
 
 export const createProject = createAsyncThunk(
-  'adminProjects/createProject',
-  async (data: Omit<Project, '_id'>) => {
-    const response = await fetch('/api/cms/projects', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+  "adminProjects/createProject",
+  async (data: Omit<Project, "_id">) => {
+    const response = await fetch("/api/cms/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const result = await response.json();
@@ -160,11 +170,11 @@ export const createProject = createAsyncThunk(
 );
 
 export const updateProject = createAsyncThunk(
-  'adminProjects/updateProject',
-  async ({ id, data }: { id: string; data: Omit<Project, '_id'> }) => {
+  "adminProjects/updateProject",
+  async ({ id, data }: { id: string; data: Omit<Project, "_id"> }) => {
     const response = await fetch(`/api/cms/projects/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const result = await response.json();
@@ -174,10 +184,10 @@ export const updateProject = createAsyncThunk(
 );
 
 export const deleteProject = createAsyncThunk(
-  'adminProjects/deleteProject',
+  "adminProjects/deleteProject",
   async (id: string) => {
     const response = await fetch(`/api/cms/projects/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
     const result = await response.json();
     if (!result.success) throw new Error(result.error);
@@ -186,7 +196,7 @@ export const deleteProject = createAsyncThunk(
 );
 
 const adminProjectsSlice = createSlice({
-  name: 'adminProjects',
+  name: "adminProjects",
   initialState,
   reducers: {
     clearError: (state) => {
@@ -195,6 +205,26 @@ const adminProjectsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchProjectBySlug.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProjectBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        // Update existing project in array or add if not exists
+        const index = state.projects.findIndex(
+          (project) => project._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.projects[index] = action.payload;
+        } else {
+          state.projects.push(action.payload);
+        }
+      })
+      .addCase(fetchProjectBySlug.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch project by slug";
+      })
       .addCase(fetchProjects.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -205,7 +235,7 @@ const adminProjectsSlice = createSlice({
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch projects';
+        state.error = action.error.message || "Failed to fetch projects";
       })
       .addCase(fetchProjectById.pending, (state) => {
         state.loading = true;
@@ -214,7 +244,9 @@ const adminProjectsSlice = createSlice({
       .addCase(fetchProjectById.fulfilled, (state, action) => {
         state.loading = false;
         // Update existing project in array or add if not exists
-        const index = state.projects.findIndex(project => project._id === action.payload._id);
+        const index = state.projects.findIndex(
+          (project) => project._id === action.payload._id
+        );
         if (index !== -1) {
           state.projects[index] = action.payload;
         } else {
@@ -223,19 +255,23 @@ const adminProjectsSlice = createSlice({
       })
       .addCase(fetchProjectById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch project';
+        state.error = action.error.message || "Failed to fetch project";
       })
       .addCase(createProject.fulfilled, (state, action) => {
         state.projects.push(action.payload);
       })
       .addCase(updateProject.fulfilled, (state, action) => {
-        const index = state.projects.findIndex(project => project._id === action.payload._id);
+        const index = state.projects.findIndex(
+          (project) => project._id === action.payload._id
+        );
         if (index !== -1) {
           state.projects[index] = action.payload;
         }
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
-        state.projects = state.projects.filter(project => project._id !== action.payload);
+        state.projects = state.projects.filter(
+          (project) => project._id !== action.payload
+        );
       });
   },
 });

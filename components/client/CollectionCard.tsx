@@ -62,13 +62,13 @@ export default function CollectionCard({
 
   // Handle navigation with loading state
   const handleNavigation = useCallback(
-    (projectId: string) => {
+    (projectSlug: string) => {
       dispatch(setNavigationLoading(true));
 
       // Add a small delay to show loading animation
       setTimeout(() => {
-        router.push(`/project-detail/${projectId}`);
-        // Loading state will be reset when the new page loads or in useEffect cleanup
+        router.push(`/project-detail/${projectSlug}`);
+        // Loading state will be reset when the new page loads
       }, 100);
     },
     [router, dispatch]
@@ -243,7 +243,7 @@ export default function CollectionCard({
     <div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
       <div
         className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer"
-        onClick={() => handleNavigation(property._id)}
+        onClick={() => handleNavigation(property.slug)}
       >
         {/* Background Images */}
         <div className="relative w-full h-full">
