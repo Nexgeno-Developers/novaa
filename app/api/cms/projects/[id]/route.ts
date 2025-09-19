@@ -3,79 +3,287 @@ import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import { revalidateTag, revalidatePath } from "next/cache";
 
-// Helper function to revalidate all project-related caches
-async function revalidateProjectCaches(projectSlug?: string, oldSlug?: string) {
-  const tagsToRevalidate = [
-    "projects",
-    "categories", 
-    "project-sections",
-    "sections",
-    "home-sections",
-    "home-page-sections",
-    "project-details",
-  ];
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
+    const { id } = await params;
+    const data = await request.json();
 
-  // Add slug-specific cache tags
-  if (projectSlug) {
-    tagsToRevalidate.push(`project-slug-${projectSlug}`);
-    tagsToRevalidate.push(`project-detail-${projectSlug}`);
-  }
-
-  // Also clear old slug cache if slug changed
-  if (oldSlug && oldSlug !== projectSlug) {
-    tagsToRevalidate.push(`project-slug-${oldSlug}`);
-    tagsToRevalidate.push(`project-detail-${oldSlug}`);
-  }
-
-  // Revalidate cache tags with error handling
-  const revalidationPromises = tagsToRevalidate.map(async (tag) => {
-    try {
-      console.log(`Revalidating tag: ${tag}`);
-      revalidateTag(tag);
-      return { tag, success: true };
-    } catch (error) {
-      console.error(`Failed to revalidate tag ${tag}:`, error);
-      return { tag, success: false, error };
+    // Get the current project to check if slug changed
+    const currentProject = await Project.findById(id);
+    if (!currentProject) {
+      return NextResponse.json(
+        { success: false, error: "Project not found" },
+        { status: 404 }
+      );
     }
-  });
 
-  // Revalidate specific paths with error handling
-  const pathsToRevalidate = [
-    "/", // Home page
-    "/project", // Projects page
-  ];
+    const oldSlug = currentProject.slug;
 
-  if (projectSlug) {
-    pathsToRevalidate.push(`/project-detail/${projectSlug}`);
-  }
+    // Extract all fields
+    const {
+      name,
+      slug,
+      price,
+      images,
+      location,
+      description,
+      badge,
+      category,
+      categoryName,
+      isActive,
+      order,
+      projectDetail,
+    } = data;
 
-  if (oldSlug && oldSlug !== projectSlug) {
-    pathsToRevalidate.push(`/project-detail/${oldSlug}`);
-  }
-
-  const pathPromises = pathsToRevalidate.map(async (path) => {
-    try {
-      console.log(`Revalidating path: ${path}`);
-      revalidatePath(path);
-      return { path, success: true };
-    } catch (error) {
-      console.error(`Failed to revalidate path ${path}:`, error);
-      return { path, success: false, error };
+    // Validate required fields
+    if (!name) {
+      return NextResponse.json(
+        { success: false, error: "Project name is required" },
+        { status: 400 }
+      );
     }
-  });
 
-  // Wait for all revalidations to complete
-  const [tagResults, pathResults] = await Promise.allSettled([
-    Promise.all(revalidationPromises),
-    Promise.all(pathPromises)
-  ]);
+    if (!slug) {
+      return NextResponse.json(
+        { success: false, error: "Project slug is required" },
+        { status: 400 }
+      );
+    }
 
-  return {
-    tags: tagResults.status === 'fulfilled' ? tagResults.value : [],
-    paths: pathResults.status === 'fulfilled' ? pathResults.value : [],
-    tagsToRevalidate,
-    pathsToRevalidate
-  };
+    const updateData: any = {
+      name,
+      slug,
+      price,
+      images,
+      location,
+      description,
+      badge,
+      category,
+      categoryName,
+      isActive,
+      order,
+    };
+
+    if (projectDetail) {
+      updateData.projectDetail = projectDetail;
+    }
+
+    // Update the project
+    const updatedProject = await Project.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    }).populate("category");
+
+    if (!updatedProject) {
+      return NextResponse.json(
+        { success: false, error: "Project not found after update" },
+        { status: 404 }
+      );
+    }
+
+    console.log(`[CMS UPDATE] Project updated: ${updatedProject.name} (${updatedProject.slug})`);
+
+    // IMMEDIATE cache invalidation - this is the key!
+    try {
+      console.log("[REVALIDATION] Starting cache invalidation...");
+      
+      // Revalidate cache tags (this clears the unstable_cache)
+      revalidateTag("projects");
+      revalidateTag("project-details");
+      
+      // Revalidate specific paths
+      revalidatePath(`/project-detail/${updatedProject.slug}`);
+      
+      // If slug changed, also revalidate old path
+      if (oldSlug && oldSlug !== updatedProject.slug) {
+        revalidatePath(`/project-detail/${oldSlug}`);
+      }
+      
+      // Revalidate home page and projects listing
+      revalidatePath("/");
+      revalidatePath("/project");
+      
+      console.log("[REVALIDATION] Cache invalidation completed successfully");
+      
+    } catch (revalidateError) {
+      console.error("[REVALIDATION ERROR]", revalidateError);
+      // Continue with response even if revalidation fails
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      data: updatedProject,
+      message: "Project updated and cache invalidated"
+    });
+
+  } catch (error: any) {
+    console.error("Error updating project:", error);
+    
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+      return NextResponse.json(
+        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { success: false, error: "Project with this slug already exists" },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: false, error: "Failed to update project" },
+      { status: 500 }
+    );
+  }
+}
+
+// Also update POST method for consistency
+export async function POST(request: Request) {
+  try {
+    await connectDB();
+    const data = await request.json();
+
+    const {
+      name,
+      slug,
+      price,
+      images,
+      location,
+      description,
+      badge,
+      category,
+      categoryName,
+      isActive,
+      order,
+      projectDetail,
+    } = data;
+
+    if (!name || !slug) {
+      return NextResponse.json(
+        { success: false, error: "Name and slug are required" },
+        { status: 400 }
+      );
+    }
+
+    const defaultProjectDetail = {
+      hero: {
+        backgroundImage: "",
+        title: name,
+        subtitle: "",
+        scheduleMeetingButton: "Schedule a meeting",
+        getBrochureButton: "Get Brochure",
+        brochurePdf: "",
+      },
+      projectHighlights: {
+        backgroundImage: "",
+        description: "",
+        highlights: [],
+      },
+      keyHighlights: {
+        backgroundImage: "",
+        description: "",
+        highlights: [],
+      },
+      modernAmenities: {
+        title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
+        description: "",
+        amenities: [],
+      },
+      masterPlan: {
+        title: "",
+        subtitle: "",
+        description: "",
+        backgroundImage: "",
+        tabs: [],
+      },
+      investmentPlans: {
+        title: "LIMITED-TIME INVESTMENT PLANS",
+        description: "Secure high returns with exclusive, time-sensitive opportunities.",
+        backgroundImage: "",
+        plans: [],
+      },
+      gateway: {
+        title: "A place to come home to",
+        subtitle: "and a location that",
+        highlightText: "holds its value.",
+        description: "Set between Layan and Bangtao, this address offers more than scenery.",
+        sectionTitle: "Your Gateway to Paradise",
+        sectionDescription: "Perfectly positioned where tropical elegance meets modern convenience.",
+        backgroundImage: "",
+        mapImage: "",
+        categories: [],
+      },
+    };
+
+    const project = await Project.create({
+      name,
+      slug,
+      price,
+      images,
+      location,
+      description,
+      badge,
+      category,
+      categoryName,
+      isActive,
+      order,
+      projectDetail: projectDetail || defaultProjectDetail,
+    });
+
+    const populatedProject = await Project.findById(project._id).populate("category");
+
+    console.log(`[CMS CREATE] New project created: ${populatedProject.name} (${populatedProject.slug})`);
+
+    // Immediate cache invalidation for new project
+    try {
+      revalidateTag("projects");
+      revalidateTag("project-details");
+      revalidatePath("/");
+      revalidatePath("/project");
+      revalidatePath(`/project-detail/${slug}`);
+      
+      console.log("[REVALIDATION] Cache invalidated for new project");
+    } catch (revalidateError) {
+      console.error("[REVALIDATION ERROR]", revalidateError);
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      data: populatedProject,
+      message: "Project created and cache invalidated"
+    });
+
+  } catch (error: any) {
+    console.error("Error creating project:", error);
+    
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+      return NextResponse.json(
+        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { success: false, error: "Project with this slug already exists" },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: false, error: "Failed to create project" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET(
@@ -105,157 +313,6 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  let updatedProject : any = null;
-  let oldSlug :any = null;
-  
-  try {
-    await connectDB();
-    const { id } = await params;
-    const data = await request.json();
-
-    // Get the current project to check if slug changed
-    const currentProject = await Project.findById(id);
-    if (!currentProject) {
-      return NextResponse.json(
-        { success: false, error: "Project not found" },
-        { status: 404 }
-      );
-    }
-
-    oldSlug = currentProject.slug;
-
-    // Extract all fields including slug and projectDetail
-    const {
-      name,
-      slug,
-      price,
-      images,
-      location,
-      description,
-      badge,
-      category,
-      categoryName,
-      isActive,
-      order,
-      projectDetail,
-    } = data;
-
-    // Validate required fields
-    if (!name) {
-      return NextResponse.json(
-        { success: false, error: "Project name is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!description) {
-      return NextResponse.json(
-        { success: false, error: "Project description is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!slug) {
-      return NextResponse.json(
-        { success: false, error: "Project slug is required" },
-        { status: 400 }
-      );
-    }
-
-    const updateData: any = {
-      name,
-      slug,
-      price,
-      images,
-      location,
-      description,
-      badge,
-      category,
-      categoryName,
-      isActive,
-      order,
-    };
-
-    // Add projectDetail if provided
-    if (projectDetail) {
-      updateData.projectDetail = projectDetail;
-    }
-
-    // Update the project
-    updatedProject = await Project.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    }).populate("category");
-
-    if (!updatedProject) {
-      return NextResponse.json(
-        { success: false, error: "Project not found after update" },
-        { status: 404 }
-      );
-    }
-
-    console.log("Project updated successfully:", {
-      projectId: id,
-      projectName: updatedProject.name,
-      newSlug: updatedProject.slug,
-      oldSlug: oldSlug,
-      slugChanged: oldSlug !== updatedProject.slug,
-      timestamp: new Date().toISOString(),
-    });
-
-    // Return success response immediately
-    const response = NextResponse.json({ 
-      success: true, 
-      data: updatedProject 
-    });
-
-    // Trigger cache revalidation asynchronously (don't wait for it)
-    setImmediate(async () => {
-      try {
-        const revalidationResults = await revalidateProjectCaches(updatedProject.slug, oldSlug);
-        console.log("Cache revalidation completed:", {
-          projectId: id,
-          revalidationResults,
-          timestamp: new Date().toISOString(),
-        });
-      } catch (revalidationError) {
-        console.error("Cache revalidation failed:", revalidationError);
-      }
-    });
-
-    return response;
-
-  } catch (error: any) {
-    console.error("Error updating project:", error);
-    
-    // Handle specific validation errors
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
-      return NextResponse.json(
-        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
-        { status: 400 }
-      );
-    }
-
-    // Handle duplicate key errors (slug already exists)
-    if (error.code === 11000) {
-      return NextResponse.json(
-        { success: false, error: "Project with this slug already exists" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { success: false, error: "Failed to update project" },
-      { status: 500 }
-    );
-  }
-}
-
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -273,34 +330,25 @@ export async function DELETE(
       );
     }
 
-    console.log("Project deleted successfully:", {
-      projectId: id,
-      deletedProject: project.name,
-      deletedSlug: project.slug,
-      timestamp: new Date().toISOString(),
-    });
+    console.log(`[CMS DELETE] Project deleted: ${project.name} (${project.slug})`);
 
-    // Return success response immediately
-    const response = NextResponse.json({
+    // Immediate cache invalidation for deleted project
+    try {
+      revalidateTag("projects");
+      revalidateTag("project-details");
+      revalidatePath("/");
+      revalidatePath("/project");
+      revalidatePath(`/project-detail/${project.slug}`);
+      
+      console.log("[REVALIDATION] Cache invalidated for deleted project");
+    } catch (revalidateError) {
+      console.error("[REVALIDATION ERROR]", revalidateError);
+    }
+
+    return NextResponse.json({
       success: true,
-      message: "Project deleted successfully",
+      message: "Project deleted and cache invalidated",
     });
-
-    // Trigger cache revalidation asynchronously
-    setImmediate(async () => {
-      try {
-        const revalidationResults = await revalidateProjectCaches(project.slug);
-        console.log("Delete cache revalidation completed:", {
-          projectId: id,
-          revalidationResults,
-          timestamp: new Date().toISOString(),
-        });
-      } catch (revalidationError) {
-        console.error("Delete cache revalidation failed:", revalidationError);
-      }
-    });
-
-    return response;
 
   } catch (error) {
     console.error("Error deleting project:", error);
