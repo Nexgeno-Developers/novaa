@@ -11,96 +11,95 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
+// Fallback function to get project directly from DB (without cache)
+async function getProjectBySlugDirect(slug: string) {
+  try {
+    await connectDB();
+    
+    const project = await Project.findOne({ slug, isActive: true })
+      .populate("category", "name _id")
+      .lean();
+
+    if (!project) {
+      return null;
+    }
+
+    // Convert BSON to plain object
+    const updatedProject = JSON.parse(JSON.stringify(project));
+
+    // Ensure required fields exist with defaults
+    updatedProject.images = updatedProject.images || [];
+    updatedProject.location = updatedProject.location || '';
+    updatedProject.description = updatedProject.description || '';
+    updatedProject.badge = updatedProject.badge || '';
+    updatedProject.price = updatedProject.price || '';
+    updatedProject.categoryName = updatedProject.categoryName || updatedProject.category?.name || '';
+    
+    // Ensure projectDetail exists with defaults
+    if (!updatedProject.projectDetail) {
+      updatedProject.projectDetail = {
+        hero: {
+          backgroundImage: "",
+          title: updatedProject.name,
+          subtitle: "",
+          scheduleMeetingButton: "Schedule a meeting",
+          getBrochureButton: "Get Brochure",
+          brochurePdf: "",
+        },
+        projectHighlights: {
+          backgroundImage: "",
+          description: "",
+          highlights: [],
+        },
+        keyHighlights: {
+          backgroundImage: "",
+          description: "",
+          highlights: [],
+        },
+        modernAmenities: {
+          title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
+          description: "",
+          amenities: [],
+        },
+        masterPlan: {
+          title: "",
+          subtitle: "",
+          description: "",
+          backgroundImage: "",
+          tabs: [],
+        },
+        investmentPlans: {
+          title: "LIMITED-TIME INVESTMENT PLANS",
+          description: "Secure high returns with exclusive, time-sensitive opportunities.",
+          backgroundImage: "",
+          plans: [],
+        },
+        gateway: {
+          title: "A place to come home to",
+          subtitle: "and a location that",
+          highlightText: "holds its value.",
+          description: "Set between Layan and Bangtao, this address offers more than scenery.",
+          sectionTitle: "Your Gateway to Paradise",
+          sectionDescription: "Perfectly positioned where tropical elegance meets modern convenience.",
+          backgroundImage: "",
+          mapImage: "",
+          categories: [],
+        },
+      };
+    }
+
+    return updatedProject;
+  } catch (error) {
+    console.error("Error fetching project directly:", error);
+    return null;
+  }
+}
+
 // Create cached function for project data by slug
 const getCachedProjectBySlug = (slug: string) =>
   unstable_cache(
     async () => {
-      try {
-        await connectDB();
-
-        console.log("Fetching project with slug:", slug);
-
-        const project = await Project.findOne({ slug, isActive: true })
-          .populate("category", "name _id")
-          .lean();
-
-        console.log("Project found:", !!project);
-
-        if (!project) {
-          console.log("Project not found with slug:", slug);
-          return null;
-        }
-
-        // Convert all BSON/ObjectId fields into plain strings
-        const updatedProject = JSON.parse(JSON.stringify(project));
-
-        // Ensure required fields exist with defaults
-        updatedProject.images = updatedProject.images || [];
-        updatedProject.location = updatedProject.location || '';
-        updatedProject.description = updatedProject.description || '';
-        updatedProject.badge = updatedProject.badge || '';
-        updatedProject.price = updatedProject.price || '';
-        updatedProject.categoryName = updatedProject.categoryName || updatedProject.category?.name || '';
-        
-        // Ensure projectDetail exists with defaults
-        if (!updatedProject.projectDetail) {
-          updatedProject.projectDetail = {
-            hero: {
-              backgroundImage: "",
-              title: updatedProject.name,
-              subtitle: "",
-              scheduleMeetingButton: "Schedule a meeting",
-              getBrochureButton: "Get Brochure",
-              brochurePdf: "",
-            },
-            projectHighlights: {
-              backgroundImage: "",
-              description: "",
-              highlights: [],
-            },
-            keyHighlights: {
-              backgroundImage: "",
-              description: "",
-              highlights: [],
-            },
-            modernAmenities: {
-              title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
-              description: "",
-              amenities: [],
-            },
-            masterPlan: {
-              title: "",
-              subtitle: "",
-              description: "",
-              backgroundImage: "",
-              tabs: [],
-            },
-            investmentPlans: {
-              title: "LIMITED-TIME INVESTMENT PLANS",
-              description: "Secure high returns with exclusive, time-sensitive opportunities.",
-              backgroundImage: "",
-              plans: [],
-            },
-            gateway: {
-              title: "A place to come home to",
-              subtitle: "and a location that",
-              highlightText: "holds its value.",
-              description: "Set between Layan and Bangtao, this address offers more than scenery.",
-              sectionTitle: "Your Gateway to Paradise",
-              sectionDescription: "Perfectly positioned where tropical elegance meets modern convenience.",
-              backgroundImage: "",
-              mapImage: "",
-              categories: [],
-            },
-          };
-        }
-
-        console.log("Project data processed successfully");
-        return updatedProject;
-      } catch (error) {
-        console.error("Error fetching project:", error);
-        return null;
-      }
+      return await getProjectBySlugDirect(slug);
     },
     [`project-detail-${slug}`],
     {
@@ -111,11 +110,29 @@ const getCachedProjectBySlug = (slug: string) =>
 
 async function getProjectBySlug(slug: string) {
   try {
+    console.log("Fetching project with slug:", slug);
+    
+    // First try to get from cache
     const cachedFunction = getCachedProjectBySlug(slug);
-    return await cachedFunction();
+    let project = await cachedFunction();
+    
+    // If cache returns null or undefined, try direct DB query as fallback
+    if (!project) {
+      console.log("Cache miss or empty, trying direct DB query for slug:", slug);
+      project = await getProjectBySlugDirect(slug);
+      
+      if (project) {
+        console.log("Found project via direct query, cache will be populated on next request");
+      }
+    }
+    
+    return project;
   } catch (error) {
     console.error("Error in getProjectBySlug:", error);
-    return null;
+    
+    // Final fallback to direct DB query
+    console.log("Cache error, falling back to direct DB query");
+    return await getProjectBySlugDirect(slug);
   }
 }
 
@@ -127,7 +144,7 @@ export async function generateStaticParams() {
       .select("slug")
       .lean();
 
-    console.log("Generating static params for projects:", projects.length);
+    // console.log("Generating static params for projects:", projects.length);
     
     return projects.map((project: any) => ({
       slug: project.slug,
@@ -184,7 +201,7 @@ export default async function ProjectDetailPage({
   try {
     const { slug } = await params;
 
-    console.log("ProjectDetailPage accessed with slug:", slug);
+    // console.log("ProjectDetailPage accessed with slug:", slug);
 
     const project = await getProjectBySlug(slug);
 
@@ -192,6 +209,8 @@ export default async function ProjectDetailPage({
       console.log("Project not found, calling notFound()");
       notFound();
     }
+
+    console.log("Successfully loaded project:", project.name);
 
     return (
       <main className="relative">

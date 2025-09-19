@@ -2,7 +2,78 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import BlogCategory from '@/models/BlogCategory';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
+
+// Helper function to revalidate all blog-related caches
+async function revalidateBlogCaches(blogSlug?: string, oldSlug?: string) {
+  const tagsToRevalidate = [
+    'blogs',
+    'blog-sections',
+    'blog-categories',
+    'sections'
+  ];
+
+  // Add slug-specific cache tags
+  if (blogSlug) {
+    tagsToRevalidate.push(`blog-${blogSlug}`);
+    tagsToRevalidate.push(`blog-detail-${blogSlug}`);
+  }
+
+  // Also clear old slug cache if slug changed
+  if (oldSlug && oldSlug !== blogSlug) {
+    tagsToRevalidate.push(`blog-${oldSlug}`);
+    tagsToRevalidate.push(`blog-detail-${oldSlug}`);
+  }
+
+  // Revalidate cache tags with error handling
+  const revalidationPromises = tagsToRevalidate.map(async (tag) => {
+    try {
+      console.log(`Revalidating tag: ${tag}`);
+      revalidateTag(tag);
+      return { tag, success: true };
+    } catch (error) {
+      console.error(`Failed to revalidate tag ${tag}:`, error);
+      return { tag, success: false, error };
+    }
+  });
+
+  // Revalidate specific paths with error handling
+  const pathsToRevalidate = [
+    "/blog", // Blog listing page
+  ];
+
+  if (blogSlug) {
+    pathsToRevalidate.push(`/blog/${blogSlug}`);
+  }
+
+  if (oldSlug && oldSlug !== blogSlug) {
+    pathsToRevalidate.push(`/blog/${oldSlug}`);
+  }
+
+  const pathPromises = pathsToRevalidate.map(async (path) => {
+    try {
+      console.log(`Revalidating path: ${path}`);
+      revalidatePath(path);
+      return { path, success: true };
+    } catch (error) {
+      console.error(`Failed to revalidate path ${path}:`, error);
+      return { path, success: false, error };
+    }
+  });
+
+  // Wait for all revalidations to complete
+  const [tagResults, pathResults] = await Promise.allSettled([
+    Promise.all(revalidationPromises),
+    Promise.all(pathPromises)
+  ]);
+
+  return {
+    tags: tagResults.status === 'fulfilled' ? tagResults.value : [],
+    paths: pathResults.status === 'fulfilled' ? pathResults.value : [],
+    tagsToRevalidate,
+    pathsToRevalidate
+  };
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -104,14 +175,35 @@ export async function POST(request: NextRequest) {
     // Populate category for response
     await blog.populate('category', 'title slug');
 
-    // Revalidate caches
-    revalidateTag('blogs');
-    revalidateTag('blog-sections'); // This will revalidate blog listing page
-    
-    return NextResponse.json({
+    console.log("Blog created successfully:", {
+      blogId: blog._id,
+      blogTitle: blog.title,
+      blogSlug: blog.slug,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Return success response immediately
+    const response = NextResponse.json({
       success: true,
       data: blog
     }, { status: 201 });
+
+    // Trigger cache revalidation asynchronously
+    setImmediate(async () => {
+      try {
+        const revalidationResults = await revalidateBlogCaches(blog.slug);
+        console.log("Blog creation cache revalidation completed:", {
+          blogId: blog._id,
+          revalidationResults,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (revalidationError) {
+        console.error("Blog creation cache revalidation failed:", revalidationError);
+      }
+    });
+
+    return response;
+    
   } catch (error) {
     console.error('Error creating blog:', error);
     return NextResponse.json(
