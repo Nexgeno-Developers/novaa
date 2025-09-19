@@ -64,7 +64,7 @@ const getCachedBlogBySlug = (slug: string) =>
     [`blog-detail-${slug}`],
     {
       tags: ["blogs", `blog-${slug}`, "blog-categories"],
-       revalidate: false, // Fallback revalidation
+      revalidate: 3600, // Fallback revalidation
     }
   );
 
@@ -95,30 +95,25 @@ const getCachedBreadcrumbData = unstable_cache(
   ["blog-breadcrumb-data"],
   {
     tags: ["blog-sections", "sections"],
-    revalidate: false,
+    revalidate: 3600,
   }
 );
 
 async function getBlogBySlug(slug: string) {
   try {
     console.log("Fetching blog with slug:", slug);
-
+    
     // First try to get from cache
     const cachedFunction = getCachedBlogBySlug(slug);
     let result = await cachedFunction();
-
+    
     // If cache returns null or undefined, try direct DB query as fallback
     if (!result) {
-      console.log(
-        "Cache miss or empty, trying direct DB query for blog slug:",
-        slug
-      );
+      console.log("Cache miss or empty, trying direct DB query for blog slug:", slug);
       result = await getBlogBySlugDirect(slug);
-
+      
       if (result) {
-        console.log(
-          "Found blog via direct query, cache will be populated on next request"
-        );
+        console.log("Found blog via direct query, cache will be populated on next request");
       }
     }
 
@@ -138,7 +133,7 @@ async function getBlogBySlug(slug: string) {
     return result;
   } catch (error) {
     console.error("Error in getBlogBySlug:", error);
-
+    
     // Final fallback to direct DB query
     console.log("Cache error, falling back to direct DB query");
     return await getBlogBySlugDirect(slug);
@@ -150,21 +145,21 @@ async function getBreadcrumbData() {
     // First try to get from cache
     const cachedFunction = getCachedBreadcrumbData;
     let breadcrumbData = await cachedFunction();
-
+    
     // If cache returns null, try direct DB query as fallback
     if (!breadcrumbData) {
       console.log("Breadcrumb cache miss, trying direct DB query");
       breadcrumbData = await getBreadcrumbDataDirect();
-
+      
       if (breadcrumbData) {
         console.log("Found breadcrumb via direct query");
       }
     }
-
+    
     return breadcrumbData;
   } catch (error) {
     console.error("Error in getBreadcrumbData:", error);
-
+    
     // Final fallback to direct DB query
     return await getBreadcrumbDataDirect();
   }

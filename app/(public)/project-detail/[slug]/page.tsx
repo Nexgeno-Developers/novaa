@@ -11,7 +11,7 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-// Direct DB function (no cache)
+// Fallback function to get project directly from DB (without cache)
 async function getProjectBySlugDirect(slug: string) {
   try {
     await connectDB();
@@ -95,39 +95,48 @@ async function getProjectBySlugDirect(slug: string) {
   }
 }
 
-// Cached function - will cache until revalidated
-const getCachedProjectBySlug = unstable_cache(
-  async (slug: string) => {
-    console.log(`[CACHE MISS] Fetching fresh data for slug: ${slug}`);
-    return await getProjectBySlugDirect(slug);
-  },
-  [], // Empty dependency array since slug is passed as parameter
-  {
-    tags: ["projects", "project-details"], // Simple tags for easy revalidation
-    revalidate: 86400, // Cache for 24 hours OR until manually revalidated
-  }
-);
+// Create cached function for project data by slug
+const getCachedProjectBySlug = (slug: string) =>
+  unstable_cache(
+    async () => {
+      return await getProjectBySlugDirect(slug);
+    },
+    [`project-detail-${slug}`],
+    {
+      tags: ["projects", `project-slug-${slug}`, "project-details", "categories"],
+      revalidate: false,
+    }
+  );
 
 async function getProjectBySlug(slug: string) {
   try {
-    console.log(`[REQUEST] Getting project with slug: ${slug}`);
+    console.log("Fetching project with slug:", slug);
     
-    // This will use cache if available, or fetch fresh data and cache it
-    const project = await getCachedProjectBySlug(slug);
+    // First try to get from cache
+    const cachedFunction = getCachedProjectBySlug(slug);
+    let project = await cachedFunction();
     
-    if (project) {
-      console.log(`[CACHE HIT] Found cached project: ${project.name}`);
+    // If cache returns null or undefined, try direct DB query as fallback
+    if (!project) {
+      console.log("Cache miss or empty, trying direct DB query for slug:", slug);
+      project = await getProjectBySlugDirect(slug);
+      
+      if (project) {
+        console.log("Found project via direct query, cache will be populated on next request");
+      }
     }
     
     return project;
   } catch (error) {
     console.error("Error in getProjectBySlug:", error);
-    // Fallback to direct query
+    
+    // Final fallback to direct DB query
+    console.log("Cache error, falling back to direct DB query");
     return await getProjectBySlugDirect(slug);
   }
 }
 
-// Generate static params for known projects
+// Update generateStaticParams to use slugs
 export async function generateStaticParams() {
   try {
     await connectDB();
@@ -135,6 +144,8 @@ export async function generateStaticParams() {
       .select("slug")
       .lean();
 
+    console.log("Generating static params for projects:", projects.length);
+    
     return projects.map((project: any) => ({
       slug: project.slug,
     }));
@@ -189,6 +200,9 @@ export default async function ProjectDetailPage({
 }) {
   try {
     const { slug } = await params;
+
+    console.log("ProjectDetailPage accessed with slug:", slug);
+
     const project = await getProjectBySlug(slug);
 
     if (!project) {
@@ -235,6 +249,5 @@ export default async function ProjectDetailPage({
   }
 }
 
-// Allow dynamic params for new projects
 export const dynamicParams = true;
-// Keep default caching behavior - will cache until revalidated
+export const revalidate = false;
