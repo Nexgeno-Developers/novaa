@@ -104,7 +104,7 @@ const getCachedProjectBySlug = (slug: string) =>
     [`project-detail-${slug}`],
     {
       tags: ["projects", `project-slug-${slug}`, "project-details", "categories"],
-      revalidate: false,
+      revalidate: 0,
     }
   );
 
@@ -250,4 +250,4 @@ export default async function ProjectDetailPage({
 }
 
 export const dynamicParams = true;
-export const revalidate = false;
+export const revalidate = 0;

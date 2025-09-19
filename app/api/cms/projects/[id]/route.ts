@@ -110,7 +110,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   let updatedProject : any = null;
-  let oldSlug : any = null;
+  let oldSlug :any = null;
   
   try {
     await connectDB();
