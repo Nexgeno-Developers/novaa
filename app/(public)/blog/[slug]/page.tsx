@@ -64,7 +64,7 @@ const getCachedBlogBySlug = (slug: string) =>
     [`blog-detail-${slug}`],
     {
       tags: ["blogs", `blog-${slug}`, "blog-categories"],
-      revalidate: 3600, // Fallback revalidation
+      revalidate: false, // Fallback revalidation
     }
   );
 
@@ -95,7 +95,7 @@ const getCachedBreadcrumbData = unstable_cache(
   ["blog-breadcrumb-data"],
   {
     tags: ["blog-sections", "sections"],
-    revalidate: 3600,
+    revalidate: false,
   }
 );
 

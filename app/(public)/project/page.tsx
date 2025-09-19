@@ -90,7 +90,7 @@ const getCachedProjectPageData = unstable_cache(
   ["project-page-sections"], // Cache key
   {
     tags: ["project-sections", "sections", "projects", "categories"], // Cache tags for revalidation
-    revalidate: 3600, // Revalidate every hour (fallback)
+    revalidate: false, // Revalidate every hour (fallback)
   }
 );
 

@@ -297,7 +297,7 @@ export const getSectionData = async (
         pageSlug === "home"
           ? [`${pageSlug}-sections`, "sections", "projects", "categories"]
           : [`${pageSlug}-sections`, "sections"],
-      revalidate: 3600,
+      revalidate: false,
     }
   );
 

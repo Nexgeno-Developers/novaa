@@ -38,7 +38,7 @@ const getCachedNavbarData = unstable_cache(
   ['navbar-data'], // Cache key
   {
     tags: ['navbar'], // Cache tag for revalidation
-    revalidate: 3600, // Revalidate every hour (fallback)
+    revalidate: false, // Revalidate every hour (fallback)
   }
 );
 
