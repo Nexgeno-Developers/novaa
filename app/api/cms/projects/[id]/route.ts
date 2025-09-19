@@ -3,6 +3,52 @@ import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import { revalidateTag, revalidatePath } from "next/cache";
 
+// Helper function to revalidate all project-related caches
+function revalidateProjectCaches(projectSlug?: string, oldSlug?: string) {
+  const tagsToRevalidate = [
+    "projects",
+    "categories",
+    "project-sections",
+    "sections",
+    "home-sections",
+    "home-page-sections",
+    "project-details",
+  ];
+
+  // Add slug-specific cache tags
+  if (projectSlug) {
+    tagsToRevalidate.push(`project-slug-${projectSlug}`);
+    tagsToRevalidate.push(`project-detail-${projectSlug}`);
+  }
+
+  // Also clear old slug cache if slug changed
+  if (oldSlug && oldSlug !== projectSlug) {
+    tagsToRevalidate.push(`project-slug-${oldSlug}`);
+    tagsToRevalidate.push(`project-detail-${oldSlug}`);
+  }
+
+  // Revalidate cache tags
+  tagsToRevalidate.forEach((tag) => {
+    console.log(`Revalidating tag: ${tag}`);
+    revalidateTag(tag);
+  });
+
+  // Revalidate specific slug-based paths
+  if (projectSlug) {
+    revalidatePath(`/project-detail/${projectSlug}`);
+  }
+
+  // Also revalidate old slug path if changed
+  if (oldSlug && oldSlug !== projectSlug) {
+    revalidatePath(`/project-detail/${oldSlug}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/project");
+
+  return tagsToRevalidate;
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -90,7 +136,7 @@ export async function PUT(
 
     const updateData: any = {
       name,
-      slug,
+      slug, // Add this line
       price,
       images,
       location,
@@ -119,94 +165,21 @@ export async function PUT(
       );
     }
 
-    console.log("Project updated successfully:", {
+    // Revalidate ALL project-related caches including old and new slug paths
+    const revalidatedTags = revalidateProjectCaches(project.slug, oldSlug);
+
+    console.log("Project updated and caches revalidated:", {
       projectId: id,
       projectName: project.name,
       newSlug: project.slug,
       oldSlug: oldSlug,
       slugChanged: oldSlug !== project.slug,
+      revalidatedTags,
       timestamp: new Date().toISOString(),
     });
 
-    // Return response immediately
-    const response = NextResponse.json({ 
-      success: true, 
-      data: project,
-      message: "Project updated successfully"
-    });
-
-    // Background cache revalidation (non-blocking)
-    setImmediate(async () => {
-      try {
-        const baseTagsToRevalidate = [
-          "projects",
-          "categories",
-          "home-sections",
-          "project-sections",
-          "sections",
-          "project-details",
-        ];
-
-        // Add slug-specific cache tags
-        const slugSpecificTags = [];
-        if (project.slug) {
-          slugSpecificTags.push(`project-slug-${project.slug}`);
-          slugSpecificTags.push(`project-detail-${project.slug}`);
-        }
-
-        // Also clear old slug cache if slug changed
-        if (oldSlug && oldSlug !== project.slug) {
-          slugSpecificTags.push(`project-slug-${oldSlug}`);
-          slugSpecificTags.push(`project-detail-${oldSlug}`);
-        }
-
-        const allTags = [...baseTagsToRevalidate, ...slugSpecificTags];
-
-        // Revalidate cache tags with small delays
-        for (const tag of allTags) {
-          try {
-            console.log(`Revalidating tag: ${tag}`);
-            revalidateTag(tag);
-            await new Promise(resolve => setTimeout(resolve, 10));
-          } catch (error) {
-            console.error(`Error revalidating tag ${tag}:`, error);
-          }
-        }
-
-        // Revalidate specific paths with delays
-        const pathsToRevalidate = ["/", "/project"];
-        
-        if (project.slug) {
-          pathsToRevalidate.push(`/project-detail/${project.slug}`);
-        }
-        
-        if (oldSlug && oldSlug !== project.slug) {
-          pathsToRevalidate.push(`/project-detail/${oldSlug}`);
-        }
-
-        for (const path of pathsToRevalidate) {
-          try {
-            console.log(`Revalidating path: ${path}`);
-            revalidatePath(path);
-            await new Promise(resolve => setTimeout(resolve, 50));
-          } catch (error) {
-            console.error(`Error revalidating path ${path}:`, error);
-          }
-        }
-
-        console.log("Background cache revalidation completed for updated project:", {
-          projectId: id,
-          allTags,
-          pathsToRevalidated: pathsToRevalidate,
-          timestamp: new Date().toISOString(),
-        });
-      } catch (error) {
-        console.error("Background cache revalidation failed:", error);
-      }
-    });
-
-    return response;
-  } catch (error: any) {
+    return NextResponse.json({ success: true, data: project });
+  } catch (error : any) {
     console.error("Error updating project:", error);
     
     // Handle specific validation errors
@@ -250,61 +223,21 @@ export async function DELETE(
       );
     }
 
-    console.log("Project deleted successfully:", {
+    // Revalidate ALL project-related caches including the deleted project's slug
+    const revalidatedTags = revalidateProjectCaches(project.slug);
+
+    console.log("Project deleted and caches revalidated:", {
       projectId: id,
       deletedProject: project.name,
       deletedSlug: project.slug,
+      revalidatedTags,
       timestamp: new Date().toISOString(),
     });
 
-    // Return response immediately
-    const response = NextResponse.json({
+    return NextResponse.json({
       success: true,
       message: "Project deleted successfully",
     });
-
-    // Background cache revalidation (non-blocking)
-    setImmediate(async () => {
-      try {
-        const tagsToRevalidate = [
-          "projects",
-          "categories",
-          "home-sections",
-          "project-sections",
-          "sections",
-          "project-details",
-          `project-slug-${project.slug}`,
-          `project-detail-${project.slug}`,
-        ];
-
-        for (const tag of tagsToRevalidate) {
-          try {
-            console.log(`Revalidating tag after deletion: ${tag}`);
-            revalidateTag(tag);
-            await new Promise(resolve => setTimeout(resolve, 10));
-          } catch (error) {
-            console.error(`Error revalidating tag ${tag}:`, error);
-          }
-        }
-
-        const pathsToRevalidate = ["/", "/project", `/project-detail/${project.slug}`];
-        for (const path of pathsToRevalidate) {
-          try {
-            console.log(`Revalidating path after deletion: ${path}`);
-            revalidatePath(path);
-            await new Promise(resolve => setTimeout(resolve, 50));
-          } catch (error) {
-            console.error(`Error revalidating path ${path}:`, error);
-          }
-        }
-
-        console.log("Background cache revalidation after deletion completed");
-      } catch (error) {
-        console.error("Background cache revalidation after deletion failed:", error);
-      }
-    });
-
-    return response;
   } catch (error) {
     console.error("Error deleting project:", error);
     return NextResponse.json(

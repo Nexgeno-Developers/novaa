@@ -6,116 +6,104 @@ import { unstable_cache } from "next/cache";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import BlogDetailClient from "@/components/client/BlogDetailClient";
 
-// Fallback function to get blog directly from DB (without cache)
-async function getBlogBySlugDirect(slug: string) {
-  try {
-    await connectDB();
-
-    const blog = await Blog.findOne({ slug, isActive: true })
-      .populate("category", "title slug")
-      .populate("author", "name avatar")
-      .lean();
-
-    if (!blog) {
-      return null;
-    }
-
-    // Get related blogs from the same category
-    const relatedBlogs = await Blog.find({
-      category: (blog as any)?.category?._id,
-      _id: { $ne: (blog as any)._id },
-      isActive: true,
-    })
-      .populate("category", "title slug")
-      .populate("author", "name avatar")
-      .sort({ createdAt: -1 })
-      .limit(4)
-      .lean();
-
-    // Convert all BSON/ObjectId fields into plain strings
-    const updatedBlog = JSON.parse(JSON.stringify(blog));
-    const updatedRelatedBlogs = JSON.parse(JSON.stringify(relatedBlogs));
-
-    // Ensure categoryName is set
-    if (updatedBlog.category && !updatedBlog.categoryName) {
-      updatedBlog.categoryName = updatedBlog.category.title;
-    }
-
-    // Ensure categoryName is set for related blogs
-    updatedRelatedBlogs.forEach((relatedBlog: any) => {
-      if (relatedBlog.category && !relatedBlog.categoryName) {
-        relatedBlog.categoryName = relatedBlog.category.title;
-      }
-    });
-
-    return { updatedBlog, updatedRelatedBlogs };
-  } catch (error) {
-    console.error("Error fetching blog directly:", error);
-    return null;
-  }
-}
-
 // Create cached functions for blog data
 const getCachedBlogBySlug = (slug: string) =>
   unstable_cache(
     async () => {
-      return await getBlogBySlugDirect(slug);
+      try {
+        await connectDB();
+
+        console.log("Fetching blog with slug:", slug);
+
+        const blog = await Blog.findOne({ slug, isActive: true })
+          .populate("category", "title slug")
+          .populate("author", "name avatar")
+          .lean(); // Add .lean() for better performance
+
+        console.log("Blog found:", !!blog);
+
+        if (!blog) {
+          console.log("Blog not found with slug:", slug);
+          return null;
+        }
+
+        // Get related blogs from the same category
+        const relatedBlogs = await Blog.find({
+          category: (blog as any)?.category?._id,
+          _id: { $ne: (blog as any)._id },
+          isActive: true,
+        })
+          .populate("category", "title slug")
+          .populate("author", "name avatar")
+          .sort({ createdAt: -1 })
+          .limit(4)
+          .lean(); // Add .lean() for better performance
+
+        // Convert all BSON/ObjectId fields into plain strings
+        const updatedBlog = JSON.parse(JSON.stringify(blog));
+        const updatedRelatedBlogs = JSON.parse(JSON.stringify(relatedBlogs));
+
+        // Ensure categoryName is set (in case it's not in the database)
+        if (updatedBlog.category && !updatedBlog.categoryName) {
+          updatedBlog.categoryName = updatedBlog.category.title;
+        }
+
+        // Ensure categoryName is set for related blogs
+        updatedRelatedBlogs.forEach(
+          (relatedBlog: {
+            category: { title: string };
+            categoryName: string;
+          }) => {
+            if (relatedBlog.category && !relatedBlog.categoryName) {
+              relatedBlog.categoryName = relatedBlog.category.title;
+            }
+          }
+        );
+
+        console.log("Blog data processed successfully");
+        return { updatedBlog, updatedRelatedBlogs };
+      } catch (error) {
+        console.error("Error fetching blog:", error);
+        return null;
+      }
     },
-    [`blog-detail-${slug}`],
+    [`blog-detail-${slug}`], // Cache key
     {
-      tags: ["blogs", `blog-${slug}`, "blog-categories"],
-      revalidate: 3600, // Fallback revalidation
+      tags: ["blogs", `blog-${slug}`, "blog-categories"], // Cache tags for revalidation
+      revalidate: 3600, // Revalidate every hour (fallback)
     }
   );
-
-// Fallback function to get breadcrumb directly from DB
-async function getBreadcrumbDataDirect() {
-  try {
-    await connectDB();
-
-    const breadcrumbSection = await Section.findOne({
-      pageSlug: "blog",
-      type: "breadcrumb",
-      status: "active",
-      "settings.isVisible": true,
-    }).lean();
-
-    return JSON.parse(JSON.stringify(breadcrumbSection));
-  } catch (error) {
-    console.error("Error fetching breadcrumb data directly:", error);
-    return null;
-  }
-}
 
 // Create cached function for breadcrumb data
 const getCachedBreadcrumbData = unstable_cache(
   async () => {
-    return await getBreadcrumbDataDirect();
+    try {
+      await connectDB();
+
+      const breadcrumbSection = await Section.findOne({
+        pageSlug: "blog",
+        type: "breadcrumb",
+        status: "active",
+        "settings.isVisible": true,
+      }).lean(); // Add .lean() for better performance
+
+      return JSON.parse(JSON.stringify(breadcrumbSection));
+    } catch (error) {
+      console.error("Error fetching breadcrumb data:", error);
+      return null;
+    }
   },
-  ["blog-breadcrumb-data"],
+  ["blog-breadcrumb-data"], // Cache key
   {
-    tags: ["blog-sections", "sections"],
-    revalidate: 3600,
+    tags: ["blog-sections", "sections"], // Cache tags for revalidation
+    revalidate: 3600, // Revalidate every hour (fallback)
   }
 );
 
 async function getBlogBySlug(slug: string) {
   try {
-    console.log("Fetching blog with slug:", slug);
-    
-    // First try to get from cache
     const cachedFunction = getCachedBlogBySlug(slug);
-    let result = await cachedFunction();
-    
-    // If cache returns null or undefined, try direct DB query as fallback
-    if (!result) {
-      console.log("Cache miss or empty, trying direct DB query for blog slug:", slug);
-      result = await getBlogBySlugDirect(slug);
-      
-      if (result) {
-        console.log("Found blog via direct query, cache will be populated on next request");
-      }
-    }
+    const result = await cachedFunction();
 
     // Increment view count (this should not be cached)
     if (result?.updatedBlog) {
@@ -133,35 +121,16 @@ async function getBlogBySlug(slug: string) {
     return result;
   } catch (error) {
     console.error("Error in getBlogBySlug:", error);
-    
-    // Final fallback to direct DB query
-    console.log("Cache error, falling back to direct DB query");
-    return await getBlogBySlugDirect(slug);
+    return null;
   }
 }
 
 async function getBreadcrumbData() {
   try {
-    // First try to get from cache
-    const cachedFunction = getCachedBreadcrumbData;
-    let breadcrumbData = await cachedFunction();
-    
-    // If cache returns null, try direct DB query as fallback
-    if (!breadcrumbData) {
-      console.log("Breadcrumb cache miss, trying direct DB query");
-      breadcrumbData = await getBreadcrumbDataDirect();
-      
-      if (breadcrumbData) {
-        console.log("Found breadcrumb via direct query");
-      }
-    }
-    
-    return breadcrumbData;
+    return await getCachedBreadcrumbData();
   } catch (error) {
     console.error("Error in getBreadcrumbData:", error);
-    
-    // Final fallback to direct DB query
-    return await getBreadcrumbDataDirect();
+    return null;
   }
 }
 
@@ -248,8 +217,6 @@ export default async function BlogDetailPage({
     }
 
     const { updatedBlog, updatedRelatedBlogs } = result;
-
-    console.log("Successfully loaded blog:", updatedBlog.title);
 
     return (
       <main className="relative">
