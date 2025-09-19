@@ -5,8 +5,8 @@ interface WaterEffectImageProps {
   backgroundSrc: string;
   logoSrc: string;
   alt?: string;
-  width:number;
-  height:number;
+  width: number;
+  height: number;
   className?: string;
 }
 
@@ -18,8 +18,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
   alt = "water effect image",
   className = "",
 }) => {
-
-    console.log("Background image and logo image " , backgroundSrc , logoSrc)
+  console.log("Background image and logo image ", backgroundSrc, logoSrc);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const logoRef = useRef<HTMLImageElement | null>(null);
@@ -42,7 +41,8 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
 
   const handleImageLoad = () => {
     setLoadedCount((prev) => {
-      console.log("Prev" , prev);``
+      console.log("Prev", prev);
+      ``;
       console.log(loadedCount);
       const newCount = prev + 1;
       if (newCount >= 2) {
@@ -70,7 +70,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
 
     // Calculate logo dimensions to maintain aspect ratio
     const logoAspectRatio = logoImage.naturalWidth / logoImage.naturalHeight;
-    const maxLogoSize = Math.min(width, height) * 0.5;
+    const maxLogoSize = Math.min(width, height) * 0.2;
 
     let logoWidth, logoHeight;
     if (logoAspectRatio > 1) {
@@ -280,8 +280,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
         alt=""
         onLoad={handleImageLoad}
         className="hidden"
-          crossOrigin="anonymous"
-
+        crossOrigin="anonymous"
       />
       <img
         ref={logoRef}
@@ -289,8 +288,7 @@ export const WaterEffectImage: React.FC<WaterEffectImageProps> = ({
         alt=""
         onLoad={handleImageLoad}
         className="hidden"
-          crossOrigin="anonymous"
-
+        crossOrigin="anonymous"
       />
 
       <canvas
