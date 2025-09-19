@@ -7,7 +7,7 @@ import { revalidateTag, revalidatePath } from "next/cache";
 async function revalidateProjectCaches(projectSlug?: string, oldSlug?: string) {
   const tagsToRevalidate = [
     "projects",
-    "categories",
+    "categories", 
     "project-sections",
     "sections",
     "home-sections",
@@ -67,14 +67,14 @@ async function revalidateProjectCaches(projectSlug?: string, oldSlug?: string) {
   // Wait for all revalidations to complete
   const [tagResults, pathResults] = await Promise.allSettled([
     Promise.all(revalidationPromises),
-    Promise.all(pathPromises),
+    Promise.all(pathPromises)
   ]);
 
   return {
-    tags: tagResults.status === "fulfilled" ? tagResults.value : [],
-    paths: pathResults.status === "fulfilled" ? pathResults.value : [],
+    tags: tagResults.status === 'fulfilled' ? tagResults.value : [],
+    paths: pathResults.status === 'fulfilled' ? pathResults.value : [],
     tagsToRevalidate,
-    pathsToRevalidate,
+    pathsToRevalidate
   };
 }
 
@@ -109,9 +109,9 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  let updatedProject: any = null;
-  let oldSlug: any = null;
-
+  let updatedProject : any = null;
+  let oldSlug : any = null;
+  
   try {
     await connectDB();
     const { id } = await params;
@@ -208,18 +208,15 @@ export async function PUT(
     });
 
     // Return success response immediately
-    const response = NextResponse.json({
-      success: true,
-      data: updatedProject,
+    const response = NextResponse.json({ 
+      success: true, 
+      data: updatedProject 
     });
 
     // Trigger cache revalidation asynchronously (don't wait for it)
     setImmediate(async () => {
       try {
-        const revalidationResults = await revalidateProjectCaches(
-          updatedProject.slug,
-          oldSlug
-        );
+        const revalidationResults = await revalidateProjectCaches(updatedProject.slug, oldSlug);
         console.log("Cache revalidation completed:", {
           projectId: id,
           revalidationResults,
@@ -231,19 +228,15 @@ export async function PUT(
     });
 
     return response;
+
   } catch (error: any) {
     console.error("Error updating project:", error);
-
+    
     // Handle specific validation errors
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (err: any) => err.message
-      );
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
       return NextResponse.json(
-        {
-          success: false,
-          error: `Validation failed: ${validationErrors.join(", ")}`,
-        },
+        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
         { status: 400 }
       );
     }
@@ -308,6 +301,7 @@ export async function DELETE(
     });
 
     return response;
+
   } catch (error) {
     console.error("Error deleting project:", error);
     return NextResponse.json(
