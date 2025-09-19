@@ -100,6 +100,8 @@ export default function AboutManager({
     setHasLocalChanges(true);
   };
 
+  // console.log("Local data inside about manager section" , localData , section.c)
+
   // If section prop is provided, render within BaseSectionManager
   if (section) {
     return (

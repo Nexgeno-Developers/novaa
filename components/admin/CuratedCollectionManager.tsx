@@ -64,10 +64,10 @@ export default function CuratedCollectionManager({
   const dispatch = useAppDispatch();
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    isActive: true,
-    items: {} as CategoryItems, // Changed from array to object with category mapping
+    title: section?.content?.title || "",
+    description: section?.content?.description || "",
+    isActive: section?.content?.isActive || true,
+    items: section?.content?.items as CategoryItems || {} as CategoryItems, // Changed from array to object with category mapping
   });
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");

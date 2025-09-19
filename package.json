@@ -50,6 +50,7 @@
     "framer-motion": "^12.23.5",
     "gsap": "^3.13.0",
     "html-react-parser": "^5.2.6",
+    "hugerte": "^1.0.9",
     "install": "^0.13.0",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
