@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     // Extract all fields including slug and projectDetail
     const {
       name,
-      slug, // Add this line
+      slug,
       price,
       images,
       location,
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
 
     const project = await Project.create({
       name,
-      slug, // Add this line
+      slug,
       price,
       images,
       location,
@@ -134,46 +134,73 @@ export async function POST(request: Request) {
       "category"
     );
 
-    // Revalidate ALL caches that depend on projects
-    const tagsToRevalidate = [
-      "projects",
-      "categories",
-      "project-sections",
-      "sections",
-      "home-sections",
-      "home-page-sections",
-      "project-details",
-      `project-slug-${slug}`, // Add slug-specific cache tag
-      `project-detail-${slug}` // Add slug-specific cache tag
-    ];
-
-    // Revalidate cache tags
-    tagsToRevalidate.forEach(tag => {
-      console.log(`Revalidating tag: ${tag}`);
-      revalidateTag(tag);
-    });
-
-    // Revalidate specific paths
-    revalidatePath('/'); // Home page
-    revalidatePath('/project'); // Projects page
-    revalidatePath(`/project-detail/${slug}`); // New project detail page
-
-    console.log('Project created and caches revalidated:', {
+    console.log("Project created successfully:", {
       projectId: project._id,
       projectSlug: slug,
-      revalidatedTags: tagsToRevalidate,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
-    return NextResponse.json({ success: true, data: populatedProject });
-  } catch (error : any) {
+    // Return response immediately
+    const response = NextResponse.json({ success: true, data: populatedProject });
+
+    // Background cache revalidation (non-blocking)
+    setImmediate(async () => {
+      try {
+        const tagsToRevalidate = [
+          "projects",
+          "categories",
+          "project-sections",
+          "sections",
+          "home-sections",
+          "home-page-sections",
+          "project-details",
+          `project-slug-${slug}`,
+          `project-detail-${slug}`,
+        ];
+
+        // Revalidate cache tags with small delays
+        for (const tag of tagsToRevalidate) {
+          try {
+            console.log(`Revalidating tag: ${tag}`);
+            revalidateTag(tag);
+            await new Promise(resolve => setTimeout(resolve, 10));
+          } catch (error) {
+            console.error(`Error revalidating tag ${tag}:`, error);
+          }
+        }
+
+        // Revalidate paths with delays
+        const pathsToRevalidate = ["/", "/project", `/project-detail/${slug}`];
+        for (const path of pathsToRevalidate) {
+          try {
+            console.log(`Revalidating path: ${path}`);
+            revalidatePath(path);
+            await new Promise(resolve => setTimeout(resolve, 50));
+          } catch (error) {
+            console.error(`Error revalidating path ${path}:`, error);
+          }
+        }
+
+        console.log("Background cache revalidation completed for new project");
+      } catch (error) {
+        console.error("Background cache revalidation failed:", error);
+      }
+    });
+
+    return response;
+  } catch (error: any) {
     console.error("Error creating project:", error);
-    
+
     // Handle specific validation errors
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(
+        (err: any) => err.message
+      );
       return NextResponse.json(
-        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        {
+          success: false,
+          error: `Validation failed: ${validationErrors.join(", ")}`,
+        },
         { status: 400 }
       );
     }

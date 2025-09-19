@@ -11,8 +11,10 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-// Fallback function to get project directly from DB (without cache)
-async function getProjectBySlugDirect(slug: string) {
+// Direct database fetch function (no caching)
+async function fetchProjectBySlugDirect(slug: string) {
+  console.log(`[DIRECT_FETCH] Fetching project with slug: ${slug}`);
+  
   try {
     await connectDB();
     
@@ -21,6 +23,7 @@ async function getProjectBySlugDirect(slug: string) {
       .lean();
 
     if (!project) {
+      console.log(`[DIRECT_FETCH] No project found with slug: ${slug}`);
       return null;
     }
 
@@ -88,55 +91,97 @@ async function getProjectBySlugDirect(slug: string) {
       };
     }
 
+    console.log(`[DIRECT_FETCH] Successfully fetched project: ${updatedProject.name}`);
     return updatedProject;
   } catch (error) {
-    console.error("Error fetching project directly:", error);
+    console.error(`[DIRECT_FETCH] Error fetching project with slug ${slug}:`, error);
     return null;
   }
 }
 
-// Create cached function for project data by slug
+// Cached version with smaller, more targeted cache tags
 const getCachedProjectBySlug = (slug: string) =>
   unstable_cache(
-    async () => {
-      return await getProjectBySlugDirect(slug);
-    },
+    () => fetchProjectBySlugDirect(slug),
     [`project-detail-${slug}`],
     {
-      tags: ["projects", `project-slug-${slug}`, "project-details", "categories"],
-      revalidate: false,
+      tags: ["projects", `project-slug-${slug}`], // Fewer cache tags for less interference
+      revalidate: false, // Only revalidate on demand
     }
   );
 
+// Main function with multiple fallback attempts
 async function getProjectBySlug(slug: string) {
+  console.log(`[GET_PROJECT] Starting fetch for slug: ${slug}`);
+  
+  // Strategy 1: Try cached version first
   try {
-    console.log("Fetching project with slug:", slug);
-    
-    // First try to get from cache
     const cachedFunction = getCachedProjectBySlug(slug);
-    let project = await cachedFunction();
+    const cachedProject = await Promise.race([
+      cachedFunction(),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Cache timeout')), 3000)
+      )
+    ]) as any;
     
-    // If cache returns null or undefined, try direct DB query as fallback
-    if (!project) {
-      console.log("Cache miss or empty, trying direct DB query for slug:", slug);
-      project = await getProjectBySlugDirect(slug);
-      
-      if (project) {
-        console.log("Found project via direct query, cache will be populated on next request");
-      }
+    if (cachedProject) {
+      console.log(`[GET_PROJECT] Cache hit for slug: ${slug}`);
+      return cachedProject;
     }
     
-    return project;
-  } catch (error) {
-    console.error("Error in getProjectBySlug:", error);
-    
-    // Final fallback to direct DB query
-    console.log("Cache error, falling back to direct DB query");
-    return await getProjectBySlugDirect(slug);
+    console.log(`[GET_PROJECT] Cache returned null for slug: ${slug}`);
+  } catch (cacheError) {
+    console.warn(`[GET_PROJECT] Cache error for slug ${slug}:`, cacheError);
   }
+  
+  // Strategy 2: Direct database fetch with retry
+  console.log(`[GET_PROJECT] Attempting direct fetch for slug: ${slug}`);
+  
+  const maxRetries = 2;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[GET_PROJECT] Direct fetch attempt ${attempt} for slug: ${slug}`);
+      
+      const directProject = await Promise.race([
+        fetchProjectBySlugDirect(slug),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Direct fetch timeout')), 5000)
+        )
+      ]) as any;
+      
+      if (directProject) {
+        console.log(`[GET_PROJECT] Direct fetch successful on attempt ${attempt} for slug: ${slug}`);
+        return directProject;
+      }
+      
+      console.log(`[GET_PROJECT] Direct fetch returned null on attempt ${attempt} for slug: ${slug}`);
+    } catch (directError) {
+      console.error(`[GET_PROJECT] Direct fetch attempt ${attempt} failed for slug ${slug}:`, directError);
+      
+      if (attempt < maxRetries) {
+        const delay = 500 * attempt; // Exponential backoff
+        console.log(`[GET_PROJECT] Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  // Strategy 3: Final attempt without timeout
+  console.log(`[GET_PROJECT] Final attempt without timeout for slug: ${slug}`);
+  try {
+    const finalProject = await fetchProjectBySlugDirect(slug);
+    if (finalProject) {
+      console.log(`[GET_PROJECT] Final attempt successful for slug: ${slug}`);
+      return finalProject;
+    }
+  } catch (finalError) {
+    console.error(`[GET_PROJECT] Final attempt failed for slug ${slug}:`, finalError);
+  }
+  
+  console.log(`[GET_PROJECT] All attempts failed for slug: ${slug}`);
+  return null;
 }
 
-// Update generateStaticParams to use slugs
 export async function generateStaticParams() {
   try {
     await connectDB();
@@ -144,13 +189,13 @@ export async function generateStaticParams() {
       .select("slug")
       .lean();
 
-    console.log("Generating static params for projects:", projects.length);
+    console.log(`[STATIC_PARAMS] Generating static params for ${projects.length} projects`);
     
     return projects.map((project: any) => ({
       slug: project.slug,
     }));
   } catch (error) {
-    console.error("Error generating static params:", error);
+    console.error("[STATIC_PARAMS] Error generating static params:", error);
     return [];
   }
 }
@@ -185,7 +230,7 @@ export async function generateMetadata({
       },
     };
   } catch (error) {
-    console.error("Error generating metadata:", error);
+    console.error("[METADATA] Error generating metadata:", error);
     return {
       title: "Project Details",
       description: "Real estate project details",
@@ -198,19 +243,19 @@ export default async function ProjectDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+  
+  console.log(`[PAGE] ProjectDetailPage accessed with slug: ${slug}`);
+
   try {
-    const { slug } = await params;
-
-    console.log("ProjectDetailPage accessed with slug:", slug);
-
     const project = await getProjectBySlug(slug);
 
     if (!project) {
-      console.log("Project not found, calling notFound()");
+      console.log(`[PAGE] Project not found for slug: ${slug}, calling notFound()`);
       notFound();
     }
 
-    console.log("Successfully loaded project:", project.name);
+    console.log(`[PAGE] Successfully loaded project: ${project.name} for slug: ${slug}`);
 
     return (
       <main className="relative">
@@ -243,8 +288,8 @@ export default async function ProjectDetailPage({
         <ContactForm />
       </main>
     );
-  } catch (error) {
-    console.error("Error in ProjectDetailPage:", error);
+  } catch (pageError) {
+    console.error(`[PAGE] Unexpected error in ProjectDetailPage for slug ${slug}:`, pageError);
     notFound();
   }
 }
