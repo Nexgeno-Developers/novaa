@@ -46,7 +46,7 @@ const quickActions = [
   {
     title: "Analytics Overview",
     description: "View content performance and metrics",
-    href: "/admin/analytics",
+    href: "#",
     icon: BarChart3,
     gradient: "from-purple-500 to-violet-500",
     stats: "24k views",
@@ -54,7 +54,7 @@ const quickActions = [
   {
     title: "User Management",
     description: "Manage admin users and permissions",
-    href: "/admin/users",
+    href: "#",
     icon: Users,
     gradient: "from-orange-500 to-red-500",
     stats: "5 users",
@@ -105,15 +105,15 @@ export default function Dashboard() {
   const {user} = useAuth();
 
   const handleViewAnalytics = () => {
-    router.push('/admin/analytics');
+    router.push('#');
   };
 
   const handleViewAll = () => {
-    router.push('/admin/activity');
+    router.push('#');
   };
 
   const handleViewStatus = () => {
-    router.push('/admin/status');
+    router.push('#');
   };
 
   return (
@@ -135,7 +135,8 @@ export default function Dashboard() {
             <div className="hidden lg:flex items-center space-x-4">
               <Badge
                 variant="secondary"
-                className="px-4 py-2 text-sm font-medium"
+                className="px-4 py-2 text-sm font-medium cursor-pointer"
+                onClick={() => router.push("https://novaa-pi.vercel.app/")}
               >
                 <Globe className="h-4 w-4 mr-2" />
                 Live Site

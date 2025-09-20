@@ -766,7 +766,7 @@ export function AdvancedMediaSelector({
 
       {/* Preview Dialog */}
       <Dialog open={!!previewItem} onOpenChange={() => setPreviewItem(null)}>
-        <DialogContent className="max-w-2xl admin-theme">
+        <DialogContent className="max-w-3xl admin-theme">
           <DialogHeader>
             <DialogTitle>
               {previewItem &&
