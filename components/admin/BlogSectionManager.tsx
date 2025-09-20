@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -9,11 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
-SelectItem,
+  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles } from "lucide-react";
 import BaseSectionManager from "@/components/admin/BaseSectionManager";
 
 interface BlogSectionData {
@@ -40,11 +39,9 @@ export default function BlogSectionManager({
   showSaveButton = true,
   pageSlug
 }: BlogSectionManagerProps) {
-  // Use refs to track initialization state
   const isInitializedRef = useRef(false);
   const initialDataSetRef = useRef(false);
 
-  // Local state for section-based management
   const [localData, setLocalData] = useState<BlogSectionData>({
     title: section?.content?.title || "Our Blog",
     description: section?.content?.description || "Stay updated with the latest insights and news",
@@ -58,7 +55,6 @@ export default function BlogSectionManager({
 
   const [hasLocalChanges, setHasLocalChanges] = useState(false);
 
-  // Initialize data when section prop changes
   useEffect(() => {
     if (section?.content && !initialDataSetRef.current) {
       const newData: BlogSectionData = {
@@ -77,7 +73,6 @@ export default function BlogSectionManager({
     }
   }, [section]);
 
-  // Notify parent of changes
   useEffect(() => {
     if (onChange && hasLocalChanges && isInitializedRef.current) {
       onChange({ content: localData });
@@ -89,7 +84,6 @@ export default function BlogSectionManager({
     setHasLocalChanges(true);
   };
 
-  // If section prop is provided, render within BaseSectionManager
   if (section) {
     return (
       <BaseSectionManager
@@ -99,164 +93,134 @@ export default function BlogSectionManager({
         title="Blog Section"
         description="Configure blog section settings and display options"
       >
-        <div className="space-y-6">
-          <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-              <CardTitle className="flex items-center text-gray-800 py-6">
-                <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-                Blog Section Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Section Header */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="blogTitle" className="text-sm font-medium text-primary/90">
-                    Section Title
-                  </Label>
-                  <Input
-                    id="blogTitle"
-                    value={localData.title}
-                    onChange={(e) => handleFieldChange("title", e.target.value)}
-                    placeholder="Our Blog"
-                    className="border-gray-300 focus:border-primary focus:ring-primary"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="initialBlogs" className="text-sm font-medium text-primary/90">
-                    Initial Blogs to Show
-                  </Label>
-                  <Input
-                    id="initialBlogs"
-                    type="number"
-                    value={localData.initialBlogs}
-                    onChange={(e) =>
-                      handleFieldChange("initialBlogs", parseInt(e.target.value) || 10)
-                    }
-                    min="1"
-                    max="50"
-                    className="border-gray-300 focus:border-primary focus:ring-primary"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maxBlogs" className="text-sm font-medium text-primary/90">
-                    Max Blogs per Load More
-                  </Label>
-                  <Input
-                    id="maxBlogs"
-                    type="number"
-                    value={localData.maxBlogs}
-                    onChange={(e) =>
-                      handleFieldChange("maxBlogs", parseInt(e.target.value) || 10)
-                    }
-                    min="1"
-                    max="50"
-                    className="border-gray-300 focus:border-primary focus:ring-primary"
-                  />
-                </div>
-              </div>
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Side - Content */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="blogTitle">Section Title</Label>
+                    <Input
+                      id="blogTitle"
+                      value={localData.title}
+                      onChange={(e) => handleFieldChange("title", e.target.value)}
+                      placeholder="Our Blog"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="blogDescription" className="text-sm font-medium text-primary/90">
-                  Section Description
-                </Label>
-                <Textarea
-                  id="blogDescription"
-                  value={localData.description}
-                  onChange={(e) => handleFieldChange("description", e.target.value)}
-                  placeholder="Stay updated with the latest insights and news"
-                  rows={3}
-                  className="border-gray-300 focus:border-primary focus:ring-primary"
-                />
-              </div>
+                  <div>
+                    <Label htmlFor="blogDescription">Description</Label>
+                    <Textarea
+                      id="blogDescription"
+                      value={localData.description}
+                      onChange={(e) => handleFieldChange("description", e.target.value)}
+                      placeholder="Stay updated with the latest insights and news"
+                      rows={3}
+                    />
+                  </div>
 
-              {/* Display Settings */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="displayMode" className="text-sm font-medium text-primary/90">
-                    Display Mode
-                  </Label>
-                  <Select
-                    value={localData.displayMode}
-                    onValueChange={(value) =>
-                      handleFieldChange("displayMode", value as "grid" | "list")
-                    }
-                  >
-                    <SelectTrigger className="cursor-pointer border-gray-300 focus:border-primary focus:ring-primary">
-                      <SelectValue placeholder="Select display mode" />
-                    </SelectTrigger>
-                    <SelectContent className="admin-theme">
-                      <SelectItem value="grid" className="cursor-pointer">Grid Layout</SelectItem>
-                      <SelectItem value="list" className="cursor-pointer">List Layout</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Feature Toggles */}
-              <div className="space-y-4 pt-4 border-t border-gray-200">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="showCategories"
-                    checked={localData.showCategories}
-                    onCheckedChange={(checked) =>
-                      handleFieldChange("showCategories", checked)
-                    }
-                  />
-                  <Label htmlFor="showCategories" className="text-sm font-medium text-primary/90">
-                    Show Category Filter
-                  </Label>
+                  <div>
+                    <Label htmlFor="displayMode">Display Mode</Label>
+                    <Select
+                      value={localData.displayMode}
+                      onValueChange={(value) =>
+                        handleFieldChange("displayMode", value as "grid" | "list")
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="grid">Grid Layout</SelectItem>
+                        <SelectItem value="list">List Layout</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="enableLoadMore"
-                    checked={localData.enableLoadMore}
-                    onCheckedChange={(checked) =>
-                      handleFieldChange("enableLoadMore", checked)
-                    }
-                  />
-                  <Label htmlFor="enableLoadMore" className="text-sm font-medium text-primary/90">
-                    Enable Load More Functionality
-                  </Label>
-                </div>
+                {/* Right Side - Settings */}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="initialBlogs" className="text-xs">Initial Blogs</Label>
+                      <Input
+                        id="initialBlogs"
+                        type="number"
+                        value={localData.initialBlogs}
+                        onChange={(e) =>
+                          handleFieldChange("initialBlogs", parseInt(e.target.value) || 10)
+                        }
+                        min="1"
+                        max="50"
+                        className="text-sm"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="maxBlogs" className="text-xs">Max per Load</Label>
+                      <Input
+                        id="maxBlogs"
+                        type="number"
+                        value={localData.maxBlogs}
+                        onChange={(e) =>
+                          handleFieldChange("maxBlogs", parseInt(e.target.value) || 10)
+                        }
+                        min="1"
+                        max="50"
+                        className="text-sm"
+                      />
+                    </div>
+                  </div>
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="showReadMore"
-                    checked={localData.showReadMore}
-                    onCheckedChange={(checked) =>
-                      handleFieldChange("showReadMore", checked)
-                    }
-                  />
-                  <Label htmlFor="showReadMore" className="text-sm font-medium text-primary/90">
-                    Show "View All Blogs" Button
-                  </Label>
-                </div>
-              </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="showCategories"
+                        checked={localData.showCategories}
+                        onCheckedChange={(checked) =>
+                          handleFieldChange("showCategories", checked)
+                        }
+                      />
+                      <Label htmlFor="showCategories" className="text-sm">
+                        Show Category Filter
+                      </Label>
+                    </div>
 
-              {/* Preview Information */}
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="font-semibold mb-2 text-primary/90">Preview Settings:</h3>
-                <ul className="text-sm space-y-1 text-gray-600">
-                  <li>• Title: "{localData.title}"</li>
-                  <li>• Initial blogs displayed: {localData.initialBlogs}</li>
-                  <li>• Blogs loaded per "Load More": {localData.maxBlogs}</li>
-                  <li>
-                    • Display mode:{" "}
-                    {localData.displayMode === "grid" ? "Grid" : "List"} layout
-                  </li>
-                  <li>
-                    • Category filter:{" "}
-                    {localData.showCategories ? "Enabled" : "Disabled"}
-                  </li>
-                  <li>
-                    • Load more functionality: {localData.enableLoadMore ? "Enabled" : "Disabled"}
-                  </li>
-                  <li>
-                    • View all blogs button: {localData.showReadMore ? "Shown" : "Hidden"}
-                  </li>
-                </ul>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="enableLoadMore"
+                        checked={localData.enableLoadMore}
+                        onCheckedChange={(checked) =>
+                          handleFieldChange("enableLoadMore", checked)
+                        }
+                      />
+                      <Label htmlFor="enableLoadMore" className="text-sm">
+                        Enable Load More
+                      </Label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="showReadMore"
+                        checked={localData.showReadMore}
+                        onCheckedChange={(checked) =>
+                          handleFieldChange("showReadMore", checked)
+                        }
+                      />
+                      <Label htmlFor="showReadMore" className="text-sm">
+                        Show "View All" Button
+                      </Label>
+                    </div>
+                  </div>
+
+                  {/* Compact Preview */}
+                  <div className="p-3 bg-gray-50 rounded text-xs">
+                    <div className="font-medium mb-1">Preview:</div>
+                    <div>Shows {localData.initialBlogs} blogs initially</div>
+                    <div>Loads {localData.maxBlogs} more per click</div>
+                    <div>Layout: {localData.displayMode}</div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -265,6 +229,5 @@ export default function BlogSectionManager({
     );
   }
 
-  // Fallback if no section prop (shouldn't happen in your use case)
   return null;
 }

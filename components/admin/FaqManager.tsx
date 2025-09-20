@@ -8,16 +8,7 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import {
-  GripVertical,
-  Plus,
-  Trash2,
-  RefreshCw,
-  Save,
-  Image as ImageIcon,
-  Sparkles,
-  Images,
-} from "lucide-react";
+import { GripVertical, Plus, Trash2, RefreshCw, Save } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
@@ -31,17 +22,12 @@ import {
   reorderFaqs,
 } from "@/redux/slices/faqslice";
 
-// Shadcn UI and Custom Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import RichTextEditor from "@/components/admin/Editor";
-import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
 import BaseSectionManager from "@/components/admin/BaseSectionManager";
-import Image from "next/image";
 import MediaSelectButton from "./MediaSelectButton";
 
 interface FaqItem {
@@ -59,8 +45,8 @@ interface FaqData {
 }
 
 interface FaqManagerProps {
-  section: any; // Required
-  onChange: (changes: any) => void; // Required
+  section: any;
+  onChange: (changes: any) => void;
   showSaveButton?: boolean;
 }
 
@@ -76,12 +62,10 @@ const FaqManagerContent = ({
   const dispatch = useAppDispatch();
   const { data, status } = useAppSelector((state) => state.faq);
 
-  // Use refs to track initialization state like TestimonialsManager
   const isInitializedRef = useRef(false);
   const initialDataSetRef = useRef(false);
   const userHasInteractedRef = useRef(false);
 
-  // Default data structure
   const defaultData: FaqData = {
     title: "",
     description: "",
@@ -89,14 +73,9 @@ const FaqManagerContent = ({
     faqs: [],
   };
 
-  // Local state for FAQ data
   const [faqData, setFaqData] = useState<FaqData>(defaultData);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // Local state for the media selector modal
-  const [isSelectorOpen, setSelectorOpen] = useState(false);
-
-  // Memoize the onChange callback to prevent infinite re-renders
   const handleOnChange = useCallback(
     (changes: any) => {
       if (onChange && userHasInteractedRef.current) {
@@ -106,7 +85,6 @@ const FaqManagerContent = ({
     [onChange]
   );
 
-  // Initial load - section data only (following TestimonialsManager pattern)
   useEffect(() => {
     if (section?.content && !initialDataSetRef.current) {
       const sectionData = section.content;
@@ -114,7 +92,6 @@ const FaqManagerContent = ({
       initialDataSetRef.current = true;
       isInitializedRef.current = true;
     } else if (!section && !isInitializedRef.current) {
-      // Fallback for standalone mode
       if (data) {
         setFaqData(data);
       } else {
@@ -124,14 +101,12 @@ const FaqManagerContent = ({
     }
   }, [section, data]);
 
-  // Load Redux data only in standalone mode
   useEffect(() => {
     if (!section && status === "idle") {
       dispatch(fetchFaqData());
     }
   }, [dispatch, section, status]);
 
-  // Notify parent only if user interacted (following TestimonialsManager pattern)
   useEffect(() => {
     if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
       onChange({ content: faqData });
@@ -139,7 +114,6 @@ const FaqManagerContent = ({
     }
   }, [faqData]);
 
-  // Handle Redux state updates for standalone mode
   useEffect(() => {
     if (!section && data && !initialDataSetRef.current) {
       setFaqData(data);
@@ -147,7 +121,6 @@ const FaqManagerContent = ({
     }
   }, [data, section]);
 
-  // Memoize update functions to prevent unnecessary re-renders
   const updateFaqData = useCallback((updates: Partial<FaqData>) => {
     userHasInteractedRef.current = true;
     setFaqData((prev) => ({ ...prev, ...updates }));
@@ -164,11 +137,9 @@ const FaqManagerContent = ({
   const handleSaveChanges = async () => {
     try {
       if (section) {
-        // Global mode - no direct save, just notify parent
         toast.success("Changes saved to page!");
         setHasUnsavedChanges(false);
       } else {
-        // Standalone mode - use Redux
         await dispatch(saveFaqData(faqData)).unwrap();
         toast.success("FAQ data saved successfully!");
         setHasUnsavedChanges(false);
@@ -190,7 +161,6 @@ const FaqManagerContent = ({
     setFaqData((prev) => ({ ...prev, faqs: items }));
 
     if (!section) {
-      // Only dispatch to Redux in standalone mode
       dispatch(reorderFaqs(items));
     }
   };
@@ -210,7 +180,6 @@ const FaqManagerContent = ({
     }));
 
     if (!section) {
-      // Only dispatch to Redux in standalone mode
       dispatch(addFaqItem());
     }
   };
@@ -223,7 +192,6 @@ const FaqManagerContent = ({
     }));
 
     if (!section) {
-      // Only dispatch to Redux in standalone mode
       dispatch(removeFaqItem(index));
     }
   };
@@ -242,7 +210,6 @@ const FaqManagerContent = ({
     }));
 
     if (!section) {
-      // Only dispatch to Redux in standalone mode
       dispatch(updateFaqItem({ index, field, value }));
     }
   };
@@ -256,11 +223,6 @@ const FaqManagerContent = ({
     setHasUnsavedChanges(false);
   };
 
-  // const handleImageSelect = (media: { url: string }) => {
-  //   handleMainFieldUpdate("backgroundImage", media.url);
-  //   setSelectorOpen(false);
-  // };
-
   if (status === "loading" && !section && !faqData) {
     return <div className="p-8">Loading FAQ Manager...</div>;
   }
@@ -270,28 +232,25 @@ const FaqManagerContent = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header - only show in standalone mode */}
       {showSaveButton && !section && (
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">FAQ Manager</h1>
+            <h1 className="text-xl font-bold">FAQ Manager</h1>
             {hasUnsavedChanges && (
-              <p className="text-sm text-orange-600 mt-1">
-                You have unsaved changes
-              </p>
+              <p className="text-sm text-orange-600">Unsaved changes</p>
             )}
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              className="bg-gray-200 cursor-pointer"
               size="sm"
               onClick={handleRefresh}
               disabled={status === "loading"}
             >
               <RefreshCw
-                className={`h-4 w-4 mr-2 ${
+                className={`h-4 w-4 mr-1 ${
                   status === "loading" ? "animate-spin" : ""
                 }`}
               />
@@ -299,216 +258,157 @@ const FaqManagerContent = ({
             </Button>
             <Button
               onClick={handleSaveChanges}
-              className="text-background cursor-pointer"
+              size="sm"
               disabled={status === "loading"}
             >
-              <Save className="h-4 w-4 mr-2" />
-              {status === "loading" ? "Saving..." : "Save Changes"}
+              <Save className="h-4 w-4 mr-1" />
+              {status === "loading" ? "Saving..." : "Save"}
             </Button>
           </div>
         </div>
       )}
 
-      {/* <Tabs defaultValue="content">
-        <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
-          <TabsTrigger 
-            value="content" 
-            className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span className="font-medium">Content</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="image"
-            className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Images className="w-4 h-4" />
-            <span className="font-medium">Background Image</span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Basic Content */}
+      <div>
+        <Label>Title</Label>
+        <Input
+          value={faqData.title}
+          onChange={(e) => handleMainFieldUpdate("title", e.target.value)}
+          placeholder="FAQ section title"
+        />
+      </div>
 
-        <TabsContent value="content" className="mt-4"> */}
-      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <CardTitle className="flex items-center text-gray-800 py-6">
-            <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-            Section Header
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label className="text-primary/90">Title</Label>
-            <Input
-              value={faqData.title}
-              onChange={(e) => handleMainFieldUpdate("title", e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-primary/90">Description (Optional)</Label>
-            <RichTextEditor
-              value={faqData.description}
-              onEditorChange={(content) =>
-                handleMainFieldUpdate("description", content)
-              }
-              id="faq-description"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div>
+        <Label>Description</Label>
+        <div className="min-h-[100px]">
+          <RichTextEditor
+            value={faqData.description}
+            onEditorChange={(content) =>
+              handleMainFieldUpdate("description", content)
+            }
+          />
+        </div>
+      </div>
 
-      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center text-gray-800 py-6">
-              <ImageIcon className="h-5 w-5 mr-2 text-blue-600" />
-              FAQ Items
-            </CardTitle>
-            <Button className="cursor-pointer" size="sm" onClick={addNewFaq}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Faq
+      <div>
+        <MediaSelectButton
+          value={faqData.backgroundImage}
+          onSelect={(value) => handleMainFieldUpdate("backgroundImage", value)}
+          mediaType="image"
+          label="Background Image"
+          placeholder="Select background image"
+        />
+      </div>
+
+      {/* FAQ Items */}
+
+          <div className="flex justify-between items-center">
+            <p className="text-sm font-semibold">FAQ Items</p>
+            <Button size="sm" onClick={addNewFaq} className="cursor-pointer">
+              <Plus className="h-3 w-3 mr-1" />
+              Add FAQ
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
-          <DragDropContext onDragEnd={handleOnDragEnd}>
-            <Droppable droppableId="faqs">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="space-y-4"
-                >
-                  {faqData.faqs.map((item, index) => (
-                    <Draggable
-                      key={item._id}
-                      draggableId={item._id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          className="p-4 border rounded-lg bg-purple-50/30 ring-2 ring-primary/20 shadow-sm flex items-start gap-4 "
-                        >
+
+        <div>
+          {faqData.faqs.length === 0 ? (
+            <div className="text-center py-6 text-gray-500">
+              <p className="text-sm mb-3">No FAQs added yet</p>
+              <Button size="sm" onClick={addNewFaq}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add First FAQ
+              </Button>
+            </div>
+          ) : (
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+              <Droppable droppableId="faqs">
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-3"
+                  >
+                    {faqData.faqs.map((item, index) => (
+                      <Draggable
+                        key={item._id}
+                        draggableId={item._id}
+                        index={index}
+                      >
+                        {(provided) => (
                           <div
-                            {...provided.dragHandleProps}
-                            className="text-gray-400 hover:text-gray-600 cursor-grab pt-2"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className="p-3 border rounded bg-white flex items-start gap-3"
                           >
-                            <GripVertical />
-                          </div>
-                          <div className="flex-grow space-y-4">
-                            <div className="space-y-2">
-                              <Label className="text-primary/90">
-                                Question
-                              </Label>
-                              <Input
-                                value={item.question}
-                                onChange={(e) =>
-                                  handleUpdateFaqItem(
-                                    index,
-                                    "question",
-                                    e.target.value
-                                  )
-                                }
-                              />
+                            <div
+                              {...provided.dragHandleProps}
+                              className="text-gray-400 hover:text-gray-600 cursor-grab pt-2"
+                            >
+                              <GripVertical className="w-4 h-4" />
                             </div>
-                            <div className="space-y-2">
-                              <Label className="text-primary/90">Answer</Label>
-                              <RichTextEditor
-                                value={item.answer}
-                                onEditorChange={(content) =>
-                                  handleUpdateFaqItem(index, "answer", content)
-                                }
-                                // id={`faq-answer-${item._id}`}
-                              />
+
+                            <div className="flex-grow space-y-3">
+                              <div>
+                                <Label className="text-xs">Question</Label>
+                                <Input
+                                  value={item.question}
+                                  onChange={(e) =>
+                                    handleUpdateFaqItem(
+                                      index,
+                                      "question",
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder="Enter question"
+                                  className="text-sm"
+                                />
+                              </div>
+
+                              <div>
+                                <Label className="text-xs">Answer</Label>
+                                <div className="min-h-[80px]">
+                                  <RichTextEditor
+                                    value={item.answer}
+                                    onEditorChange={(content) =>
+                                      handleUpdateFaqItem(
+                                        index,
+                                        "answer",
+                                        content
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <div className="pt-2">
+
                             <Button
                               variant="destructive"
-                              size="icon"
+                              size="sm"
                               className="cursor-pointer"
                               onClick={() => handleRemoveFaq(index)}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </CardContent>
-      </Card>
-      {/* </TabsContent> */}
-
-      {/* // <TabsContent value="image" className="mt-4"> */}
-
-      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <CardTitle className="flex items-center text-gray-800 py-6">
-            <ImageIcon className="h-5 w-5 mr-2 text-blue-600" />
-            Section Background Image
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* <div className="w-full h-64 rounded-lg border-2 border-dashed hover:border-primary/90 transition-all duration-300 flex items-center justify-center bg-gray-100 overflow-hidden">
-            {faqData.backgroundImage ? (
-              <Image
-                src={faqData.backgroundImage}
-                alt="Background Preview"
-                width={500}
-                height={256}
-                className="object-cover"
-              />
-            ) : (
-              <ImageIcon className="h-16 w-16 text-gray-300" />
-            )}
-          </div> */}
-          {/* <Button
-            className="w-full cursor-pointer"
-            onClick={() => setSelectorOpen(true)}
-          >
-            Select Background Image
-          </Button> */}
-
-      <MediaSelectButton
-        value={faqData.backgroundImage}
-        onSelect={(value) => handleMainFieldUpdate("backgroundImage", value)}
-        mediaType="image"
-        label="Background Image"
-        placeholder="Select background Image"
-      />
-        </CardContent>
-      </Card>
-      {/* </TabsContent>
-      </Tabs> */}
-
-      {/* Advanced Media Selector */}
-      {/* <AdvancedMediaSelector
-        isOpen={isSelectorOpen}
-        onOpenChange={setSelectorOpen}
-        onSelect={handleImageSelect}
-        mediaType="image"
-        title="Select Background Image"
-        selectedValue={faqData.backgroundImage}
-      /> */}
-
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          )}
+        </div>
     </div>
   );
 };
 
-// Main component - Global save mode only
 export default function FaqManager({
   section,
   onChange,
   showSaveButton = false,
 }: FaqManagerProps) {
-  // Require section prop for global save mode
   if (!section || !onChange) {
     return (
       <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed">

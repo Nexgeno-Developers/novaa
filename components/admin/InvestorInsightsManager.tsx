@@ -22,16 +22,8 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 
-// Import shadcn components
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -43,11 +35,7 @@ import {
   Save,
   X,
   GripVertical,
-  Eye,
-  RefreshCw,
   Loader2,
-  Sparkles,
-  Images,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -61,7 +49,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 
-// Import custom components
 import RichTextEditor from "@/components/admin/Editor";
 import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
 import BaseSectionManager from "@/components/admin/BaseSectionManager";
@@ -72,21 +59,10 @@ interface CloudinaryImage {
 }
 
 interface InvestorInsightsManagerProps {
-  section: any; // Required for global mode
-  onChange: (changes: any) => void; // Required for global mode
+  section: any;
+  onChange: (changes: any) => void;
   showSaveButton?: boolean;
 }
-
-// Default data structure
-const defaultInvestorData = {
-  content: {
-    title: "",
-    subtitle: "",
-    description: "",
-  },
-  testimonials: [],
-  isActive: true,
-};
 
 export default function InvestorInsightsManager({
   section,
@@ -98,24 +74,20 @@ export default function InvestorInsightsManager({
     (state: RootState) => state.investor
   );
 
-  // Use refs to track initialization state like PhuketPropertiesManager
   const isInitializedRef = useRef(false);
   const initialDataSetRef = useRef(false);
   const userHasInteractedRef = useRef(false);
-
-  // Local state for content
+ 
   const [contentForm, setContentForm] = useState<IInvestorInsightsContent>({
-    title: "",
-    subtitle: "",
-    description: "",
+    title: section?.content?.title || "",
+    subtitle: section?.content?.subtitle ||  "",
+    description: section?.content?.description || "",
   });
 
-  // Local state for testimonials (derived from section or Redux)
   const [localTestimonials, setLocalTestimonials] = useState<ITestimonial[]>(
     []
   );
 
-  // Testimonial states
   const [isTestimonialDialogOpen, setIsTestimonialDialogOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] =
     useState<ITestimonial | null>(null);
@@ -127,11 +99,9 @@ export default function InvestorInsightsManager({
     order: 0,
   });
 
-  // Media selector states
   const [isSelectorOpen, setSelectorOpen] = useState(false);
   const [selectedImageValue, setSelectedImageValue] = useState("");
 
-  // Delete confirmation dialog
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{
     isOpen: boolean;
     testimonial: ITestimonial | null;
@@ -140,7 +110,6 @@ export default function InvestorInsightsManager({
     testimonial: null,
   });
 
-  // Memoize the onChange callback to prevent infinite re-renders
   const handleOnChange = useCallback(
     (changes: any) => {
       if (onChange && userHasInteractedRef.current) {
@@ -150,16 +119,10 @@ export default function InvestorInsightsManager({
     [onChange]
   );
 
-  // Initial load - section data first, then Redux fallback
   useEffect(() => {
-    // console.log(section);
     if (section?.content && !initialDataSetRef.current) {
-      // console.log("inside if")
       const sectionData = section.content;
 
-      // console.log("Section investor data ", sectionData);
-
-      // If data is already flat, just set it directly
       setContentForm({
         title: sectionData?.title || "",
         subtitle: sectionData?.subtitle || "",
@@ -173,7 +136,6 @@ export default function InvestorInsightsManager({
       initialDataSetRef.current = true;
       isInitializedRef.current = true;
     } else if (!section?.content && !initialDataSetRef.current) {
-      // console.log("inside else");
       if (data?.content) {
         setContentForm(data?.content);
       }
@@ -187,29 +149,24 @@ export default function InvestorInsightsManager({
     }
   }, [section, data, loading]);
 
-  // Fetch Redux data if not available and not loading
   useEffect(() => {
     if (!data && !loading && !section?.content) {
       dispatch(fetchInvestorInsights());
     }
   }, [dispatch, data, loading, section]);
 
-  // Notify parent only when user has interacted and data is initialized
   useEffect(() => {
-  if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
-    const combinedData = {
-      title: contentForm.title,
-      subtitle: contentForm.subtitle, 
-      description: contentForm.description,
-      testimonials: localTestimonials,
-    };
-    onChange({ content: combinedData });
-  }
-}, [contentForm, localTestimonials]);
+    if (onChange && userHasInteractedRef.current && initialDataSetRef.current) {
+      const combinedData = {
+        title: contentForm.title,
+        subtitle: contentForm.subtitle,
+        description: contentForm.description,
+        testimonials: localTestimonials,
+      };
+      onChange({ content: combinedData });
+    }
+  }, [contentForm, localTestimonials]);
 
-  // console.log("Content Form ", contentForm);
-
-  // Memoized update functions to prevent unnecessary re-renders
   const updateContentForm = useCallback(
     (updates: Partial<IInvestorInsightsContent>) => {
       userHasInteractedRef.current = true;
@@ -223,33 +180,14 @@ export default function InvestorInsightsManager({
     setLocalTestimonials(testimonials);
   }, []);
 
-  // Handle content form changes
   const handleContentChange = useCallback(
     (field: keyof IInvestorInsightsContent, value: string) => {
       updateContentForm({ [field]: value });
-      // Also update Redux for real-time preview
       dispatch(setLocalContent({ ...contentForm, [field]: value }));
     },
     [contentForm, updateContentForm, dispatch]
   );
 
-  const handleSaveContent = async () => {
-    try {
-      await dispatch(updateInvestorInsightsContent(contentForm)).unwrap();
-      toast.success("Content updated successfully!");
-    } catch (error) {
-      toast.error("Failed to save content!");
-      console.error("Failed to save content:", error);
-    }
-  };
-
-  const handleRefresh = useCallback(() => {
-    dispatch(fetchInvestorInsights());
-    userHasInteractedRef.current = false;
-    initialDataSetRef.current = false;
-  }, [dispatch]);
-
-  // Handle testimonial form
   const resetTestimonialForm = useCallback(() => {
     setTestimonialForm({
       quote: "",
@@ -303,13 +241,11 @@ export default function InvestorInsightsManager({
 
     try {
       if (editingTestimonial?._id) {
-        // Update existing testimonial
         const updatedTestimonials = localTestimonials.map((t) =>
           t._id === editingTestimonial._id ? { ...t, ...testimonialForm } : t
         );
         updateTestimonials(updatedTestimonials);
 
-        // Also update Redux
         await dispatch(
           updateTestimonial({
             id: editingTestimonial._id,
@@ -318,14 +254,12 @@ export default function InvestorInsightsManager({
         ).unwrap();
         toast.success("Testimonial updated successfully!");
       } else {
-        // Add new testimonial
         const newTestimonial: ITestimonial = {
           ...testimonialForm,
-          _id: Date.now().toString(), // Temporary ID
+          _id: Date.now().toString(),
         };
         updateTestimonials([...localTestimonials, newTestimonial]);
 
-        // Also add to Redux
         await dispatch(addTestimonial(testimonialForm)).unwrap();
         toast.success("Testimonial added successfully!");
       }
@@ -355,13 +289,11 @@ export default function InvestorInsightsManager({
   const confirmDelete = useCallback(async () => {
     if (deleteConfirmDialog.testimonial?._id) {
       try {
-        // Remove from local state
         const updatedTestimonials = localTestimonials.filter(
           (t) => t._id !== deleteConfirmDialog.testimonial?._id
         );
         updateTestimonials(updatedTestimonials);
 
-        // Also remove from Redux
         await dispatch(
           deleteTestimonial(deleteConfirmDialog.testimonial._id)
         ).unwrap();
@@ -404,8 +336,7 @@ export default function InvestorInsightsManager({
     },
     [localTestimonials, updateTestimonials, dispatch]
   );
-  // console.log("Local testimonials", localTestimonials);
-  // Handle errors
+
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -413,9 +344,6 @@ export default function InvestorInsightsManager({
     }
   }, [error, dispatch]);
 
-  // console.log("Content form ", contentForm);
-
-  // Require section prop for global save mode
   if (!section || !onChange) {
     return (
       <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed">
@@ -430,16 +358,15 @@ export default function InvestorInsightsManager({
   const renderContent = () => {
     if (loading && !initialDataSetRef.current) {
       return (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin" />
+        <div className="flex items-center justify-center min-h-[200px]">
+          <Loader2 className="h-6 w-6 animate-spin" />
           <span className="ml-2">Loading investor insights...</span>
         </div>
       );
     }
 
     return (
-      <div className="space-y-6">
-        {/* Error Alert */}
+      <div className="space-y-4">
         {error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -447,7 +374,8 @@ export default function InvestorInsightsManager({
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto"
+              
+              className="ml-auto cursor-pointer"
               onClick={() => dispatch(clearError())}
             >
               <X className="h-4 w-4" />
@@ -455,233 +383,165 @@ export default function InvestorInsightsManager({
           </Alert>
         )}
 
-        {/* Tabs */}
-        {/* <Tabs defaultValue="content" className="space-y-6">
-          <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
-            <TabsTrigger
-              value="content"
-              className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span className="font-medium">Section Content</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="testimonials"
-              className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-            >
-              <Images className="w-4 h-4" />
-              <span className="font-medium">Animated Testimonials</span>
-            </TabsTrigger>
-          </TabsList>
+        {/* Basic Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="title">Main Title</Label>
+            <Input
+              id="title"
+              value={contentForm.title}
+              onChange={(e) => handleContentChange("title", e.target.value)}
+              placeholder="e.g., Insights for the"
+            />
+          </div>
+          <div>
+            <Label htmlFor="subtitle">Highlighted Title</Label>
+            <Input
+              id="subtitle"
+              value={contentForm.subtitle}
+              onChange={(e) => handleContentChange("subtitle", e.target.value)}
+              placeholder="e.g., Discerning Investor"
+            />
+          </div>
+        </div>
 
-          {/* Content Tab */}
-        {/* <TabsContent value="content">  */}
-        <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-            <CardTitle className="flex items-center text-gray-800 pt-6">
-              <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-              Section Content Management
-            </CardTitle>
-            <CardDescription className="pb-6">
-              Edit the main content that appears on the left side of the
-              Investor Insights section
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="title" className="pb-2 text-primary/90">
-                    Main Title
-                  </Label>
-                  <Input
-                    id="title"
-                    value={contentForm.title}
-                    onChange={(e) =>
-                      handleContentChange("title", e.target.value)
-                    }
-                    placeholder="e.g., Insights for the"
-                  />
-                </div>
+        <div>
+          <Label>Description</Label>
+          <div className="min-h-[120px]">
+            <RichTextEditor
+              value={contentForm.description}
+              onEditorChange={(content) =>
+                handleContentChange("description", content)
+              }
+            />
+          </div>
+        </div>
 
-                <div>
-                  <Label htmlFor="subtitle" className="pb-2  text-primary/90">
-                    Highlighted Title
-                  </Label>
-                  <Input
-                    id="subtitle"
-                    value={contentForm.subtitle}
-                    onChange={(e) =>
-                      handleContentChange("subtitle", e.target.value)
-                    }
-                    placeholder="e.g., Discerning Investor"
-                  />
-                </div>
+        {/* Testimonials */}
+
+        <div className="flex justify-between items-center">
+          <p className="text-sm font-semibold">Testimonials ({localTestimonials.length})</p>
+          <Button size="sm" onClick={handleAddTestimonial} className="cursor-pointer">
+            <Plus className="mr-1 h-3 w-3" />
+            Add
+          </Button>
+        </div>
+
+        <div>
+          <ScrollArea className="h-[400px] pr-2">
+            {!localTestimonials || localTestimonials.length === 0 ? (
+              <div className="text-center py-6 text-gray-500">
+                <p className="text-sm mb-3">No testimonials found</p>
+                <Button size="sm" onClick={handleAddTestimonial} className="cursor-pointer">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Testimonial
+                </Button>
               </div>
+            ) : (
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="investor-testimonials">
+                  {(provided) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className="space-y-3"
+                    >
+                      {localTestimonials
+                        .slice()
+                        .sort((a, b) => a.order - b.order)
+                        .map((testimonial, index) => (
+                          <Draggable
+                            key={testimonial._id}
+                            draggableId={testimonial._id as string}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className={`p-3 border rounded bg-white ${
+                                  snapshot.isDragging ? "shadow-lg" : ""
+                                }`}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div
+                                    {...provided.dragHandleProps}
+                                    className="cursor-move pt-1"
+                                  >
+                                    <GripVertical className="h-4 w-4 text-gray-400" />
+                                  </div>
 
-              <div className="space-y-4">
-                <div>
-                  <Label className=" text-primary/90">Description</Label>
-                  <div className="mt-2">
-                    <RichTextEditor
-                      value={contentForm.description}
-                      onEditorChange={(content) =>
-                        handleContentChange("description", content)
-                      }
-                      id="investor-insights-description"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        {/* </TabsContent> */}
+                                  <img
+                                    src={testimonial.src}
+                                    alt={testimonial.content}
+                                    className="w-12 h-12 rounded object-cover border flex-shrink-0"
+                                  />
 
-        {/* Testimonials Tab */}
-        {/* <TabsContent value="testimonials"> */}
-        <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
-          <CardHeader className=" bg-gradient-to-r from-purple-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <CardTitle className="flex items-center text-gray-800 pt-6">
-                  <Sparkles className="h-5 w-5 mr-2 text-blue-600" />
-                  Animated Testimonials Management
-                </CardTitle>
-                <CardDescription className="py-2">
-                  Manage the animated testimonial cards that display property
-                  insights
-                </CardDescription>
-              </div>
-              <Button
-                onClick={handleAddTestimonial}
-                className="text-background cursor-pointer"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Testimonial
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[600px] pr-4">
-              {!localTestimonials || localTestimonials.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  No testimonials found. Add your first testimonial to get
-                  started.
-                </div>
-              ) : (
-                <DragDropContext onDragEnd={handleDragEnd}>
-                  <Droppable droppableId="investor-testimonials">
-                    {(provided) => (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="space-y-4"
-                      >
-                        {localTestimonials
-                          .slice()
-                          .sort((a, b) => a.order - b.order)
-                          .map((testimonial, index) => (
-                            <Draggable
-                              key={testimonial._id}
-                              draggableId={testimonial._id as string}
-                              index={index}
-                            >
-                              {(provided, snapshot) => (
-                                <Card
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  className={`transition-all duration-200 py-6 ${
-                                    snapshot.isDragging
-                                      ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
-                                      : ""
-                                  }`}
-                                >
-                                  <CardContent className="pt-6 flex items-start gap-4">
-                                    {/* Drag handle */}
+                                  <div className="flex-1 space-y-1 min-w-0">
+                                    <h3 className="font-semibold text-sm truncate">
+                                      {testimonial.content}
+                                    </h3>
+                                    <p className="text-xs text-gray-600 truncate">
+                                      {testimonial.designation}
+                                    </p>
                                     <div
-                                      {...provided.dragHandleProps}
-                                      className="flex flex-col items-center pt-2 cursor-move"
+                                      className="text-xs text-gray-500 line-clamp-2"
+                                      dangerouslySetInnerHTML={{
+                                        __html: testimonial.quote,
+                                      }}
+                                    />
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs"
                                     >
-                                      <GripVertical className="h-4 w-4 text-muted-foreground" />
-                                      <Badge
-                                        variant="outline"
-                                        className="mt-2 text-xs text-background"
-                                      >
-                                        {testimonial.order}
-                                      </Badge>
-                                    </div>
+                                      Order: {testimonial.order}
+                                    </Badge>
+                                  </div>
 
-                                    {/* Image */}
-                                    <div className="flex-shrink-0">
-                                      <img
-                                        src={testimonial.src}
-                                        alt={testimonial.content}
-                                        className="w-20 h-20 rounded-lg object-cover border"
-                                      />
-                                    </div>
+                                  <div className="flex items-center gap-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="cursor-pointer"
+                                      onClick={() =>
+                                        handleEditTestimonial(testimonial)
+                                      }
+                                    >
+                                      <Edit2 className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      className="cursor-pointer"
+                                      onClick={() =>
+                                        handleDeleteTestimonial(testimonial)
+                                      }
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            )}
+          </ScrollArea>
+        </div>
 
-                                    {/* Content */}
-                                    <div className="flex-1 space-y-2">
-                                      <h3 className="font-semibold text-lg">
-                                        {testimonial.content}
-                                      </h3>
-                                      <p className="text-sm text-muted-foreground">
-                                        {testimonial.designation}
-                                      </p>
-                                      <p className="text-sm line-clamp-3">
-                                        {testimonial.quote}
-                                      </p>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="flex items-center gap-2">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="bg-gray-200 cursor-pointer"
-                                        onClick={() =>
-                                          handleEditTestimonial(testimonial)
-                                        }
-                                      >
-                                        <Edit2 className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() =>
-                                          handleDeleteTestimonial(testimonial)
-                                        }
-                                        className="bg-gray-200 cursor-pointer text-destructive hover:text-destructive"
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                  </CardContent>
-                                </Card>
-                              )}
-                            </Draggable>
-                          ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </DragDropContext>
-              )}
-            </ScrollArea>
-          </CardContent>
-        </Card>
-        {/* </TabsContent>
-        </Tabs> */}
-
-        {/* Add/Edit Testimonial Dialog */}
+        {/* Add/Edit Dialog */}
         <Dialog
           open={isTestimonialDialogOpen}
           onOpenChange={setIsTestimonialDialogOpen}
         >
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto admin-theme">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto admin-theme">
             <DialogHeader>
-              <DialogTitle className="text-primary">
+              <DialogTitle>
                 {editingTestimonial
                   ? "Edit Testimonial"
                   : "Add New Testimonial"}
@@ -691,18 +551,11 @@ export default function InvestorInsightsManager({
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Column - Form Fields */}
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-3">
                 <div>
-                  <Label
-                    htmlFor="testimonial-content"
-                    className="pb-1 text-primary"
-                  >
-                    Testimonial Title
-                  </Label>
+                  <Label className="text-xs">Testimonial Title</Label>
                   <Input
-                    id="testimonial-content"
                     value={testimonialForm.content}
                     onChange={(e) =>
                       setTestimonialForm((prev) => ({
@@ -711,18 +564,13 @@ export default function InvestorInsightsManager({
                       }))
                     }
                     placeholder="e.g., Phuket Tourism Market Report 2024"
+                    className="text-sm"
                   />
                 </div>
 
                 <div>
-                  <Label
-                    htmlFor="testimonial-designation"
-                    className="pb-1 text-primary"
-                  >
-                    Designation/Category
-                  </Label>
+                  <Label className="text-xs">Designation/Category</Label>
                   <Input
-                    id="testimonial-designation"
                     value={testimonialForm.designation}
                     onChange={(e) =>
                       setTestimonialForm((prev) => ({
@@ -731,18 +579,13 @@ export default function InvestorInsightsManager({
                       }))
                     }
                     placeholder="e.g., 2024 Market Analysis"
+                    className="text-sm"
                   />
                 </div>
 
                 <div>
-                  <Label
-                    htmlFor="testimonial-order"
-                    className="pb-1 text-primary"
-                  >
-                    Display Order
-                  </Label>
+                  <Label className="text-xs">Display Order</Label>
                   <Input
-                    id="testimonial-order"
                     type="number"
                     value={testimonialForm.order}
                     onChange={(e) =>
@@ -752,50 +595,41 @@ export default function InvestorInsightsManager({
                       }))
                     }
                     placeholder="1"
+                    className="text-sm"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-primary">Property Image</Label>
-                  <div className="mt-2">
-                    <Button
-                      type="button"
-                      onClick={() => setSelectorOpen(true)}
-                      className="w-full cursor-pointer"
-                    >
-                      <Eye className="mr-2 h-4 w-4" />
-                      {testimonialForm.src ? "Change Image" : "Select Image"}
-                    </Button>
-                    {testimonialForm.src && (
-                      <img
-                        src={testimonialForm.src}
-                        alt="Selected"
-                        className="mt-3 w-full h-32 rounded-lg object-cover border"
-                      />
-                    )}
-                  </div>
+                  <Label className="text-xs">Property Image</Label>
+                  <Button
+                    type="button"
+                    onClick={() => setSelectorOpen(true)}
+                    className="w-full mt-1 cursor-pointer"
+                    size="sm"
+                  >
+                    {testimonialForm.src ? "Change Image" : "Select Image"}
+                  </Button>
+                  {testimonialForm.src && (
+                    <img
+                      src={testimonialForm.src}
+                      alt="Selected"
+                      className="mt-2 w-full h-24 rounded object-cover border"
+                    />
+                  )}
                 </div>
               </div>
 
-              {/* Right Column - Quote Editor */}
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-primary">
-                    Testimonial Quote/Description
-                  </Label>
-                  <div className="mt-2">
-                    <RichTextEditor
-                      value={testimonialForm.quote}
-                      onEditorChange={(content) =>
-                        setTestimonialForm((prev) => ({
-                          ...prev,
-                          quote: content,
-                        }))
-                      }
-                      id="testimonial-quote"
-                    />
-                  </div>
-                </div>
+              <div>
+                <Label className="text-xs">Testimonial Quote/Description</Label>
+                <RichTextEditor
+                  value={testimonialForm.quote}
+                  onEditorChange={(content) =>
+                    setTestimonialForm((prev) => ({
+                      ...prev,
+                      quote: content,
+                    }))
+                  }
+                />
               </div>
             </div>
 
@@ -803,14 +637,16 @@ export default function InvestorInsightsManager({
               <Button
                 type="button"
                 variant="outline"
-                className="bg-gray-200 cursor-pointer"
+                className="cursor-pointer"
+                size="sm"
                 onClick={() => setIsTestimonialDialogOpen(false)}
               >
                 Cancel
               </Button>
               <Button
                 type="button"
-                className="text-background cursor-pointer"
+                size="sm"
+                className="cursor-pointer"
                 onClick={handleSaveTestimonial}
                 disabled={
                   saving ||
@@ -821,19 +657,17 @@ export default function InvestorInsightsManager({
                 }
               >
                 {saving ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                 ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    {editingTestimonial ? "Update" : "Create"} Testimonial
-                  </>
+                  <Save className="mr-1 h-3 w-3" />
                 )}
+                {editingTestimonial ? "Update" : "Create"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* Delete Confirmation Dialog */}
+        {/* Delete Confirmation */}
         <Dialog
           open={deleteConfirmDialog.isOpen}
           onOpenChange={(open) =>
@@ -841,7 +675,7 @@ export default function InvestorInsightsManager({
             setDeleteConfirmDialog({ isOpen: false, testimonial: null })
           }
         >
-          <DialogContent className="admin-theme max-w-2xl">
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Confirm Deletion</DialogTitle>
               <DialogDescription>
@@ -850,18 +684,18 @@ export default function InvestorInsightsManager({
               </DialogDescription>
             </DialogHeader>
             {deleteConfirmDialog.testimonial && (
-              <div className="py-4">
-                <div className="flex items-center gap-3 p-3 border rounded-lg">
+              <div className="py-3">
+                <div className="flex items-center gap-3 p-2 border rounded">
                   <img
                     src={deleteConfirmDialog.testimonial.src}
                     alt={deleteConfirmDialog.testimonial.content}
-                    className="w-12 h-12 rounded object-cover"
+                    className="w-10 h-10 rounded object-cover"
                   />
                   <div>
-                    <p className="font-medium">
+                    <p className="font-medium text-sm">
                       {deleteConfirmDialog.testimonial.content}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-gray-600">
                       {deleteConfirmDialog.testimonial.designation}
                     </p>
                   </div>
@@ -872,6 +706,7 @@ export default function InvestorInsightsManager({
               <Button
                 variant="outline"
                 className="cursor-pointer"
+                size="sm"
                 onClick={() =>
                   setDeleteConfirmDialog({ isOpen: false, testimonial: null })
                 }
@@ -880,21 +715,21 @@ export default function InvestorInsightsManager({
               </Button>
               <Button
                 variant="destructive"
+                size="sm"
                 className="cursor-pointer"
                 onClick={confirmDelete}
                 disabled={saving}
               >
                 {saving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" />
                 ) : (
-                  "Delete Testimonial"
+                  "Delete"
                 )}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
-        {/* Advanced Media Selector */}
         <AdvancedMediaSelector
           isOpen={isSelectorOpen}
           onOpenChange={setSelectorOpen}

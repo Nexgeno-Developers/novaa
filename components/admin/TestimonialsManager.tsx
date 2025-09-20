@@ -8,7 +8,6 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,15 +39,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  GripVertical,
-  Star,
-  Book,
-  Image,
-} from "lucide-react";
+import { Plus, Edit, Trash2, GripVertical, Star } from "lucide-react";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/admin/Editor";
 import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
@@ -80,8 +71,8 @@ interface TestimonialsData {
 }
 
 interface TestimonialsManagerProps {
-  section: any; // Required
-  onChange: (changes: any) => void; // Required
+  section: any;
+  onChange: (changes: any) => void;
   showSaveButton?: boolean;
 }
 
@@ -92,7 +83,6 @@ const TestimonialsManagerContent = ({
   section: any;
   onChange: (changes: any) => void;
 }) => {
-  // Local state for section-based management
   const [localData, setLocalData] = useState<TestimonialsData>({
     title: section?.content?.title || "",
     subtitle: section?.content?.subtitle || "",
@@ -104,7 +94,6 @@ const TestimonialsManagerContent = ({
     null
   );
 
-  // Testimonial form state
   const [testimonialForm, setTestimonialForm] = useState<TestimonialFormData>({
     name: "",
     role: "",
@@ -113,14 +102,12 @@ const TestimonialsManagerContent = ({
     avatar: "",
   });
 
-  // Dialog states
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingTestimonial, setEditingTestimonial] =
     useState<TestimonialItem | null>(null);
   const [isSelectorOpen, setSelectorOpen] = useState(false);
 
-  // Initialize data when section prop changes
   useEffect(() => {
     if (section?.content) {
       const newData = {
@@ -133,7 +120,6 @@ const TestimonialsManagerContent = ({
     }
   }, [section]);
 
-  // Notify parent of changes
   useEffect(() => {
     if (onChange && hasLocalChanges) {
       onChange({ content: localData });
@@ -244,7 +230,6 @@ const TestimonialsManagerContent = ({
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    // Update the order property
     const reorderedItems = items.map((item, index) => ({
       ...item,
       order: index,
@@ -270,7 +255,7 @@ const TestimonialsManagerContent = ({
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-4 h-4 ${
+            className={`w-3 h-3 ${
               star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
             }`}
           />
@@ -280,315 +265,275 @@ const TestimonialsManagerContent = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* <Tabs defaultValue="content" className="w-full">
-        <TabsList className="grid w-full h-15 grid-cols-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg">
-          <TabsTrigger
-            value="content"
-            className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span className="font-medium">Section Content</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="testimonials"
-            className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-background data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Images className="w-4 h-4" />
-            <span className="font-medium">Testimonials</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="content" className="space-y-6"> */}
-      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <CardTitle className="flex items-center text-gray-800 py-6">
-            <Book className="h-5 w-5 mr-2 text-blue-600" />
-            Section Content
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title" className="text-primary/90">
-              Section Title
-            </Label>
-            <RichTextEditor
-              value={localData.title}
-              onEditorChange={(content) =>
-                handleContentUpdate("title", content)
-              }
-              id="testimonials-title"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="subtitle" className="text-primary/90">
-              Section Subtitle
-            </Label>
-            <RichTextEditor
-              value={localData.subtitle}
-              onEditorChange={(content) =>
-                handleContentUpdate("subtitle", content)
-              }
-              id="testimonials-subtitle"
-            />
-          </div>
-        </CardContent>
-      </Card>
-      {/* </TabsContent> */}
-
-      {/* <TabsContent value="testimonials" className="space-y-6"> */}
-      {/* <Card className="pb-6 ring-2 ring-primary/20 bg-gray-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <CardTitle className="flex items-center text-gray-800 py-6">
-            <Image className="h-5 w-5 mr-2 text-blue-600" />
-            Manage Testimonials
-          </CardTitle>
-        </CardHeader> */}
-      <Card className="pb-6 ring-2 ring-primary/20 bg-purple-50/30">
-        <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <div className="flex items-center">
-            <Image className="h-5 w-5 mr-2 text-blue-600" />
-
-            <h2 className="text-xl font-semibold">Manage Testimonials</h2>
-          </div>
-          <Dialog
-            open={isCreateDialogOpen}
-            onOpenChange={setIsCreateDialogOpen}
-          >
-            <DialogTrigger asChild className="flex">
-              <Button className="bg-primary text-background cursor-pointer">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Testimonial
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] admin-theme">
-              <DialogHeader>
-                <DialogTitle className="text-primary/90">Create New Testimonial</DialogTitle>
-                <DialogDescription>
-                  Add a new client testimonial to the section.
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-primary/90">Client Name *</Label>
-                    <Input
-                      id="name"
-                      value={testimonialForm.name}
-                      onChange={(e) =>
-                        setTestimonialForm((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                      placeholder="e.g., Mr. David Chen"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role" className="text-primary/90">Role & Location *</Label>
-                    <Input
-                      id="role"
-                      value={testimonialForm.role}
-                      onChange={(e) =>
-                        setTestimonialForm((prev) => ({
-                          ...prev,
-                          role: e.target.value,
-                        }))
-                      }
-                      placeholder="e.g., Business Magnate, Singapore"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-primary/90">Rating *</Label>
-                  <Select
-                    value={testimonialForm.rating.toString()}
-                    onValueChange={(value) =>
-                      setTestimonialForm((prev) => ({
-                        ...prev,
-                        rating: parseInt(value),
-                      }))
-                    }
-                  >
-                    <SelectTrigger className="ring-2 ring-primary/20 cursor-pointer">
-                      <SelectValue placeholder="Select rating" />
-                    </SelectTrigger>
-                    <SelectContent className="admin-theme">
-                      {[5, 4, 3, 2, 1].map((rating) => (
-                        <SelectItem key={rating} value={rating.toString()} className="cursor-pointer">
-                          <div className="flex items-center gap-2">
-                            {rating} {renderStars(rating)}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-primary/90">Testimonial Quote *</Label>
-                  <RichTextEditor
-                    value={testimonialForm.quote}
-                    onEditorChange={(content) =>
-                      setTestimonialForm((prev) => ({
-                        ...prev,
-                        quote: content,
-                      }))
-                    }
-                    id="create-testimonial-quote"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-primary/90">Client Avatar *</Label>
-                  <div className="flex items-center gap-4">
-                    {testimonialForm.avatar && (
-                      <img
-                        src={testimonialForm.avatar}
-                        alt="Selected avatar"
-                        className="w-16 h-16 rounded-full object-cover border"
-                      />
-                    )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="cursor-pointer "
-                      onClick={() => setSelectorOpen(true)}
-                    >
-                      {testimonialForm.avatar ? "Change Image" : "Select Image"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-                  onClick={() => {
-                    resetTestimonialForm();
-                    setIsCreateDialogOpen(false);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateTestimonial}
-                  className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-                >
-                  Create Testimonial
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+    <div className="space-y-4">
+      {/* Basic Content */}
+      {/* grid grid-cols-1 md:grid-cols-2 gap-3 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+        <Label htmlFor="title">Section Title</Label>
+        <div className="min-h-[80px]">
+          <RichTextEditor
+            value={localData.title}
+            onEditorChange={(content) => handleContentUpdate("title", content)}
+          />
         </div>
+      </div>
 
-        {localData.testimonials.length === 0 ? (
-          <Card className="py-6">
-            <CardContent className="text-center py-8">
-              <p className="text-primary/90 mb-4">No testimonials found</p>
-              <Button
-                onClick={() => setIsCreateDialogOpen(true)}
-                className="bg-primary text-primary/90 cursor-pointer"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Testimonial
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="testimonials">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="space-y-4 px-6"
-                >
-                  {localData.testimonials.map((testimonial, index) => (
-                    <Draggable
-                      key={testimonial.id}
-                      draggableId={testimonial.id}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <Card
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          className={`transition-all duration-200 ${
-                            snapshot.isDragging
-                              ? "shadow-lg ring-2 ring-blue-500 ring-opacity-50"
-                              : ""
-                          }`}
+      <div>
+        <Label htmlFor="subtitle">Section Subtitle</Label>
+        <div className="min-h-[80px]">
+          <RichTextEditor
+            value={localData.subtitle}
+            onEditorChange={(content) =>
+              handleContentUpdate("subtitle", content)
+            }
+          />
+        </div>
+      </div>
+
+      </div>
+      {/* Testimonials Management */}
+
+          <div className="flex justify-between items-center">
+            <p className="text-sm">
+              Testimonials ({localData.testimonials.length})
+            </p>
+            <Dialog
+              open={isCreateDialogOpen}
+              onOpenChange={setIsCreateDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button size="sm"                     className="cursor-pointer"
+>
+                  <Plus className="w-3 h-3 mr-1" />
+                  Add
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px] admin-theme">
+                <DialogHeader>
+                  <DialogTitle>Create New Testimonial</DialogTitle>
+                  <DialogDescription>
+                    Add a new client testimonial to the section.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="grid gap-3 py-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="name" className="text-xs">
+                        Client Name *
+                      </Label>
+                      <Input
+                        id="name"
+                        value={testimonialForm.name}
+                        onChange={(e) =>
+                          setTestimonialForm((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
+                        placeholder="e.g., Mr. David Chen"
+                        className="text-sm"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="role" className="text-xs">
+                        Role & Location *
+                      </Label>
+                      <Input
+                        id="role"
+                        value={testimonialForm.role}
+                        onChange={(e) =>
+                          setTestimonialForm((prev) => ({
+                            ...prev,
+                            role: e.target.value,
+                          }))
+                        }
+                        placeholder="e.g., Business Magnate, Singapore"
+                        className="text-sm"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Rating *</Label>
+                      <Select
+                        value={testimonialForm.rating.toString()}
+                        onValueChange={(value) =>
+                          setTestimonialForm((prev) => ({
+                            ...prev,
+                            rating: parseInt(value),
+                          }))
+                        }
+                      >
+                        <SelectTrigger className="text-sm">
+                          <SelectValue placeholder="Select rating" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[5, 4, 3, 2, 1].map((rating) => (
+                            <SelectItem key={rating} value={rating.toString()}>
+                              <div className="flex items-center gap-2">
+                                {rating} {renderStars(rating)}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label className="text-xs">Client Avatar *</Label>
+                      <div className="flex items-center gap-3">
+                        {testimonialForm.avatar && (
+                          <img
+                            src={testimonialForm.avatar}
+                            alt="Selected avatar"
+                            className="w-12 h-12 rounded-full object-cover border"
+                          />
+                        )}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                                              className="cursor-pointer"
+
+                          onClick={() => setSelectorOpen(true)}
                         >
-                          <CardContent className="p-6">
-                            <div className="flex items-start gap-4">
+                          {testimonialForm.avatar ? "Change" : "Select"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs">Testimonial Quote *</Label>
+                    <div className="min-h-[100px]">
+                      <RichTextEditor
+                        value={testimonialForm.quote}
+                        onEditorChange={(content) =>
+                          setTestimonialForm((prev) => ({
+                            ...prev,
+                            quote: content,
+                          }))
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                                        className="cursor-pointer"
+
+                    onClick={() => {
+                      resetTestimonialForm();
+                      setIsCreateDialogOpen(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button size="sm" onClick={handleCreateTestimonial}                     className="cursor-pointer"
+>
+                    Create
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+
+        <div>
+          {localData.testimonials.length === 0 ? (
+            <div className="text-center py-6 text-gray-500">
+              <p className="text-sm mb-3">No testimonials found</p>
+              <Button size="sm" onClick={() => setIsCreateDialogOpen(true)}                     className="cursor-pointer"
+>
+                <Plus className="w-4 h-4 mr-2" />
+                Add First Testimonial
+              </Button>
+            </div>
+          ) : (
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="testimonials">
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="space-y-3"
+                  >
+                    {localData.testimonials.map((testimonial, index) => (
+                      <Draggable
+                        key={testimonial.id}
+                        draggableId={testimonial.id}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={`p-3 border rounded bg-white ${
+                              snapshot.isDragging ? "shadow-lg" : ""
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
                               <div
                                 {...provided.dragHandleProps}
-                                className="cursor-move p-2 hover:bg-gray-100 rounded"
+                                className="cursor-move p-1 hover:bg-gray-100 rounded"
                               >
-                                <GripVertical className="w-4 h-4 text-gray-400" />
+                                <GripVertical className="w-3 h-3 text-gray-400" />
                               </div>
 
-                              <div className="flex-shrink-0">
-                                <img
-                                  src={testimonial.avatar}
-                                  alt={testimonial.name}
-                                  className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                                />
-                              </div>
+                              <img
+                                src={testimonial.avatar}
+                                alt={testimonial.name}
+                                className="w-10 h-10 rounded-full object-cover border"
+                              />
 
-                              <div className="flex-grow space-y-2">
-                                <div className="flex items-center gap-4">
-                                  <h3 className="font-semibold text-lg text-primary/90">
+                              <div className="flex-grow space-y-1">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <h3 className="font-semibold text-sm">
                                     {testimonial.name}
                                   </h3>
-                                  <Badge variant="secondary" className="text-primary/90">
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
                                     {testimonial.role}
                                   </Badge>
                                   {renderStars(testimonial.rating)}
                                 </div>
 
                                 <div
-                                  className="text-gray-600 line-clamp-3"
+                                  className="text-xs text-gray-600 line-clamp-2"
                                   dangerouslySetInnerHTML={{
                                     __html: testimonial.quote,
                                   }}
                                 />
-
-                                <div className="text-sm text-gray-500">
-                                  Order: {testimonial.order + 1}
-                                </div>
                               </div>
 
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1">
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="bg-gray-200 cursor-pointer"
+                                                      className="cursor-pointer"
+
                                   onClick={() =>
                                     handleEditTestimonial(testimonial)
                                   }
                                 >
-                                  <Edit className="w-4 h-4" />
+                                  <Edit className="w-3 h-3" />
                                 </Button>
 
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
-                                    <Button
-                                      size="sm"
-                                      className="cursor-pointer"
-                                      variant="destructive"
-                                    >
-                                      <Trash2 className="w-4 h-4" />
+                                    <Button size="sm" variant="destructive"                     className="cursor-pointer"
+>
+                                      <Trash2 className="w-3 h-3" />
                                     </Button>
                                   </AlertDialogTrigger>
-                                  <AlertDialogContent className="admin-theme">
+                                  <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle className="text-primary/90">
+                                      <AlertDialogTitle>
                                         Delete Testimonial
                                       </AlertDialogTitle>
                                       <AlertDialogDescription>
@@ -607,7 +552,7 @@ const TestimonialsManagerContent = ({
                                             testimonial.id
                                           )
                                         }
-                                        className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                                        className="bg-red-600 hover:bg-red-700"
                                       >
                                         Delete
                                       </AlertDialogAction>
@@ -616,38 +561,31 @@ const TestimonialsManagerContent = ({
                                 </AlertDialog>
                               </div>
                             </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        )}
-      </Card>
-      {/* </TabsContent>
-        
-      </Tabs> */}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          )}
+        </div>
 
-      {/* Edit Testimonial Dialog */}
+
+      {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] admin-theme">
+        <DialogContent className="sm:max-w-[500px] admin-theme">
           <DialogHeader>
-            <DialogTitle className="text-primary/90">Edit Testimonial</DialogTitle>
-            <DialogDescription>
-              Update the testimonial information.
-            </DialogDescription>
+            <DialogTitle>Edit Testimonial</DialogTitle>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-name" className="text-primary/90">Client Name *</Label>
+          <div className="grid gap-3 py-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Client Name *</Label>
                 <Input
-                  id="edit-name"
                   value={testimonialForm.name}
                   onChange={(e) =>
                     setTestimonialForm((prev) => ({
@@ -655,13 +593,12 @@ const TestimonialsManagerContent = ({
                       name: e.target.value,
                     }))
                   }
-                  placeholder="e.g., Mr. David Chen"
+                  className="text-sm"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-role" className="text-primary/90">Role & Location *</Label>
+              <div>
+                <Label className="text-xs">Role & Location *</Label>
                 <Input
-                  id="edit-role"
                   value={testimonialForm.role}
                   onChange={(e) =>
                     setTestimonialForm((prev) => ({
@@ -669,66 +606,66 @@ const TestimonialsManagerContent = ({
                       role: e.target.value,
                     }))
                   }
-                  placeholder="e.g., Business Magnate, Singapore"
+                  className="text-sm"
                 />
+              </div>
+              <div>
+                <Label className="text-xs">Rating *</Label>
+                <Select
+                  value={testimonialForm.rating.toString()}
+                  onValueChange={(value) =>
+                    setTestimonialForm((prev) => ({
+                      ...prev,
+                      rating: parseInt(value),
+                    }))
+                  }
+                >
+                  <SelectTrigger className="text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[5, 4, 3, 2, 1].map((rating) => (
+                      <SelectItem key={rating} value={rating.toString()}>
+                        <div className="flex items-center gap-2">
+                          {rating} {renderStars(rating)}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs">Avatar *</Label>
+                <div className="flex items-center gap-3">
+                  {testimonialForm.avatar && (
+                    <img
+                      src={testimonialForm.avatar}
+                      alt="Selected avatar"
+                      className="w-12 h-12 rounded-full object-cover border"
+                    />
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer"
+                    onClick={() => setSelectorOpen(true)}
+                  >
+                    {testimonialForm.avatar ? "Change" : "Select"}
+                  </Button>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-primary/90">Rating *</Label>
-              <Select
-                value={testimonialForm.rating.toString()}
-                onValueChange={(value) =>
-                  setTestimonialForm((prev) => ({
-                    ...prev,
-                    rating: parseInt(value),
-                  }))
-                }
-              >
-                <SelectTrigger className="cursor-pointer ring-2 ring-primary/20">
-                  <SelectValue placeholder="Select rating" />
-                </SelectTrigger>
-                <SelectContent className="admin-theme">
-                  {[5, 4, 3, 2, 1].map((rating) => (
-                    <SelectItem key={rating} value={rating.toString()} className="cursor-pointer">
-                      <div className="flex items-center gap-2">
-                        {rating} {renderStars(rating)}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary/90">Testimonial Quote *</Label>
-              <RichTextEditor
-                value={testimonialForm.quote}
-                onEditorChange={(content) =>
-                  setTestimonialForm((prev) => ({ ...prev, quote: content }))
-                }
-                id="edit-testimonial-quote"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary/90">Client Avatar *</Label>
-              <div className="flex items-center gap-4">
-                {testimonialForm.avatar && (
-                  <img
-                    src={testimonialForm.avatar}
-                    alt="Selected avatar"
-                    className="w-16 h-16 rounded-full object-cover border"
-                  />
-                )}
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="cursor-pointer border-indigo-200 border-2"
-                  onClick={() => setSelectorOpen(true)}
-                >
-                  {testimonialForm.avatar ? "Change Image" : "Select Image"}
-                </Button>
+            <div>
+              <Label className="text-xs">Quote *</Label>
+              <div className="min-h-[100px]">
+                <RichTextEditor
+                  value={testimonialForm.quote}
+                  onEditorChange={(content) =>
+                    setTestimonialForm((prev) => ({ ...prev, quote: content }))
+                  }
+                />
               </div>
             </div>
           </div>
@@ -736,7 +673,9 @@ const TestimonialsManagerContent = ({
           <DialogFooter>
             <Button
               variant="outline"
-              className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
+                                  className="cursor-pointer"
+
+              size="sm"
               onClick={() => {
                 resetTestimonialForm();
                 setIsEditDialogOpen(false);
@@ -745,17 +684,14 @@ const TestimonialsManagerContent = ({
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleUpdateTestimonial}
-              className="cursor-pointer bg-primary hover:bg-background text-background hover:text-primary transition-colors duration-300"
-            >
-              Update Testimonial
+            <Button size="sm" onClick={handleUpdateTestimonial}                     className="cursor-pointer"
+>
+              Update
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Advanced Media Selector */}
       <AdvancedMediaSelector
         isOpen={isSelectorOpen}
         onOpenChange={setSelectorOpen}
@@ -768,13 +704,11 @@ const TestimonialsManagerContent = ({
   );
 };
 
-// Main component - Global save mode only
 export default function TestimonialsManager({
   section,
   onChange,
   showSaveButton = false,
 }: TestimonialsManagerProps) {
-  // Require section prop for global save mode
   if (!section || !onChange) {
     return (
       <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed">

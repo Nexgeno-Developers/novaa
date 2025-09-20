@@ -44,7 +44,7 @@ export default function RichTextEditor({
   value,
   onEditorChange,
   id,
-  height = 300,
+  height = 250,
   disabled = false,
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLTextAreaElement>(null);
@@ -64,7 +64,6 @@ export default function RichTextEditor({
         await hugerte.init({
           selector: `#${editorId}`,
           height,
-          menubar: false,
           // Use bundled skins
           skin_url: 'default',
           content_css: 'default',

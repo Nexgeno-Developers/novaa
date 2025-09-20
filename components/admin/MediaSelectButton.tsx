@@ -410,7 +410,7 @@ const MediaSelectButton = ({
   return (
     <>
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-primary">{label}</Label>
+        <Label className="text-sm font-medium">{label}</Label>
 
         <div className="space-y-3">
           <Button
@@ -501,7 +501,7 @@ const MediaSelectButton = ({
           )}
 
           {/* Preview */}
-          {hasValidMedia && !isMediaLoading && (
+          {/* {hasValidMedia && !isMediaLoading && (
             <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
               {previewLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
@@ -522,7 +522,7 @@ const MediaSelectButton = ({
                 </div>
               )}
             </div>
-          )}
+          )} */}
         </div>
       </div>
 

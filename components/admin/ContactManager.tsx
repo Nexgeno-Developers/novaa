@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Editor from "@/components/admin/Editor";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MediaSelectorButton from "@/components/admin/MediaSelectButton";
+import BaseSectionManager from "@/components/admin/BaseSectionManager";
 import type { Section } from "@/redux/slices/pageSlice";
-import { Contact, FormInput } from "lucide-react";
 
 interface ContactManagerProps {
   section: Section;
@@ -35,17 +35,16 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   showSaveButton = false,
 }) => {
   const [localData, setLocalData] = useState<ContactData>({
-    details: [
-      { icon: "", title: "", description: "" },
-      { icon: "", title: "", description: "" },
-      { icon: "", title: "", description: "" },
+    details: section?.content?.details || [
+      { _id: "", icon: "", title: "", description: "" },
+      { _id: "", icon: "", title: "", description: "" },
+      { _id: "", icon: "", title: "", description: "" },
     ],
-    formTitle: "",
-    formDescription: "",
-    mapImage: "",
+    formTitle: section?.content?.formTitle || "",
+    formDescription: section?.content?.formDescription || "",
+    mapImage: section?.content?.mapImage || "",
   });
 
-  // Initialize local data from section content
   useEffect(() => {
     if (section?.content) {
       setLocalData({
@@ -61,15 +60,10 @@ const ContactManager: React.FC<ContactManagerProps> = ({
     }
   }, [section]);
 
-  // Handle local changes and notify parent
   const handleDataChange = (newData: Partial<ContactData>) => {
     const updatedData = { ...localData, ...newData };
     setLocalData(updatedData);
-
-    // Notify parent component of changes
-    onChange({
-      content: updatedData,
-    });
+    onChange({ content: updatedData });
   };
 
   const handleFormTitleChange = (content: string) => {
@@ -101,141 +95,107 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <BaseSectionManager
+      section={section}
+      onChange={onChange}
+      showSaveButton={showSaveButton}
+      title="Contact Section"
+      description="Manage contact details, form content, and map"
+    >
+      <div className="space-y-4">
+        {/* Contact Details */}
         <div>
-          <h1 className="text-2xl font-bold text-primary/90">Contact Details Section</h1>
-          <p className="text-muted-foreground">
-            Manage contact details, form content, and map image
-          </p>
-        </div>
-      </div>
-
-      {/* Contact Details */}
-      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <CardTitle className="flex items-center text-gray-800 py-6">
-            <Contact className="h-5 w-5 mr-2 text-blue-600" />
+          <Label className="text-sm font-medium mb-3 block">
             Contact Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {localData.details.map((detail, index) => (
-            <div
-              key={detail._id || index}
-              className="space-y-4 p-4 border rounded-lg ring-2 ring-primary/20"
-            >
-              <Label className="text-primary/90">
-                Contact Detail {index + 1}
-              </Label>
+          </Label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {localData.details.map((detail, index) => (
+              <div
+                key={detail._id || index}
+                className="space-y-3 p-3 border rounded"
+              >
+                <Label className="text-xs font-medium">
+                  Detail {index + 1}
+                </Label>
 
-              {/* Icon Selection */}
-              <div className="space-y-2">
-                <Label>Icon</Label>
-                <div className="flex items-center gap-4">
-                  {/* {detail.icon && (
-                    <img
-                      src={detail.icon}
-                      alt={`Icon ${index + 1}`}
-                      className="w-8 h-8 object-contain"
-                    />
-                  )} */}
+                <div>
+                  <Label className="text-xs">Icon</Label>
                   <MediaSelectorButton
-                    label="Select Icon"
+                    label=""
                     mediaType="image"
                     value={detail.icon}
                     onSelect={(url: string) => handleIconSelect(index, url)}
+                    placeholder="Select icon"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-xs">Title</Label>
+                  <Input
+                    value={detail.title}
+                    onChange={(e) =>
+                      handleDetailChange(index, "title", e.target.value)
+                    }
+                    placeholder="Enter title"
+                    className="text-sm"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-xs">Description</Label>
+                  <Input
+                    value={detail.description}
+                    onChange={(e) =>
+                      handleDetailChange(index, "description", e.target.value)
+                    }
+                    placeholder="Enter description"
+                    className="text-sm"
                   />
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
 
-              {/* Title */}
+        {/* Form & Map */}
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Side - Form Content */}
+            <div className="space-y-4">
               <div>
-                <Label
-                  htmlFor={`detail-title-${index}`}
-                  className="pb-2 text-primary/90"
-                >
-                  Title
-                </Label>
-                <Input
-                  id={`detail-title-${index}`}
-                  value={detail.title}
-                  onChange={(e) =>
-                    handleDetailChange(index, "title", e.target.value)
-                  }
-                  placeholder="Enter title"
-                />
+                <Label>Form Title</Label>
+                <div className="min-h-[100px]">
+                  <Editor
+                    value={localData.formTitle || ""}
+                    onEditorChange={handleFormTitleChange}
+                  />
+                </div>
               </div>
-
-              {/* Description */}
-              <div>
-                <Label
-                  htmlFor={`detail-desc-${index}`}
-                  className="pb-2 text-primary/90"
-                >
-                  Description
-                </Label>
-                <Input
-                  id={`detail-desc-${index}`}
-                  value={detail.description}
-                  onChange={(e) =>
-                    handleDetailChange(index, "description", e.target.value)
-                  }
-                  placeholder="Enter description"
+            </div>
+            <div>
+              <Label>Form Description</Label>
+              <div className="min-h-[100px]">
+                <Editor
+                  value={localData.formDescription || ""}
+                  onEditorChange={handleFormDescriptionChange}
                 />
               </div>
             </div>
-          ))}
-        </CardContent>
-      </Card>
 
-      {/* Contact Form Section */}
-      <Card className="pb-6 ring-2 ring-primary/20 bg-indigo-50/30">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl border-b-blue-200 border-b-2">
-          <CardTitle className="flex items-center text-gray-800 py-6">
-            <FormInput className="h-5 w-5 mr-2 text-blue-600" />
-            Contact Form Section
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Map Image */}
+            {/* Right Side - Map */}
+          </div>
           <div>
-            {/* <Label>Map Image</Label> */}
-            {/* {localData.mapImage && (
-                <img
-                  src={localData.mapImage}
-                  alt="Map"
-                  className="w-48 h-auto rounded-md bg-gray-200"
-                />
-              )} */}
             <MediaSelectorButton
-              label="Select Map Image"
+              label="Map Image"
               mediaType="image"
               value={localData.mapImage}
               onSelect={handleMapImageSelect}
+              placeholder="Select map image"
             />
           </div>
-
-          {/* Form Title */}
-          <div>
-            <Label className="pb-2 text-primary/90">Form Title</Label>
-            <Editor
-              value={localData.formTitle || ""}
-              onEditorChange={handleFormTitleChange}
-            />
-          </div>
-
-          {/* Form Description */}
-          <div>
-            <Label className="pb-2 text-primary/90">Form Description</Label>
-            <Editor
-              value={localData.formDescription || ""}
-              onEditorChange={handleFormDescriptionChange}
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </BaseSectionManager>
   );
 };
 
