@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Blog from '@/models/Blog';
 import BlogCategory from '@/models/BlogCategory';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function GET(
   request: NextRequest,
@@ -84,15 +84,15 @@ export async function PUT(
     ).populate('category', 'title slug');
 
     // Revalidate caches
-    revalidateTag('blogs');
-    revalidateTag('blog-sections'); // This will revalidate blog listing page
+    revalidatePath('blogs');
+    revalidatePath('blog-sections'); // This will revalidate blog listing page
 
     // Invalidate cache for the CURRENT blog's slug (before update)
-    revalidateTag(`blog-${currentBlog.slug}`);
+    revalidatePath(`blog-${currentBlog.slug}`);
 
     // If slug changed, also invalidate new slug cache
     if (updatedBlog.slug !== currentBlog.slug) {
-      revalidateTag(`blog-${updatedBlog.slug}`);
+      revalidatePath(`blog-${updatedBlog.slug}`);
     }
 
     return NextResponse.json({
@@ -130,11 +130,11 @@ export async function DELETE(
     await Blog.findByIdAndDelete(id);
 
     // Revalidate caches
-    revalidateTag('blogs');
-    revalidateTag('blog-sections'); // This will revalidate blog listing page
+    revalidatePath('blogs');
+    revalidatePath('blog-sections'); // This will revalidate blog listing page
 
     // Invalidate specific blog detail page cache
-    revalidateTag(`blog-${blog.slug}`);
+    revalidatePath(`blog-${blog.slug}`);
 
     return NextResponse.json({
       success: true,
