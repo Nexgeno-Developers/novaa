@@ -29,6 +29,16 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
 
+    // console.log("Body", body);
+
+    // Minimal preprocessing - just ensure lowercase for social platform names
+    if (body.socials?.links) {
+      body.socials.links = body.socials.links.map((link: any) => ({
+        ...link,
+        name: link.name?.toLowerCase()
+      }));
+    }
+
     const updatedFooter = await Footer.findOneAndUpdate(
       {}, // Empty filter targets the single document
       body,
@@ -36,6 +46,8 @@ export async function PUT(request: Request) {
     );
 
     revalidateTag("footer");
+
+    // console.log("Updated Footer");
 
     return NextResponse.json(updatedFooter, { status: 200 });
   } catch (error) {

@@ -16,13 +16,32 @@ interface FooterProps {
 
 export default function Footer({ data }: FooterProps) {
   const dispatch = useAppDispatch();
+
   // Mapping social names to icon paths
   const socialIconMap: { [key: string]: string } = {
     whatsapp: "/footer/whatsapp.svg",
-    facebook: "/footer/facebook.svg",
+    facebook: "/footer/facebook.svg", 
     instagram: "/footer/insta-icon.svg",
-    twitter: "/footer/twitter.svg",
+    twitter: "/footer/twitter.svg", 
+    linkedin: "/footer/linkedin.png",
+    snapchat: "/footer/snapchat.png", 
+    tiktok: "/footer/tiktok.png",
+    youtube: "/footer/youtube.png", 
+    telegram: "/footer/telegram.png", 
+    pinterest: "/footer/pinterest.png", 
+    reddit: "/footer/reddit.png", 
+    discord: "/footer/discord.png",
+    tumblr: "/footer/tumblr.png",
+    wechat: "/footer/wechat.png",
   };
+  // Filter out empty or invalid links
+  const validQuickLinks = data.quickLinks.links.filter(
+    (link) => link.label.trim() && link.url.trim()
+  );
+
+  const validSocialLinks = data.socials.links.filter(
+    (link) => link.url.trim() && socialIconMap[link.name]
+  );
 
   return (
     <footer className="relative w-full bg-[#000000D9] overflow-hidden pt-10 pb-5 sm:pb-10 sm:pt-20">
@@ -90,27 +109,35 @@ export default function Footer({ data }: FooterProps) {
                 dangerouslySetInnerHTML={{ __html: data.about.description }}
               />
             </div>
-            {/* Quick Links */}
+
+            {/* Quick Links - Dynamic */}
             <div>
               <h3 className="text-[#CDB04E] text-base sm:text-lg font-semibold mb-6">
                 {data.quickLinks.title}
               </h3>
-              <ul className="space-y-2 sm:space-y-3">
-                {data?.quickLinks?.links?.map((link) => (
-                  <li key={link.url}>
-                    <Link
-                      href={link.url}
-                      onClick={() => dispatch(setNavigationLoading(true))}
-                      className="text-gray-300 text-base sm:text-lg hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
-                    >
-                      <ArrowRight className="w-4 h-4" color="gold" />
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              {validQuickLinks.length > 0 ? (
+                <ul className="space-y-2 sm:space-y-3">
+                  {validQuickLinks.map((link, index) => (
+                    <li key={`${link.url}-${index}`}>
+                      <Link
+                        href={link.url}
+                        onClick={() => dispatch(setNavigationLoading(true))}
+                        className="text-gray-300 text-base sm:text-lg hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
+                      >
+                        <ArrowRight className="w-4 h-4" color="gold" />
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-400 text-sm italic">
+                  No quick links available
+                </p>
+              )}
             </div>
-            {/* Contact & Socials */}
+
+            {/* Contact & Socials - Dynamic */}
             <div>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -123,29 +150,45 @@ export default function Footer({ data }: FooterProps) {
                     {data.contact.email}
                   </span>
                 </div>
-                <h3 className="text-[#CDB04E] text-base sm:text-xl font-semibold mt-2 sm:mt-8 sm:mb-4 mb-0">
-                  {data.socials.title}
-                </h3>
-                <div className="flex gap-2 sm:gap-4">
-                  {data.socials.links.map((social) => (
-                    <Link
-                      key={social.name}
-                      onClick={() => dispatch(setNavigationLoading(true))}
-                      href={social.url}
-                      className="h-10 w-10 sm:w-15 sm:h-15 rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
-                    >
-                      <Image
-                        src={socialIconMap[social.name]}
-                        width={social.name === "facebook" ? 15 : 30}
-                        height={social.name === "facebook" ? 15 : 30}
-                        alt={`${social.name} logo`}
-                      />
-                    </Link>
-                  ))}
-                </div>
+
+                {/* Social Links - Dynamic */}
+                {validSocialLinks.length > 0 && (
+                  <>
+                    <h3 className="text-[#CDB04E] text-base sm:text-xl font-semibold mt-2 sm:mt-8 sm:mb-4 mb-0">
+                      {data.socials.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 sm:gap-4">
+                      {validSocialLinks.map((social, index) => (
+                        <Link
+                          key={`${social.name}-${index}`}
+                          onClick={() => dispatch(setNavigationLoading(true))}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="h-10 w-10 sm:w-15 sm:h-15 rounded-full flex items-center justify-center hover:bg-[#CDB04E] transition-colors duration-300"
+                          title={`Follow us on ${social.name}`}
+                        >
+                          <Image
+                            src={socialIconMap[social.name]}
+                            width={social.name === "facebook" ? 15 : 30}
+                            height={social.name === "facebook" ? 15 : 30}
+                            alt={`${social.name} logo`}
+                          />
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {validSocialLinks.length === 0 && (
+                  <p className="text-gray-400 text-sm italic mt-4">
+                    No social links available
+                  </p>
+                )}
               </div>
             </div>
           </div>
+
           {/* Copyright */}
           <div className="mt-2 py-2 sm:mt-12 sm:py-8 border-t border-t-[#CDB04E80] text-center">
             <p className="text-[#FFFFFFCC] text-base sm:text-lg">

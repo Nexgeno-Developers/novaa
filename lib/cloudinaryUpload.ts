@@ -134,12 +134,12 @@ export class CloudinaryService {
     nextCursor?: string
   ): Promise<CloudinarySearchResult> {
     try {
-      console.log("Search params:", {
-        query,
-        resourceType,
-        maxResults,
-        nextCursor,
-      });
+      // console.log("Search params:", {
+      //   query,
+      //   resourceType,
+      //   maxResults,
+      //   nextCursor,
+      // });
 
       let searchExpression = `folder:${this.folder}`;
 
@@ -163,7 +163,7 @@ export class CloudinaryService {
         searchExpression += ` AND (filename:*${queryTerm}* OR public_id:*${queryTerm}*)`;
       }
 
-      console.log("Final search expression:", searchExpression);
+      // console.log("Final search expression:", searchExpression);
 
       const searchBuilder = cloudinary.search
         .expression(searchExpression)

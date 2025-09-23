@@ -23,6 +23,8 @@ import {
   Save,
   XCircle,
   Loader2,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -35,6 +37,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAppDispatch } from "@/redux/hooks";
 
 // Drag and drop imports
@@ -51,7 +60,7 @@ import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hi
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { AdvancedMediaSelector } from "./AdvancedMediaSelector";
 
-interface NavbarItem {
+interface SubmenuItem {
   _id?: string;
   label: string;
   href: string;
@@ -59,26 +68,48 @@ interface NavbarItem {
   isActive: boolean;
 }
 
+interface NavbarItem {
+  _id?: string;
+  label: string;
+  href: string;
+  order: number;
+  isActive: boolean;
+  submenu?: SubmenuItem[];
+}
+
 interface NavbarState {
   logo: { url: string; alt?: string } | null;
   items: NavbarItem[];
 }
 
-// Draggable component
+// Draggable component for main nav items
 function DraggableNavItem({
   item,
   index,
   onEdit,
   onDelete,
+  onAddSubmenu,
+  onEditSubmenu,
+  onDeleteSubmenu,
+  expandedItems,
+  toggleExpanded,
 }: {
   item: NavbarItem;
   index: number;
   onEdit: (item: NavbarItem) => void;
   onDelete: (id: string) => void;
+  onAddSubmenu: (parentId: string) => void;
+  onEditSubmenu: (parentId: string, submenu: SubmenuItem) => void;
+  onDeleteSubmenu: (parentId: string, submenuId: string) => void;
+  expandedItems: Set<string>;
+  toggleExpanded: (id: string) => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = useState(false);
   const [closestEdge, setClosestEdge] = useState<Edge | null>(null);
+
+  const hasSubmenu = item.submenu && item.submenu.length > 0;
+  const isExpanded = expandedItems.has(item._id || "");
 
   useEffect(() => {
     const el = ref.current;
@@ -115,46 +146,120 @@ function DraggableNavItem({
   }, [index, item._id]);
 
   return (
-    <div ref={ref} className="relative">
-      {closestEdge && (
+    <div>
+      <div ref={ref} className="relative">
+        {closestEdge && (
+          <div
+            className={`absolute left-2 right-2 h-1 bg-blue-600 rounded-full z-10 ${
+              closestEdge === "top" ? "-top-1" : "-bottom-1"
+            }`}
+          />
+        )}
         <div
-          className={`absolute left-2 right-2 h-1 bg-blue-600 rounded-full z-10 ${
-            closestEdge === "top" ? "-top-1" : "-bottom-1"
+          className={`flex items-center space-x-4 p-4 border rounded-lg bg-white ring-2 ring-primary/10 cursor-grab transition-opacity ${
+            dragging ? "opacity-40" : "opacity-100"
           }`}
-        />
-      )}
-      <div
-        className={`flex items-center space-x-4 p-4 border rounded-lg bg-white ring-2 ring-primary/10 cursor-grab transition-opacity ${
-          dragging ? "opacity-40" : "opacity-100"
-        }`}
-      >
-        <GripVertical className="h-4 w-4 text-gray-400" />
-        <div className="flex-1">
-          <div className="flex items-center space-x-2">
-            <span className="font-medium">{item.label}</span>
-            {!item.isActive && <Badge variant="secondary">Inactive</Badge>}
+        >
+          <GripVertical className="h-4 w-4 text-gray-400" />
+          
+          {/* Expand/Collapse Button */}
+          {hasSubmenu && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleExpanded(item._id || "")}
+              className="p-1 h-6 w-6"
+            >
+              {isExpanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+          )}
+          
+          <div className="flex-1">
+            <div className="flex items-center space-x-2">
+              <span className="font-medium">{item.label}</span>
+              {!item.isActive && <Badge variant="secondary">Inactive</Badge>}
+              {hasSubmenu && (
+                <Badge variant="outline" className="text-xs">
+                  {item.submenu?.length} submenu items
+                </Badge>
+              )}
+            </div>
+            <span className="text-sm text-gray-500">{item.href}</span>
           </div>
-          <span className="text-sm text-gray-500">{item.href}</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="bg-primary text-background cursor-pointer"
-            onClick={() => onEdit(item)}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="bg-red-500 hover:bg-red-600 text-white cursor-pointer"
-            onClick={() => onDelete(item._id!)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-green-500 hover:bg-green-600 text-white cursor-pointer"
+              onClick={() => onAddSubmenu(item._id!)}
+              title="Add Submenu"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-primary text-background cursor-pointer"
+              onClick={() => onEdit(item)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-red-500 hover:bg-red-600 text-white cursor-pointer"
+              onClick={() => onDelete(item._id!)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Submenu Items */}
+      {hasSubmenu && isExpanded && (
+        <div className="ml-8 mt-2 space-y-2 border-l-2 border-gray-200 pl-4">
+          {item.submenu?.map((submenuItem, subIndex) => (
+            <div
+              key={submenuItem._id || subIndex}
+              className="flex items-center space-x-4 p-3 border border-gray-200 rounded-lg bg-gray-50"
+            >
+              <div className="flex-1">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium text-sm">{submenuItem.label}</span>
+                  {!submenuItem.isActive && (
+                    <Badge variant="secondary" className="text-xs">Inactive</Badge>
+                  )}
+                </div>
+                <span className="text-xs text-gray-500">{submenuItem.href}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 bg-primary text-background cursor-pointer"
+                  onClick={() => onEditSubmenu(item._id!, submenuItem)}
+                >
+                  <Edit className="h-3 w-3" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 bg-red-500 hover:bg-red-600 text-white cursor-pointer"
+                  onClick={() => onDeleteSubmenu(item._id!, submenuItem._id!)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -175,9 +280,15 @@ export default function NavbarManager() {
   });
 
   const [editingItem, setEditingItem] = useState<NavbarItem | null>(null);
+  const [editingSubmenu, setEditingSubmenu] = useState<{
+    parentId: string;
+    submenu: SubmenuItem | null;
+  } | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showSubmenuForm, setShowSubmenuForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [isLogoSelectorOpen, setIsLogoSelectorOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   // Populate local state when data is fetched from Redux
   useEffect(() => {
@@ -193,6 +304,19 @@ export default function NavbarManager() {
   const hasChanges =
     JSON.stringify({ logo: initialLogo, items: initialItems }) !==
     JSON.stringify(localNavbarState);
+
+  // Toggle expanded state for nav items
+  const toggleExpanded = (id: string) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   // Handle drag and drop reordering (modifies local state only)
   useEffect(() => {
@@ -244,9 +368,27 @@ export default function NavbarManager() {
       href: "",
       order: localNavbarState.items.length + 1,
       isActive: true,
+      submenu: [],
     };
     setEditingItem(newItem);
     setShowAddForm(true);
+  };
+
+  const handleAddSubmenu = (parentId: string) => {
+    const parentItem = localNavbarState.items.find(item => item._id === parentId);
+    const newSubmenu: SubmenuItem = {
+      label: "",
+      href: "",
+      order: (parentItem?.submenu?.length || 0) + 1,
+      isActive: true,
+    };
+    setEditingSubmenu({ parentId, submenu: newSubmenu });
+    setShowSubmenuForm(true);
+  };
+
+  const handleEditSubmenu = (parentId: string, submenu: SubmenuItem) => {
+    setEditingSubmenu({ parentId, submenu });
+    setShowSubmenuForm(true);
   };
 
   const handleSaveItem = () => {
@@ -259,7 +401,7 @@ export default function NavbarManager() {
       );
     } else {
       // Adding new item
-     updatedItems = [...localNavbarState.items, { ...editingItem }];
+      updatedItems = [...localNavbarState.items, { ...editingItem }];
     }
     setLocalNavbarState((prevState) => ({ ...prevState, items: updatedItems }));
     setEditingItem(null);
@@ -269,12 +411,58 @@ export default function NavbarManager() {
     );
   };
 
+  const handleSaveSubmenu = () => {
+    if (!editingSubmenu || !editingSubmenu.submenu?.label || !editingSubmenu.submenu?.href) return;
+    
+    const updatedItems = localNavbarState.items.map((item) => {
+      if (item._id === editingSubmenu.parentId) {
+        const updatedItem = { ...item };
+        if (!updatedItem.submenu) {
+          updatedItem.submenu = [];
+        }
+        
+        if (editingSubmenu.submenu!._id) {
+          // Editing existing submenu
+          updatedItem.submenu = updatedItem.submenu.map((sub) =>
+            sub._id === editingSubmenu.submenu!._id ? editingSubmenu.submenu! : sub
+          );
+        } else {
+          // Adding new submenu
+          updatedItem.submenu = [...updatedItem.submenu, editingSubmenu.submenu!];
+        }
+        return updatedItem;
+      }
+      return item;
+    });
+
+    setLocalNavbarState((prevState) => ({ ...prevState, items: updatedItems }));
+    setEditingSubmenu(null);
+    setShowSubmenuForm(false);
+    toast.success(
+      editingSubmenu.submenu!._id ? "Submenu updated locally" : "New submenu added locally"
+    );
+  };
+
   const handleDeleteItem = (itemId: string) => {
     const updatedItems = localNavbarState.items.filter(
       (item) => item._id !== itemId
     );
     setLocalNavbarState((prevState) => ({ ...prevState, items: updatedItems }));
     toast.info("Item marked for deletion");
+  };
+
+  const handleDeleteSubmenu = (parentId: string, submenuId: string) => {
+    const updatedItems = localNavbarState.items.map((item) => {
+      if (item._id === parentId && item.submenu) {
+        return {
+          ...item,
+          submenu: item.submenu.filter((sub) => sub._id !== submenuId),
+        };
+      }
+      return item;
+    });
+    setLocalNavbarState((prevState) => ({ ...prevState, items: updatedItems }));
+    toast.info("Submenu item marked for deletion");
   };
 
   // Save changes function
@@ -294,6 +482,7 @@ export default function NavbarManager() {
   // Discard changes function
   const handleDiscardChanges = () => {
     setLocalNavbarState({ logo: initialLogo, items: initialItems });
+    setExpandedItems(new Set());
     toast.info("Changes have been discarded.");
   };
 
@@ -311,7 +500,7 @@ export default function NavbarManager() {
         <div>
           <h1 className="text-3xl font-bold">Navbar Management</h1>
           <p className="text-gray-600">
-            Manage your website navigation and logo
+            Manage your website navigation, logo, and submenus
           </p>
         </div>
       </div>
@@ -376,7 +565,7 @@ export default function NavbarManager() {
           <div>
             <CardTitle>Navigation Items</CardTitle>
             <CardDescription>
-              Manage your website navigation menu. Drag to reorder items.
+              Manage your website navigation menu and submenus. Drag to reorder items.
             </CardDescription>
           </div>
           <Button
@@ -407,6 +596,11 @@ export default function NavbarManager() {
                   index={index}
                   onEdit={setEditingItem}
                   onDelete={handleDeleteItem}
+                  onAddSubmenu={handleAddSubmenu}
+                  onEditSubmenu={handleEditSubmenu}
+                  onDeleteSubmenu={handleDeleteSubmenu}
+                  expandedItems={expandedItems}
+                  toggleExpanded={toggleExpanded}
                 />
               ))}
             </div>
@@ -492,6 +686,136 @@ export default function NavbarManager() {
               onClick={() => {
                 setEditingItem(null);
                 setShowAddForm(false);
+              }}
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit/Add Submenu Modal */}
+      <Dialog
+        open={!!(editingSubmenu || showSubmenuForm)}
+        onOpenChange={() => {
+          setEditingSubmenu(null);
+          setShowSubmenuForm(false);
+        }}
+      >
+        <DialogContent className="max-w-2xl admin-theme">
+          <DialogHeader>
+            <DialogTitle>
+              {editingSubmenu?.submenu?._id
+                ? "Edit Submenu Item"
+                : "Add New Submenu Item"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 pb-2">
+                Parent Menu Item
+              </Label>
+              <Select
+                value={editingSubmenu?.parentId || ""}
+                onValueChange={(value) =>
+                  setEditingSubmenu((prev) =>
+                    prev ? { ...prev, parentId: value } : null
+                  )
+                }
+                disabled={!!editingSubmenu?.submenu?._id} // Disable when editing existing submenu
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select parent menu item" />
+                </SelectTrigger>
+                <SelectContent>
+                  {localNavbarState.items.map((item) => (
+                    <SelectItem key={item._id} value={item._id!}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 pb-2">
+                Submenu Label
+              </Label>
+              <Input
+                value={editingSubmenu?.submenu?.label || ""}
+                onChange={(e) =>
+                  setEditingSubmenu((prev) =>
+                    prev && prev.submenu
+                      ? {
+                          ...prev,
+                          submenu: { ...prev.submenu, label: e.target.value },
+                        }
+                      : null
+                  )
+                }
+                placeholder="e.g., Our Team, Services, Portfolio"
+              />
+            </div>
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 pb-2">
+                Submenu URL
+              </Label>
+              <Input
+                value={editingSubmenu?.submenu?.href || ""}
+                onChange={(e) =>
+                  setEditingSubmenu((prev) =>
+                    prev && prev.submenu
+                      ? {
+                          ...prev,
+                          submenu: { ...prev.submenu, href: e.target.value },
+                        }
+                      : null
+                  )
+                }
+                placeholder="e.g., /about/team, /services/web-design"
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id={`submenu-active-${editingSubmenu?.submenu?._id || "new"}`}
+                checked={editingSubmenu?.submenu?.isActive || false}
+                onCheckedChange={(checked) =>
+                  setEditingSubmenu((prev) =>
+                    prev && prev.submenu
+                      ? {
+                          ...prev,
+                          submenu: { ...prev.submenu, isActive: checked },
+                        }
+                      : null
+                  )
+                }
+              />
+              <Label
+                htmlFor={`submenu-active-${editingSubmenu?.submenu?._id || "new"}`}
+                className="text-sm text-gray-700"
+              >
+                Active (visible in submenu)
+              </Label>
+            </div>
+          </div>
+          <DialogFooter className="flex space-x-2 mt-4">
+            <Button
+              onClick={handleSaveSubmenu}
+              disabled={
+                !editingSubmenu?.submenu?.label ||
+                !editingSubmenu?.submenu?.href ||
+                !editingSubmenu?.parentId
+              }
+              className="bg-primary text-background cursor-pointer"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Submenu
+            </Button>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => {
+                setEditingSubmenu(null);
+                setShowSubmenuForm(false);
               }}
             >
               Cancel

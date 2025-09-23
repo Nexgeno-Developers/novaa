@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const NavbarItemSchema = new mongoose.Schema({
+const SubmenuItemSchema = new mongoose.Schema({
   label: {
     type: String,
     required: true,
@@ -19,11 +19,30 @@ const NavbarItemSchema = new mongoose.Schema({
   },
 });
 
+const NavbarItemSchema = new mongoose.Schema({
+  label: {
+    type: String,
+    required: true,
+  },
+  href: {
+    type: String,
+    required: true,
+  },
+  order: {
+    type: Number,
+    required: true,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  submenu: [SubmenuItemSchema],
+});
+
 const NavbarSchema = new mongoose.Schema({
   logo: {
     url: { type: String, required: true },
-        alt: { type: String }, // optional, not required
-
+    alt: { type: String }, // optional, not required
   },
   items: [NavbarItemSchema],
 }, {

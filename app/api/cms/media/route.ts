@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const cursor = searchParams.get('cursor') || undefined;
 
-    console.log('API received params:', { query, resource_type, limit, cursor });
+    // console.log('API received params:', { query, resource_type, limit, cursor });
 
     // FIXED: Use only one search method consistently
     const result = await cloudinaryService.searchFiles(

@@ -7,6 +7,8 @@ import {
   fetchFooterData,
   updateFooterData,
   FooterData,
+  Link,
+  SocialLink,
 } from "@/redux/slices/footerSlice";
 import {
   Book,
@@ -16,6 +18,9 @@ import {
   Sparkles,
   Save,
   XCircle,
+  Plus,
+  Trash2,
+  Edit,
 } from "lucide-react";
 
 // Shadcn UI Components
@@ -30,6 +35,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Custom Components
 import MediaSelectButton from "@/components/admin/MediaSelectButton";
@@ -42,6 +54,24 @@ const FooterManagerPage = () => {
 
   const [formData, setFormData] = useState<FooterData | null>(null);
   const [saving, setSaving] = useState(false);
+
+  // Available social platforms
+  const availableSocialPlatforms: Array<SocialLink["name"]> = [
+    "whatsapp",
+    "facebook",
+    "instagram",
+    "twitter",
+    "linkedin",
+    "snapchat",
+    "tiktok",
+    "youtube",
+    "telegram",
+    "pinterest",
+    "reddit",
+    "discord",
+    "tumblr",
+    "wechat",
+  ];
 
   useEffect(() => {
     dispatch(fetchFooterData());
@@ -100,7 +130,7 @@ const FooterManagerPage = () => {
     });
   };
 
-  // Handle quick links changes
+  // Quick Links CRUD Operations
   const handleQuickLinkChange = (
     index: number,
     field: "label" | "url",
@@ -121,12 +151,89 @@ const FooterManagerPage = () => {
     });
   };
 
-  // Handle social links changes
-  const handleSocialLinkChange = (index: number, value: string) => {
+  const addQuickLink = () => {
+    setFormData((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        quickLinks: {
+          ...prev.quickLinks,
+          links: [...prev.quickLinks.links, { label: "", url: "" }],
+        },
+      };
+    });
+  };
+
+  const removeQuickLink = (index: number) => {
+    setFormData((prev) => {
+      if (!prev) return null;
+      const updatedLinks = prev.quickLinks.links.filter((_, i) => i !== index);
+      return {
+        ...prev,
+        quickLinks: {
+          ...prev.quickLinks,
+          links: updatedLinks,
+        },
+      };
+    });
+  };
+
+  // Social Links CRUD Operations
+  const handleSocialLinkChange = (
+    index: number,
+    field: "name" | "url",
+    value: string
+  ) => {
     setFormData((prev) => {
       if (!prev) return null;
       const updatedLinks = [...prev.socials.links];
-      updatedLinks[index] = { ...updatedLinks[index], url: value };
+      if (field === "name") {
+        updatedLinks[index] = {
+          ...updatedLinks[index],
+          [field]: value as SocialLink["name"],
+        };
+      } else {
+        updatedLinks[index] = { ...updatedLinks[index], [field]: value };
+      }
+      return {
+        ...prev,
+        socials: {
+          ...prev.socials,
+          links: updatedLinks,
+        },
+      };
+    });
+  };
+
+  const addSocialLink = () => {
+    // Find first available platform not already in use
+    const usedPlatforms =
+      formData?.socials.links.map((link) => link.name) || [];
+    const availablePlatform = availableSocialPlatforms.find(
+      (platform) => !usedPlatforms.includes(platform)
+    );
+
+    if (!availablePlatform) {
+      toast.error("All social platforms are already added");
+      return;
+    }
+
+    setFormData((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        socials: {
+          ...prev.socials,
+          links: [...prev.socials.links, { name: availablePlatform, url: "" }],
+        },
+      };
+    });
+  };
+
+  const removeSocialLink = (index: number) => {
+    setFormData((prev) => {
+      if (!prev) return null;
+      const updatedLinks = prev.socials.links.filter((_, i) => i !== index);
       return {
         ...prev,
         socials: {
@@ -141,9 +248,11 @@ const FooterManagerPage = () => {
     if (!formData) return;
     setSaving(true);
     try {
+      console.log("test")
       await dispatch(updateFooterData(formData)).unwrap();
       toast.success("Footer has been updated.");
     } catch (error) {
+      console.log("error" , error)
       toast.error("Failed to update footer.");
     } finally {
       setSaving(false);
@@ -172,38 +281,17 @@ const FooterManagerPage = () => {
         <h1 className="text-3xl font-bold">Footer Manager</h1>
       </div>
 
-      {/* <Tabs defaultValue="tagline"> */}
-        {/* <TabsList className="grid w-full h-15 grid-cols-3 bg-background dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-2 shadow-lg ring-2 ring-primary/20">
-          <TabsTrigger
-            value="tagline"
-            className="flex cursor-pointer items-center py-2 space-x-2 data-[state=inactive]:text-primary data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white  data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span className="font-medium">Tagline</span>
-          </TabsTrigger>
+      <Card className="py-6 mt-2 bg-sidebar ring-2 ring-primary/20">
+        <CardHeader>
+          <CardTitle className="text-accent">
+            Footer Tagline & Background Images
+          </CardTitle>
+        </CardHeader>
 
-          <TabsTrigger
-            value="content"
-            className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-primary data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Book className="w-4 h-4" />
-            <span className="font-medium">Content Columns</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="copyright"
-            className="flex cursor-pointer items-center space-x-2 data-[state=inactive]:text-primary data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300"
-          >
-            <Copyright className="w-4 h-4" />
-            <span className="font-medium">Copyright</span>
-          </TabsTrigger>
-        </TabsList> */}
-
-        {/* <TabsContent value="tagline"> */}
-          <Card className="py-6 mt-2 bg-sidebar ring-2 ring-primary/20">
-            <CardHeader>
-              <CardTitle className="text-accent">Footer Tagline</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Left side: Footer Tagline */}
+            <div className="space-y-3">
               <div>
                 <Label className="pb-2">Title</Label>
                 <Input
@@ -255,13 +343,21 @@ const FooterManagerPage = () => {
                   className="ring-2 ring-primary/20"
                 />
               </div>
-            </CardContent>
-          </Card>
-          <Card className="py-6 mt-6 ring-2 ring-primary/20 bg-sidebar">
-            <CardHeader>
-              <CardTitle className="text-accent">Background Images</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <Label className="pb-2">Copyright Text</Label>
+                <Textarea
+                  name="copyrightText"
+                  value={formData.copyrightText}
+                  onChange={handleInputChange}
+                  rows={2}
+                  placeholder="Copyright text with HTML allowed"
+                  className="ring-2 ring-primary/20"
+                />
+              </div>
+            </div>
+
+            {/* Right side: Background Images */}
+            <div className="flex flex-col">
               <MediaSelectButton
                 key={"bg-image-one"}
                 label="Background Image 1 (Top-Left)"
@@ -289,179 +385,240 @@ const FooterManagerPage = () => {
                   setFormData({ ...formData, bgImageThree: url })
                 }
               />
-            </CardContent>
-          </Card>
-        {/* </TabsContent> */}
-
-        {/* <TabsContent value="content"> */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* About Us */}
-            <Card className="py-6 mt-4 bg-sidebar ring-2 ring-primary/20">
-              <CardHeader>
-                <CardTitle className="text-accent">About Us Column</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="pb-2">Section Title</Label>
-                  <Input
-                    value={formData.about.title}
-                    onChange={(e) =>
-                      handleNestedInputChange("about", "title", e.target.value)
-                    }
-                    placeholder="About Us"
-                    className="ring-2 ring-primary/20"
-                  />
-                </div>
-                <div>
-                  <Label className="pb-2">Description</Label>
-                  <Editor
-                    value={formData.about.description}
-                    onEditorChange={(content) =>
-                      handleNestedInputChange("about", "description", content)
-                    }
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Links */}
-            <Card className="bg-sidebar py-6 mt-4 ring-2 ring-primary/20">
-              <CardHeader>
-                <CardTitle className="text-accent">
-                  Quick Links Column
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="pb-2">Section Title</Label>
-                  <Input
-                    value={formData.quickLinks.title}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        "quickLinks",
-                        "title",
-                        e.target.value
-                      )
-                    }
-                    className="ring-2 ring-primary/20"
-                    placeholder="Quick Links"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Links</Label>
-                  {formData.quickLinks.links.map((link, index) => (
-                    <div key={index} className="flex gap-2 items-center">
-                      <Input
-                        value={link.label}
-                        onChange={(e) =>
-                          handleQuickLinkChange(index, "label", e.target.value)
-                        }
-                        className="ring-2 ring-primary/20"
-                        placeholder="Label"
-                      />
-                      <Input
-                        value={link.url}
-                        onChange={(e) =>
-                          handleQuickLinkChange(index, "url", e.target.value)
-                        }
-                        className="ring-2 ring-primary/20"
-                        placeholder="URL (e.g., /about-us)"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Contact & Socials */}
-            <Card className="bg-sidebar py-6 mt-4 ring-2 ring-primary/20">
-              <CardHeader>
-                <CardTitle className="text-accent">Contact Column</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="pb-2">Phone</Label>
-                  <Input
-                    value={formData.contact.phone}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        "contact",
-                        "phone",
-                        e.target.value
-                      )
-                    }
-                    className="ring-2 ring-primary/20"
-                    placeholder="Phone Number"
-                  />
-                </div>
-                <div>
-                  <Label className="pb-2">Email</Label>
-                  <Input
-                    value={formData.contact.email}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        "contact",
-                        "email",
-                        e.target.value
-                      )
-                    }
-                    className="ring-2 ring-primary/20"
-                    placeholder="Email Address"
-                  />
-                </div>
-                <div>
-                  <Label className="pb-2">Social Media Section Title</Label>
-                  <Input
-                    value={formData.socials.title}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        "socials",
-                        "title",
-                        e.target.value
-                      )
-                    }
-                    className="ring-2 ring-primary/20"
-                    placeholder="Follow on"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="pb-2">Social Links</Label>
-                  {formData.socials.links.map((link, index) => (
-                    <div key={link.name} className="space-y-1">
-                      <Label className="capitalize">{link.name}</Label>
-                      <Input
-                        value={link.url}
-                        onChange={(e) =>
-                          handleSocialLinkChange(index, e.target.value)
-                        }
-                        className="ring-2 ring-primary/20"
-                        placeholder={`${link.name} URL`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            </div>
           </div>
-        {/* </TabsContent> */}
+        </CardContent>
+      </Card>
 
-        {/* <TabsContent value="copyright"> */}
-          <Card className="mt-4 py-6 bg-sidebar ring-2 ring-primary/20">
-            <CardHeader>
-              <CardTitle className="text-accent">Copyright Text</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                name="copyrightText"
-                value={formData.copyrightText}
-                onChange={handleInputChange}
-                placeholder="Copyright text with HTML allowed"
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* About Us */}
+        <Card className="py-6 mt-4 bg-sidebar ring-2 ring-primary/20">
+          <CardHeader>
+            <CardTitle className="text-accent">About Us Column</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="pb-2">Section Title</Label>
+              <Input
+                value={formData.about.title}
+                onChange={(e) =>
+                  handleNestedInputChange("about", "title", e.target.value)
+                }
+                placeholder="About Us"
                 className="ring-2 ring-primary/20"
               />
-            </CardContent>
-          </Card>
-        {/* </TabsContent> */}
-      {/* </Tabs> */}
+            </div>
+            <div>
+              <Label className="pb-2">Description</Label>
+              <Editor
+                value={formData.about.description}
+                onEditorChange={(content) =>
+                  handleNestedInputChange("about", "description", content)
+                }
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Links with CRUD */}
+        <Card className="bg-sidebar py-6 mt-4 ring-2 ring-primary/20">
+          <CardHeader>
+            <CardTitle className="text-accent flex items-center justify-between">
+              Quick Links Column
+              <Button
+                onClick={addQuickLink}
+                size="sm"
+                className="h-8 w-8 p-0"
+                title="Add Quick Link"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="pb-2">Section Title</Label>
+              <Input
+                value={formData.quickLinks.title}
+                onChange={(e) =>
+                  handleNestedInputChange("quickLinks", "title", e.target.value)
+                }
+                className="ring-2 ring-primary/20"
+                placeholder="Quick Links"
+              />
+            </div>
+            <div className="space-y-3">
+              <Label>Links</Label>
+              {formData.quickLinks.links.map((link, index) => (
+                <div
+                  key={index}
+                  className="space-y-2 p-3 border rounded-lg border-primary/20"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-600">
+                      Link {index + 1}
+                    </span>
+                    <Button
+                      onClick={() => removeQuickLink(index)}
+                      size="sm"
+                      variant="destructive"
+                      className="h-6 w-6 p-0"
+                      title="Remove Link"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Input
+                      value={link.label}
+                      onChange={(e) =>
+                        handleQuickLinkChange(index, "label", e.target.value)
+                      }
+                      className="ring-2 ring-primary/20"
+                      placeholder="Link Label"
+                    />
+                    <Input
+                      value={link.url}
+                      onChange={(e) =>
+                        handleQuickLinkChange(index, "url", e.target.value)
+                      }
+                      className="ring-2 ring-primary/20"
+                      placeholder="URL (e.g., /about-us)"
+                    />
+                  </div>
+                </div>
+              ))}
+              {formData.quickLinks.links.length === 0 && (
+                <p className="text-gray-500 text-sm text-center py-4">
+                  No quick links added yet. Click the + button to add one.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Contact & Socials with CRUD */}
+        <Card className="bg-sidebar py-6 mt-4 ring-2 ring-primary/20">
+          <CardHeader>
+            <CardTitle className="text-accent">Contact Column</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label className="pb-2">Phone</Label>
+              <Input
+                value={formData.contact.phone}
+                onChange={(e) =>
+                  handleNestedInputChange("contact", "phone", e.target.value)
+                }
+                className="ring-2 ring-primary/20"
+                placeholder="Phone Number"
+              />
+            </div>
+            <div>
+              <Label className="pb-2">Email</Label>
+              <Input
+                value={formData.contact.email}
+                onChange={(e) =>
+                  handleNestedInputChange("contact", "email", e.target.value)
+                }
+                className="ring-2 ring-primary/20"
+                placeholder="Email Address"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label className="pb-2">Social Media Section Title</Label>
+              <Button
+                onClick={addSocialLink}
+                size="sm"
+                className="h-8 w-8 p-0"
+                title="Add Social Link"
+                disabled={
+                  formData.socials.links.length >=
+                  availableSocialPlatforms.length
+                }
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            <Input
+              value={formData.socials.title}
+              onChange={(e) =>
+                handleNestedInputChange("socials", "title", e.target.value)
+              }
+              className="ring-2 ring-primary/20"
+              placeholder="Follow on"
+            />
+            <div className="space-y-3">
+              <Label className="pb-2">Social Links</Label>
+              {formData.socials.links.map((link, index) => (
+                <div
+                  key={`${link.name}-${index}`}
+                  className="space-y-2 p-3 border rounded-lg border-primary/20"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-600 capitalize">
+                      {link.name}
+                    </span>
+                    <Button
+                      onClick={() => removeSocialLink(index)}
+                      size="sm"
+                      variant="destructive"
+                      className="h-6 w-6 p-0"
+                      title="Remove Social Link"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Select
+                      value={link.name}
+                      onValueChange={(value) =>
+                        handleSocialLinkChange(index, "name", value)
+                      }
+                    >
+                      <SelectTrigger className="ring-2 ring-primary/20">
+                        <SelectValue placeholder="Select platform" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableSocialPlatforms.map((platform) => {
+                          const isUsed = formData.socials.links.some(
+                            (socialLink, socialIndex) =>
+                              socialLink.name === platform &&
+                              socialIndex !== index
+                          );
+                          return (
+                            <SelectItem
+                              key={platform}
+                              value={platform}
+                              disabled={isUsed}
+                              className="capitalize"
+                            >
+                              {platform} {isUsed ? "(Already used)" : ""}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      value={link.url}
+                      onChange={(e) =>
+                        handleSocialLinkChange(index, "url", e.target.value)
+                      }
+                      className="ring-2 ring-primary/20"
+                      placeholder={`${link.name} URL`}
+                    />
+                  </div>
+                </div>
+              ))}
+              {formData.socials.links.length === 0 && (
+                <p className="text-gray-500 text-sm text-center py-4">
+                  No social links added yet. Click the + button to add one.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Floating Save/Discard Buttons - Show when there are changes */}
       {hasChanges && (
