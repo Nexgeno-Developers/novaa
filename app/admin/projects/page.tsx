@@ -1,17 +1,14 @@
-import ClientWrapper from "@/components/admin/ClientWrapper";
-import ProjectsManager from "@/components/admin/ProjectsManager";
-import { store } from "@/redux";
-import { fetchProjects } from "@/redux/slices/projectsSlice";
+import { Suspense } from 'react';
+import ProjectsManager from '@/components/admin/ProjectsManager';
+import ClientWrapper from '@/components/admin/ClientWrapper';
 
-export const dynamic = "force-dynamic";
-
-export default async function ProjectsListPage() {
-  await store.dispatch(fetchProjects());
-
+export default function ProjectsPage() {
   return (
     <ClientWrapper>
       <div className="container p-6">
-        <ProjectsManager />
+        <Suspense fallback={<div className='text-primary/90 admin-theme'>Loading projects...</div>}>
+          <ProjectsManager />
+        </Suspense>
       </div>
     </ClientWrapper>
   );

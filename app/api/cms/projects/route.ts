@@ -117,7 +117,7 @@ export async function POST(request: Request) {
 
     const project = await Project.create({
       name,
-      slug,
+      slug, 
       price,
       images,
       location,
