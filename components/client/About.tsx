@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { setNavigationLoading } from "@/redux/slices/loadingSlice";
+import parse from 'html-react-parser'
 import { useAppDispatch } from "@/redux/hooks";
 
 interface AboutSectionProps {
@@ -147,8 +148,9 @@ export default function AboutPage({
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true, amount: 0.3 }}
               className="font-josefin max-w-[950px] text-[#FFFFFFCC] text-center sm:text-left font-light text-base leading-[24px] sm:text-xl sm:leading-[28px] min-h-[230px]"
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
+            >
+              {description && parse(description)}
+            </motion.div>
 
             <div className="flex-shrink-0">
               <Link href={buttonUrl}>
