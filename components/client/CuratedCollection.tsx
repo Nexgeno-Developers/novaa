@@ -114,8 +114,8 @@ export default function CuratedCollection({
     return (
       <section className="py-10 sm:py-20 bg-secondary">
         <div className="container">
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-pulse text-muted-foreground">Loading...</div>
+          <div className="flex justify-center items-center py-20 h-screen">
+            <div className="animate-pulse text-muted-foreground text-lg font-josefin">Loading...</div>
           </div>
         </div>
       </section>
