@@ -1,6 +1,5 @@
 import connectDB from '@/lib/mongodb';
 import Section from '@/models/Section';
-import { unstable_cache } from 'next/cache';
 
 import CuratedCollection from "@/components/client/CuratedCollection";
 import HeroSection from "@/components/client/HeroSection";
@@ -57,8 +56,6 @@ const sectionComponentMap: { [key: string]: React.ComponentType<SectionContent> 
 export default async function Home() {
   const sections: Section[] = await getSectionData('home');
 
-  // console.log("Sections", sections);
-
   if (!sections || sections.length === 0) {
     return (
       <main className="flex items-center justify-center h-screen">
@@ -71,8 +68,6 @@ export default async function Home() {
     <main className="relative overflow-hidden">
       {sections.map((section: Section) => {
         const Component = sectionComponentMap[section.type];
-        // console.log("Component", Component);
-        // console.log("Section Data", section);
         
         // If a component is found, render it. Otherwise, render nothing.
         return Component ? (
@@ -85,3 +80,8 @@ export default async function Home() {
     </main>
   );
 }
+
+// Enable ISR with revalidation
+// This allows the page to be regenerated in the background
+export const revalidate = 30; // Revalidate every 30 seconds
+export const dynamic = 'force-static'; // Ensure the page is statically generated
