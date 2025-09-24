@@ -783,7 +783,10 @@ export default function CreateProjectPage() {
                 {/* <Label htmlFor="heroTitle" className="text-primary">
                   Hero Title
                 </Label> */}
-                <div className="min-h-[150px]">
+                <div className="space-y-2">
+                  <Label htmlFor="heroTitle" className="text-primary">
+                    Hero Title
+                  </Label>
                   <Editor
                     value={projectDetailData.hero.title}
                     onEditorChange={(content) =>
@@ -791,33 +794,17 @@ export default function CreateProjectPage() {
                     }
                   />
                 </div>
-                <Input
-                  id="heroTitle"
-                  value={projectDetailData.hero.title}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange("hero", "title", e.target.value)
-                  }
-                  placeholder="Will use project name if empty"
-                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="heroSubtitle" className="text-primary">
                   Hero Subtitle
                 </Label>
-                <Input
-                  id="heroSubtitle"
+                <Editor
                   value={projectDetailData.hero.subtitle}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange(
-                      "hero",
-                      "subtitle",
-                      e.target.value
-                    )
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange("hero", "subtitle", content)
                   }
-                  placeholder="Enter subtitle"
                 />
               </div>
 

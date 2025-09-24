@@ -988,34 +988,29 @@ export default function EditProjectPage() {
             <CardTitle className="text-primary">Hero Section</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-primary">Hero Title</Label>
-
                 <Editor
                   value={projectDetailData.hero.title}
                   onEditorChange={(content) =>
                     handleProjectDetailChange("hero", "title", content)
                   }
                 />
+              </div>
 
+              <div className="space-y-2">
                 <Label htmlFor="heroSubtitle" className="text-primary">
                   Hero Subtitle
                 </Label>
-                <Input
-                  id="heroSubtitle"
+                <Editor
                   value={projectDetailData.hero.subtitle}
-                  className="text-gray-900"
-                  onChange={(e) =>
-                    handleProjectDetailChange(
-                      "hero",
-                      "subtitle",
-                      e.target.value
-                    )
+                  onEditorChange={(content) =>
+                    handleProjectDetailChange("hero", "subtitle", content)
                   }
-                  placeholder="Enter subtitle"
                 />
-                {/* <Input
+              </div>
+              {/* <Input
                   id="heroTitle"
                   value={projectDetailData.hero.title}
                   className="text-gray-900"
@@ -1024,7 +1019,6 @@ export default function EditProjectPage() {
                   }
                   placeholder="Will use project name if empty"
                 /> */}
-              </div>
 
               {/* <div className="space-y-2">
                               {/* <Label htmlFor="heroTitle" className="text-primary">
