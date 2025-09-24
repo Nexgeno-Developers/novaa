@@ -316,7 +316,7 @@ export default function CollectionCard({
                 <div className="w-1/2 bg-[#FFFFFF80]"></div>
               </div>
               <div
-                className="description-text text-[#FFFFFF] pt-3 pb-4 xl:pb-2 line-clamp-2"
+                className="description-text text-[#FFFFFF] pt-3 line-clamp-2"
                 dangerouslySetInnerHTML={{ __html: property.description }}
               />
             </div>
