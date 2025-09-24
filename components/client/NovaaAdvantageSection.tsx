@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
+import parse from 'html-react-parser';
 import { WaterEffectImage } from "./WaterEffectImage";
 
 interface AdvantageItem {
@@ -220,10 +221,9 @@ export default function NovaaAdvantageSection({
             </span>
           </h2>
 
-          <div
-            className="font-josefin text-[#303030] description-text text-center"
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
+          <div className="font-josefin text-[#303030] description-text text-center">
+            {parse(description)}
+          </div>
         </motion.div>
 
         {/* Main Content Area */}
@@ -292,12 +292,9 @@ export default function NovaaAdvantageSection({
                         )
                       )}{" "}
                     </h3>
-                    <div
-                      className="text-[#303030] text-xs lg:text-sm xl:text-base 2xl:text-lg font-light"
-                      dangerouslySetInnerHTML={{
-                        __html: advantage.description,
-                      }}
-                    />
+                    <div className="text-[#303030] text-xs lg:text-sm xl:text-base 2xl:text-lg font-light">
+                      {parse(advantage.description)}
+                    </div>
                   </div>
                   <div
                     style={{
@@ -350,12 +347,9 @@ export default function NovaaAdvantageSection({
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
                         {advantage.title}
                       </h3>
-                      <div
-                        className="font-josefin description-text text-[#303030]"
-                        dangerouslySetInnerHTML={{
-                          __html: advantage.description,
-                        }}
-                      />
+                      <div className="font-josefin description-text text-[#303030]">
+                        {parse(advantage.description)}
+                      </div>
                     </div>
                   </div>
                 </div>
