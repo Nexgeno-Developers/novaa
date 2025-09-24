@@ -211,7 +211,7 @@ export default function WhyInvestManager({
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <div key={index} className="space-y-2">
                   <Label className="text-xs flex items-center space-x-1">

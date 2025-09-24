@@ -461,7 +461,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                   variant="outline"
                   size="sm"
                   onClick={handleShare}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90 cursor-pointer"
                 >
                   <Share2 className="h-4 w-4" />
                   Share
@@ -495,7 +495,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                   <div className="flex flex-wrap gap-2">
                     {blog.tags && blog.tags.length > 0 ? (
                       blog.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-sm">
+                        <Badge key={index} variant="outline" className="text-sm text-background bg-primary">
                           #{tag}
                         </Badge>
                       ))
@@ -601,7 +601,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                       <Button 
                         variant="outline" 
                         onClick={() => router.push('/blog')}
-                        className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B]"
+                        className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B] cursor-pointer"
                       >
                         View All Blogs
                         <ArrowRight className="ml-2 h-4 w-4" />

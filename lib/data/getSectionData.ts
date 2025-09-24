@@ -1,5 +1,3 @@
-// lib/data/getSectionData.ts
-
 import connectDB from "@/lib/mongodb";
 import Section from "@/models/Section";
 import Project from "@/models/Project";

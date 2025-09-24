@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
-import parse from 'html-react-parser';
+import parse from "html-react-parser";
 import { WaterEffectImage } from "./WaterEffectImage";
 
 interface AdvantageItem {
@@ -104,17 +104,17 @@ export default function NovaaAdvantageSection({
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-6 left-8 md:top-[-1.2rem] md:left-[1.5rem] lg:top-[-4] lg:left-8 xl:left-8 2xl:left-40`;
+        return `${baseClasses} top-6 left-8 md:top-[-1.8rem] md:left-[1.8rem] lg:top-[-4] lg:left-10 xl:left-0 2xl:left-30`;
       case "top-right":
-        return `${baseClasses} top-6 right-8 md:top-[-1.2rem] md:right-[1.5rem] lg:top-[-4] lg:right-8 xl:right-8 2xl:right-40`;
+        return `${baseClasses} top-6 right-8 md:top-[-1.8rem] md:right-[1.8rem] lg:top-[-4] lg:right-8 xl:right-2 2xl:right-30`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-1.5rem] xl:left-[-2rem] 2xl:left-[6rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-1rem] xl:left-[-4rem] 2xl:left-[3rem] transform -translate-y-1/2`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] lg:right-[-2rem] xl:right-[-2rem] 2xl:right-[6rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] md:top-[8rem] lg:top-[10rem] lg:right-[-1rem] xl:right-[-3.7rem] xl:top-[13rem] 2xl:right-[3.5rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 md:bottom-[-2rem] md:left-[0.8rem] lg:bottom-[-2rem] xl:bottom-[-2rem] lg:left-[2rem] xl:left-[1rem] 2xl:left-[9rem]`;
+        return `${baseClasses} bottom-8 left-8 md:bottom-[-2rem] md:left-[0.8rem] lg:bottom-[-2rem] xl:bottom-[-1rem]  2xl:bottom-[-2rem] lg:left-[1rem] xl:left-[-0.5rem] 2xl:left-[6rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 md:bottom-0 md:right-[0.5rem] lg:bottom-0 lg:right-[2rem] xl:right-[1rem] 2xl:right-[9rem]`;
+        return `${baseClasses} bottom-8 right-8 md:bottom-[-2rem] md:right-[0.5rem] lg:bottom-0 xl:bottom-[-0.5rem] lg:right-[1rem] xl:right-[-0.5rem] 2xl:right-[7rem]`;
       default:
         return baseClasses;
     }
@@ -178,7 +178,7 @@ export default function NovaaAdvantageSection({
   );
 
   return (
-    <section className="font-cinzel relative bg-secondary py-10 lg:py-20 overflow-hidden">
+    <section className="font-cinzel relative bg-secondary pt-10 pb-15  lg:py-20 overflow-hidden">
       {/* Preload images with Next.js Image component for better caching */}
       <div className="hidden">
         {backgroundImage && (
@@ -277,22 +277,13 @@ export default function NovaaAdvantageSection({
                 <div
                   className={`${getContentPosition(
                     layout.position
-                  )} hidden md:flex gap-4 font-josefin max-w-[230px] lg:max-w-[300px] xl:max-w-[400px] space-x-2`}
+                  )} hidden md:flex gap-4 font-josefin max-w-[230px] lg:max-w-[320px] xl:max-w-[450px] space-x-2`}
                 >
                   <div className="font-josefin space-y-2">
-                    <h3 className="text-sm lg:text-xl font-normal text-background">
-                      {advantage.title.split(" ").map((word, i) =>
-                        i === 3 ? (
-                          <>
-                            <br />
-                            {word}{" "}
-                          </>
-                        ) : (
-                          word + " "
-                        )
-                      )}{" "}
+                    <h3 className="text-sm lg:text-base xl:text-xl font-normal text-background max-w-full">
+                      {advantage.title && advantage.title}
                     </h3>
-                    <div className="text-[#303030] text-xs lg:text-sm xl:text-base 2xl:text-lg font-light">
+                    <div className="text-[#303030] line-clamp-3 xl:line-clamp-none text-xs lg:text-sm xl:text-base 2xl:text-lg font-light">
                       {parse(advantage.description)}
                     </div>
                   </div>

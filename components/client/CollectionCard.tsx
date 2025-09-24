@@ -288,7 +288,7 @@ export default function CollectionCard({
             </div>
 
             {isLocationVisible && (
-              <div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[60%] xl:min-w-[55%] rounded-[8px] bg-[#CDB04E1A]">
+              <div className="flex items-center xl:items-start justify-start gap-2 py-2 px-2 mb-3 w-[60%] xl:min-w-[70%] rounded-[8px] bg-[#CDB04E1A]">
                 <div className="relative w-[10px] h-[10px] xl:w-[15px] xl:h-[15px]">
                   <Image
                     src={"/icons/map-pin.svg"}

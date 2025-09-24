@@ -529,10 +529,10 @@ export default function BlogSection({
 
                     {/* Overlay */}
                     <div className="absolute bottom-0 left-0 p-4 z-10 text-white">
-                      <h3 className="w-full sm:w-4/5 text-lg sm:text-[20px] leading-[126%] font-medium font-josefin">
+                      <h3 className="w-full text-lg sm:text-[20px] leading-[126%] font-medium font-josefin">
                         {blog.title}
                       </h3>
-                      <div className="w-full sm:w-3/4 h-px bg-[#CDB04E] my-2" />
+                      <div className="w-full h-px bg-[#CDB04E] my-2" />
                       <p className="description-text font-josefin">
                         {truncateText(blog.description)}
                       </p>

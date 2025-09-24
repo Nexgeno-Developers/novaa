@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import parse from 'html-react-parser'
 
 interface FaqItem {
   _id: string;
@@ -157,12 +158,13 @@ const FaqSection = ({
                       <div className="px-4 pb-2 lg:px-6 lg:pb-6">
                         <div className="h-px bg-[#FFFFFF80] mb-4"></div>
                         <motion.div
-                          className="font-josefin text-[#FFFFFF] description-text prose prose-invert"
+                          className="font-josefin text-[#FFFFFF] description-text prose prose-invert faq-content"
                           initial={{ y: 20, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
                           transition={{ delay: 0.1, duration: 0.3 }}
-                          dangerouslySetInnerHTML={{ __html: faq.answer }}
-                        />
+                        >
+                          {parse(faq.answer)}
+                        </motion.div>
                       </div>
                     </motion.div>
                   )}
