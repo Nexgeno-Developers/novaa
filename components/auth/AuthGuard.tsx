@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 interface AuthGuardProps {
@@ -18,19 +18,31 @@ export default function AuthGuard({
 }: AuthGuardProps) {
   const { isAuthenticated, loading, initialized } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (initialized && !loading && !isAuthenticated) {
+    // Only redirect if:
+    // 1. Auth is initialized
+    // 2. Not currently loading
+    // 3. User is not authenticated
+    // 4. Haven't already redirected (prevent multiple redirects)
+    if (initialized && !loading && !isAuthenticated && !hasRedirected.current) {
+      hasRedirected.current = true;
       router.replace(redirectTo);
+    }
+
+    // Reset redirect flag if user becomes authenticated
+    if (isAuthenticated) {
+      hasRedirected.current = false;
     }
   }, [initialized, loading, isAuthenticated, router, redirectTo]);
 
-  // Show loading while checking auth
+  // Show loading while auth is initializing or loading
   if (!initialized || loading) {
     return fallback || <LoadingSpinner message="Verifying authentication..." />;
   }
 
-  // Show loading while redirecting
+  // Show loading while redirecting (only if we're about to redirect)
   if (!isAuthenticated) {
     return fallback || <LoadingSpinner message="Redirecting to login..." />;
   }

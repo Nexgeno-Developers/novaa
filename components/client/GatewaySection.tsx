@@ -354,9 +354,8 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
               animate="visible"
               className="space-y-2 sm:space-y-4 text-center mb-8 sm:mb-16"
             >
-              <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal uppercase tracking-wide leading-snug">
-                {gatewayData.title}{" "}
-                <span className="text-white">{gatewayData.subtitle}</span>
+              <h1 className="text-white text-2xl lg:text-3xl xl:text-[44px] font-normal uppercase tracking-wide leading-snug">
+                {gatewayData.title} {gatewayData.subtitle}
                 <br />
                 <span className="font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent">
                   {gatewayData.highlightText}

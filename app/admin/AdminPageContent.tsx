@@ -8,6 +8,8 @@ export default function AdminPageContent() {
   const router = useRouter();
 
   useEffect(() => {
+    // Only redirect from the root /admin path to dashboard
+    // This ensures we only redirect when someone visits /admin directly
     router.replace('/admin/dashboard');
   }, [router]);
 

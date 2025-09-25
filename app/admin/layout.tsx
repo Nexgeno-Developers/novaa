@@ -20,18 +20,19 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading, isAuthenticated, initialized } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
   const isLoginPage = pathname === '/admin/login' || pathname === '/admin/auth/login';
 
-  // Handle authentication redirect
+  // Handle authentication redirect - but only if not initialized yet
   useEffect(() => {
-    if (!loading && !isAuthenticated && !isLoginPage) {
+    // Wait for auth to be initialized before making redirect decisions
+    if (initialized && !isAuthenticated && !isLoginPage) {
       router.push('/admin/login');
     }
-  }, [isAuthenticated, loading, isLoginPage, router]);
+  }, [initialized, isAuthenticated, isLoginPage, router]);
 
   // Close mobile sidebar when route changes
   useEffect(() => {
@@ -57,8 +58,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Show loading state
-  if (loading && !isLoginPage) {
+  // Show loading state while auth is initializing
+  if ((!initialized || loading) && !isLoginPage) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -77,8 +78,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     );
   }
 
-  // Redirect if not authenticated
-  if (!isAuthenticated && !isLoginPage) {
+  // Redirect if not authenticated and auth is initialized
+  if (initialized && !isAuthenticated && !isLoginPage) {
     return null;
   }
 

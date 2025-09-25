@@ -86,9 +86,9 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="flex items-center gap-4 font-josefin font-light text-xs sm:text-md md:text-base text-white mt-2 pl-1"
+              className="flex items-center gap-4 font-josefin font-light text-white mt-2 pl-1"
             >
-              {subtitle && <div className="text-white font-light">{parse(subtitle)}</div>}
+              {subtitle && <div>{parse(subtitle)}</div>}
             </motion.h3>
           </div>
 

@@ -17,19 +17,49 @@ interface FooterProps {
 export default function Footer({ data }: FooterProps) {
   const dispatch = useAppDispatch();
 
+  const options = {
+    replace: (domNode: any) => {
+      if (domNode.type === "text") {
+        const regex = /\b(nexgeno)\b/gi;
+        if (regex.test(domNode.data)) {
+          const parts = domNode.data.split(regex);
+          return (
+            <>
+              {parts.map((part: string, index: number): any =>
+                regex.test(part) ? (
+                  <a
+                    key={index}
+                    href="https://nexgeno.in/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    {part}
+                  </a>
+                ) : (
+                  part
+                )
+              )}
+            </>
+          );
+        }
+      }
+    },
+  };
+
   // Mapping social names to icon paths
   const socialIconMap: { [key: string]: string } = {
     whatsapp: "/footer/whatsapp.svg",
-    facebook: "/footer/facebook.svg", 
+    facebook: "/footer/facebook.svg",
     instagram: "/footer/insta-icon.svg",
-    twitter: "/footer/twitter.svg", 
+    twitter: "/footer/twitter.svg",
     linkedin: "/footer/linkedin.png",
-    snapchat: "/footer/snapchat.png", 
+    snapchat: "/footer/snapchat.png",
     tiktok: "/footer/tiktok.png",
-    youtube: "/footer/youtube.png", 
-    telegram: "/footer/telegram.png", 
-    pinterest: "/footer/pinterest.png", 
-    reddit: "/footer/reddit.png", 
+    youtube: "/footer/youtube.png",
+    telegram: "/footer/telegram.png",
+    pinterest: "/footer/pinterest.png",
+    reddit: "/footer/reddit.png",
     discord: "/footer/discord.png",
     tumblr: "/footer/tumblr.png",
     wechat: "/footer/wechat.png",
@@ -192,7 +222,7 @@ export default function Footer({ data }: FooterProps) {
           {/* Copyright */}
           <div className="mt-2 py-2 sm:mt-12 sm:py-8 border-t border-t-[#CDB04E80] text-center">
             <p className="text-[#FFFFFFCC] text-base sm:text-lg">
-              {parse(data.copyrightText)}
+              {parse(data.copyrightText, options)}
             </p>
           </div>
         </div>
