@@ -57,9 +57,21 @@ type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function ContactSection({
   details = [
-    { icon: "/images/location-icon.svg", title: "Location", description: "123 Main St, City" },
-    { icon: "/images/phone-icon.svg", title: "Phone", description: "+1 234 567 8900" },
-    { icon: "/images/email-icon.svg", title: "Email", description: "info@example.com" },
+    {
+      icon: "/images/location-icon.svg",
+      title: "Location",
+      description: "123 Main St, City",
+    },
+    {
+      icon: "/images/phone-icon.svg",
+      title: "Phone",
+      description: "+1 234 567 8900",
+    },
+    {
+      icon: "/images/email-icon.svg",
+      title: "Email",
+      description: "info@example.com",
+    },
   ],
   formTitle = "Get In <span class='text-primary'>Touch</span>",
   formDescription = "We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
@@ -105,13 +117,12 @@ export default function ContactSection({
 
       // Reset form after successful submission
       reset();
-      
+
       // Reset submission status
       dispatch(resetSubmissionStatus());
 
       // Redirect to thanks page instead of showing success message
-      router.push('/thanks?from=contact');
-
+      router.push("/thanks?from=contact");
     } catch (error: any) {
       toast.error(
         error.message || "Failed to submit enquiry. Please try again."
@@ -143,7 +154,23 @@ export default function ContactSection({
                   {detail.title}
                 </h3>
                 <p className="text-[#01292B] description-text leading-[22px]">
-                  {detail.description}
+                  {detail.title.toLowerCase() === "call us" ? (
+                    <a
+                      href={`tel:${detail.description}`}
+                      className="hover:text-primary transition-colors duration-300"
+                    >
+                      {detail.description}
+                    </a>
+                  ) : detail.title.toLowerCase() === "email us" ? (
+                    <a
+                      href={`mailto:${detail.description}`}
+                      className="hover:text-primary transition-colors duration-300"
+                    >
+                      {detail.description}
+                    </a>
+                  ) : (
+                    detail.description
+                  )}
                 </p>
               </div>
             </div>
@@ -179,7 +206,7 @@ export default function ContactSection({
                 className="space-y-4 sm:space-y-4 font-josefin text-[14px]"
               >
                 {/* Form inputs */}
-                <div className="mb-2">
+                <div className="mb-2 space-y-4">
                   <div>
                     <label
                       htmlFor="fullName"
@@ -205,7 +232,7 @@ export default function ContactSection({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1 mb-4">
                     {/* Email (Left) */}
                     <div>
                       <label className="block text-primary text-sm font-medium mb-2">
@@ -266,9 +293,7 @@ export default function ContactSection({
                     <select
                       {...register("country")}
                       className={`w-full bg-transparent border px-4 py-2 rounded text-white focus:bg-background ${
-                        errors.country
-                          ? "border-red-400"
-                          : "border-[#FFFFFFCC]"
+                        errors.country ? "border-red-400" : "border-[#FFFFFFCC]"
                       }`}
                       defaultValue=""
                     >
@@ -347,9 +372,7 @@ export default function ContactSection({
                 <div className="flex justify-center items-center sm:justify-start">
                   <button
                     type="submit"
-                    disabled={
-                      isSubmitting || submissionStatus === "submitting"
-                    }
+                    disabled={isSubmitting || submissionStatus === "submitting"}
                     className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
                       isSubmitting || submissionStatus === "submitting"
                         ? "opacity-70 cursor-not-allowed"

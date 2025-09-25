@@ -32,7 +32,7 @@ export default function Footer({ data }: FooterProps) {
                     href="https://nexgeno.in/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline"
+                    className="hover:text-primary transition-colors duration-300"
                   >
                     {part}
                   </a>
@@ -173,7 +173,7 @@ export default function Footer({ data }: FooterProps) {
                 <div className="flex items-center gap-3">
                   <a
                     href={`tel:${data.contact.phone}`}
-                    className="text-white text-base sm:text-4xl font-medium"
+                    className="text-white text-base sm:text-4xl font-medium hover:text-primary transition-colors duration-300"
                   >
                     {data.contact.phone}
                   </a>
@@ -182,7 +182,7 @@ export default function Footer({ data }: FooterProps) {
                 <div className="flex items-center gap-3">
                   <a
                     href={`mailto:${data.contact.email}`}
-                    className="text-white text-lg sm:text-[24px] font-medium"
+                    className="text-white text-lg sm:text-[24px] font-medium hover:text-primary transition-colors duration-300"
                   >
                     {data.contact.email}
                   </a>
