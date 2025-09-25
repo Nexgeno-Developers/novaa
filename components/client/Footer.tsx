@@ -171,14 +171,21 @@ export default function Footer({ data }: FooterProps) {
             <div>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-white text-base sm:text-4xl font-medium">
+                  <a
+                    href={`tel:${data.contact.phone}`}
+                    className="text-white text-base sm:text-4xl font-medium"
+                  >
                     {data.contact.phone}
-                  </span>
+                  </a>
                 </div>
+
                 <div className="flex items-center gap-3">
-                  <span className="text-white text-lg sm:text-[24px] font-medium">
+                  <a
+                    href={`mailto:${data.contact.email}`}
+                    className="text-white text-lg sm:text-[24px] font-medium"
+                  >
                     {data.contact.email}
-                  </span>
+                  </a>
                 </div>
 
                 {/* Social Links - Dynamic */}
