@@ -104,17 +104,17 @@ export default function NovaaAdvantageSection({
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-6 left-8 md:top-[-1.8rem] md:left-[1.8rem] lg:top-[-4] lg:left-10 xl:left-0 2xl:left-30`;
+        return `${baseClasses} top-6 left-8 md:top-[-1.8rem] md:left-[1.8rem] lg:top-[-4] lg:left-10 xl:left-10 2xl:left-15`;
       case "top-right":
-        return `${baseClasses} top-6 right-8 md:top-[-1.8rem] md:right-[1.8rem] lg:top-[-4] lg:right-8 xl:right-2 2xl:right-30`;
+        return `${baseClasses} top-6 right-8 md:top-[-1.8rem] md:right-[1.8rem] lg:top-[-4] lg:right-10 xl:right-10 2xl:right-15`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-1rem] xl:left-[-4rem] 2xl:left-[3rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-0.5rem] xl:left-[-0.5rem] 2xl:left-[0rem] transform -translate-y-1/2`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] md:top-[8rem] lg:top-[10rem] lg:right-[-1rem] xl:right-[-3.7rem] xl:top-[13rem] 2xl:right-[3.5rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] md:top-[8rem] lg:top-[9rem] lg:right-[-0.5rem] xl:right-[-1rem] xl:top-[11rem] 2xl:right-[0rem] transform -translate-y-1/2`;
       case "bottom-left":
-        return `${baseClasses} bottom-8 left-8 md:bottom-[-2rem] md:left-[0.8rem] lg:bottom-[-2rem] xl:bottom-[-1rem]  2xl:bottom-[-2rem] lg:left-[1rem] xl:left-[-0.5rem] 2xl:left-[6rem]`;
+        return `${baseClasses} bottom-8 left-8 md:bottom-[-2rem] md:left-[0.8rem] lg:bottom-[-2rem] xl:bottom-[-2rem]  2xl:bottom-[-3rem] lg:left-[2rem] xl:left-[2rem] 2xl:left-[3.5rem]`;
       case "bottom-right":
-        return `${baseClasses} bottom-8 right-8 md:bottom-[-2rem] md:right-[0.5rem] lg:bottom-0 xl:bottom-[-0.5rem] lg:right-[1rem] xl:right-[-0.5rem] 2xl:right-[7rem]`;
+        return `${baseClasses} bottom-8 right-8 md:bottom-[-2rem] md:right-[0.5rem] lg:bottom-[-2rem] xl:bottom-[-2rem] lg:right-[2rem] 2xl:bottom-[-1.5rem] xl:right-[2rem] 2xl:right-[3.5rem]`;
       default:
         return baseClasses;
     }
@@ -178,7 +178,7 @@ export default function NovaaAdvantageSection({
   );
 
   return (
-    <section className="font-cinzel relative bg-secondary pt-10 pb-15  lg:py-20 overflow-hidden">
+    <section className="font-cinzel relative bg-secondary pt-10 pb-15  lg:pt-20 lg:pb-30 overflow-hidden">
       {/* Preload images with Next.js Image component for better caching */}
       <div className="hidden">
         {backgroundImage && (
@@ -208,7 +208,7 @@ export default function NovaaAdvantageSection({
       <div className="container">
         {/* Header */}
         <motion.div
-          className="text-center mb-10 lg:mb-16"
+          className="text-center mb-10 lg:mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -236,10 +236,10 @@ export default function NovaaAdvantageSection({
         >
           {/* Central Circle */}
           <motion.div
-            className="relative mx-auto w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[250px] md:h-[250px] lg:w-85 lg:h-85 xl:w-[428px] xl:h-[428px]"
+            className="relative mx-auto w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[250px] md:h-[250px] lg:w-[300px] lg:h-[300px] xl:w-[360px] xl:h-[360px]"
             variants={centerVariants}
           >
-            <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[250px] md:h-[250px] lg:w-85 lg:h-85 xl:w-[420px] xl:h-[420px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
+            <div className="relative w-60 h-60 xs:w-70 xs:h-70 sm:w-80 sm:h-80 md:w-[250px] md:h-[250px] lg:w-[300px] lg:h-[300px] xl:w-[360px] xl:h-[360px] flex items-center justify-center before:content-[''] before:absolute before:inset-[-12px] before:rounded-full before:border-1 before:border-[#01292B] before:z-0">
               <div className="w-full h-full rounded-full overflow-hidden shadow-2xl relative z-10">
                 {/* Loading placeholder */}
                 {!imagesLoaded && (
@@ -253,8 +253,8 @@ export default function NovaaAdvantageSection({
                   <WaterEffectImage
                     backgroundSrc={backgroundImage}
                     logoSrc={logoImage}
-                    width={400}
-                    height={400}
+                    width={350}
+                    height={350}
                     className="w-full h-full"
                     alt="Advantage Section Background"
                   />
@@ -277,9 +277,11 @@ export default function NovaaAdvantageSection({
                 <div
                   className={`${getContentPosition(
                     layout.position
-                  )} hidden md:flex gap-4 font-josefin max-w-[230px] lg:max-w-[320px] xl:max-w-[450px] space-x-2`}
+                  )} hidden md:flex ${
+                    index % 2 === 1 ? "gap-4" : "gap-0"
+                  } font-josefin max-w-[220px] lg:max-w-[320px] xl:max-w-[400px] 2xl:max-w-[520px] space-x-2`}
                 >
-                  <div className="font-josefin space-y-2">
+                  <div className="font-josefin">
                     <h3 className="text-sm lg:text-base xl:text-xl font-normal text-background max-w-full">
                       {advantage.title && advantage.title}
                     </h3>
@@ -292,7 +294,7 @@ export default function NovaaAdvantageSection({
                       background:
                         "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                     }}
-                    className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-24 xl:h-24 
+                    className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-20 xl:h-20 2xl:w-24 2xl:h-24
              bg-[#C3912F] rounded-full md:flex items-center justify-center shadow-lg relative"
                   >
                     <div className="w-[50%] h-[50%] relative">
