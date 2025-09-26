@@ -244,7 +244,7 @@ export default function CollectionCard({
     <div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
       <Link
         href={`/project-detail/${property.slug}`}
-        prefetch={false}
+        prefetch
         className="block group"
       >
         <div className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer">
