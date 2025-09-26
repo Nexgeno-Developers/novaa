@@ -315,7 +315,7 @@ export default function CollectionCard({
                 <div className="w-1/2 bg-[#FFFFFF80]"></div>
               </div>
               <div
-                className="description-text text-[#FFFFFF] pt-3 line-clamp-2"
+                className="description-text text-[#FFFFFF] pt-3 line-clamp-2 mb-4 sm:mb-0"
                 dangerouslySetInnerHTML={{ __html: property.description }}
               />
             </div>
@@ -424,7 +424,7 @@ export default function CollectionCard({
   if (displayMode === "grid") {
     return (
       <div className="w-full">
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {currentProjects.map((property) => (
             <ProjectCard key={property._id} property={property} />
           ))}

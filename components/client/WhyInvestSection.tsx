@@ -100,8 +100,8 @@ export default function WhyInvestSection({
                   <div
                     className="flex-shrink-0 h-15 w-15 sm:w-20 sm:h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300"
                     style={{
-                      background: "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
-                      
+                      background:
+                        "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                     }}
                   >
                     <Image src={point.icon} width={30} height={30} alt="icon" />
@@ -125,13 +125,13 @@ export default function WhyInvestSection({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="flex flex-wrap gap-3 lg:gap-4 h-full sm:py-10"
+            className="flex flex-wrap gap-3 lg:gap-4 h-auto lg:h-full sm:py-10"
           >
             {/* Image 1 */}
             {images[0] && (
               <motion.div
                 variants={imageVariants}
-                className="relative h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[52%] xl:basis-[54%] rounded-3xl overflow-hidden"
+                className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[52%] xl:basis-[54%] rounded-3xl overflow-hidden [@media(max-width:300px)]:basis-full"
               >
                 <Image
                   src={images[0]}
@@ -146,7 +146,7 @@ export default function WhyInvestSection({
             {images[1] && (
               <motion.div
                 variants={imageVariants}
-                className="relative h-80 lg:h-110 basis-[48.5%] md:basis-[48.5%] lg:basis-[43%] rounded-3xl overflow-hidden shadow-lg"
+                className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[48.5%] md:basis-[48.5%] lg:basis-[43%] rounded-3xl overflow-hidden  [@media(max-width:300px)]:basis-full"
               >
                 <Image
                   src={images[1]}
@@ -161,7 +161,7 @@ export default function WhyInvestSection({
             {images[2] && (
               <motion.div
                 variants={imageVariants}
-                className="relative h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[58%] xl:basis-[60%] rounded-3xl overflow-hidden shadow-lg"
+                className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[58%] xl:basis-[60%] rounded-3xl overflow-hidden [@media(max-width:300px)]:basis-full"
               >
                 <Image
                   src={images[2]}
@@ -176,7 +176,7 @@ export default function WhyInvestSection({
             {images[3] && (
               <motion.div
                 variants={imageVariants}
-                className="relative h-80 lg:h-110 basis-[48.5%] md:basis-[48.5%] lg:basis-[37%] rounded-3xl overflow-hidden shadow-lg"
+                className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[48.5%] md:basis-[48.5%] lg:basis-[37%] rounded-3xl overflow-hidden [@media(max-width:300px)]:basis-full"
               >
                 <Image
                   src={images[3]}

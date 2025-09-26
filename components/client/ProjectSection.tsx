@@ -4,11 +4,11 @@ import CollectionCard from "@/components/client/CollectionCard";
 import RegionTabs from "@/components/client/RegionTabs";
 import { useAppDispatch } from "@/redux/hooks";
 import { useEffect } from "react";
-import { 
+import {
   resetState,
   setCategories,
   setAllProjects,
-  setDataSource
+  setDataSource,
 } from "@/redux/slices/collectionSlice";
 
 interface ProjectSectionProps {
@@ -37,7 +37,7 @@ export default function ProjectSection({
     if (projectsData?.categories && projectsData?.projects) {
       // Reset state and set the server-side data
       dispatch(resetState());
-      dispatch(setDataSource('all'));
+      dispatch(setDataSource("all"));
       dispatch(setCategories(projectsData.categories));
       dispatch(setAllProjects(projectsData.projects));
     }
@@ -55,17 +55,15 @@ export default function ProjectSection({
   }
 
   return (
-    <section className="py-10 sm:py-20 bg-[#fffef8]">
+    <section className="py-10 sm:py-20 bg-[#fffef8] w-full">
       <div className="container">
         {showRegionTabs && (
-          <div className="flex flex-col sm:flex-row justify-around items-center">
-            <div className="flex justify-center items-center gap-6 py-2 sm:py-3 px-8">
-              <RegionTabs />
-            </div>
+          <div className="flex justify-center items-center w-full sm:mb-6">
+            <RegionTabs />
           </div>
         )}
 
-        <div className="bg-white rounded-3xl gap-6 p-6">
+        <div className="bg-white rounded-3xl">
           <CollectionCard
             isLocationVisible={isLocationVisible}
             displayMode={displayMode}

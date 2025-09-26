@@ -80,7 +80,7 @@ export default function BlogSection({
 
   // State for client-side loading when no server data is provided
   const [isClientLoading, setIsClientLoading] = useState(!blogData);
-  
+
   // New states for load more functionality
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -119,7 +119,9 @@ export default function BlogSection({
     const nextPage = currentPage + 1;
 
     try {
-      const response = await fetch(`/api/blogs?status=active&limit=${maxBlogs}&page=${nextPage}`);
+      const response = await fetch(
+        `/api/blogs?status=active&limit=${maxBlogs}&page=${nextPage}`
+      );
       const data = await response.json();
 
       if (data.success && data.data.length > 0) {
@@ -127,7 +129,7 @@ export default function BlogSection({
         setAllBlogs(newBlogs);
         dispatch(setBlogs(newBlogs));
         setCurrentPage(nextPage);
-        
+
         // Check if there are more pages
         setHasMore(data.pagination.hasNextPage);
       } else {
@@ -194,7 +196,7 @@ export default function BlogSection({
   }
 
   return (
-    <section className="bg-[#FAF4EB] py-16">
+    <section className="bg-[#FAF4EB] py-8 sm:py-16">
       <div className="container">
         <motion.div
           variants={containerVariants}
@@ -203,7 +205,7 @@ export default function BlogSection({
           className="flex flex-col md:flex-row justify-between gap-8"
         >
           {/* Left Column */}
-          <div className="flex flex-col gap-10 w-full md:w-1/2">
+          <div className="flex flex-col gap-4 sm:gap-10 w-full md:w-1/2">
             {blogsToDisplay
               .filter((_, idx) => idx % 2 === 0)
               .map((blog) => (
@@ -222,24 +224,37 @@ export default function BlogSection({
                     />
 
                     {/* Category Badge - Top Right */}
-                    <div className="absolute top-4 right-4 z-20">
+                    {/* <div className="absolute top-4 right-4 z-20">
                       <Badge className="bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90">
                         {blog.categoryName}
                       </Badge>
-                    </div>
+                    </div> */}
 
                     {/* Overlay */}
-                    <div className="absolute bottom-0 left-0 p-4 z-10 text-white">
-                      <h3 className="w-full text-lg sm:text-[20px] leading-[126%] font-medium font-josefin">
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-[40%] z-10"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, rgba(0,0,0,0) 62.5%, #000000 94.03%)",
+                      }}
+                    ></div>
+                    {/* Overlay */}
+                    <div className="absolute bottom-0 left-0 px-8 pb-8 z-10 text-white w-full">
+                      <h3 className="w-full text-lg sm:text-[20px] leading-[126%] font-medium font-josefin pb-2">
                         {blog.title}
                       </h3>
-                      <div className="w-full h-px bg-[#CDB04E] my-2" />
-                      <p className="description-text font-josefin">
+                      <div
+                        className="w-[70%] h-[0.5px] my-2"
+                        style={{
+                          background:
+                            "linear-gradient(to right, white 50%, #CDB04E 50%)",
+                        }}
+                      />{" "}
+                      <p className="description-text font-josefin pt-2">
                         {truncateText(blog.description)}
                       </p>
-
                       {/* Author and Date Info */}
-                      <div className="flex items-center gap-4 text-sm text-white/80 mt-3 font-josefin">
+                      {/* <div className="flex items-center gap-4 text-sm text-white/80 mt-3 font-josefin">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-[#CDB04E] flex items-center justify-center">
                             <span className="text-[#01292B] text-xs font-semibold">
@@ -256,16 +271,16 @@ export default function BlogSection({
                           <Clock className="h-4 w-4" />
                           {blog.readTime}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
-                    <div className="absolute inset-0 bg-black/20" />
+                    {/* <div className="absolute inset-0 bg-black/20" /> */}
                   </div>
                 </motion.div>
               ))}
           </div>
 
           {/* Right Column */}
-          <div className="flex flex-col gap-10 w-full md:w-1/2">
+          <div className="flex flex-col gap-4 sm:gap-10 w-full md:w-1/2">
             {blogsToDisplay
               .filter((_, idx) => idx % 2 !== 0)
               .map((blog) => (
@@ -284,24 +299,37 @@ export default function BlogSection({
                     />
 
                     {/* Category Badge - Top Right */}
-                    <div className="absolute top-4 right-4 z-20">
+                    {/* <div className="absolute top-4 right-4 z-20">
                       <Badge className="bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90">
                         {blog.categoryName}
                       </Badge>
-                    </div>
+                    </div> */}
 
                     {/* Overlay */}
-                    <div className="absolute bottom-0 left-0 p-4 z-10 text-white">
-                      <h3 className="w-full sm:w-4/5 text-lg sm:text-[20px] font-medium">
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-[40%] z-10"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, rgba(0,0,0,0) 62.5%, #000000 94.03%)",
+                      }}
+                    ></div>
+                    {/* Overlay */}
+                    <div className="absolute bottom-0 left-0 px-8 pb-8 z-10 text-white w-full">
+                      <h3 className="w-full text-lg sm:text-[20px] leading-[126%] font-medium font-josefin pb-2">
                         {blog.title}
                       </h3>
-                      <div className="w-full sm:w-3/4 h-px bg-[#CDB04E] my-2" />
-                      <p className="description-text">
+                      <div
+                        className="w-[70%] h-[0.5px] my-2"
+                        style={{
+                          background:
+                            "linear-gradient(to right, white 50%, #CDB04E 50%)",
+                        }}
+                      />{" "}
+                      <p className="description-text font-josefin pt-2">
                         {truncateText(blog.description)}
                       </p>
-
                       {/* Author and Date Info */}
-                      <div className="flex items-center gap-4 text-sm text-white/80 mt-3">
+                      {/* <div className="flex items-center gap-4 text-sm text-white/80 mt-3">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-full bg-[#CDB04E] flex items-center justify-center">
                             <span className="text-[#01292B] text-xs font-semibold">
@@ -318,9 +346,10 @@ export default function BlogSection({
                           <Clock className="h-4 w-4" />
                           {blog.readTime}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
-                    <div className="absolute inset-0 bg-black/20" />
+
+                    {/* <div className="absolute inset-0 bg-black/20" /> */}
                   </div>
                 </motion.div>
               ))}

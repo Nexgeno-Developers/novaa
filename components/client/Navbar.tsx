@@ -220,12 +220,12 @@ export default function Navbar({ data }: NavbarProps) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={toggleMenu}
-            className="lg:hidden p-2 rounded-md transition-colors"
+            className="lg:hidden rounded-md transition-colors"
           >
             {isMenuOpen ? (
-              <X size={24} color="gold" />
+              <X size={34} color="gold" />
             ) : (
-              <Menu size={24} color="gold" />
+              <Menu size={34} color="gold" />
             )}
           </button>
         </div>

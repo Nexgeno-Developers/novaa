@@ -105,7 +105,8 @@ export default function HeroSection({
   // };
 
   return (
-    <section className="relative h-screen overflow-hidden pt-20">
+    <section className="relative h-auto min-h-screen md:h-screen overflow-hidden pt-20">
+      {" "}
       {/* Background Media */}
       {mediaType === "video" ? (
         <video
@@ -125,7 +126,6 @@ export default function HeroSection({
           priority
         />
       )}
-
       {/* Dynamic Overlay */}
       <div
         className="absolute inset-x-0 bottom-0 h-1/2 z-0"
@@ -137,7 +137,6 @@ export default function HeroSection({
             .padStart(2, "0")} 0%, transparent 100%)`,
         }}
       />
-
       {/* Text Overlay */}
       <div className="absolute bottom-6 sm:bottom-10 w-full z-10">
         <div className="container text-white">

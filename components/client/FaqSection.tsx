@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import parse from 'html-react-parser'
+import parse from "html-react-parser";
 
 interface FaqItem {
   _id: string;
@@ -80,17 +80,20 @@ const FaqSection = ({
     <section className="relative overflow-hidden">
       {/* Background Image from props */}
       <div className="absolute inset-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center" 
+        <div
+          className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         ></div>
       </div>
 
       {/* Overlay */}
-      <div className="absolute inset-0 z-10 opacity-90" style={{ backgroundColor: "#01292BE5" }} />
+      <div
+        className="absolute inset-0 z-10 opacity-90"
+        style={{ backgroundColor: "#01292BE5" }}
+      />
 
       {/* Content */}
-      <div className="container font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-4xl py-10 lg:py-20">
+      <div className="container font-cinzel relative z-20 max-w-xl md:max-w-3xl lg:max-w-[950px] py-10 lg:py-20">
         <div>
           {/* Header */}
           <motion.div
@@ -101,11 +104,13 @@ const FaqSection = ({
             viewport={{ once: true }}
           >
             <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-bold bg-gradient-to-b from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent lg:mb-6">
-                {title}
+              {title}
             </h2>
             {description && (
-                 <div className="font-josefin font-light text-[#FFFFFFE5] text-base lg:text-lg"
-                      dangerouslySetInnerHTML={{ __html: description }}/>
+              <div
+                className="font-josefin font-light text-[#FFFFFFE5] text-base lg:text-lg"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
             )}
           </motion.div>
 
@@ -122,7 +127,10 @@ const FaqSection = ({
                 key={faq._id}
                 className="border-[0.5px] bg-[#CDB04E0D] border-[#CDB04E80] rounded-2xl overflow-hidden"
                 variants={itemVariants}
-                whileHover={{ borderColor: "#e1c159", transition: { duration: 0.3 } }}
+                whileHover={{
+                  borderColor: "#e1c159",
+                  transition: { duration: 0.3 },
+                }}
               >
                 <motion.button
                   className="w-full p-4 lg:p-5 cursor-pointer text-left focus:outline-none"
@@ -132,7 +140,13 @@ const FaqSection = ({
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <p className="font-josefin text-[#C3912F] text-lg lg:text-xl pr-4">
+                      <p
+                        className="font-josefin text-[#C3912F] text-lg lg:text-xl pr-4 pl-0 sm:pl-0 md:pl-0"
+                        style={{
+                          textIndent: "-1.25rem",
+                          paddingLeft: "1.25rem",
+                        }}
+                      >
                         {faq.question}
                       </p>
                     </div>

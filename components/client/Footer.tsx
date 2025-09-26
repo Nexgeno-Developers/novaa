@@ -207,8 +207,8 @@ export default function Footer({ data }: FooterProps) {
                         >
                           <Image
                             src={socialIconMap[social.name]}
-                            width={social.name === "facebook" ? 15 : 30}
-                            height={social.name === "facebook" ? 15 : 30}
+                            width={social.name === "facebook" ? 12 : 24}
+                            height={social.name === "facebook" ? 12 : 24}
                             alt={`${social.name} logo`}
                           />
                         </Link>
@@ -228,7 +228,7 @@ export default function Footer({ data }: FooterProps) {
 
           {/* Copyright */}
           <div className="mt-2 py-2 sm:mt-12 sm:py-8 border-t border-t-[#CDB04E80] text-center">
-            <p className="text-[#FFFFFFCC] text-base sm:text-lg">
+            <p className="text-[#FFFFFFCC] text-sm sm:text-lg">
               {parse(data.copyrightText, options)}
             </p>
           </div>
