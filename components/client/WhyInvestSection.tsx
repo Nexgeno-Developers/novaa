@@ -3,6 +3,7 @@
 import React from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface InvestmentPoint {
   _id: string;
@@ -59,6 +60,24 @@ export default function WhyInvestSection({
     },
   };
 
+  const containerInvestmentVariants: Variants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const itemContainerVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
   return (
     <section className="font-cinzel py-10 sm:py-16 lg:py-24 bg-secondary">
       <div className="container">
@@ -90,33 +109,65 @@ export default function WhyInvestSection({
               dangerouslySetInnerHTML={{ __html: description }}
             />
 
-            <motion.div variants={containerVariants} className="lg:space-y-6">
-              {investmentPoints.map((point) => (
-                <motion.div
-                  key={point._id}
-                  variants={itemVariants}
-                  className="flex items-start gap-6 group py-2"
-                >
-                  <div
-                    className="flex-shrink-0 h-15 w-15 sm:w-20 sm:h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300"
-                    style={{
-                      background:
-                        "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+            <ScrollArea className="h-[500px] lg:h-[600px] pr-4 [&>[data-radix-scroll-area-viewport]]:scroll-smooth [&_[data-radix-scroll-area-scrollbar]]:bg-transparent [&_[data-radix-scroll-area-thumb]]:bg-primary/40 [&_[data-radix-scroll-area-thumb]:hover]:bg-primary/60">
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.1 }}
+                className="lg:space-y-6"
+              >
+                {investmentPoints.map((point, index) => (
+                  <motion.div
+                    key={point._id}
+                    variants={itemVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: false, amount: 0.3, margin: "-50px" }}
+                    transition={{
+                      delay: index * 0.1,
+                      duration: 0.5,
+                      ease: "easeOut",
                     }}
+                    className="flex items-start gap-6 group py-2"
                   >
-                    <Image src={point.icon} width={30} height={30} alt="icon" />
-                  </div>
-                  <div className="flex-1 space-y-2 font-josefin">
-                    <h4 className="text-lg sm:text-xl font-normal text-[#01292B]">
-                      {point.title}
-                    </h4>
-                    <p className="text-[#303030] description-text">
-                      {point.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                      className="flex-shrink-0 h-15 w-15 sm:w-20 sm:h-20 bg-[#D4AF37] rounded-full flex items-center justify-center text-white group-hover:bg-[#B8851A] transition-colors duration-300"
+                      style={{
+                        background:
+                          "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                      }}
+                    >
+                      <motion.div>
+                        <Image
+                          src={point.icon}
+                          width={30}
+                          height={30}
+                          alt="icon"
+                        />
+                      </motion.div>
+                    </motion.div>
+                    <motion.div
+                      className="flex-1 space-y-2 font-josefin"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: false, amount: 0.3 }}
+                      transition={{ delay: index * 0.1 + 0.1 }}
+                    >
+                      <h4 className="text-lg sm:text-xl font-normal text-[#01292B]">
+                        {point.title}
+                      </h4>
+                      <div
+                        className="text-[#303030] description-text"
+                        dangerouslySetInnerHTML={{ __html: point.description }}
+                      />
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </ScrollArea>
           </motion.div>
 
           {/* Right Column - 4-Image Grid */}

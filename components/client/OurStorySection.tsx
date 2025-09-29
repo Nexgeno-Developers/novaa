@@ -32,7 +32,7 @@ export default function OurStorySection({
           <span className="font-bold text-[#CDB04E]">{restOfTitle}</span>
         </h2>
 
-        <div className="font-josefin text-center mt-4 text-[#151515] description-text">
+        <div className="font-josefin mt-4 text-[#151515] description-text">
           {parse(description)}
         </div>
 

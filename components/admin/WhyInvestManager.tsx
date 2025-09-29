@@ -177,9 +177,7 @@ export default function WhyInvestManager({
               {localData.investmentPoints.map((point: any, index: number) => (
                 <div key={index} className="p-3 border rounded space-y-2">
                   <div>
-                    <Label className="font-medium">
-                      Point {index + 1} :
-                    </Label>
+                    <Label className="font-medium">Point {index + 1} :</Label>
                     <Input
                       value={point.title}
                       onChange={(e) =>
@@ -194,18 +192,17 @@ export default function WhyInvestManager({
                     />
                   </div>
                   <div>
-                    <Textarea
+                    <RichTextEditor
                       value={point.description}
-                      onChange={(e) =>
+                      onEditorChange={(content) =>
                         handleInvestmentPointChange(
                           index,
                           "description",
-                          e.target.value
+                          content
                         )
                       }
-                      placeholder="Description"
-                      className="text-sm min-h-[60px]"
-                      rows={2}
+                      height={250}
+                      id={`investment-description-${index}`}
                     />
                   </div>
                 </div>
