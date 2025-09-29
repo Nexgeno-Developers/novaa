@@ -261,7 +261,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
             <div className="flex items-center justify-center p-8">
               <Loader2 className="h-6 w-6 animate-spin mr-2" />
               <div className="text-center">
-                <div>Loading projects...</div>
+                <div>Loading Projects....</div>
                 {categoriesLoading && (
                   <div className="text-sm text-muted-foreground mt-1">
                     Loading categories...
