@@ -172,27 +172,38 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-primary/90">Projects Manager</h1>
-        <div className="flex gap-2">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header - Enhanced for mobile */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary/90 truncate">
+            Projects Manager
+          </h1>
+          <p className="text-sm sm:text-base text-slate-600 mt-1 hidden sm:block">
+            Manage your real estate projects and listings
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
             onClick={handleRefresh}
             variant="outline"
-            className="text-primary border-primary/20 hover:bg-primary/10 cursor-pointer"
-            disabled={loading}
+            size="sm"
+            className="w-full sm:w-auto text-primary border-primary/20 hover:bg-primary/10 cursor-pointer"
+            disabled={loading || categoriesLoading}
           >
             <RefreshCw
-              className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+              className={`mr-2 h-4 w-4 ${(loading || categoriesLoading) ? "animate-spin" : ""}`}
             />
             Refresh
           </Button>
           <Button
             onClick={handleCreateNew}
-            className="text-background cursor-pointer"
+            size="sm"
+            className="w-full sm:w-auto text-background cursor-pointer"
           >
             <Plus className="mr-2 h-4 w-4" />
-            Add Project
+            <span className="hidden sm:inline">Add Project</span>
+            <span className="sm:hidden">Add</span>
           </Button>
         </div>
       </div>
@@ -216,10 +227,10 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
         </Card>
       )}
 
-      {/* Filters */}
-      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
+      {/* Filters - Enhanced for mobile */}
+      <Card className="py-4 sm:py-6 bg-sidebar ring-2 ring-primary/20">
         <CardContent className="font-poppins">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4">
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -235,7 +246,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
               value={selectedCategory}
               onValueChange={setSelectedCategory}
             >
-              <SelectTrigger className="w-[200px] ring-2 ring-primary/20 cursor-pointer">
+              <SelectTrigger className="w-full sm:w-[200px] ring-2 ring-primary/20 cursor-pointer">
                 <SelectValue placeholder="Filter by category" />
               </SelectTrigger>
               <SelectContent className="admin-theme">

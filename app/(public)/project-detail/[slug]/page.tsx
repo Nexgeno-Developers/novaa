@@ -326,7 +326,8 @@ export default async function ProjectDetailPage({
   }
 }
 
-// Optimized ISR configuration for stable caching
+// Optimized ISR configuration for stale-while-revalidate pattern
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
-export const revalidate = 3600; // Revalidate page every 1 hour (ISR) - longer cache for stability
+export const revalidate = 3600; // Revalidate page every 1 hour (ISR) - serves stale content while revalidating
 export const dynamic = "auto"; // Allow dynamic rendering for new projects
+export const fetchCache = "default-cache"; // Enable proper caching for ISR

@@ -121,25 +121,26 @@ export async function PUT(
       );
     }
 
-    // Comprehensive revalidation for updated projects
-    revalidatePath(`/project-detail/${project.slug}`);
+    // Comprehensive revalidation for updated projects with stale-while-revalidate
+    // This triggers background revalidation while serving stale content
+    revalidatePath(`/project-detail/${project.slug}`, "page");
 
     // If slug changed, also revalidate old path
     if (oldSlug !== project.slug) {
-      revalidatePath(`/project-detail/${oldSlug}`);
-      revalidatePath(`/api/projects/slug/${oldSlug}`);
-      revalidatePath(`/api/cms/projects/slug/${oldSlug}`);
+      revalidatePath(`/project-detail/${oldSlug}`, "page");
+      revalidatePath(`/api/projects/slug/${oldSlug}`, "page");
+      revalidatePath(`/api/cms/projects/slug/${oldSlug}`, "page");
     }
 
     // Revalidate listing pages
-    revalidatePath("/");
-    revalidatePath("/project");
+    revalidatePath("/", "page");
+    revalidatePath("/project", "page");
 
     // Revalidate API routes
-    revalidatePath(`/api/projects/slug/${project.slug}`);
-    revalidatePath(`/api/cms/projects/slug/${project.slug}`);
-    revalidatePath("/api/cms/projects");
-    revalidatePath("/api/public/curated-collection");
+    revalidatePath(`/api/projects/slug/${project.slug}`, "page");
+    revalidatePath(`/api/cms/projects/slug/${project.slug}`, "page");
+    revalidatePath("/api/cms/projects", "page");
+    revalidatePath("/api/public/curated-collection", "page");
 
     console.log("Project updated and paths revalidated:", {
       projectId: id,
@@ -200,14 +201,14 @@ export async function DELETE(
       );
     }
 
-    // Comprehensive revalidation for deleted projects
-    revalidatePath(`/project-detail/${project.slug}`);
-    revalidatePath("/");
-    revalidatePath("/project");
-    revalidatePath(`/api/projects/slug/${project.slug}`);
-    revalidatePath(`/api/cms/projects/slug/${project.slug}`);
-    revalidatePath("/api/cms/projects");
-    revalidatePath("/api/public/curated-collection");
+    // Comprehensive revalidation for deleted projects with stale-while-revalidate
+    revalidatePath(`/project-detail/${project.slug}`, "page");
+    revalidatePath("/", "page");
+    revalidatePath("/project", "page");
+    revalidatePath(`/api/projects/slug/${project.slug}`, "page");
+    revalidatePath(`/api/cms/projects/slug/${project.slug}`, "page");
+    revalidatePath("/api/cms/projects", "page");
+    revalidatePath("/api/public/curated-collection", "page");
 
     console.log("Project deleted and paths revalidated:", {
       projectId: id,
