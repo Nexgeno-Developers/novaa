@@ -99,7 +99,6 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
   useEffect(() => {
     // If we have initial data, use it to populate the store
     if (initialData) {
-      // Dispatch actions to set the initial data in Redux store
       dispatch({
         type: "adminProjects/fetchProjects/fulfilled",
         payload: initialData.projects,
@@ -109,25 +108,9 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
         payload: initialData.categories,
       });
     } else {
-      // Add error handling and retry logic
-      const loadData = async () => {
-        try {
-          // Load projects and categories in parallel
-          await Promise.all([
-            dispatch(fetchProjects()).unwrap(),
-            dispatch(fetchCategories()).unwrap(),
-          ]);
-        } catch (error) {
-          console.error("Failed to load admin data:", error);
-          // Retry after 2 seconds
-          setTimeout(() => {
-            dispatch(fetchProjects());
-            dispatch(fetchCategories());
-          }, 2000);
-        }
-      };
-
-      loadData();
+      // Simple, efficient data loading without retry logic
+      dispatch(fetchProjects());
+      dispatch(fetchCategories());
     }
   }, [dispatch, initialData]);
 
@@ -148,17 +131,10 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
     router.push(`/admin/projects/edit/${projectId}`);
   };
 
-  const handleRefresh = async () => {
-    try {
-      await Promise.all([
-        dispatch(fetchProjects()).unwrap(),
-        dispatch(fetchCategories()).unwrap(),
-      ]);
-      toast.success("Data refreshed successfully");
-    } catch (error) {
-      console.error("Failed to refresh data:", error);
-      toast.error("Failed to refresh data");
-    }
+  const handleRefresh = () => {
+    // Simple refresh without await - let Redux handle the loading states
+    dispatch(fetchProjects());
+    dispatch(fetchCategories());
   };
 
   // Filter projects based on search and category
@@ -192,7 +168,9 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
             disabled={loading || categoriesLoading}
           >
             <RefreshCw
-              className={`mr-2 h-4 w-4 ${(loading || categoriesLoading) ? "animate-spin" : ""}`}
+              className={`mr-2 h-4 w-4 ${
+                loading || categoriesLoading ? "animate-spin" : ""
+              }`}
             />
             Refresh
           </Button>
