@@ -35,7 +35,7 @@ async function getProjectBySlug(slug: string) {
     })
       .populate("category", "name _id")
       .lean()
-      .maxTimeMS(10000); // 10 second timeout
+      .maxTimeMS(15000); // Increased timeout for better reliability
 
     console.log("Project found:", !!project);
 
@@ -120,12 +120,30 @@ async function getProjectBySlug(slug: string) {
     // Log specific error types for debugging
     if (error instanceof Error) {
       if (error.message.includes("timeout")) {
-        console.error("Database timeout error for slug:", sanitizedSlug);
+        console.error(
+          "Database timeout error for slug:",
+          sanitizedSlug,
+          "Error:",
+          error.message
+        );
       } else if (error.message.includes("connection")) {
-        console.error("Database connection error for slug:", sanitizedSlug);
+        console.error(
+          "Database connection error for slug:",
+          sanitizedSlug,
+          "Error:",
+          error.message
+        );
+      } else if (error.message.includes("Schema hasn't been registered")) {
+        console.error(
+          "Schema registration error for slug:",
+          sanitizedSlug,
+          "Error:",
+          error.message
+        );
       }
     }
 
+    console.error("Unknown error for slug:", sanitizedSlug, "Error:", error);
     return null;
   }
 }
@@ -228,8 +246,36 @@ export default async function ProjectDetailPage({
       project = await getProjectBySlug(slug);
     }
 
+    // If still not found, try fallback API
     if (!project) {
-      console.log("Project not found after retry, calling notFound()");
+      console.log("Project not found after retry, trying fallback API...");
+      try {
+        const fallbackResponse = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+          }/api/projects/fallback/${slug}`,
+          {
+            cache: "no-store",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          if (fallbackData.success && fallbackData.data) {
+            console.log("Project found via fallback API");
+            project = fallbackData.data;
+          }
+        }
+      } catch (fallbackError) {
+        console.error("Fallback API also failed:", fallbackError);
+      }
+    }
+
+    if (!project) {
+      console.log("Project not found after all attempts, calling notFound()");
       notFound();
     }
 
@@ -280,8 +326,7 @@ export default async function ProjectDetailPage({
   }
 }
 
-// Enhanced ISR configuration for CMS compatibility
+// Optimized ISR configuration for stable caching
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
-export const revalidate = 60; // Revalidate page every 60 seconds (ISR)
-export const fetchCache = "force-no-store"; // Disable fetch caching to ensure fresh data
+export const revalidate = 3600; // Revalidate page every 1 hour (ISR) - longer cache for stability
 export const dynamic = "auto"; // Allow dynamic rendering for new projects
