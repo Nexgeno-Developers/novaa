@@ -121,21 +121,25 @@ export async function PUT(
       );
     }
 
-    // Use revalidatePath for specific paths
-    // This will trigger ISR revalidation without clearing the cache completely
+    // Comprehensive revalidation for updated projects
     revalidatePath(`/project-detail/${project.slug}`);
 
     // If slug changed, also revalidate old path
     if (oldSlug !== project.slug) {
       revalidatePath(`/project-detail/${oldSlug}`);
+      revalidatePath(`/api/projects/slug/${oldSlug}`);
+      revalidatePath(`/api/cms/projects/slug/${oldSlug}`);
     }
 
     // Revalidate listing pages
     revalidatePath("/");
     revalidatePath("/project");
 
-    // Also revalidate the API route for this project
+    // Revalidate API routes
     revalidatePath(`/api/projects/slug/${project.slug}`);
+    revalidatePath(`/api/cms/projects/slug/${project.slug}`);
+    revalidatePath("/api/cms/projects");
+    revalidatePath("/api/public/curated-collection");
 
     console.log("Project updated and paths revalidated:", {
       projectId: id,
@@ -196,11 +200,14 @@ export async function DELETE(
       );
     }
 
-    // Use revalidatePath for specific paths
+    // Comprehensive revalidation for deleted projects
     revalidatePath(`/project-detail/${project.slug}`);
     revalidatePath("/");
     revalidatePath("/project");
     revalidatePath(`/api/projects/slug/${project.slug}`);
+    revalidatePath(`/api/cms/projects/slug/${project.slug}`);
+    revalidatePath("/api/cms/projects");
+    revalidatePath("/api/public/curated-collection");
 
     console.log("Project deleted and paths revalidated:", {
       projectId: id,

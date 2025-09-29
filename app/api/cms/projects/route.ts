@@ -134,11 +134,16 @@ export async function POST(request: Request) {
       "category"
     );
 
-    // Use revalidatePath only - no revalidateTag
+    // Comprehensive revalidation for new projects
     revalidatePath("/"); // Home page
     revalidatePath("/project"); // Projects page
     revalidatePath(`/project-detail/${slug}`); // New project detail page
     revalidatePath(`/api/projects/slug/${slug}`); // API route for the new project
+    revalidatePath(`/api/cms/projects/slug/${slug}`); // CMS API route
+
+    // Force revalidation of the project listing to include new project
+    revalidatePath("/api/cms/projects");
+    revalidatePath("/api/public/curated-collection");
 
     console.log("Project created and paths revalidated:", {
       projectId: project._id,

@@ -218,10 +218,18 @@ export default async function ProjectDetailPage({
 
     console.log("ProjectDetailPage accessed with slug:", slug);
 
-    const project = await getProjectBySlug(slug);
+    // Try to get project with retry mechanism for new projects
+    let project = await getProjectBySlug(slug);
+
+    // If project not found, wait a moment and try again (for newly created projects)
+    if (!project) {
+      console.log("Project not found on first attempt, retrying...");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
+      project = await getProjectBySlug(slug);
+    }
 
     if (!project) {
-      console.log("Project not found, calling notFound()");
+      console.log("Project not found after retry, calling notFound()");
       notFound();
     }
 
@@ -272,7 +280,8 @@ export default async function ProjectDetailPage({
   }
 }
 
-// Enhanced ISR configuration
+// Enhanced ISR configuration for CMS compatibility
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
 export const revalidate = 60; // Revalidate page every 60 seconds (ISR)
 export const fetchCache = "force-no-store"; // Disable fetch caching to ensure fresh data
+export const dynamic = "auto"; // Allow dynamic rendering for new projects
