@@ -13,8 +13,22 @@ export default function ProjectDetailError({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("Project detail page error:", error);
+    console.error("Project detail page error:", {
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+      timestamp: new Date().toISOString(),
+    });
   }, [error]);
+
+  const handleRetry = () => {
+    // Clear any cached data and retry
+    if (typeof window !== "undefined") {
+      // Clear any cached data
+      window.location.reload();
+    }
+    reset();
+  };
 
   return (
     <main className="relative min-h-screen flex items-center justify-center bg-foreground">
@@ -31,7 +45,7 @@ export default function ProjectDetailError({
           </div>
 
           <div className="space-y-4">
-            <Button onClick={reset} className="w-full">
+            <Button onClick={handleRetry} className="w-full">
               Try Again
             </Button>
 

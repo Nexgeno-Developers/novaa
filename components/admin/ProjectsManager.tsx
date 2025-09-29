@@ -192,7 +192,9 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
             disabled={loading || categoriesLoading}
           >
             <RefreshCw
-              className={`mr-2 h-4 w-4 ${(loading || categoriesLoading) ? "animate-spin" : ""}`}
+              className={`mr-2 h-4 w-4 ${
+                loading || categoriesLoading ? "animate-spin" : ""
+              }`}
             />
             Refresh
           </Button>
@@ -298,25 +300,108 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
                 : "No projects match your filters."}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-primary/90">
-                  <TableRow>
-                    <TableHead className="text-background">Image</TableHead>
-                    <TableHead className="text-background">Name</TableHead>
-                    <TableHead className="text-background">Category</TableHead>
-                    <TableHead className="text-background">Location</TableHead>
-                    <TableHead className="text-background">Price</TableHead>
-                    <TableHead className="text-background">Status</TableHead>
-                    <TableHead className="text-right text-background">
-                      Actions
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredProjects.map((project) => (
-                    <TableRow key={project._id}>
-                      <TableCell>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden lg:block overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-primary/90">
+                    <TableRow>
+                      <TableHead className="text-background">Image</TableHead>
+                      <TableHead className="text-background">Name</TableHead>
+                      <TableHead className="text-background">
+                        Category
+                      </TableHead>
+                      <TableHead className="text-background">
+                        Location
+                      </TableHead>
+                      <TableHead className="text-background">Price</TableHead>
+                      <TableHead className="text-background">Status</TableHead>
+                      <TableHead className="text-right text-background">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredProjects.map((project) => (
+                      <TableRow key={project._id}>
+                        <TableCell>
+                          <div className="w-16 h-12 rounded overflow-hidden bg-gray-100">
+                            {project.images[0] ? (
+                              <img
+                                src={project.images[0]}
+                                alt={project.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <ImageIcon className="h-6 w-6 text-gray-400" />
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{project.name}</div>
+                            {project.badge && (
+                              <Badge
+                                variant="outline"
+                                className="text-primary mt-1 text-xs"
+                              >
+                                {project.badge}
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>{project.categoryName}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {project.location}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {project.price}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            className="text-background"
+                            variant={project.isActive ? "default" : "secondary"}
+                          >
+                            {project.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-primary hover:text-primary/90 cursor-pointer"
+                              onClick={() => handleEdit(project._id)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDeleteDialogId(project._id)}
+                              className="text-destructive hover:text-destructive cursor-pointer"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden space-y-4">
+                {filteredProjects.map((project) => (
+                  <Card
+                    key={project._id}
+                    className="p-4 bg-white/80 backdrop-blur-sm border-slate-200/50"
+                  >
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0">
                         <div className="w-16 h-12 rounded overflow-hidden bg-gray-100">
                           {project.images[0] ? (
                             <img
@@ -330,60 +415,58 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
                             </div>
                           )}
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium">{project.name}</div>
-                          {project.badge && (
-                            <Badge
-                              variant="outline"
-                              className="text-primary mt-1 text-xs"
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-medium text-slate-900 truncate">
+                              {project.name}
+                            </h3>
+                            <p className="text-sm text-slate-600 truncate">
+                              {project.location}
+                            </p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="outline" className="text-xs">
+                                {project.categoryName}
+                              </Badge>
+                              <Badge
+                                variant={
+                                  project.isActive ? "default" : "secondary"
+                                }
+                                className="text-xs"
+                              >
+                                {project.isActive ? "Active" : "Inactive"}
+                              </Badge>
+                            </div>
+                            <p className="text-sm font-medium text-slate-900 mt-1">
+                              {project.price}
+                            </p>
+                          </div>
+                          <div className="flex gap-1 ml-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEdit(project._id)}
+                              className="text-primary hover:text-primary/90 h-8 w-8 p-0"
                             >
-                              {project.badge}
-                            </Badge>
-                          )}
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDeleteDialogId(project._id)}
+                              className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
-                      </TableCell>
-                      <TableCell>{project.categoryName}</TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {project.location}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {project.price}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className="text-background"
-                          variant={project.isActive ? "default" : "secondary"}
-                        >
-                          {project.isActive ? "Active" : "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-primary hover:text-primary/90 cursor-pointer"
-                            onClick={() => handleEdit(project._id)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setDeleteDialogId(project._id)}
-                            className="text-destructive hover:text-destructive cursor-pointer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

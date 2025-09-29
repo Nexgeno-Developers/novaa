@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import AuthGuard from '@/components/auth/AuthGuard';
-import AdminHeader from '@/components/admin/AdminHeader';
-import AdminSidebar from '@/components/admin/AdminSidebar';
-import { useAuth } from '@/hooks/useAuth';
+import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, X, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import AuthGuard from "@/components/auth/AuthGuard";
+import AdminHeader from "@/components/admin/AdminHeader";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import { useAuth } from "@/hooks/useAuth";
+import "@/styles/admin-responsive.css";
 
 // Force dynamic rendering for all admin pages - this needs to be at the top
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -24,13 +25,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const isLoginPage = pathname === '/admin/login' || pathname === '/admin/auth/login';
+  const isLoginPage =
+    pathname === "/admin/login" || pathname === "/admin/auth/login";
 
   // Handle authentication redirect - but only if not initialized yet
   useEffect(() => {
     // Wait for auth to be initialized before making redirect decisions
     if (initialized && !isAuthenticated && !isLoginPage) {
-      router.push('/admin/login');
+      router.push("/admin/login");
     }
   }, [initialized, isAuthenticated, isLoginPage, router]);
 
@@ -54,8 +56,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     };
 
     handleResize(); // Check initial size
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Show loading state while auth is initializing
@@ -94,7 +96,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Desktop Sidebar - Fixed positioning for better responsive behavior */}
         <div
           className={`fixed top-0 left-0 z-30 hidden lg:flex lg:flex-col h-full transition-all duration-300 ${
-            isCollapsed ? 'w-20' : 'w-72'
+            isCollapsed ? "w-20" : "w-72"
           }`}
         >
           <AdminSidebar
@@ -105,8 +107,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         {/* Mobile Sidebar Sheet */}
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-          <SheetContent 
-            side="left" 
+          <SheetContent
+            side="left"
             className="p-0 w-72 bg-gradient-to-b from-slate-50 to-white border-slate-200/60"
           >
             <AdminSidebar isCollapsed={false} onToggleCollapse={() => {}} />
@@ -116,16 +118,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Main Content Container */}
         <div
           className={`min-h-screen transition-all duration-300 ${
-            isCollapsed ? 'lg:ml-20' : 'lg:ml-72'
+            isCollapsed ? "lg:ml-20" : "lg:ml-72"
           }`}
         >
           {/* Header with glassmorphism */}
           <header
             className="sticky top-0 z-40 h-16 sm:h-20 border-b border-slate-200/50 px-4 sm:px-6 lg:px-8"
             style={{
-              background: 'rgba(255, 255, 255, 0.8)',
-              backdropFilter: 'blur(20px)',
-              borderBottom: '1px solid rgba(226, 232, 240, 0.5)',
+              background: "rgba(255, 255, 255, 0.8)",
+              backdropFilter: "blur(20px)",
+              borderBottom: "1px solid rgba(226, 232, 240, 0.5)",
             }}
           >
             <div className="flex h-full items-center gap-x-4">
@@ -157,13 +159,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     className="absolute inset-0 opacity-30 pointer-events-none"
                     style={{
                       backgroundImage:
-                        'radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.15) 1px, transparent 0)',
-                      backgroundSize: '20px 20px',
+                        "radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.15) 1px, transparent 0)",
+                      backgroundSize: "20px 20px",
                     }}
                   />
-                  <div className="relative z-10">
-                    {children}
-                  </div>
+                  <div className="relative z-10">{children}</div>
                 </div>
               </div>
             </div>

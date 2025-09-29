@@ -576,21 +576,27 @@ export default function CreateProjectPage() {
   };
 
   return (
-    <div className="container space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="container space-y-4 sm:space-y-6">
+      {/* Header - Enhanced for mobile */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => router.push("/admin/projects")}
-          className="text-primary hover:text-primary/80 cursor-pointer"
+          className="text-primary hover:text-primary/80 cursor-pointer w-full sm:w-auto"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Projects
         </Button>
       </div>
-      <h1 className="text-3xl font-bold font-poppins text-primary/80 text-center">
-        Create New Project
-      </h1>
+      <div className="text-center">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-poppins text-primary/80">
+          Create New Project
+        </h1>
+        <p className="text-sm sm:text-base text-slate-600 mt-2">
+          Add a new real estate project to your portfolio
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Information */}
@@ -598,10 +604,13 @@ export default function CreateProjectPage() {
           <CardHeader>
             <CardTitle className="text-primary">Basic Information</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2">
-                <Label htmlFor="projectName" className="text-primary">
+                <Label
+                  htmlFor="projectName"
+                  className="text-primary text-sm sm:text-base"
+                >
                   Project Name *
                 </Label>
                 <Input
@@ -614,7 +623,10 @@ export default function CreateProjectPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="projectSlug" className="text-primary">
+                <Label
+                  htmlFor="projectSlug"
+                  className="text-primary text-sm sm:text-base"
+                >
                   URL Slug *
                   {isGeneratingSlug && (
                     <span className="text-xs text-gray-500 ml-2">
@@ -2059,20 +2071,20 @@ export default function CreateProjectPage() {
           </CardContent>
         </Card>
 
-        {/* Submit Button */}
-        <div className="flex justify-end space-x-4 pt-6 border-t">
+        {/* Submit Button - Enhanced for mobile */}
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4 sm:pt-6 border-t">
           <Button
             type="button"
             variant="outline"
             onClick={() => router.push("/admin/projects")}
-            className="text-gray-900 hover:text-gray-900 cursor-pointer bg-gray-300 hover:bg-gray-300/50"
+            className="w-full sm:w-auto text-gray-900 hover:text-gray-900 cursor-pointer bg-gray-300 hover:bg-gray-300/50"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="text-background cursor-pointer"
+            className="w-full sm:w-auto text-background cursor-pointer"
           >
             {isSubmitting ? (
               <>

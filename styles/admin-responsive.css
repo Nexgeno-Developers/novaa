@@ -1,0 +1,335 @@
+/* Admin Responsive Styles */
+
+/* Mobile-first responsive design for admin components */
+
+/* Base responsive utilities */
+@media (max-width: 640px) {
+  .admin-mobile-hidden {
+    display: none !important;
+  }
+  
+  .admin-mobile-full {
+    width: 100% !important;
+  }
+  
+  .admin-mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .admin-mobile-gap {
+    gap: 0.75rem !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .admin-tablet-hidden {
+    display: none !important;
+  }
+}
+
+/* Admin layout responsive adjustments */
+@media (max-width: 1024px) {
+  .admin-sidebar-collapsed {
+    width: 4rem !important;
+  }
+  
+  .admin-main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* Form responsive adjustments */
+@media (max-width: 768px) {
+  .admin-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .admin-form-section {
+    padding: 1rem !important;
+  }
+  
+  .admin-form-buttons {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .admin-form-buttons button {
+    width: 100% !important;
+  }
+}
+
+/* Table responsive adjustments */
+@media (max-width: 1024px) {
+  .admin-table-container {
+    overflow-x: auto !important;
+  }
+  
+  .admin-table-mobile-cards {
+    display: block !important;
+  }
+  
+  .admin-table-desktop {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .admin-table-mobile-cards {
+    display: none !important;
+  }
+  
+  .admin-table-desktop {
+    display: table !important;
+  }
+}
+
+/* Card responsive adjustments */
+@media (max-width: 640px) {
+  .admin-card {
+    margin: 0.5rem !important;
+    padding: 1rem !important;
+  }
+  
+  .admin-card-header {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .admin-card-content {
+    padding: 1rem !important;
+  }
+}
+
+/* Button responsive adjustments */
+@media (max-width: 640px) {
+  .admin-button-mobile {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  
+  .admin-button-group {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* Header responsive adjustments */
+@media (max-width: 768px) {
+  .admin-header-title {
+    font-size: 1.125rem !important;
+    line-height: 1.5rem !important;
+  }
+  
+  .admin-header-actions {
+    gap: 0.5rem !important;
+  }
+  
+  .admin-header-search {
+    display: none !important;
+  }
+}
+
+/* Sidebar responsive adjustments */
+@media (max-width: 1024px) {
+  .admin-sidebar-mobile {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    z-index: 50 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s ease-in-out !important;
+  }
+  
+  .admin-sidebar-mobile.open {
+    transform: translateX(0) !important;
+  }
+  
+  .admin-sidebar-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 40 !important;
+  }
+}
+
+/* Modal responsive adjustments */
+@media (max-width: 640px) {
+  .admin-modal {
+    margin: 1rem !important;
+    max-height: calc(100vh - 2rem) !important;
+  }
+  
+  .admin-modal-content {
+    padding: 1rem !important;
+  }
+  
+  .admin-modal-header {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .admin-modal-footer {
+    padding: 1rem !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Input responsive adjustments */
+@media (max-width: 640px) {
+  .admin-input {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+  
+  .admin-textarea {
+    min-height: 120px !important;
+  }
+  
+  .admin-select {
+    font-size: 16px !important;
+  }
+}
+
+/* Navigation responsive adjustments */
+@media (max-width: 768px) {
+  .admin-nav-item {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  .admin-nav-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+  
+  .admin-nav-text {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Dashboard responsive adjustments */
+@media (max-width: 1024px) {
+  .admin-dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .admin-dashboard-card {
+    margin-bottom: 1rem !important;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .admin-dashboard-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1281px) {
+  .admin-dashboard-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Loading states responsive adjustments */
+@media (max-width: 640px) {
+  .admin-loading {
+    padding: 2rem 1rem !important;
+  }
+  
+  .admin-loading-spinner {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+}
+
+/* Error states responsive adjustments */
+@media (max-width: 640px) {
+  .admin-error {
+    padding: 1rem !important;
+    margin: 0.5rem !important;
+  }
+  
+  .admin-error-text {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Print responsive adjustments */
+@media print {
+  .admin-no-print {
+    display: none !important;
+  }
+  
+  .admin-print-only {
+    display: block !important;
+  }
+  
+  .admin-sidebar {
+    display: none !important;
+  }
+  
+  .admin-main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .admin-card {
+    border: 2px solid !important;
+  }
+  
+  .admin-button {
+    border: 1px solid !important;
+  }
+}
+
+/* Reduced motion adjustments */
+@media (prefers-reduced-motion: reduce) {
+  .admin-transition {
+    transition: none !important;
+  }
+  
+  .admin-animation {
+    animation: none !important;
+  }
+}
+
+/* Dark mode responsive adjustments */
+@media (prefers-color-scheme: dark) {
+  .admin-card {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(71, 85, 105, 0.5) !important;
+  }
+  
+  .admin-sidebar {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+  }
+}
+
+/* Focus management for accessibility */
+.admin-focus-trap {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+/* Touch target size adjustments */
+@media (max-width: 768px) {
+  .admin-touch-target {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* Safe area adjustments for mobile devices */
+@supports (padding: max(0px)) {
+  .admin-safe-area {
+    padding-left: max(1rem, env(safe-area-inset-left)) !important;
+    padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    padding-top: max(1rem, env(safe-area-inset-top)) !important;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+  }
+}

@@ -13,8 +13,10 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-// Enhanced database query with better error handling and caching
-async function getProjectBySlug(slug: string) {
+// Bulletproof database query with retry logic and comprehensive error handling
+async function getProjectBySlug(slug: string, retryCount = 0): Promise<any> {
+  const MAX_RETRIES = 3;
+
   // Validate slug format
   if (!slug || typeof slug !== "string" || slug.trim().length === 0) {
     console.error("Invalid slug provided:", slug);
@@ -25,9 +27,12 @@ async function getProjectBySlug(slug: string) {
   const sanitizedSlug = slug.trim().toLowerCase();
 
   try {
+    // Ensure fresh database connection
     await connectDB();
 
-    console.log("Fetching project with slug:", sanitizedSlug);
+    console.log(
+      `Fetching project with slug: ${sanitizedSlug} (attempt ${retryCount + 1})`
+    );
 
     const project = await Project.findOne({
       slug: sanitizedSlug,
@@ -35,12 +40,24 @@ async function getProjectBySlug(slug: string) {
     })
       .populate("category", "name _id")
       .lean()
-      .maxTimeMS(15000); // Increased timeout for better reliability
+      .maxTimeMS(20000); // Increased timeout
 
     console.log("Project found:", !!project);
 
     if (!project) {
       console.log("Project not found with slug:", sanitizedSlug);
+
+      // Retry if project not found and we haven't exceeded retries
+      if (retryCount < MAX_RETRIES) {
+        console.log(
+          `Project not found, retrying... (${retryCount + 1}/${MAX_RETRIES})`
+        );
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 * (retryCount + 1))
+        ); // Progressive delay
+        return getProjectBySlug(slug, retryCount + 1);
+      }
+
       return null;
     }
 
@@ -143,6 +160,23 @@ async function getProjectBySlug(slug: string) {
       }
     }
 
+    // Retry on connection/timeout errors
+    if (
+      retryCount < MAX_RETRIES &&
+      error instanceof Error &&
+      (error.message.includes("connection") ||
+        error.message.includes("timeout") ||
+        error.message.includes("Schema hasn't been registered"))
+    ) {
+      console.log(
+        `Database error, retrying... (${retryCount + 1}/${MAX_RETRIES})`
+      );
+      await new Promise((resolve) =>
+        setTimeout(resolve, 2000 * (retryCount + 1))
+      );
+      return getProjectBySlug(slug, retryCount + 1);
+    }
+
     console.error("Unknown error for slug:", sanitizedSlug, "Error:", error);
     return null;
   }
@@ -236,23 +270,20 @@ export default async function ProjectDetailPage({
 
     console.log("ProjectDetailPage accessed with slug:", slug);
 
-    // Try to get project with retry mechanism for new projects
+    // Try to get project with comprehensive retry mechanism
     let project = await getProjectBySlug(slug);
 
-    // If project not found, wait a moment and try again (for newly created projects)
+    // If project not found, try multiple fallback strategies
     if (!project) {
-      console.log("Project not found on first attempt, retrying...");
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
-      project = await getProjectBySlug(slug);
-    }
+      console.log(
+        "Project not found on first attempt, trying fallback strategies..."
+      );
 
-    // If still not found, try fallback API
-    if (!project) {
-      console.log("Project not found after retry, trying fallback API...");
+      // Strategy 1: Try fallback API
       try {
         const fallbackResponse = await fetch(
           `${
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+            process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
           }/api/projects/fallback/${slug}`,
           {
             cache: "no-store",
@@ -270,7 +301,43 @@ export default async function ProjectDetailPage({
           }
         }
       } catch (fallbackError) {
-        console.error("Fallback API also failed:", fallbackError);
+        console.error("Fallback API failed:", fallbackError);
+      }
+
+      // Strategy 2: Try public API route
+      if (!project) {
+        try {
+          const publicResponse = await fetch(
+            `${
+              process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+            }/api/projects/slug/${slug}`,
+            {
+              cache: "no-store",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (publicResponse.ok) {
+            const publicData = await publicResponse.json();
+            if (publicData.success && publicData.data) {
+              console.log("Project found via public API");
+              project = publicData.data;
+            }
+          }
+        } catch (publicError) {
+          console.error("Public API failed:", publicError);
+        }
+      }
+
+      // Strategy 3: Final retry with fresh connection
+      if (!project) {
+        console.log(
+          "All fallback strategies failed, attempting final retry..."
+        );
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds
+        project = await getProjectBySlug(slug, 0); // Fresh retry
       }
     }
 
@@ -326,8 +393,8 @@ export default async function ProjectDetailPage({
   }
 }
 
-// Optimized ISR configuration for stale-while-revalidate pattern
+// Bulletproof configuration - NO ISR to eliminate 404 errors
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
-export const revalidate = 3600; // Revalidate page every 1 hour (ISR) - serves stale content while revalidating
-export const dynamic = "auto"; // Allow dynamic rendering for new projects
-export const fetchCache = "default-cache"; // Enable proper caching for ISR
+export const dynamic = "force-dynamic"; // Force dynamic rendering - NO ISR
+export const fetchCache = "force-no-store"; // Disable all caching to prevent stale data
+export const revalidate = 0; // Disable ISR completely
