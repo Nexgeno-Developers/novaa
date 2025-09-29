@@ -252,7 +252,7 @@ export default async function ProjectDetailPage({
       try {
         const fallbackResponse = await fetch(
           `${
-            process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+            process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
           }/api/projects/fallback/${slug}`,
           {
             cache: "no-store",
