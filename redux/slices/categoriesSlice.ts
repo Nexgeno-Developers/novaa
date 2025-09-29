@@ -29,8 +29,8 @@ export const fetchCategories = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        // Add cache control for admin pages
-        cache: "no-store",
+        // Use default cache for better performance
+        cache: "default",
       });
 
       if (!response.ok) {
