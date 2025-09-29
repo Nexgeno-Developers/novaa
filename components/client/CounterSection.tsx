@@ -121,7 +121,7 @@ export default function CounterSection({
 
         {/* Counter Cards Grid */}
         {cards && cards.length > 0 && (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
             {cards.map((card, index) => (
               <motion.div
                 key={card._id || index}

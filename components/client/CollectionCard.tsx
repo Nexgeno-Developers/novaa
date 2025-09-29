@@ -447,7 +447,7 @@ export default function CollectionCard({
   return (
     <div className="w-full relative">
       {currentProjects.length > cardsPerView && (
-        <>
+        <div className="hidden sm:block">
           <button
             onClick={scrollPrev}
             disabled={!canScrollPrev}
@@ -471,7 +471,7 @@ export default function CollectionCard({
           >
             <ChevronRight className="w-6 h-6" />
           </button>
-        </>
+        </div>
       )}
 
       <div className="overflow-hidden" ref={emblaRef}>

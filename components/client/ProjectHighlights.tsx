@@ -74,7 +74,7 @@ const HoverImageCard = ({
 }) => {
   return (
     <motion.div
-      className="relative overflow-hidden rounded-2xl group cursor-pointer shadow-lg"
+      className="relative overflow-hidden rounded-2xl group cursor-pointer shadow-lg font-josefin"
       whileHover="hover"
       initial="rest"
       animate="rest"
@@ -114,7 +114,7 @@ const HoverImageCard = ({
       </motion.div>
 
       <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
-        <h3 className="text-white text-lg font-semibold">{title}</h3>
+        <h3 className="text-white text-lg font-semibold font-josefin">{title}</h3>
       </div>
     </motion.div>
   );

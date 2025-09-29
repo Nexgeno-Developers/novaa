@@ -120,7 +120,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.4, duration: 0.5 }}
-                          className="text-white font-medium text-2xl mb-1"
+                          className="text-white font-medium text-base sm:text-2xl mb-1"
                         >
                           C1 -{" "}
                           <span className="font-light">{tab.subtitle}</span>
@@ -131,7 +131,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.5, duration: 0.5 }}
-                          className="text-white font-medium text-2xl"
+                          className="text-white font-medium text-base sm:text-2xl"
                         >
                           C2 -{" "}
                           <span className="font-light">

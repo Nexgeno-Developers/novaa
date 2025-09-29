@@ -370,7 +370,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
 
             {/* Three Column Layout with Aligned Rows */}
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-12"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -387,7 +387,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
 
               {/* Center Column - Interactive Map */}
               <motion.div
-                className="h-[400px] sm:h-[500px] lg:h-[600px] flex items-center justify-center row-span-2"
+                className="h-[400px] sm:h-[500px] lg:h-[700px] flex items-center justify-center row-span-2"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}

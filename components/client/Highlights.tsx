@@ -126,7 +126,7 @@ const Highlights: React.FC<HighlightsProps> = ({ project }) => {
                     height={30}
                   />
                 </div>
-                <p className="font-josefin text-white text-lg md:text-xl font-normal leading-relaxed group-hover:text-primary transition-colors duration-300">
+                <p className="font-josefin text-white text-base md:text-xl font-normal leading-relaxed group-hover:text-primary transition-colors duration-300">
                   {highlight.text}
                 </p>
               </motion.div>
