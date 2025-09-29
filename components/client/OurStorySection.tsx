@@ -32,11 +32,7 @@ export default function OurStorySection({
           <span className="font-bold text-[#CDB04E]">{restOfTitle}</span>
         </h2>
 
-        <div className="font-josefin mt-4 text-[#151515] description-text">
-          {parse(description)}
-        </div>
-
-        {mediaUrl && (
+          {mediaUrl && (
           <div className="mt-12 flex justify-center">
             <div className="w-full rounded-xl overflow-hidden shadow-xl">
               {mediaType === "video" ? (
@@ -58,6 +54,12 @@ export default function OurStorySection({
             </div>
           </div>
         )}
+
+        <div className="font-josefin mt-4 text-[#151515] description-text">
+          {parse(description)}
+        </div>
+
+      
       </div>
     </section>
   );

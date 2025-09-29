@@ -69,15 +69,6 @@ export default function WhyInvestSection({
     },
   };
 
-  const itemContainerVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
-
   return (
     <section className="font-cinzel py-10 sm:py-16 lg:py-24 bg-secondary">
       <div className="container">
@@ -109,25 +100,30 @@ export default function WhyInvestSection({
               dangerouslySetInnerHTML={{ __html: description }}
             />
 
-            <ScrollArea className="h-[500px] lg:h-[600px] pr-4 [&>[data-radix-scroll-area-viewport]]:scroll-smooth [&_[data-radix-scroll-area-scrollbar]]:bg-transparent [&_[data-radix-scroll-area-thumb]]:bg-primary/40 [&_[data-radix-scroll-area-thumb]:hover]:bg-primary/60">
+            <ScrollArea className="h-[500px] lg:h-[600px] pr-4">
               <motion.div
-                variants={containerVariants}
+                variants={containerInvestmentVariants}
                 initial="hidden"
-                whileInView="visible"
-                viewport={{ once: false, amount: 0.1 }}
+                animate="visible"
                 className="lg:space-y-6"
               >
                 {investmentPoints.map((point, index) => (
                   <motion.div
                     key={point._id}
-                    variants={itemVariants}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: false, amount: 0.3, margin: "-50px" }}
-                    transition={{
-                      delay: index * 0.1,
-                      duration: 0.5,
-                      ease: "easeOut",
+                    viewport={{ once: true, amount: 0.3, margin: "-50px" }}
+                    variants={{
+                      hidden: { opacity: 0, x: -20 },
+                      visible: {
+                        opacity: 1,
+                        x: 0,
+                        transition: {
+                          delay: index * 0.1,
+                          duration: 0.5,
+                          ease: "easeOut",
+                        },
+                      },
                     }}
                     className="flex items-start gap-6 group py-2"
                   >
@@ -140,22 +136,14 @@ export default function WhyInvestSection({
                           "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                       }}
                     >
-                      <motion.div>
-                        <Image
-                          src={point.icon}
-                          width={30}
-                          height={30}
-                          alt="icon"
-                        />
-                      </motion.div>
+                      <Image
+                        src={point.icon}
+                        width={30}
+                        height={30}
+                        alt="icon"
+                      />
                     </motion.div>
-                    <motion.div
-                      className="flex-1 space-y-2 font-josefin"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: false, amount: 0.3 }}
-                      transition={{ delay: index * 0.1 + 0.1 }}
-                    >
+                    <div className="flex-1 space-y-2 font-josefin">
                       <h4 className="text-lg sm:text-xl font-normal text-[#01292B]">
                         {point.title}
                       </h4>
@@ -163,7 +151,7 @@ export default function WhyInvestSection({
                         className="text-[#303030] description-text"
                         dangerouslySetInnerHTML={{ __html: point.description }}
                       />
-                    </motion.div>
+                    </div>
                   </motion.div>
                 ))}
               </motion.div>
