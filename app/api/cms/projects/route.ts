@@ -117,7 +117,7 @@ export async function POST(request: Request) {
 
     const project = await Project.create({
       name,
-      slug, 
+      slug,
       price,
       images,
       location,
@@ -135,25 +135,31 @@ export async function POST(request: Request) {
     );
 
     // Use revalidatePath only - no revalidateTag
-    revalidatePath('/'); // Home page
-    revalidatePath('/project'); // Projects page
+    revalidatePath("/"); // Home page
+    revalidatePath("/project"); // Projects page
     revalidatePath(`/project-detail/${slug}`); // New project detail page
+    revalidatePath(`/api/projects/slug/${slug}`); // API route for the new project
 
-    console.log('Project created and paths revalidated:', {
+    console.log("Project created and paths revalidated:", {
       projectId: project._id,
       projectSlug: slug,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     return NextResponse.json({ success: true, data: populatedProject });
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error creating project:", error);
-    
+
     // Handle specific validation errors
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(
+        (err: any) => err.message
+      );
       return NextResponse.json(
-        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        {
+          success: false,
+          error: `Validation failed: ${validationErrors.join(", ")}`,
+        },
         { status: 400 }
       );
     }

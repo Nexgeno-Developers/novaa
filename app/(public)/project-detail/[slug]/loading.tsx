@@ -6,7 +6,7 @@ export default function Loading() {
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-primary"></div>
 
         {/* Text */}
-        <p className="text-gray-600 text-lg">Loading project details...</p>
+        <p className="text-gray-600 text-lg">Loading...</p>
       </div>
     </main>
   );

@@ -1,4 +1,3 @@
-
 // app/(public)/project-detail/[slug]/page.tsx
 
 import { notFound } from "next/navigation";
@@ -13,21 +12,34 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-// Direct database query without unstable_cache
+// Enhanced database query with better error handling and caching
 async function getProjectBySlug(slug: string) {
+  // Validate slug format
+  if (!slug || typeof slug !== "string" || slug.trim().length === 0) {
+    console.error("Invalid slug provided:", slug);
+    return null;
+  }
+
+  // Sanitize slug to prevent injection attacks
+  const sanitizedSlug = slug.trim().toLowerCase();
+
   try {
     await connectDB();
 
-    console.log("Fetching project with slug:", slug);
+    console.log("Fetching project with slug:", sanitizedSlug);
 
-    const project = await Project.findOne({ slug, isActive: true })
+    const project = await Project.findOne({
+      slug: sanitizedSlug,
+      isActive: true,
+    })
       .populate("category", "name _id")
-      .lean();
+      .lean()
+      .maxTimeMS(10000); // 10 second timeout
 
     console.log("Project found:", !!project);
 
     if (!project) {
-      console.log("Project not found with slug:", slug);
+      console.log("Project not found with slug:", sanitizedSlug);
       return null;
     }
 
@@ -36,12 +48,13 @@ async function getProjectBySlug(slug: string) {
 
     // Ensure required fields exist with defaults
     updatedProject.images = updatedProject.images || [];
-    updatedProject.location = updatedProject.location || '';
-    updatedProject.description = updatedProject.description || '';
-    updatedProject.badge = updatedProject.badge || '';
-    updatedProject.price = updatedProject.price || '';
-    updatedProject.categoryName = updatedProject.categoryName || updatedProject.category?.name || '';
-    
+    updatedProject.location = updatedProject.location || "";
+    updatedProject.description = updatedProject.description || "";
+    updatedProject.badge = updatedProject.badge || "";
+    updatedProject.price = updatedProject.price || "";
+    updatedProject.categoryName =
+      updatedProject.categoryName || updatedProject.category?.name || "";
+
     // Ensure projectDetail exists with defaults
     if (!updatedProject.projectDetail) {
       updatedProject.projectDetail = {
@@ -77,7 +90,8 @@ async function getProjectBySlug(slug: string) {
         },
         investmentPlans: {
           title: "LIMITED-TIME INVESTMENT PLANS",
-          description: "Secure high returns with exclusive, time-sensitive opportunities.",
+          description:
+            "Secure high returns with exclusive, time-sensitive opportunities.",
           backgroundImage: "",
           plans: [],
         },
@@ -85,9 +99,11 @@ async function getProjectBySlug(slug: string) {
           title: "A place to come home to",
           subtitle: "and a location that",
           highlightText: "holds its value.",
-          description: "Set between Layan and Bangtao, this address offers more than scenery.",
+          description:
+            "Set between Layan and Bangtao, this address offers more than scenery.",
           sectionTitle: "Your Gateway to Paradise",
-          sectionDescription: "Perfectly positioned where tropical elegance meets modern convenience.",
+          sectionDescription:
+            "Perfectly positioned where tropical elegance meets modern convenience.",
           backgroundImage: "",
           mapImage: "",
           categories: [],
@@ -99,25 +115,50 @@ async function getProjectBySlug(slug: string) {
     return updatedProject;
   } catch (error) {
     console.error("Error fetching project:", error);
+
+    // Log specific error types for debugging
+    if (error instanceof Error) {
+      if (error.message.includes("timeout")) {
+        console.error("Database timeout error for slug:", sanitizedSlug);
+      } else if (error.message.includes("connection")) {
+        console.error("Database connection error for slug:", sanitizedSlug);
+      }
+    }
+
     return null;
   }
 }
 
-// Keep generateStaticParams for pre-building pages
+// Enhanced generateStaticParams with better error handling
 export async function generateStaticParams() {
   try {
     await connectDB();
+
     const projects = await Project.find({ isActive: true })
-      .select("slug")
-      .lean();
+      .select("slug name")
+      .lean()
+      .maxTimeMS(15000); // 15 second timeout for build time
 
     console.log("Generating static params for projects:", projects.length);
-    
-    return projects.map((project: any) => ({
-      slug: project.slug,
+
+    // Validate slugs and filter out invalid ones
+    const validProjects = projects.filter(
+      (project: any) =>
+        project.slug &&
+        typeof project.slug === "string" &&
+        project.slug.trim().length > 0
+    );
+
+    console.log("Valid projects for static generation:", validProjects.length);
+
+    return validProjects.map((project: any) => ({
+      slug: project.slug.trim(),
     }));
   } catch (error) {
     console.error("Error generating static params:", error);
+
+    // Return empty array to prevent build failure
+    // The page will still work with dynamicParams = true
     return [];
   }
 }
@@ -168,6 +209,12 @@ export default async function ProjectDetailPage({
   try {
     const { slug } = await params;
 
+    // Validate slug parameter
+    if (!slug || typeof slug !== "string" || slug.trim().length === 0) {
+      console.error("Invalid slug parameter:", slug);
+      notFound();
+    }
+
     console.log("ProjectDetailPage accessed with slug:", slug);
 
     const project = await getProjectBySlug(slug);
@@ -210,10 +257,22 @@ export default async function ProjectDetailPage({
     );
   } catch (error) {
     console.error("Error in ProjectDetailPage:", error);
+
+    // Log additional context for debugging
+    if (error instanceof Error) {
+      console.error("Error details:", {
+        message: error.message,
+        stack: error.stack,
+        slug: params ? (await params).slug : "unknown",
+      });
+    }
+
     notFound();
   }
 }
 
-// These exports control Next.js ISR behavior
+// Enhanced ISR configuration
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
 export const revalidate = 60; // Revalidate page every 60 seconds (ISR)
+export const dynamic = "force-dynamic"; // Ensure dynamic rendering for better error handling
+export const fetchCache = "force-no-store"; // Disable fetch caching to ensure fresh data

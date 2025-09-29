@@ -124,15 +124,18 @@ export async function PUT(
     // Use revalidatePath for specific paths
     // This will trigger ISR revalidation without clearing the cache completely
     revalidatePath(`/project-detail/${project.slug}`);
-    
+
     // If slug changed, also revalidate old path
     if (oldSlug !== project.slug) {
       revalidatePath(`/project-detail/${oldSlug}`);
     }
-    
+
     // Revalidate listing pages
     revalidatePath("/");
     revalidatePath("/project");
+
+    // Also revalidate the API route for this project
+    revalidatePath(`/api/projects/slug/${project.slug}`);
 
     console.log("Project updated and paths revalidated:", {
       projectId: id,
@@ -144,14 +147,19 @@ export async function PUT(
     });
 
     return NextResponse.json({ success: true, data: project });
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error updating project:", error);
-    
+
     // Handle specific validation errors
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map(
+        (err: any) => err.message
+      );
       return NextResponse.json(
-        { success: false, error: `Validation failed: ${validationErrors.join(', ')}` },
+        {
+          success: false,
+          error: `Validation failed: ${validationErrors.join(", ")}`,
+        },
         { status: 400 }
       );
     }
@@ -192,6 +200,7 @@ export async function DELETE(
     revalidatePath(`/project-detail/${project.slug}`);
     revalidatePath("/");
     revalidatePath("/project");
+    revalidatePath(`/api/projects/slug/${project.slug}`);
 
     console.log("Project deleted and paths revalidated:", {
       projectId: id,

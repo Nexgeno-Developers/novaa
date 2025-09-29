@@ -61,14 +61,30 @@ export default function CollectionCard({
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
-  // Handle navigation with loading state
+  // Enhanced navigation with error handling
   const handleNavigation = useCallback(
     (projectSlug: string) => {
+      // Validate slug before navigation
+      if (
+        !projectSlug ||
+        typeof projectSlug !== "string" ||
+        projectSlug.trim().length === 0
+      ) {
+        console.error("Invalid project slug for navigation:", projectSlug);
+        return;
+      }
+
       dispatch(setNavigationLoading(true));
 
       // Add a small delay to show loading animation
       setTimeout(() => {
-        router.push(`/project-detail/${projectSlug}`);
+        try {
+          const sanitizedSlug = projectSlug.trim();
+          router.push(`/project-detail/${sanitizedSlug}`);
+        } catch (error) {
+          console.error("Navigation error:", error);
+          dispatch(setNavigationLoading(false));
+        }
         // Loading state will be reset when the new page loads
       }, 100);
     },
@@ -243,8 +259,20 @@ export default function CollectionCard({
   const ProjectCard = ({ property }: { property: any }) => (
     <div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
       <Link
-        href={`/project-detail/${property.slug}`}
+        href={`/project-detail/${property.slug || "invalid-slug"}`}
         className="block group"
+        onClick={(e) => {
+          // Validate slug before navigation
+          if (
+            !property.slug ||
+            typeof property.slug !== "string" ||
+            property.slug.trim().length === 0
+          ) {
+            e.preventDefault();
+            console.error("Invalid project slug:", property.slug);
+            return;
+          }
+        }}
       >
         <div className="relative h-[450px] xl:h-[560px] overflow-hidden group cursor-pointer">
           {/* Background Images */}
