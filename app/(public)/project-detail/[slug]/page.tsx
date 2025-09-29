@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
+import Category from "@/models/Category"; // Import Category model to ensure schema registration
 import ProjectHeroSection from "@/components/client/ProjectHeroSection";
 import ProjectHighlights from "@/components/client/ProjectHighlights";
 import Highlights from "@/components/client/Highlights";
@@ -274,5 +275,4 @@ export default async function ProjectDetailPage({
 // Enhanced ISR configuration
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
 export const revalidate = 60; // Revalidate page every 60 seconds (ISR)
-export const dynamic = "force-dynamic"; // Ensure dynamic rendering for better error handling
 export const fetchCache = "force-no-store"; // Disable fetch caching to ensure fresh data

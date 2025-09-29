@@ -127,11 +127,33 @@ const initialState: AdminProjectsState = {
 
 export const fetchProjects = createAsyncThunk(
   "adminProjects/fetchProjects",
-  async () => {
-    const response = await fetch("/api/cms/projects");
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error);
-    return result.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch("/api/cms/projects", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Add cache control for admin pages
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch projects");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch projects"
+      );
+    }
   }
 );
 

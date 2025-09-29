@@ -38,6 +38,8 @@ import {
   Loader2,
   Image as ImageIcon,
   Search,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -63,22 +65,71 @@ interface Project {
   order: number;
 }
 
-export default function ProjectsManager() {
+interface InitialData {
+  projects: Project[];
+  categories: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+    isActive: boolean;
+    order: number;
+  }>;
+}
+
+interface ProjectsManagerProps {
+  initialData?: InitialData;
+}
+
+export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { projects, loading, error } = useSelector(
     (state: RootState) => state.projects
   );
-  const { categories } = useSelector((state: RootState) => state.categories);
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useSelector((state: RootState) => state.categories);
   const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
-    dispatch(fetchProjects());
-    dispatch(fetchCategories());
-  }, [dispatch]);
+    // If we have initial data, use it to populate the store
+    if (initialData) {
+      // Dispatch actions to set the initial data in Redux store
+      dispatch({
+        type: "adminProjects/fetchProjects/fulfilled",
+        payload: initialData.projects,
+      });
+      dispatch({
+        type: "adminCategories/fetchCategories/fulfilled",
+        payload: initialData.categories,
+      });
+    } else {
+      // Add error handling and retry logic
+      const loadData = async () => {
+        try {
+          // Load projects and categories in parallel
+          await Promise.all([
+            dispatch(fetchProjects()).unwrap(),
+            dispatch(fetchCategories()).unwrap(),
+          ]);
+        } catch (error) {
+          console.error("Failed to load admin data:", error);
+          // Retry after 2 seconds
+          setTimeout(() => {
+            dispatch(fetchProjects());
+            dispatch(fetchCategories());
+          }, 2000);
+        }
+      };
+
+      loadData();
+    }
+  }, [dispatch, initialData]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -97,6 +148,19 @@ export default function ProjectsManager() {
     router.push(`/admin/projects/edit/${projectId}`);
   };
 
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([
+        dispatch(fetchProjects()).unwrap(),
+        dispatch(fetchCategories()).unwrap(),
+      ]);
+      toast.success("Data refreshed successfully");
+    } catch (error) {
+      console.error("Failed to refresh data:", error);
+      toast.error("Failed to refresh data");
+    }
+  };
+
   // Filter projects based on search and category
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
@@ -111,14 +175,46 @@ export default function ProjectsManager() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-primary/90">Projects Manager</h1>
-        <Button
-          onClick={handleCreateNew}
-          className="text-background cursor-pointer"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Project
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleRefresh}
+            variant="outline"
+            className="text-primary border-primary/20 hover:bg-primary/10 cursor-pointer"
+            disabled={loading}
+          >
+            <RefreshCw
+              className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+            />
+            Refresh
+          </Button>
+          <Button
+            onClick={handleCreateNew}
+            className="text-background cursor-pointer"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Project
+          </Button>
+        </div>
       </div>
+
+      {/* Error Display */}
+      {(error || categoriesError) && (
+        <Card className="py-4 bg-destructive/10 border-destructive/20">
+          <CardContent className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">{error || categoriesError}</span>
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              className="ml-auto text-destructive border-destructive/20 hover:bg-destructive/10"
+            >
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Retry
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
@@ -172,10 +268,17 @@ export default function ProjectsManager() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {loading ? (
+          {loading || categoriesLoading ? (
             <div className="flex items-center justify-center p-8">
               <Loader2 className="h-6 w-6 animate-spin mr-2" />
-              Loading projects...
+              <div className="text-center">
+                <div>Loading projects...</div>
+                {categoriesLoading && (
+                  <div className="text-sm text-muted-foreground mt-1">
+                    Loading categories...
+                  </div>
+                )}
+              </div>
             </div>
           ) : filteredProjects.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">

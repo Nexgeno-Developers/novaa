@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Category from "./Category"; // Import to ensure schema registration
 
 // Function to generate slug from name
 function generateSlug(name: string) {
@@ -18,7 +19,6 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,
     }, // New slug field
     price: { type: String, required: true },
     images: [{ type: String, required: true }],

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface Category {
   _id: string;
@@ -21,21 +21,43 @@ const initialState: AdminCategoriesState = {
 };
 
 export const fetchCategories = createAsyncThunk(
-  'adminCategories/fetchCategories',
-  async () => {
-    const response = await fetch('/api/cms/categories');
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error);
-    return result.data;
+  "adminCategories/fetchCategories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch("/api/cms/categories", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Add cache control for admin pages
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch categories");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch categories"
+      );
+    }
   }
 );
 
 export const createCategory = createAsyncThunk(
-  'adminCategories/createCategory',
-  async (data: Omit<Category, '_id' | 'slug'>) => {
-    const response = await fetch('/api/cms/categories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+  "adminCategories/createCategory",
+  async (data: Omit<Category, "_id" | "slug">) => {
+    const response = await fetch("/api/cms/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const result = await response.json();
@@ -45,11 +67,17 @@ export const createCategory = createAsyncThunk(
 );
 
 export const updateCategory = createAsyncThunk(
-  'adminCategories/updateCategory',
-  async ({ id, data }: { id: string; data: Omit<Category, '_id' | 'slug'> }) => {
+  "adminCategories/updateCategory",
+  async ({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Omit<Category, "_id" | "slug">;
+  }) => {
     const response = await fetch(`/api/cms/categories/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const result = await response.json();
@@ -59,10 +87,10 @@ export const updateCategory = createAsyncThunk(
 );
 
 export const deleteCategory = createAsyncThunk(
-  'adminCategories/deleteCategory',
+  "adminCategories/deleteCategory",
   async (id: string) => {
     const response = await fetch(`/api/cms/categories/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
     const result = await response.json();
     if (!result.success) throw new Error(result.error);
@@ -71,7 +99,7 @@ export const deleteCategory = createAsyncThunk(
 );
 
 const adminCategoriesSlice = createSlice({
-  name: 'adminCategories',
+  name: "adminCategories",
   initialState,
   reducers: {
     clearError: (state) => {
@@ -90,19 +118,23 @@ const adminCategoriesSlice = createSlice({
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch categories';
+        state.error = action.error.message || "Failed to fetch categories";
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.categories.push(action.payload);
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
-        const index = state.categories.findIndex(cat => cat._id === action.payload._id);
+        const index = state.categories.findIndex(
+          (cat) => cat._id === action.payload._id
+        );
         if (index !== -1) {
           state.categories[index] = action.payload;
         }
       })
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.categories = state.categories.filter(cat => cat._id !== action.payload);
+        state.categories = state.categories.filter(
+          (cat) => cat._id !== action.payload
+        );
       });
   },
 });

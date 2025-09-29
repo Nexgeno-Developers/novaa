@@ -1,10 +1,10 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IOurStory extends Document {
   pageSlug: string;
   title: string;
   description: string;
-  mediaType: 'image' | 'video';
+  mediaType: "image" | "video";
   mediaUrl: string;
 }
 
@@ -13,29 +13,30 @@ const OurStorySchema: Schema<IOurStory> = new Schema({
     type: String,
     required: true,
     unique: true,
-    index: true,
   },
   title: {
     type: String,
-    required: [true, 'Title is required.'],
-    default: 'OUR STORY'
+    required: [true, "Title is required."],
+    default: "OUR STORY",
   },
   description: {
     type: String,
-    default: '<p>Edit this description to tell your story.</p>'
+    default: "<p>Edit this description to tell your story.</p>",
   },
   mediaType: {
     type: String,
-    enum: ['image', 'video'],
+    enum: ["image", "video"],
     required: true,
-    default: 'video',
+    default: "video",
   },
-  mediaUrl: {   
+  mediaUrl: {
     type: String,
-    default: '/images/dummyvid.mp4',
-  }
+    default: "/images/dummyvid.mp4",
+  },
 });
 
-const OurStory: Model<IOurStory> = mongoose.models.OurStory || mongoose.model<IOurStory>('OurStory', OurStorySchema);
+const OurStory: Model<IOurStory> =
+  mongoose.models.OurStory ||
+  mongoose.model<IOurStory>("OurStory", OurStorySchema);
 
 export default OurStory;
