@@ -80,7 +80,7 @@ export default function CollectionCard({
       setTimeout(() => {
         try {
           const sanitizedSlug = projectSlug.trim();
-          router.push(`/project-detail/${sanitizedSlug}`);
+          router.push(`/project/${sanitizedSlug}`);
         } catch (error) {
           console.error("Navigation error:", error);
           dispatch(setNavigationLoading(false));
@@ -259,7 +259,7 @@ export default function CollectionCard({
   const ProjectCard = ({ property }: { property: any }) => (
     <div className="w-full relative group rounded-3xl overflow-hidden transition-all duration-300 font-josefin">
       <Link
-        href={`/project-detail/${property.slug || "invalid-slug"}`}
+        href={`/project/${property.slug || "invalid-slug"}`}
         className="block group"
         onClick={(e) => {
           // Validate slug before navigation
