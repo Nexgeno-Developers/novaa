@@ -47,7 +47,7 @@ interface NavbarProps {
 export default function Navbar({ data }: NavbarProps) {
   const dispatch = useAppDispatch();
   const router = useNavigationRouter();
-  const pathname = usePathname();
+  const pathname = usePathname(); 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
 
