@@ -31,6 +31,8 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  reorderCategories,
+  optimisticReorder,
 } from "@/redux/slices/categoriesSlice";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useAppDispatch } from "@/redux/hooks";
@@ -137,24 +139,39 @@ export default function CategoriesSection() {
     }
   };
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = async (result: any) => {
+    console.log("🎯 Drag ended:", result);
+
     if (!result.destination) return;
 
-    const items = Array.from(categories);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
-    // Update order for all items
-    items.forEach((item, index) => {
-      if (item.order !== index) {
-        dispatch(
-          updateCategory({
-            id: item._id,
-            data: { ...item, order: index },
-          })
-        );
-      }
-    });
+    if (sourceIndex === destinationIndex) return;
+
+    console.log("📦 Creating reordered array...");
+
+    const reorderedCategories = Array.from(categories);
+    const [movedItem] = reorderedCategories.splice(sourceIndex, 1);
+    reorderedCategories.splice(destinationIndex, 0, movedItem);
+
+    const updatedCategories = reorderedCategories.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
+
+    console.log("✅ Dispatching optimistic update...");
+    dispatch(optimisticReorder(updatedCategories));
+
+    try {
+      console.log("🚀 Calling reorderCategories...");
+      await dispatch(reorderCategories(updatedCategories)).unwrap();
+      toast.success("Categories reordered successfully");
+    } catch (error) {
+      console.error("❌ Reorder failed:", error);
+      toast.error("Failed to save category order");
+      dispatch(fetchCategories());
+    }
   };
 
   return (

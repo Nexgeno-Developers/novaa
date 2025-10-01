@@ -55,7 +55,7 @@ export default function OurStorySection({
           </div>
         )}
 
-        <div className="font-josefin mt-4 text-[#151515] description-text">
+        <div className="font-josefin mt-10 text-[#151515] description-text">
           {parse(description)}
         </div>
 

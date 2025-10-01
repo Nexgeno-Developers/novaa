@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface Category {
   _id: string;
@@ -29,7 +29,6 @@ export const fetchCategories = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        // Use default cache for better performance
         cache: "default",
       });
 
@@ -56,17 +55,16 @@ export const createCategory = createAsyncThunk(
   "adminCategories/createCategory",
   async (data: Omit<Category, "_id" | "slug">) => {
     try {
-    const response = await fetch("/api/cms/categories", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+      const response = await fetch("/api/cms/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-
-    console.log("Response from createCategory:", response);
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error);
-    return result.data;
+      console.log("Response from createCategory:", response);
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
+      return result.data;
     } catch (error) {
       console.error("Error creating category:", error);
       throw error;
@@ -106,12 +104,44 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
+// NEW: Batch reorder categories
+export const reorderCategories = createAsyncThunk(
+  "adminCategories/reorderCategories",
+  async (categories: Category[], { rejectWithValue }) => {
+    try {
+            console.log('🚀 Dispatching reorder to API...');
+
+      const response = await fetch("/api/cms/categories/reorder", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categories }),
+      });
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || "Failed to reorder categories");
+      }
+
+      return categories;
+    } catch (error) {
+      console.error("Error reordering categories:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to reorder categories"
+      );
+    }
+  }
+);
+
 const adminCategoriesSlice = createSlice({
   name: "adminCategories",
   initialState,
   reducers: {
     clearError: (state) => {
       state.error = null;
+    },
+    // NEW: Optimistic update for drag and drop
+    optimisticReorder: (state, action: PayloadAction<Category[]>) => {
+      state.categories = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -143,9 +173,19 @@ const adminCategoriesSlice = createSlice({
         state.categories = state.categories.filter(
           (cat) => cat._id !== action.payload
         );
+      })
+      // NEW: Handle reorder
+      .addCase(reorderCategories.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(reorderCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+      })
+      .addCase(reorderCategories.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to reorder categories";
       });
   },
 });
 
-export const { clearError } = adminCategoriesSlice.actions;
+export const { clearError, optimisticReorder } = adminCategoriesSlice.actions;
 export default adminCategoriesSlice.reducer;
