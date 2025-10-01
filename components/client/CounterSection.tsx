@@ -86,7 +86,7 @@ export default function CounterSection({
   return (
     <motion.section
       ref={containerRef}
-      className="relative py-16 lg:py-24 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden"
+      className="relative py-16 lg:py-24 bg-background overflow-hidden"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -108,18 +108,19 @@ export default function CounterSection({
           viewport={{ once: true }}
           className="text-center mb-10 lg:mb-16 font-cinzel"
         >
-          <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-[#01292B] mb-4 uppercase">
+          <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal text-primary mb-4 uppercase">
             <Title title={title} />
           </h2>
           {subtitle && (
             <div
-              className="font-josefin text-[#303030] description-text max-w-3xl mx-auto"
+              className="font-josefin text-foreground description-text max-w-3xl mx-auto"
               dangerouslySetInnerHTML={{ __html: subtitle }}
             />
           )}
         </motion.div>
 
         {/* Counter Cards Grid */}
+
         {cards && cards.length > 0 && (
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
             {cards.map((card, index) => (
@@ -137,38 +138,36 @@ export default function CounterSection({
                   y: -10,
                   transition: { duration: 0.3 },
                 }}
-                className="group"
+                className="group flex flex-col items-center"
               >
-                {/* Card Container with Gradient Border */}
-                <div className="relative py-2 rounded-3xl border-[1.7px] border-[#01292B80] overflow-hidden transition-all duration-500 group-hover:border-transparent">
+                {/* Circular Card Container with Gradient Border */}
+                <div className="relative aspect-square w-full max-w-[200px] rounded-full border-[1.7px] border-[#01292B80] overflow-hidden transition-all duration-500 group-hover:border-transparent">
                   {/* Gradient Border Effect */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="gradient-border-card group-hover:active absolute inset-0 rounded-3xl"></div>
+                    <div className="border-gradient group-hover:active absolute inset-0 rounded-full"></div>
                   </div>
 
-                  {/* Inner Content */}
-                  <div className="relative z-10 flex flex-col items-center">
-                    {/* Golden Background Counter Box */}
-                    <div
-                      className="flex items-center justify-center h-28 w-[90%] rounded-2xl shadow-md relative"
-                      style={{
-                        background:
-                          "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
-                      }}
-                    >
-                      <span className="font-cinzel font-bold text-3xl lg:text-4xl text-[#01292B]">
-                        <AnimatedCounter target={card.number} />+
-                      </span>
-                    </div>
+                  {/* Inner Content - Circular Golden Background */}
+                  <div
+                    className="relative z-10 w-full h-full flex items-center justify-center rounded-full shadow-lg"
+                    style={{
+                      background:
+                        "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                    }}
+                  >
+                    <span className="font-cinzel font-bold text-3xl lg:text-4xl xl:text-5xl text-[#01292B]">
+                      <AnimatedCounter target={card.number} />+
+                    </span>
                   </div>
                 </div>
+
                 {/* Title */}
-                <h3 className="font-josefin text-center font-semibold text-base sm:text-lg text-[#01292B] mb-2 group-hover:text-[#C3912F] transition-colors duration-300 pt-4">
+                <h3 className="font-josefin text-center font-semibold text-base sm:text-lg text-gray-300 mt-6 mb-2 group-hover:text-[#C3912F] transition-colors duration-300">
                   {card.title}
                 </h3>
 
                 {/* Description */}
-                <p className="font-josefin description-text text-gray-600 text-center leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                <p className="font-josefin description-text text-primary text-center leading-relaxed group-hover:text-primary/50 transition-colors duration-300 max-w-[250px]">
                   {card.description}
                 </p>
               </motion.div>

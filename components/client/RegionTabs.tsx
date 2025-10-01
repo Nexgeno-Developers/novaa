@@ -42,7 +42,7 @@ export default function RegionTabs() {
       } else {
         // For all projects, check if category has any active projects
         const categoryProjects = allProjects.filter(
-          project => project.category._id === category._id && project.isActive
+          project => project?.category?._id === category._id && project.isActive
         );
         return category.isActive && categoryProjects.length > 0;
       }
@@ -64,7 +64,7 @@ export default function RegionTabs() {
           projectCount = collection.items[category._id]?.length || 0;
         } else {
           projectCount = allProjects.filter(
-            project => project.category._id === category._id && project.isActive
+            project => project?.category?._id === category._id && project.isActive
           ).length;
         }
 

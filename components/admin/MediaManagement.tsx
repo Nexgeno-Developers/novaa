@@ -583,7 +583,7 @@ function MediaCard({
 
   if (viewMode === "list") {
     return (
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-md transition-shadow p-0">
         <CardContent className="p-4">
           <div className="flex items-center space-x-4 bg-transparent">
             <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
@@ -656,7 +656,7 @@ function MediaCard({
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+    <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 p-0">
       <CardContent className="p-0">
         <div className="relative aspect-square bg-gray-100 rounded-t-lg overflow-hidden">
           {file.resource_type === "image" ? (

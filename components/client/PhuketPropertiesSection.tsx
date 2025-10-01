@@ -5,6 +5,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
 import { useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Location {
   id: string;
@@ -178,57 +179,59 @@ export default function PhuketPropertiesSection({
                 dangerouslySetInnerHTML={createMarkup(explorerDescription)}
               />
 
-              {/* Category Buttons */}
-              <div className="space-y-3 flex flex-col items-center lg:items-start">
-                {categories.map((category) => {
-                  const isActive = activeCategory === category.id;
-                  return (
-                    <button
-                      key={category.id}
-                      onClick={() => setActiveCategory(category.id)}
-                      className={`w-full lg:w-[70%] flex items-center space-x-4 p-2 xs:p-4 xl:p-6 rounded-[20px] border border-[#01292B] transition-all duration-300 transform hover:translate-x-2 group cursor-pointer ${
-                        isActive
-                          ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
-                          : "bg-[#CDB04E33] text-[#CDB04E] hover:border-[#C3912F] hover:bg-opacity-30"
-                      }`}
-                    >
-                      <div
-                        className={`transition-colors duration-300 ${
-                          isActive ? "text-background" : "text-background"
+              {/* Category Buttons - Scrollable */}
+              <ScrollArea className="h-[400px] w-full lg:w-[80%] pr-4">
+                <div className="space-y-3 flex flex-col items-center lg:items-start">
+                  {categories.map((category) => {
+                    const isActive = activeCategory === category.id;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => setActiveCategory(category.id)}
+                        className={`w-full lg:w-[90%] flex items-center space-x-4 p-2 xs:p-2 xl:p-4 rounded-[20px] border border-[#01292B] transition-all duration-300 transform hover:translate-x-2 group cursor-pointer ${
+                          isActive
+                            ? "bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background"
+                            : "bg-[#CDB04E33] text-[#CDB04E] hover:border-[#C3912F] hover:bg-opacity-30"
                         }`}
                       >
                         <div
-                          className={`flex items-center border-l-2 ml-2 sm:ml-0 pl-4 sm:pl-2 ${
-                            isActive
-                              ? "border-l-background"
-                              : "border-l-primary"
-                          } h-[35px]`}
+                          className={`transition-colors duration-300 ${
+                            isActive ? "text-background" : "text-background"
+                          }`}
                         >
                           <div
-                            className={`w-[30px] h-[30px] sm:w-[35px] lg:w-[45px] sm:h-[35px] lg:h-[45px] ${
-                              isActive ? "bg-background" : "bg-primary"
-                            } mask mask-center mask-no-repeat`}
-                            style={{
-                              WebkitMaskImage: `url(${category.icon})`,
-                              maskImage: `url(${category.icon})`,
-                              WebkitMaskSize: "contain",
-                              maskSize: "contain",
-                              WebkitMaskRepeat: "no-repeat",
-                              maskRepeat: "no-repeat",
-                            }}
-                          />
+                            className={`flex items-center border-l-2 ml-2 sm:ml-0 pl-4 sm:pl-2 ${
+                              isActive
+                                ? "border-l-background"
+                                : "border-l-primary"
+                            } h-[35px]`}
+                          >
+                            <div
+                              className={`w-[30px] h-[30px] sm:w-[35px] lg:w-[45px] sm:h-[35px] lg:h-[45px] ${
+                                isActive ? "bg-background" : "bg-primary"
+                              } mask mask-center mask-no-repeat`}
+                              style={{
+                                WebkitMaskImage: `url(${category.icon})`,
+                                maskImage: `url(${category.icon})`,
+                                WebkitMaskSize: "contain",
+                                maskSize: "contain",
+                                WebkitMaskRepeat: "no-repeat",
+                                maskRepeat: "no-repeat",
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <span className="text-left text-base sm:text-xl lg:text-3xl font-medium font-josefin line-clamp-1">
-                        {category.title}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                        <span className="text-left text-base sm:text-xl lg:text-2xl font-medium font-josefin line-clamp-1">
+                          {category.title}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
             </motion.div>
 
-            {/* Locations List */}
+            {/* Locations List - Scrollable */}
             <motion.div
               variants={itemVariants}
               className="space-y-2 sm:space-y-4 pt-4"
@@ -255,36 +258,38 @@ export default function PhuketPropertiesSection({
                 </motion.h4>
               </AnimatePresence>
 
-              <div className="space-y-3">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeCategory}
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: { staggerChildren: 0.05 },
-                    }}
-                    exit={{ opacity: 0 }}
-                    className="border-b-[0.5px] border-b-white w-full lg:w-[80%] pb-4"
-                  >
-                    {currentCategory?.locations.map((location) => (
-                      <motion.div
-                        key={location.id}
-                        className="flex items-center justify-center lg:justify-start space-x-3 group"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                      >
-                        <div className="flex items-center w-full lg:w-[88%] my-2 rounded-4xl px-4 py-2 gap-4 border-[0.2px] border-[#CDB04E0D] bg-[#CDB04E0D]">
-                          <div className="h-2 w-2 sm:w-4 sm:h-4 rounded-full bg-[#C3912F] transition-transform duration-300 group-hover:scale-105"></div>
-                          <p className="text-white font-josefin text-base sm:text-lg lg:text-xl font-light transition-colors duration-300 group-hover:text-white">
-                            {location.name}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+              <ScrollArea className="h-[300px] w-full lg:w-[80%]">
+                <div className="space-y-3 pr-4">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeCategory}
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: 1,
+                        transition: { staggerChildren: 0.05 },
+                      }}
+                      exit={{ opacity: 0 }}
+                      className="border-b-[0.5px] border-b-white w-full pb-4"
+                    >
+                      {currentCategory?.locations.map((location) => (
+                        <motion.div
+                          key={location.id}
+                          className="flex items-center justify-center lg:justify-start space-x-3 group"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                        >
+                          <div className="flex items-center w-full lg:w-[95%] my-2 rounded-4xl px-4 py-2 gap-4 border-[0.2px] border-[#CDB04E0D] bg-[#CDB04E0D]">
+                            <div className="h-2 w-2 sm:w-4 sm:h-4 rounded-full bg-[#C3912F] transition-transform duration-300 group-hover:scale-105"></div>
+                            <p className="text-white font-josefin text-base sm:text-lg lg:text-xl font-light transition-colors duration-300 group-hover:text-white">
+                              {location.name}
+                            </p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </ScrollArea>
             </motion.div>
           </motion.div>
 

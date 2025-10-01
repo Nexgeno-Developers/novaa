@@ -8,6 +8,7 @@ import { FooterData } from "@/redux/slices/footerSlice";
 import parse from "html-react-parser";
 import { setNavigationLoading } from "@/redux/slices/loadingSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 // Define the component's props
 interface FooterProps {
@@ -16,6 +17,7 @@ interface FooterProps {
 
 export default function Footer({ data }: FooterProps) {
   const dispatch = useAppDispatch();
+  const router = useNavigationRouter();
 
   const options = {
     replace: (domNode: any) => {
@@ -64,6 +66,7 @@ export default function Footer({ data }: FooterProps) {
     tumblr: "/footer/tumblr.png",
     wechat: "/footer/wechat.png",
   };
+
   // Filter out empty or invalid links
   const validQuickLinks = data.quickLinks.links.filter(
     (link) => link.label.trim() && link.url.trim()
@@ -72,6 +75,15 @@ export default function Footer({ data }: FooterProps) {
   const validSocialLinks = data.socials.links.filter(
     (link) => link.url.trim() && socialIconMap[link.name]
   );
+
+  // Helper function to handle internal navigation
+  const handleInternalLink = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+    // Check if it's an internal link (starts with / and not external)
+    if (url.startsWith('/')) {
+      e.preventDefault();
+      router.push(url);
+    }
+  };
 
   return (
     <footer className="relative w-full bg-[#000000D9] overflow-hidden pt-10 pb-5 sm:pb-10 sm:pt-20">
@@ -117,9 +129,15 @@ export default function Footer({ data }: FooterProps) {
             {data.tagline.description}
           </p>
           <div className="inline-block">
-            <button className="font-josefin group relative bg-[#30303033] border-3 border-[#F0DE9C] text-[#F0DE9C] px-6 py-3 sm:px-8 sm:py-4 rounded-full transition-all duration-300 flex flex-col items-center gap-1 text-base sm:text-lg font-medium text-center cursor-pointer">
+            <button
+              className="font-josefin group relative bg-[#30303033] border-4 border-[#F0DE9C] text-[#F0DE9C] 
+                     w-28 h-28 sm:w-34 sm:h-34 rounded-full 
+                     transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden"
+            >
               {data?.ctaButtonLines.map((line, i) => (
-                <span key={i}>{line}</span>
+                <span key={i} className="leading-tight text-sm sm:text-base">
+                  {line}
+                </span>
               ))}
               <ArrowRight className="w-5 h-5 mt-1 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
@@ -141,7 +159,7 @@ export default function Footer({ data }: FooterProps) {
             </div>
 
             {/* Quick Links - Dynamic */}
-            <div>
+            <div className="flex flex-col items-center">
               <h3 className="text-[#CDB04E] text-base sm:text-lg font-semibold mb-6">
                 {data.quickLinks.title}
               </h3>
@@ -151,7 +169,7 @@ export default function Footer({ data }: FooterProps) {
                     <li key={`${link.url}-${index}`}>
                       <Link
                         href={link.url}
-                        onClick={() => dispatch(setNavigationLoading(true))}
+                        onClick={(e) => handleInternalLink(e, link.url)}
                         className="text-gray-300 text-base sm:text-lg hover:text-[#CDB04E] transition-colors duration-300 flex items-center gap-2"
                       >
                         <ArrowRight className="w-4 h-4" color="gold" />
@@ -168,17 +186,22 @@ export default function Footer({ data }: FooterProps) {
             </div>
 
             {/* Contact & Socials - Dynamic */}
-            <div>
+            <div className="flex flex-col items-center">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <a
-                    href={`tel:${data.contact.phone}`}
+                    href={`https://api.whatsapp.com/send?phone=${encodeURIComponent(
+                      data.contact.phone
+                    )}&text=${encodeURIComponent(
+                      "Hi, I am contacting you through your website https://novaaglobal.com/"
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-white text-base sm:text-4xl font-medium hover:text-primary transition-colors duration-300"
                   >
                     {data.contact.phone}
                   </a>
                 </div>
-
                 <div className="flex items-center gap-3">
                   <a
                     href={`mailto:${data.contact.email}`}
@@ -198,7 +221,6 @@ export default function Footer({ data }: FooterProps) {
                       {validSocialLinks.map((social, index) => (
                         <Link
                           key={`${social.name}-${index}`}
-                          onClick={() => dispatch(setNavigationLoading(true))}
                           href={social.url}
                           target="_blank"
                           rel="noopener noreferrer"

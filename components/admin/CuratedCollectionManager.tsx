@@ -115,7 +115,7 @@ export default function CuratedCollectionManager({
   const categoryProjects = selectedCategory
     ? projects.filter(
         (project) =>
-          project.category._id === selectedCategory && project.isActive
+          project?.category?._id === selectedCategory && project.isActive
       )
     : [];
 

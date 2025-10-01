@@ -470,7 +470,7 @@ export function AdvancedMediaSelector({
 
     return (
       <Card
-        className={`group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
+        className={`py-0 group hover:shadow-lg transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
           isSelected ? "ring-2 ring-primary" : ""
         }`}
         onClick={() => handleItemSelect(item)}
@@ -702,7 +702,7 @@ export function AdvancedMediaSelector({
               <div
                 className={
                   viewMode === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 py-2"
+                    ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 py-2"
                     : "space-y-2"
                 }
               >

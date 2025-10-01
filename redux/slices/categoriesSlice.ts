@@ -55,14 +55,22 @@ export const fetchCategories = createAsyncThunk(
 export const createCategory = createAsyncThunk(
   "adminCategories/createCategory",
   async (data: Omit<Category, "_id" | "slug">) => {
+    try {
     const response = await fetch("/api/cms/categories", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
+
+
+    console.log("Response from createCategory:", response);
     const result = await response.json();
     if (!result.success) throw new Error(result.error);
     return result.data;
+    } catch (error) {
+      console.error("Error creating category:", error);
+      throw error;
+    }
   }
 );
 

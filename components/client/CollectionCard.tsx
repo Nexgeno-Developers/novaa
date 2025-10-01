@@ -116,7 +116,7 @@ export default function CollectionCard({
     } else {
       let categoryProjects = allProjects.filter(
         (project) =>
-          project.category._id === selectedCategory._id && project.isActive
+          project?.category?._id === selectedCategory._id && project.isActive
       );
       categoryProjects.sort((a, b) => (a.order || 0) - (b.order || 0));
       allCategoryProjects = categoryProjects;

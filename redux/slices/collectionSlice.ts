@@ -214,7 +214,7 @@ const curatedSlice = createSlice({
       if (!state.selectedRegion && state.categories.length > 0) {
         const categoryWithProjects = state.categories.find((category) => {
           const categoryProjects = state.allProjects.filter(
-            project => project.category._id === category._id && project.isActive
+            project => project?.category?._id === category._id && project.isActive
           );
           return category.isActive && categoryProjects.length > 0;
         });
