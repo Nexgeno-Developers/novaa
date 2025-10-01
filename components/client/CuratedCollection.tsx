@@ -47,61 +47,62 @@ export default function CuratedCollection({
     // Only proceed if we have the required props data
     if (title && description && isActive !== undefined && items) {
       dispatch(resetState());
-      
+
       // Set data source to 'curated' so components know to use curated data
-      dispatch(setDataSource('curated'));
-      
+      dispatch(setDataSource("curated"));
+
       // Use fresh items data if available, fallback to original items
       const itemsToUse = items;
-      
+
       // Set the collection data
       const collectionData = {
         title,
         description,
         isActive,
         items: itemsToUse,
-        ...props
+        ...props,
       };
       dispatch(setCuratedCollectionData(collectionData));
-      
+
       // Use fresh categories if available, otherwise extract from items
       let categories = [];
-      
+
       if (_categories) {
-        // Filter categories that have items in the curated collection
-        categories = _categories.filter(category => {
-          const categoryId = category._id.toString();
-          return itemsToUse[categoryId] && itemsToUse[categoryId].length > 0;
-        });
-        
-        console.log('Using fresh categories:', {
-          allCategories: _categories.map(c => ({ id: c._id.toString(), name: c.name })),
+        // DON'T filter - show all active categories
+        // Create a copy since _categories is read-only
+        categories = [..._categories];
+
+        console.log("Using fresh categories:", {
+          allCategories: _categories.map((c) => ({
+            id: c._id.toString(),
+            name: c.name,
+          })),
           itemKeys: Object.keys(itemsToUse),
-          filteredCategories: categories.map(c => ({ id: c._id.toString(), name: c.name }))
         });
       } else {
         // Fallback: extract categories from the items
-        const categoryMap = new Map(); // Use Map to prevent duplicates
-        
-        Object.keys(itemsToUse).forEach(categoryId => {
+        const categoryMap = new Map();
+
+        Object.keys(itemsToUse).forEach((categoryId) => {
           const firstItem = itemsToUse[categoryId]?.[0];
           if (firstItem?.category) {
-            categoryMap.set(firstItem.category._id.toString(), firstItem.category);
+            categoryMap.set(
+              firstItem.category._id.toString(),
+              firstItem.category
+            );
           }
         });
-        
+
         categories = Array.from(categoryMap.values());
-        
-        // console.log('Extracted categories from items:', {
-        //   itemKeys: Object.keys(itemsToUse),
-        //   extractedCategories: categories.map(c => ({ id: c._id.toString(), name: c.name }))
-        // });
       }
-      
+
       // Sort categories by order and set them
-      const sortedCategories = categories.sort((a, b) => (a.order || 0) - (b.order || 0));
+      // Create a copy before sorting to avoid mutation errors
+      const sortedCategories = [...categories].sort(
+        (a, b) => (a.order || 0) - (b.order || 0)
+      );
       dispatch(setCategories(sortedCategories));
-      
+
       // Set initial region if categories exist
       if (sortedCategories.length > 0 && !collection?.selectedRegion) {
         dispatch(setRegion(sortedCategories[0].name));
@@ -115,7 +116,9 @@ export default function CuratedCollection({
       <section className="py-10 sm:py-20 bg-secondary">
         <div className="container">
           <div className="flex justify-center items-center py-20 h-screen">
-            <div className="animate-pulse text-muted-foreground text-lg font-josefin">Loading...</div>
+            <div className="animate-pulse text-muted-foreground text-lg font-josefin">
+              Loading...
+            </div>
           </div>
         </div>
       </section>
