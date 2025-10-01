@@ -143,21 +143,20 @@ export default function WhyInvestSection({
                       alt="icon"
                     />
                   </motion.div>
-                  <div className="flex-1 space-y-2 font-josefin">
+                  <div className="flex-1 space-y-2 font-josefin pb-4">
                     <h4 className="text-lg sm:text-xl font-normal text-[#01292B]">
                       {point.title}
                     </h4>
-                    <div className="relative flex flex-col items-end">
+                    <div className="relative">
                       <div
                         className="text-[#303030] description-text line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: point.description }}
                       />
                       <Link
                         href="/blog"
-                        className="inline-flex items-center gap-1 text-sm text-[#D4AF37] hover:text-[#B8851A] font-medium mt-2 transition-colors group/link"
+                        className="inline-flex items-center gap-1 text-base text-[#D4AF37] hover:text-[#B8851A] font-medium transition-colors group/link absolute bottom-0 right-2 pl-2"
                       >
                         Read More
-                        <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                       </Link>
                     </div>
                   </div>

@@ -216,7 +216,7 @@ export default async function ProjectDetailPage({
         <GatewaySection project={project} />
         <ProjectHighlights project={project} />
         <Highlights project={project} />
-        <ModernAmenities project={project} />
+        {/* <ModernAmenities project={project} /> */}
         <MasterPlanSection project={project} />
         <InvestmentPlans project={project} />
         <ContactForm />

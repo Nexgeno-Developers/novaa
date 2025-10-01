@@ -61,7 +61,7 @@ function AnimatedCounter({
   return (
     <span
       ref={counterRef}
-      className="font-josefin font-medium text-xl sm:text-2xl xl:text-5xl"
+      className="font-josefin font-medium text-xl sm:text-2xl xl:text-3xl"
     >
       {count}
       {/* {suffix} */}
@@ -141,7 +141,7 @@ export default function CounterSection({
                 className="group flex flex-col items-center"
               >
                 {/* Circular Card Container with Gradient Border */}
-                <div className="relative aspect-square w-full max-w-[200px] rounded-full border-[1.7px] border-[#01292B80] overflow-hidden transition-all duration-500 group-hover:border-transparent">
+                <div className="relative aspect-square w-full max-w-[120px] rounded-full border-[1.7px] border-[#01292B80] overflow-hidden transition-all duration-500 group-hover:border-transparent">
                   {/* Gradient Border Effect */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="border-gradient group-hover:active absolute inset-0 rounded-full"></div>
@@ -155,7 +155,7 @@ export default function CounterSection({
                         "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                     }}
                   >
-                    <span className="font-cinzel font-bold text-3xl lg:text-4xl xl:text-5xl text-[#01292B]">
+                    <span className="font-cinzel font-bold text-xl lg:text-2xl xl:text-3xl text-[#01292B]">
                       <AnimatedCounter target={card.number} />+
                     </span>
                   </div>

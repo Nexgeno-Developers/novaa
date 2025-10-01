@@ -289,7 +289,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
     <motion.button
       key={index}
       onClick={() => handleCategoryChange(index)}
-      className={`w-full flex items-center space-x-4 p-3 rounded-[20px] border border-[#CDB04E1A] transition-all duration-300 group cursor-pointer bg-[#CDB04E1A] hover:border-[#C3912F] ${
+      className={`w-full flex items-center space-x-4 p-2 rounded-[20px] border border-[#CDB04E1A] transition-all duration-300 group cursor-pointer bg-[#CDB04E1A] hover:border-[#C3912F] ${
         isActive
           ? "bg-gradient-to-tr from-[#C3912F] to-[#F5E7A8] text-background"
           : "text-white"
@@ -300,7 +300,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
       whileTap={{ scale: 0.98 }}
     >
       <div className="flex items-center justify-center">
-        <div className="flex items-center justify-center w-[50px] h-[50px] sm:w-[70px] sm:h-[70px] rounded-2xl bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background">
+        <div className="flex items-center justify-center w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-2xl bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background">
           <Image
             src={category.icon}
             width={30}
@@ -311,7 +311,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
         </div>
       </div>
       <div className="flex flex-col">
-        <span className="text-sm sm:text-xl font-normal font-josefin text-left">
+        <span className="text-sm sm:text-lg font-normal font-josefin text-left">
           {category.title}
         </span>
         <p className="text-xs sm:text-lg font-light font-josefin text-left">

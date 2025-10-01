@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Enquiry from '@/models/Enquiry';
-import { email } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import Enquiry from "@/models/Enquiry";
+import { email } from "zod";
 
 // GET - Fetch all enquiries
 export async function GET(request: NextRequest) {
@@ -9,22 +9,23 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const status = searchParams.get('status');
-    const priority = searchParams.get('priority');
-    const search = searchParams.get('search');
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const status = searchParams.get("status");
+    const priority = searchParams.get("priority");
+    const search = searchParams.get("search");
 
     // Build query filter
     const filter: any = {};
-    if (status && status !== 'all') filter.status = status;
-    if (priority && priority !== 'all') filter.priority = priority;
+    if (status && status !== "all") filter.status = status;
+    if (priority && priority !== "all") filter.priority = priority;
     if (search) {
       filter.$or = [
-        { fullName: { $regex: search, $options: 'i' } },
-        { emailAddress: { $regex: search, $options: 'i' } },
-        { country: { $regex: search, $options: 'i' } },
-        { investmentLocation: { $regex: search, $options: 'i' } },
+        { fullName: { $regex: search, $options: "i" } },
+        { emailAddress: { $regex: search, $options: "i" } },
+        { location: { $regex: search, $options: "i" } },
+        { phoneNo: { $regex: search, $options: "i" } },
+        { message: { $regex: search, $options: "i" } },
       ];
     }
 
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
     const statusCounts = await Enquiry.aggregate([
       {
         $group: {
-          _id: '$status',
+          _id: "$status",
           count: { $sum: 1 },
         },
       },
@@ -53,10 +54,10 @@ export async function GET(request: NextRequest) {
 
     const statusSummary = {
       total: totalEnquiries,
-      new: statusCounts.find(s => s._id === 'new')?.count || 0,
-      contacted: statusCounts.find(s => s._id === 'contacted')?.count || 0,
-      interested: statusCounts.find(s => s._id === 'interested')?.count || 0,
-      closed: statusCounts.find(s => s._id === 'closed')?.count || 0,
+      new: statusCounts.find((s) => s._id === "new")?.count || 0,
+      contacted: statusCounts.find((s) => s._id === "contacted")?.count || 0,
+      interested: statusCounts.find((s) => s._id === "interested")?.count || 0,
+      closed: statusCounts.find((s) => s._id === "closed")?.count || 0,
     };
 
     return NextResponse.json({
@@ -74,9 +75,9 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error fetching enquiries:', error);
+    console.error("Error fetching enquiries:", error);
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch enquiries' },
+      { success: false, message: "Failed to fetch enquiries" },
       { status: 500 }
     );
   }
@@ -88,53 +89,68 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const {
-      fullName,
-      emailAddress,
-      phoneNo,
-      country,
-      investmentLocation,
-      message,
-    } = body;
+    const { fullName, emailAddress, phoneNo, location, message } = body;
+
+    // console.log("Received enquiry data:", body);
 
     // Validation
-    if (!fullName || !emailAddress || !country || !investmentLocation) {
+    if (!fullName || !phoneNo || !location) {
       return NextResponse.json(
-        { success: false, message: 'Required fields are missing' },
+        { success: false, message: "Required fields are missing" },
         { status: 400 }
       );
     }
 
-    // Check if email already exists
-    const existingEnquiry = await Enquiry.findOne({ emailAddress });
+    // Check if phone number already exists
+    const existingEnquiry = await Enquiry.findOne({ phoneNo });
     if (existingEnquiry) {
       return NextResponse.json(
-        { success: false, message: 'An enquiry with this phone number already exists' },
+        {
+          success: false,
+          message: "An enquiry with this phone number already exists",
+        },
         { status: 409 }
       );
     }
+
+    // console.log("Creating new enquiry...");
 
     // Create new enquiry
     const enquiry = await Enquiry.create({
       fullName,
       emailAddress,
       phoneNo,
-      country,
-      investmentLocation,
+      location,
       message,
-      status: 'new',
-      priority: 'medium',
+      status: "new",
+      priority: "medium",
     });
 
-    return NextResponse.json({
-      success: true,
-      message: 'Enquiry submitted successfully',
-      data: enquiry,
-    }, { status: 201 });
-  } catch (error) {
-    console.error('Error creating enquiry:', error);
+    // console.log("Enquiry created successfully:", enquiry);
+
     return NextResponse.json(
-      { success: false, message: 'Failed to submit enquiry' },
+      {
+        success: true,
+        message: "Enquiry submitted successfully",
+        data: enquiry,
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    // Log the full error details
+    console.error("Error creating enquiry:", error);
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    if (error.errors) {
+      console.error("Validation errors:", error.errors);
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to submit enquiry",
+        error: error.message, // Include error message in response during development
+      },
       { status: 500 }
     );
   }

@@ -138,7 +138,7 @@ export default function PhuketPropertiesSection({
         {/* Main Heading */}
         <motion.div
           variants={headingVariants}
-          className="font-cinzel max-w-3xl space-y-2 sm:space-y-4 text-center sm:text-left"
+          className="font-cinzel space-y-2 sm:space-y-4 text-center "
         >
           <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
             {mainHeading}
@@ -146,23 +146,23 @@ export default function PhuketPropertiesSection({
           <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent pb-5">
             {subHeading}
           </h2>
+
+          {/* Description */}
+          <motion.div
+            variants={itemVariants}
+            className="font-josefin text-[#FFFFFFE5] description-text"
+            dangerouslySetInnerHTML={createMarkup(description)}
+          />
         </motion.div>
 
         <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-20 items-start">
           {/* Left Content */}
           <motion.div
-            className="space-y-4 sm:space-y-8"
+            className="space-y-4 sm:space-y-8 pt-15"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {/* Description */}
-            <motion.div
-              variants={itemVariants}
-              className="font-josefin text-[#FFFFFFE5] text-center sm:text-left description-text w-full lg:max-w-2xl"
-              dangerouslySetInnerHTML={createMarkup(description)}
-            />
-
             {/* Phuket Explorer Section */}
             <motion.div
               ref={ref}
@@ -207,7 +207,7 @@ export default function PhuketPropertiesSection({
                             } h-[35px]`}
                           >
                             <div
-                              className={`w-[30px] h-[30px] sm:w-[35px] lg:w-[45px] sm:h-[35px] lg:h-[45px] ${
+                              className={`w-[30px] h-[30px] sm:w-[35px] lg:w-[40px] sm:h-[35px] lg:h-[40px] ${
                                 isActive ? "bg-background" : "bg-primary"
                               } mask mask-center mask-no-repeat`}
                               style={{
@@ -221,7 +221,7 @@ export default function PhuketPropertiesSection({
                             />
                           </div>
                         </div>
-                        <span className="text-left text-base sm:text-xl lg:text-2xl font-medium font-josefin line-clamp-1">
+                        <span className="text-left text-base sm:text-lg lg:text-xl font-medium font-josefin line-clamp-1">
                           {category.title}
                         </span>
                       </button>

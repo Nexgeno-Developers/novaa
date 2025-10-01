@@ -11,7 +11,6 @@ const EnquirySchema = new Schema(
     },
     emailAddress: {
       type: String,
-      required: [true, 'Email address is required'],
       trim: true,
       lowercase: true,
       match: [
@@ -21,19 +20,14 @@ const EnquirySchema = new Schema(
     },
     phoneNo: {
       type: String,
+      required: [true, 'Phone number is required'],
       trim: true,
       maxlength: [20, 'Phone number cannot exceed 20 characters'],
     },
-    country: {
+    location: {
       type: String,
-      required: [true, 'Country is required'],
+      required: [true, 'Location is required'],
       trim: true,
-    },
-    investmentLocation: {
-      type: String,
-      required: [true, 'Investment location is required'],
-      trim: true,
-      default: 'Thailand (Phuket)',
     },
     message: {
       type: String,
@@ -66,7 +60,7 @@ const EnquirySchema = new Schema(
 // Indexes
 EnquirySchema.index({ createdAt: -1 });
 EnquirySchema.index({ status: 1 });
-EnquirySchema.index({ emailAddress: 1 });
+EnquirySchema.index({ phoneNo: 1 });
 
 // Infer TS types from schema
 export type Enquiry = InferSchemaType<typeof EnquirySchema>;

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ChevronDown, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux";
 import {
@@ -15,7 +15,7 @@ import {
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-// Validation schema
+// Updated validation schema
 const contactFormSchema = z.object({
   fullName: z
     .string()
@@ -25,18 +25,15 @@ const contactFormSchema = z.object({
   emailAddress: z
     .string()
     .email("Please enter a valid email address")
-    .max(255, "Email cannot exceed 255 characters"),
+    .max(255, "Email cannot exceed 255 characters")
+    .optional()
+    .or(z.literal("")),
   phoneNo: z
     .string()
-    .optional()
-    .refine(
-      (val) => !val || val.length >= 10,
-      "Phone number must be at least 10 digits"
-    ),
-  country: z.string().min(1, "Please select your country"),
-  investmentLocation: z
-    .string()
-    .min(1, "Please select your preferred investment location"),
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number cannot exceed 15 digits")
+    .regex(/^[0-9+\-\s()]+$/, "Please enter a valid phone number"),
+  location: z.string().min(1, "Please enter your location"),
   message: z
     .string()
     .max(1000, "Message cannot exceed 1000 characters")
@@ -50,34 +47,27 @@ const ContactForm = () => {
   const { submissionStatus, error } = useSelector(
     (state: RootState) => state.enquiry
   );
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    setValue,
-    watch,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
       fullName: "",
       emailAddress: "",
       phoneNo: "",
-      country: "",
-      investmentLocation: "Thailand (Phuket)",
+      location: "",
       message: "",
     },
   });
 
-  const selectedCountry = watch("country");
-  const selectedInvestmentLocation = watch("investmentLocation");
-
   const onSubmit = async (data: ContactFormData) => {
     try {
-      await dispatch(createEnquiry(data)).unwrap();
+      await dispatch(createEnquiry(data as any)).unwrap();
 
       // Reset form after successful submission
       reset();
@@ -85,7 +75,7 @@ const ContactForm = () => {
       // Reset submission status
       dispatch(resetSubmissionStatus());
 
-      // Redirect to thanks page instead of showing success message
+      // Redirect to thanks page
       router.push('/thanks?from=project');
     } catch (error: any) {
       toast.error(
@@ -93,30 +83,6 @@ const ContactForm = () => {
       );
     }
   };
-
-  const countries = [
-    { value: "US", label: "United States" },
-    { value: "UK", label: "United Kingdom" },
-    { value: "AU", label: "Australia" },
-    { value: "SG", label: "Singapore" },
-    { value: "IN", label: "India" },
-    { value: "TH", label: "Thailand" },
-    { value: "AE", label: "United Arab Emirates" },
-    { value: "CA", label: "Canada" },
-    { value: "DE", label: "Germany" },
-    { value: "FR", label: "France" },
-    { value: "JP", label: "Japan" },
-    { value: "CN", label: "China" },
-  ];
-
-  const investmentLocations = [
-    { value: "Thailand (Phuket)", label: "Thailand (Phuket)" },
-    { value: "Thailand (Koh Samui)", label: "Thailand (Koh Samui)" },
-    { value: "Thailand (Pattaya)", label: "Thailand (Pattaya)" },
-    { value: "Thailand (Bangkok)", label: "Thailand (Bangkok)" },
-    { value: "Thailand (Hua Hin)", label: "Thailand (Hua Hin)" },
-    { value: "Thailand (Krabi)", label: "Thailand (Krabi)" },
-  ];
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -196,7 +162,7 @@ const ContactForm = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-4 max-w-2xl mx-auto font-josefin"
           >
-            {/* Full Name and Email Row */}
+            {/* Full Name */}
             <div className="grid grid-cols-1 gap-4">
               <motion.div variants={itemVariants}>
                 <label className="block text-primary text-sm font-medium mb-2">
@@ -221,10 +187,11 @@ const ContactForm = () => {
               </motion.div>
             </div>
 
+            {/* Email and Phone Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <motion.div variants={itemVariants}>
                 <label className="block text-primary text-sm font-medium mb-2">
-                  Email Address *
+                  Email Address (Optional)
                 </label>
                 <input
                   {...register("emailAddress")}
@@ -243,99 +210,51 @@ const ContactForm = () => {
                   </p>
                 )}
               </motion.div>
-              {/* Phone Number */}
-            <motion.div variants={itemVariants}>
-              <label className="block text-primary text-sm font-medium mb-2">
-                Phone Number (Optional)
-              </label>
-              <input
-                {...register("phoneNo")}
-                type="tel"
-                placeholder="Enter your phone number"
-                className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
-                  errors.phoneNo
-                    ? "border-red-400 focus:border-red-400 focus:ring-red-400"
-                    : "border-[#FFFFFF80]"
-                }`}
-              />
-              {errors.phoneNo && (
-                <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.phoneNo.message}
-                </p>
-              )}
-            </motion.div>
-            </div>
 
-            
-
-            {/* Country and Investment Location Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Phone Number - Now Mandatory */}
               <motion.div variants={itemVariants}>
                 <label className="block text-primary text-sm font-medium mb-2">
-                  Country of Residence *
+                  Phone Number *
                 </label>
-                <div className="relative">
-                  <select
-                    {...register("country")}
-                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 appearance-none ${
-                      errors.country
-                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
-                        : "border-[#FFFFFF80]"
-                    }`}
-                  >
-                    <option value="" className="bg-background text-white">
-                      Select your country
-                    </option>
-                    {countries.map((country) => (
-                      <option
-                        key={country.value}
-                        value={country.value}
-                        className="bg-background text-white"
-                      >
-                        {country.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-                {errors.country && (
+                <input
+                  {...register("phoneNo")}
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
+                    errors.phoneNo
+                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      : "border-[#FFFFFF80]"
+                  }`}
+                />
+                {errors.phoneNo && (
                   <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
-                    {errors.country.message}
+                    {errors.phoneNo.message}
                   </p>
                 )}
               </motion.div>
+            </div>
 
+            {/* Location Field */}
+            <div className="grid grid-cols-1 gap-4">
               <motion.div variants={itemVariants}>
                 <label className="block text-primary text-sm font-medium mb-2">
-                  Preferred Investment Location *
+                  Location *
                 </label>
-                <div className="relative">
-                  <select
-                    {...register("investmentLocation")}
-                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 appearance-none cursor-pointer ${
-                      errors.investmentLocation
-                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
-                        : "border-[#FFFFFF80]"
-                    }`}
-                  >
-                    {investmentLocations.map((location) => (
-                      <option
-                        key={location.value}
-                        value={location.value}
-                        className="bg-background text-white"
-                      >
-                        {location.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-                {errors.investmentLocation && (
+                <input
+                  {...register("location")}
+                  type="text"
+                  placeholder="Enter your location"
+                  className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
+                    errors.location
+                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      : "border-[#FFFFFF80]"
+                  }`}
+                />
+                {errors.location && (
                   <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
                     <AlertCircle className="w-4 h-4" />
-                    {errors.investmentLocation.message}
+                    {errors.location.message}
                   </p>
                 )}
               </motion.div>
@@ -388,12 +307,6 @@ const ContactForm = () => {
                   "Submit"
                 )}
               </motion.button>
-
-              {/* Form submission guidelines */}
-              {/* <p className="text-xs text-[#FFFFFF80] mt-4 max-w-md mx-auto">
-                By submitting this form, you agree to our privacy policy and
-                consent to being contacted by our team.
-              </p> */}
             </motion.div>
           </motion.form>
         </motion.div>
