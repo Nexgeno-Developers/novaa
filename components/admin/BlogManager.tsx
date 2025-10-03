@@ -543,12 +543,13 @@ export default function BlogManager() {
 
               <div className="space-y-2">
                 <Label className="text-primary">Blog Content *</Label>
-                <div className="min-h-[300px]">
+               <div >
                   <Editor
                     value={formData.content}
                     onEditorChange={(content) =>
                       handleInputChange("content", content)
                     }
+                    height={400}
                   />
                 </div>
               </div>

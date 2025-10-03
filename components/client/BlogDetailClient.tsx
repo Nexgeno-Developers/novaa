@@ -172,7 +172,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
             </motion.div>
 
             {/* Blog Content */}
-            <motion.div className="w-full py-5" variants={itemVariants}>
+            <motion.div className="w-full " variants={itemVariants}>
               <div className="max-w-none prose prose-lg prose-slate">
                 <div 
                   className="blog-content"
@@ -287,7 +287,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                     ))
                   ) : (
                     <motion.div variants={itemVariants} className="text-center py-8">
-                      <p className="text-[#CFCFCF] text-sm">
+                      <p className="text-[#CFCFCF] text-sm font-josefin">
                         No other blogs in this category yet.
                       </p>
                     </motion.div>

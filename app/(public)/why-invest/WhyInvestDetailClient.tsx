@@ -52,15 +52,15 @@ export default function WhyInvestDetailClient({
 
   return (
     <>
-      
+      <BreadcrumbsSection title="Our Investment" pageSlug="our-investment" />
       <div ref={containerRef} className="bg-secondary">
         {/* Hero Section */}
         {/* <motion.section
           style={{ opacity, scale }}
           className="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#01292B] to-[#023B3E]"
         > */}
-          {/* Animated Background Pattern */}
-          {/* <div className="absolute inset-0 opacity-10">
+        {/* Animated Background Pattern */}
+        {/* <div className="absolute inset-0 opacity-10">
             {[...Array(20)].map((_, i) => (
               <motion.div
                 key={i}
@@ -119,8 +119,8 @@ export default function WhyInvestDetailClient({
             </motion.div>
           </div> */}
 
-          {/* Scroll Indicator */}
-          {/* <motion.div
+        {/* Scroll Indicator */}
+        {/* <motion.div
             className="absolute bottom-10 left-1/2 -translate-x-1/2"
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -140,7 +140,9 @@ export default function WhyInvestDetailClient({
           {investmentPoints.map((point, index) => (
             <InvestmentPointDetail
               key={point.title}
-              point={point.title ? point : { ...point, title: `Point ${index + 1}` }}
+              point={
+                point.title ? point : { ...point, title: `Point ${index + 1}` }
+              }
               image={images[index] || images[0]}
               index={index}
             />
@@ -177,7 +179,7 @@ function InvestmentPointDetail({
 
   return (
     <section
-      id={point.title.replace(/\s+/g, '-').toLowerCase()}
+      id={point.title.replace(/\s+/g, "-").toLowerCase()}
       ref={ref}
       className="relative first:pt-20 overflow-hidden scroll-mt-20"
     >
@@ -235,9 +237,11 @@ function InvestmentPointDetail({
             <div className="space-y-3">
               <motion.h3
                 initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                }
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="font-cinzel text-3xl md:text-4xl lg:text-5xl font-bold text-[#01292B] relative inline-block"
+                className="font-cinzel text-3xl md:text-4xl lg:text-5xl font-bold text-primary relative inline-block "
               >
                 {point.title}
                 {/* <motion.div
@@ -281,7 +285,9 @@ function InvestmentPointDetail({
                 : { opacity: 0, x: isEven ? 100 : -100 }
             }
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className={`relative ${isEven ? "" : "lg:col-start-1 lg:row-start-1"}`}
+            className={`relative ${
+              isEven ? "" : "lg:col-start-1 lg:row-start-1"
+            }`}
           >
             <motion.div
               style={{ y: imageY, scale: imageScale }}
@@ -294,7 +300,7 @@ function InvestmentPointDetail({
                 fill
                 className="object-cover"
               />
-              
+
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 

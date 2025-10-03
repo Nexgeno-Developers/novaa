@@ -14,7 +14,7 @@ interface BreadcrumbsSectionProps {
 export default function BreadcrumbsSection({
   title = "About Us",
   description = "",
-  backgroundImageUrl = "/images/bg1.webp",
+  backgroundImageUrl = "/images/breadcrumb-bg.png",
   pageSlug,
   ...props
 }: BreadcrumbsSectionProps) {
