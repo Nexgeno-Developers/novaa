@@ -108,9 +108,9 @@ export default function NovaaAdvantageSection({
       case "top-right":
         return `${baseClasses} top-6 right-8 md:top-[-1.8rem] md:right-[1.8rem] lg:top-[-4] lg:right-[-1.5rem] xl:right-[-2.5rem] 2xl:right-15`;
       case "left":
-        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-0.5rem] xl:left-[-0.5rem] 2xl:left-[0rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-0.5rem] xl:left-[-0.5rem] 2xl:left-[0rem] transform -translate-y-1/2 xl:top-[12rem] lg:top-[9rem] 2xl:top-[12rem]`;
       case "right":
-        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] md:top-[8rem] lg:top-[9rem] lg:right-[-0.5rem] xl:right-[-1rem] xl:top-[11rem] 2xl:right-[0rem] transform -translate-y-1/2`;
+        return `${baseClasses} top-1/2 right-4 md:-right-[0.8rem] md:top-[8rem] lg:top-[9rem] lg:right-[-0.5rem] xl:right-[-1rem] xl:top-[12rem] 2xl:right-[0rem] transform -translate-y-1/2`;
       case "bottom-left":
         return `${baseClasses} bottom-8 left-8 md:bottom-[-2rem] md:left-[0.8rem] lg:bottom-[-2rem] xl:bottom-[-2rem]  2xl:bottom-[-3rem] lg:left-[2rem] xl:left-[2rem] 2xl:left-[3.5rem]`;
       case "bottom-right":
