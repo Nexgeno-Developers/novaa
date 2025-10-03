@@ -50,64 +50,66 @@ export default function RegionTabs() {
   }
 
   return (
-    <div className="flex justify-center items-center mb-10 px-4 overflow-x-auto">
-      {activeCategories.map((category) => {
-        const isActive = selectedRegion === category.name;
+    <div className="w-full mb-10 overflow-x-auto scrollbar-hide">
+      <div className="flex justify-start sm:justify-center items-center sm:gap-0 px-4 min-w-max">
+        {activeCategories.map((category) => {
+          const isActive = selectedRegion === category.name;
 
-        // Calculate project count based on data source
-        let projectCount = 0;
-        if (dataSource === "curated" && collection) {
-          projectCount = collection.items[category._id]?.length || 0;
-        } else {
-          projectCount = allProjects.filter(
-            (project) =>
-              project?.category?._id === category._id && project.isActive
-          ).length;
-        }
+          // Calculate project count based on data source
+          let projectCount = 0;
+          if (dataSource === "curated" && collection) {
+            projectCount = collection.items[category._id]?.length || 0;
+          } else {
+            projectCount = allProjects.filter(
+              (project) =>
+                project?.category?._id === category._id && project.isActive
+            ).length;
+          }
 
-        const hasProjects = projectCount > 0;
+          const hasProjects = projectCount > 0;
 
-        return (
-          <Button
-            key={category._id}
-            onClick={() => hasProjects && handleRegionChange(category.name)}
-            variant="ghost"
-            disabled={!hasProjects}
-            className={`font-josefin relative rounded-none px-2 sm:px-10 py-6 sm:py-8 font-medium border-y-2 transition-colors duration-300
-              text-sm sm:text-[22px]
-              ${
-                isActive
-                  ? "border-background text-[#01292B]"
-                  : "border-[#01292B80] border-y-[1.2px] text-[#01292BCC]"
-              }
-              ${
-                !hasProjects
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer hover:text-[#D4AF37]"
-              }`}
-          >
-            <span
-              className={
-                hasProjects
-                  ? "flex items-center gap-2"
-                  : "relative flex items-center"
-              }
+          return (
+            <Button
+              key={category._id}
+              onClick={() => hasProjects && handleRegionChange(category.name)}
+              variant="ghost"
+              disabled={!hasProjects}
+              className={`font-josefin relative rounded-none flex-shrink-0 px-4 sm:px-10 py-5 sm:py-8 font-medium border-y-2 transition-colors duration-300
+                text-xs sm:text-[22px] whitespace-nowrap
+                ${
+                  isActive
+                    ? "border-background text-[#01292B]"
+                    : "border-[#01292B80] border-y-[1.2px] text-[#01292BCC]"
+                }
+                ${
+                  !hasProjects
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer hover:text-[#D4AF37]"
+                }`}
             >
-              {category.name}
-              <Badge
-                variant="secondary"
+              <span
                 className={
                   hasProjects
-                    ? "text-[10px] sm:text-xs absolute top-1 right-2"
-                    : "absolute -top-3 -right-12 text-[8px] sm:text-[9px] px-1.5 py-[0.2px] whitespace-nowrap"
+                    ? "flex items-center gap-1 sm:gap-2"
+                    : "relative flex items-center pr-12 sm:pr-0"
                 }
               >
-                {hasProjects ? projectCount : "Coming Soon"}
-              </Badge>
-            </span>
-          </Button>
-        );
-      })}
+                {category.name}
+                <Badge
+                  variant="secondary"
+                  className={
+                    hasProjects
+                      ? "text-[9px] sm:text-xs sm:absolute top-1 right-2"
+                      : "absolute -top-2 sm:-top-[14px] right-0 sm:-right-12 text-[7px] sm:text-[9px] px-1 sm:px-1.5 py-[0.2px] whitespace-nowrap"
+                  }
+                > 
+                  {hasProjects ? projectCount : "Coming Soon"}
+                </Badge>
+              </span>
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 }

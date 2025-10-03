@@ -415,7 +415,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                   type="submit"
                   className="w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:brightness-110 font-josefin py-3 rounded-md text-background font-semibold shadow-lg transition-all duration-300"
                 >
-                  Submit & Download Brochure
+                  Get Brochure
                 </motion.button>
               </form>
             </motion.div>

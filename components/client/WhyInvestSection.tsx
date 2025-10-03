@@ -125,7 +125,7 @@ export default function WhyInvestSection({
                       },
                     },
                   }}
-                  className="flex items-start gap-6 group"
+                  className="flex items-start gap-6 group pb-4 sm:pb-0"
                 >
                   <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
@@ -154,7 +154,7 @@ export default function WhyInvestSection({
                       />
                       <Link
                         href="/blog"
-                        className="inline-flex items-center gap-1 text-base text-[#D4AF37] hover:text-[#B8851A] font-medium transition-colors group/link absolute bottom-0 right-2 pl-2"
+                        className="inline-flex items-center gap-1 text-base text-[#D4AF37] hover:text-[#B8851A] font-medium transition-colors group/link absolute sm:bottom-0 right-2 pl-2"
                       >
                         Read More
                       </Link>
