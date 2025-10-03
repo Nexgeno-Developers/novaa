@@ -61,7 +61,7 @@ function AnimatedCounter({
   return (
     <span
       ref={counterRef}
-      className="font-josefin font-medium text-xl sm:text-2xl xl:text-3xl"
+      className="font-josefin font-medium text-xl sm:text-3xl xl:text-4xl"
     >
       {count}
       {/* {suffix} */}
@@ -155,7 +155,7 @@ export default function CounterSection({
                         "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                     }}
                   >
-                    <span className="font-cinzel font-bold text-xl lg:text-2xl xl:text-3xl text-[#01292B]">
+                    <span className="font-cinzel font-bold text-xl lg:text-3xl xl:text-4xl text-[#01292B]">
                       <AnimatedCounter target={card.number} />+
                     </span>
                   </div>

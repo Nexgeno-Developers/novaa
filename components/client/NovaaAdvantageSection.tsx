@@ -104,9 +104,9 @@ export default function NovaaAdvantageSection({
     const baseClasses = "absolute flex items-center";
     switch (position) {
       case "top-left":
-        return `${baseClasses} top-6 left-8 md:top-[-1.8rem] md:left-[1.8rem] lg:top-[-4] lg:left-10 xl:left-10 2xl:left-15`;
+        return `${baseClasses} top-6 left-8 md:top-[-1.8rem] md:left-[1.8rem] lg:top-[-4] lg:left-13 xl:left-10 2xl:left-15`;
       case "top-right":
-        return `${baseClasses} top-6 right-8 md:top-[-1.8rem] md:right-[1.8rem] lg:top-[-4] lg:right-10 xl:right-10 2xl:right-15`;
+        return `${baseClasses} top-6 right-8 md:top-[-1.8rem] md:right-[1.8rem] lg:top-[-4] lg:right-[-1.5rem] xl:right-[-2.5rem] 2xl:right-15`;
       case "left":
         return `${baseClasses} top-1/2 left-4 md:-left-[0.8rem] lg:left-[-0.5rem] xl:left-[-0.5rem] 2xl:left-[0rem] transform -translate-y-1/2`;
       case "right":
@@ -279,7 +279,11 @@ export default function NovaaAdvantageSection({
                     layout.position
                   )} hidden md:flex ${
                     index % 2 === 1 ? "gap-4" : "gap-0"
-                  } font-josefin max-w-[220px] lg:max-w-[320px] xl:max-w-[400px] 2xl:max-w-[520px] space-x-2`}
+                  } font-josefin max-w-[220px] lg:max-w-[320px] ${
+                    index === 1
+                      ? "xl:max-w-[480px] lg:max-w-[400px]"
+                      : "xl:max-w-[400px]"
+                  } 2xl:max-w-[520px] space-x-2`}
                 >
                   <div className="font-josefin">
                     <h3 className="text-sm lg:text-base xl:text-xl font-normal text-background max-w-full">
@@ -295,7 +299,7 @@ export default function NovaaAdvantageSection({
                         "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
                     }}
                     className="hidden flex-shrink-0 w-10 h-10 lg:w-16 lg:h-16 xl:w-20 xl:h-20 2xl:w-24 2xl:h-24
-             bg-[#C3912F] rounded-full md:flex items-center justify-center shadow-lg relative"
+ bg-[#C3912F] rounded-full md:flex items-center justify-center shadow-lg relative"
                   >
                     <div className="w-[50%] h-[50%] relative">
                       <Image

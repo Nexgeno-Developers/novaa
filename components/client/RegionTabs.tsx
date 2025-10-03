@@ -65,32 +65,45 @@ export default function RegionTabs() {
           ).length;
         }
 
+        const hasProjects = projectCount > 0;
+
         return (
           <Button
             key={category._id}
-            onClick={() => handleRegionChange(category.name)}
+            onClick={() => hasProjects && handleRegionChange(category.name)}
             variant="ghost"
-            disabled={projectCount === 0}
+            disabled={!hasProjects}
             className={`font-josefin relative rounded-none px-2 sm:px-10 py-6 sm:py-8 font-medium border-y-2 transition-colors duration-300
-              ${projectCount === 0 ? "text-sm" : "text-sm sm:text-[22px]"}
+              text-sm sm:text-[22px]
               ${
                 isActive
                   ? "border-background text-[#01292B]"
                   : "border-[#01292B80] border-y-[1.2px] text-[#01292BCC]"
               }
               ${
-                projectCount === 0
+                !hasProjects
                   ? "opacity-50 cursor-not-allowed"
                   : "cursor-pointer hover:text-[#D4AF37]"
               }`}
           >
-            <span className="flex items-center gap-2">
-              {projectCount === 0 ? "Coming Soon" : category.name}
-              {projectCount > 0 && (
-                <Badge variant="secondary" className="text-[10px] sm:text-xs">
-                  {projectCount}
-                </Badge>
-              )}
+            <span
+              className={
+                hasProjects
+                  ? "flex items-center gap-2"
+                  : "relative flex items-center"
+              }
+            >
+              {category.name}
+              <Badge
+                variant="secondary"
+                className={
+                  hasProjects
+                    ? "text-[10px] sm:text-xs absolute top-1 right-2"
+                    : "absolute -top-3 -right-12 text-[8px] sm:text-[9px] px-1.5 py-[0.2px] whitespace-nowrap"
+                }
+              >
+                {hasProjects ? projectCount : "Coming Soon"}
+              </Badge>
             </span>
           </Button>
         );
