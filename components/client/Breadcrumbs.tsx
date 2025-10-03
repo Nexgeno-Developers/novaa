@@ -32,14 +32,17 @@ export default function Breadcrumbs({
   backgroundImageUrl,
   pageSlug,
 }: BreadcrumbsProps) {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const pageName = formatSlug(pageSlug);
   return (
     <section className="relative w-full h-[230px] sm:h-[530px] mt-20 sm:mt-0">
       {/* Dynamic background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
+        style={{
+          backgroundImage: `url('${backgroundImageUrl}')`,
+          background: `linear-gradient(183.79deg, rgba(1, 41, 43, 0) 3.21%, #01292B 91.78%)`,
+        }}
       />
       {/* Optional: Add a semi-transparent overlay to ensure text is readable */}
       {/* <div className="absolute inset-0 bg-black bg-opacity-30"></div> */}
@@ -53,7 +56,9 @@ export default function Breadcrumbs({
         </h1>
 
         {/* Dynamic Description (rendered from HTML) */}
-        <div className="mt-4 text-sm sm:text-lg max-w-2x">{parse(description)}</div>
+        <div className="mt-4 text-sm sm:text-lg max-w-2x">
+          {parse(description)}
+        </div>
 
         <div className="absolute bottom-4 mb-7 sm:mt-4 flex items-center justify-center pb-2 px-4 sm:px-6 py-2 sm:py-4 rounded-[20px] tracking-[0.5%] bg-[#CDB04E1A] font-josefin capitalize">
           <Link href="/" onClick={() => dispatch(setNavigationLoading(true))}>
