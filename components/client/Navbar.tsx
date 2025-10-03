@@ -11,6 +11,7 @@ import { setNavigationLoading } from "@/redux/slices/loadingSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 import { fa } from "zod/v4/locales";
+import { toast } from "sonner";
 
 // Define the component's props types
 interface SubmenuItem {
@@ -53,7 +54,6 @@ export default function Navbar({ data }: NavbarProps) {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     phone: "",
     description: "",
@@ -73,7 +73,9 @@ export default function Navbar({ data }: NavbarProps) {
   // Rest of items (excluding last one)
   const mainNavItems = activeItems.slice(0, -1);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -88,6 +90,7 @@ export default function Navbar({ data }: NavbarProps) {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Download brochure (replace with your actual brochure URL)
+    toast.success("Brochure download starting...");
     const link = document.createElement("a");
     link.href = "/path-to-your-brochure.pdf"; // Update with your actual brochure path
     link.download = "company-brochure.pdf";
@@ -96,10 +99,9 @@ export default function Navbar({ data }: NavbarProps) {
     document.body.removeChild(link);
 
     // Reset form and close modal
-    setFormData({ name: "", email: "", phone: "", description: "" });
+    setFormData({ email: "", phone: "", description: "" });
     setIsSubmitting(false);
     setIsBrochureModalOpen(false);
-    router.replace("/thanks");
   };
 
   return (
@@ -406,7 +408,7 @@ export default function Navbar({ data }: NavbarProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border border-[#F0DE9C]/20 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+              className="bg-gradient-to-br from-background to-[#0a0a0a] border border-[#F0DE9C]/20 rounded-2xl p-8 max-w-md w-full shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -424,7 +426,7 @@ export default function Navbar({ data }: NavbarProps) {
 
               {/* Form */}
               <form onSubmit={handleBrochureSubmit} className="space-y-4">
-                <div>
+                {/* <div>
                   <label
                     htmlFor="name"
                     className="block text-sm font-medium text-white/80 mb-2"
@@ -441,20 +443,19 @@ export default function Navbar({ data }: NavbarProps) {
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
                     placeholder="Enter your name"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label
                     htmlFor="email"
                     className="block text-sm font-medium text-white/80 mb-2"
                   >
-                    Email Address *
+                    Email Address (optional)
                   </label>
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    required
                     value={formData.email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
@@ -486,14 +487,14 @@ export default function Navbar({ data }: NavbarProps) {
                     htmlFor="description"
                     className="block text-sm font-medium text-white/80 mb-2"
                   >
-                    Description
+                    Description (optional)
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     id="description"
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
+                    rows={3}
                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
                     placeholder="Description (optional)"
                   />
