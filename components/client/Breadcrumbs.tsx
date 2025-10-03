@@ -40,8 +40,9 @@ export default function Breadcrumbs({
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('${backgroundImageUrl}')`,
-          background: `linear-gradient(183.79deg, rgba(1, 41, 43, 0) 3.21%, #01292B 91.78%)`,
+          backgroundImage: `linear-gradient(183.79deg, rgba(1, 41, 43, 0) 3.21%, #01292B 91.78%), url('${backgroundImageUrl}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
       {/* Optional: Add a semi-transparent overlay to ensure text is readable */}
