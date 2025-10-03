@@ -58,7 +58,7 @@ export default function Footer({ data }: FooterProps) {
     linkedin: "/footer/linkedin.png",
     snapchat: "/footer/snapchat.png",
     tiktok: "/footer/tiktok.png",
-    youtube: "/footer/youtube.png",
+    youtube: "/footer/youtube.svg",
     telegram: "/footer/telegram.png",
     pinterest: "/footer/pinterest.png",
     reddit: "/footer/reddit.png",
