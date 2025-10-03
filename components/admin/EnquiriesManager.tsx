@@ -392,7 +392,7 @@ const EnquiriesManager = () => {
                   <TableRow>
                     <TableHead>Name & Email</TableHead>
                     <TableHead>Contact Info</TableHead>
-                    <TableHead>Investment Location</TableHead>
+                    <TableHead>Location</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Priority</TableHead>
                     <TableHead>Date</TableHead>
@@ -421,11 +421,11 @@ const EnquiriesManager = () => {
                           )}
                           <div className="text-sm flex items-center gap-1">
                             <MapPin className="w-3 h-3" />
-                            {enquiry.country}
+                            {enquiry.location}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{enquiry.investmentLocation}</TableCell>
+                      <TableCell>{enquiry.location}</TableCell>
                       <TableCell>{getStatusBadge(enquiry.status)}</TableCell>
                       <TableCell>
                         {getPriorityBadge(enquiry.priority)}
@@ -535,17 +535,17 @@ const EnquiriesManager = () => {
                 <div>
                   <Label className="text-sm font-medium">Country</Label>
                   <p className="text-sm text-muted-foreground">
-                    {selectedEnquiry.country}
+                    {selectedEnquiry.location}
                   </p>
                 </div>
               </div>
 
               <div>
                 <Label className="text-sm font-medium">
-                  Investment Location
+                  Location
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  {selectedEnquiry.investmentLocation}
+                  {selectedEnquiry.location}
                 </p>
               </div>
 

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Enquiry from "@/models/Enquiry";
-import { email } from "zod";
 
 // GET - Fetch all enquiries
 export async function GET(request: NextRequest) {
@@ -91,14 +90,41 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { fullName, emailAddress, phoneNo, location, message } = body;
 
-    // console.log("Received enquiry data:", body);
-
-    // Validation
+    // Validation - phoneNo and location are mandatory
     if (!fullName || !phoneNo || !location) {
       return NextResponse.json(
-        { success: false, message: "Required fields are missing" },
+        { 
+          success: false, 
+          message: "Full name, phone number, and location are required" 
+        },
         { status: 400 }
       );
+    }
+
+    // Validate phone number format
+    const phoneRegex = /^[+]?[\d\s\-\(\)]+$/;
+    if (!phoneRegex.test(phoneNo)) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: "Invalid phone number format" 
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate email if provided
+    if (emailAddress && emailAddress.trim() !== "") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailAddress)) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            message: "Invalid email address format" 
+          },
+          { status: 400 }
+        );
+      }
     }
 
     // Check if phone number already exists
@@ -113,20 +139,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // console.log("Creating new enquiry...");
-
     // Create new enquiry
-    const enquiry = await Enquiry.create({
+    const enquiryData: any = {
       fullName,
-      emailAddress,
       phoneNo,
       location,
-      message,
       status: "new",
       priority: "medium",
-    });
+    };
 
-    // console.log("Enquiry created successfully:", enquiry);
+    // Only add email if provided
+    if (emailAddress && emailAddress.trim() !== "") {
+      enquiryData.emailAddress = emailAddress;
+    }
+
+    // Only add message if provided
+    if (message && message.trim() !== "") {
+      enquiryData.message = message;
+    }
+
+    const enquiry = await Enquiry.create(enquiryData);
 
     return NextResponse.json(
       {
@@ -137,7 +169,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    // Log the full error details
     console.error("Error creating enquiry:", error);
     console.error("Error name:", error.name);
     console.error("Error message:", error.message);
@@ -149,7 +180,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         message: "Failed to submit enquiry",
-        error: error.message, // Include error message in response during development
+        error: error.message,
       },
       { status: 500 }
     );

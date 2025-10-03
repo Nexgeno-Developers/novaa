@@ -4,9 +4,8 @@ export interface Enquiry {
   _id: string;
   fullName: string;
   emailAddress?: string;
-  phoneNo?: string;
-  country: string;
-  investmentLocation: string;
+  phoneNo: string;
+  location: string;
   message?: string;
   status: 'new' | 'contacted' | 'interested' | 'closed';
   priority: 'low' | 'medium' | 'high';
@@ -18,9 +17,8 @@ export interface Enquiry {
 export interface EnquiryFormData {
   fullName: string;
   emailAddress?: string;
-  phoneNo?: string;
-  country: string;
-  investmentLocation: string;
+  phoneNo: string;
+  location: string;
   message?: string;
 }
 
