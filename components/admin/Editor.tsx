@@ -2,35 +2,35 @@
 import { useEffect, useRef, useId } from "react";
 
 // HugeRTE and required modules (bundled approach)
-import hugerte from 'hugerte';
-import 'hugerte/models/dom';
-import 'hugerte/icons/default';
-import 'hugerte/themes/silver';
-import 'hugerte/skins/ui/oxide/skin.js';
-import 'hugerte/skins/ui/oxide/content.js';
-import 'hugerte/skins/content/default/content.js';
+import hugerte from "hugerte";
+import "hugerte/models/dom";
+import "hugerte/icons/default";
+import "hugerte/themes/silver";
+import "hugerte/skins/ui/oxide/skin.js";
+import "hugerte/skins/ui/oxide/content.js";
+import "hugerte/skins/content/default/content.js";
 
 // Import only the plugins you need
-import 'hugerte/plugins/advlist';
-import 'hugerte/plugins/autolink';
-import 'hugerte/plugins/lists';
-import 'hugerte/plugins/link';
-import 'hugerte/plugins/image';
-import 'hugerte/plugins/charmap';
-import 'hugerte/plugins/preview';
-import 'hugerte/plugins/anchor';
-import 'hugerte/plugins/searchreplace';
-import 'hugerte/plugins/visualblocks';
-import 'hugerte/plugins/code';
-import 'hugerte/plugins/fullscreen';
-import 'hugerte/plugins/insertdatetime';
-import 'hugerte/plugins/media';
-import 'hugerte/plugins/table';
-import 'hugerte/plugins/help';
-import 'hugerte/plugins/wordcount';
+import "hugerte/plugins/advlist";
+import "hugerte/plugins/autolink";
+import "hugerte/plugins/lists";
+import "hugerte/plugins/link";
+import "hugerte/plugins/image";
+import "hugerte/plugins/charmap";
+import "hugerte/plugins/preview";
+import "hugerte/plugins/anchor";
+import "hugerte/plugins/searchreplace";
+import "hugerte/plugins/visualblocks";
+import "hugerte/plugins/code";
+import "hugerte/plugins/fullscreen";
+import "hugerte/plugins/insertdatetime";
+import "hugerte/plugins/media";
+import "hugerte/plugins/table";
+import "hugerte/plugins/help";
+import "hugerte/plugins/wordcount";
 
 // For help plugin localization
-import 'hugerte/plugins/help/js/i18n/keynav/en.js';
+import "hugerte/plugins/help/js/i18n/keynav/en.js";
 
 interface RichTextEditorProps {
   value: string;
@@ -60,14 +60,14 @@ export default function RichTextEditor({
 
       try {
         let isInitialLoad = true;
-        
+
         await hugerte.init({
           selector: `#${editorId}`,
           height,
           // Use bundled skins
-          skin_url: 'default',
-          content_css: 'default',
-          plugins: 
+          skin_url: "default",
+          content_css: "default",
+          plugins:
             "advlist autolink lists link image charmap preview anchor " +
             "searchreplace visualblocks code fullscreen insertdatetime " +
             "media table help wordcount",
@@ -81,10 +81,10 @@ export default function RichTextEditor({
           readonly: disabled,
           setup: (editor: any) => {
             editorInstanceRef.current = editor;
-            
+
             // Set initial content
-            editor.on('init', () => {
-              editor.setContent(value || '');
+            editor.on("init", () => {
+              editor.setContent(value || "");
               // Allow changes to be tracked after initial load
               setTimeout(() => {
                 isInitialLoad = false;
@@ -92,7 +92,7 @@ export default function RichTextEditor({
             });
 
             // Handle content changes - but ignore during initial load
-            editor.on('change keyup undo redo', () => {
+            editor.on("change keyup undo redo", () => {
               if (!isInitialLoad) {
                 const content = editor.getContent();
                 onEditorChange(content);
@@ -100,7 +100,7 @@ export default function RichTextEditor({
             });
 
             // Handle programmatic content changes (like SetContent) separately
-            editor.on('SetContent', (e: any) => {
+            editor.on("SetContent", (e: any) => {
               // Only trigger onChange for SetContent if it's not during initial load
               // and not a programmatic update from parent component
               if (!isInitialLoad && !editor._programmingUpdate) {
@@ -111,7 +111,7 @@ export default function RichTextEditor({
           },
         });
       } catch (error) {
-        console.error('Failed to initialize HugeRTE:', error);
+        console.error("Failed to initialize HugeRTE:", error);
       }
     };
 
@@ -124,20 +124,29 @@ export default function RichTextEditor({
           editorInstanceRef.current.remove();
           editorInstanceRef.current = null;
         } catch (error) {
-          console.error('Error removing editor:', error);
+          console.error("Error removing editor:", error);
         }
       }
     };
-  }, [editorId, height, disabled]); // Include height and disabled in deps
+  }, [editorId, height, disabled, value]); // Include value in deps to re-initialize when content changes
 
   // Update content when value prop changes
   useEffect(() => {
     if (editorInstanceRef.current && editorInstanceRef.current.initialized) {
       const currentContent = editorInstanceRef.current.getContent();
-      if (currentContent !== value) {
+      const hasValue = !!value && value.trim().length > 0;
+      const hasCurrentContent =
+        !!currentContent && currentContent.trim().length > 0;
+
+      // Special case: Editor was initialized with empty content but now we have content
+      const shouldUpdateContent =
+        currentContent !== value &&
+        (!hasCurrentContent && hasValue ? true : hasValue);
+
+      if (shouldUpdateContent) {
         // Mark this as a programmatic update to prevent triggering onChange
         editorInstanceRef.current._programmingUpdate = true;
-        editorInstanceRef.current.setContent(value || '');
+        editorInstanceRef.current.setContent(value || "");
         // Clear the flag after a short delay
         setTimeout(() => {
           if (editorInstanceRef.current) {
@@ -151,7 +160,7 @@ export default function RichTextEditor({
   // Handle disabled state changes
   useEffect(() => {
     if (editorInstanceRef.current && editorInstanceRef.current.initialized) {
-      editorInstanceRef.current.setMode(disabled ? 'readonly' : 'design');
+      editorInstanceRef.current.setMode(disabled ? "readonly" : "design");
     }
   }, [disabled]);
 
@@ -161,7 +170,7 @@ export default function RichTextEditor({
         ref={editorRef}
         id={editorId}
         defaultValue={value}
-        style={{ width: '100%', height: `${height}px` }}
+        style={{ width: "100%", height: `${height}px` }}
         disabled={disabled}
       />
     </div>

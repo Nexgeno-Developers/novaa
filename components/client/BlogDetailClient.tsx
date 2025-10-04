@@ -57,13 +57,16 @@ const sidebarVariants: Variants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.8 } },
 };
 
-export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClientProps) {
-  const router = useNavigationRouter()
+export default function BlogDetailClient({
+  blog,
+  relatedBlogs,
+}: BlogDetailClientProps) {
+  const router = useNavigationRouter();
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -85,7 +88,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
         await navigator.clipboard.writeText(window.location.href);
         // You could show a toast notification here
       } catch (error) {
-        console.error('Failed to copy URL');
+        console.error("Failed to copy URL");
       }
     }
   };
@@ -122,18 +125,22 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                 {blog.tags && blog.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {blog.tags.slice(0, 3).map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {tag}
                       </Badge>
                     ))}
                   </div>
                 )}
               </div>
-              
+
               <h1 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl leading-tight text-[#01292B] font-bold mb-6">
                 {blog.title}
               </h1>
-              
+
               <div className="flex flex-wrap items-center gap-6 text-sm text-[#303030] mb-6">
                 <div className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-full bg-[#01292B] flex items-center justify-center">
@@ -165,7 +172,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                   Share
                 </Button>
               </div>
-              
+
               <p className="font-josefin text-lg text-[#303030] leading-relaxed">
                 {blog.description}
               </p>
@@ -174,35 +181,44 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
             {/* Blog Content */}
             <motion.div className="w-full " variants={itemVariants}>
               <div className="max-w-none prose prose-lg prose-slate">
-                <div 
+                <div
                   className="blog-content"
                   dangerouslySetInnerHTML={{ __html: blog.content }}
                   style={{
-                    color: '#303030',
-                    lineHeight: '1.7',
+                    color: "#303030",
+                    lineHeight: "1.7",
                   }}
                 />
               </div>
             </motion.div>
 
             {/* Social Share & Tags */}
-            <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-gray-200">
+            <motion.div
+              variants={itemVariants}
+              className="mt-12 pt-8 border-t border-gray-200"
+            >
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <h3 className="font-semibold text-[#01292B] mb-2">Tags:</h3>
                   <div className="flex flex-wrap gap-2">
                     {blog.tags && blog.tags.length > 0 ? (
                       blog.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-sm text-background bg-primary">
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="text-sm text-background bg-primary"
+                        >
                           #{tag}
                         </Badge>
                       ))
                     ) : (
-                      <span className="text-muted-foreground text-sm">No tags</span>
+                      <span className="text-muted-foreground text-sm">
+                        No tags
+                      </span>
                     )}
                   </div>
                 </div>
-                
+
                 <Button
                   onClick={handleShare}
                   className="bg-[#CDB04E] text-[#01292B] hover:bg-[#CDB04E]/90"
@@ -273,10 +289,12 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                                   height={12}
                                 />
                                 <span className="text-[11px] text-[#CFCFCF]">
-                                  {new Date(relatedBlog.createdAt).toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: 'numeric'
+                                  {new Date(
+                                    relatedBlog.createdAt
+                                  ).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
                                   })}
                                 </span>
                               </div>
@@ -286,24 +304,30 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                       </motion.article>
                     ))
                   ) : (
-                    <motion.div variants={itemVariants} className="text-center py-8">
+                    <motion.div
+                      variants={itemVariants}
+                      className="text-center py-8"
+                    >
                       <p className="text-[#CFCFCF] text-sm font-josefin">
                         No other blogs in this category yet.
                       </p>
                     </motion.div>
                   )}
                 </div>
-                
+
                 {relatedBlogs.length > 0 && (
-                  <motion.div variants={itemVariants} className="mt-6 pt-4 border-t border-[#CDB04E]/30">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => router.push('/blog')}
-                        className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B] cursor-pointer font-josefin"
-                      >
-                        View All Blogs
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                  <motion.div
+                    variants={itemVariants}
+                    className="mt-6 pt-4 border-t border-[#CDB04E]/30"
+                  >
+                    <Button
+                      variant="outline"
+                      onClick={() => router.push("/blog")}
+                      className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B] cursor-pointer font-josefin"
+                    >
+                      View All Blogs
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </motion.div>
                 )}
               </div>
@@ -319,46 +343,54 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
         .blog-content h4,
         .blog-content h5,
         .blog-content h6 {
-          font-family: 'Cinzel', serif;
-          color: #01292B;
+          font-family: "Cinzel", serif;
+          color: #01292b;
           font-weight: 600;
           margin-top: 2rem;
           margin-bottom: 1rem;
         }
-        
-        .blog-content h1 { font-size: 2.5rem; }
-        .blog-content h2 { font-size: 2rem; }
-        .blog-content h3 { font-size: 1.75rem; }
-        .blog-content h4 { font-size: 1.5rem; }
-        
+
+        .blog-content h1 {
+          font-size: 2.5rem;
+        }
+        .blog-content h2 {
+          font-size: 2rem;
+        }
+        .blog-content h3 {
+          font-size: 1.75rem;
+        }
+        .blog-content h4 {
+          font-size: 1.5rem;
+        }
+
         .blog-content p {
-          font-family: 'Josefin Sans', sans-serif;
+          font-family: "Josefin Sans", sans-serif;
           margin-bottom: 1.5rem;
           line-height: 1.8;
         }
-        
+
         .blog-content ul,
         .blog-content ol {
           margin-bottom: 1.5rem;
           padding-left: 1.5rem;
         }
-        
+
         .blog-content li {
           margin-bottom: 0.5rem;
           line-height: 1.7;
         }
-        
+
         .blog-content a {
-          color: #CDB04E;
+          color: #cdb04e;
           text-decoration: underline;
         }
-        
+
         .blog-content a:hover {
-          color: #01292B;
+          color: #01292b;
         }
-        
+
         .blog-content blockquote {
-          border-left: 4px solid #CDB04E;
+          border-left: 4px solid #cdb04e;
           padding-left: 1.5rem;
           margin: 2rem 0;
           font-style: italic;
@@ -366,22 +398,22 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
           padding: 1rem 1.5rem;
           border-radius: 0.5rem;
         }
-        
+
         .blog-content img {
           border-radius: 0.75rem;
           margin: 2rem 0;
           max-width: 100%;
           height: auto;
         }
-        
+
         .blog-content code {
           background-color: #f3f4f6;
           padding: 0.25rem 0.5rem;
           border-radius: 0.25rem;
-          font-family: 'Courier New', monospace;
+          font-family: "Courier New", monospace;
           font-size: 0.875rem;
         }
-        
+
         .blog-content pre {
           background-color: #1f2937;
           color: #f9fafb;
@@ -390,11 +422,179 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
           overflow-x: auto;
           margin: 1.5rem 0;
         }
-        
+
         .blog-content pre code {
           background: none;
           padding: 0;
           color: inherit;
+        }
+
+        /* Table Styles */
+        .blog-content table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 2rem 0;
+          background-color: white;
+          border-radius: 0.75rem;
+          overflow: hidden;
+          border: 2px solid #cdb04e;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .blog-content th {
+          background-color: #cdb04e;
+          color: white;
+          font-weight: 600;
+          padding: 1rem;
+          text-align: left;
+          font-family: "Cinzel", serif;
+          font-size: 0.875rem;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .blog-content td {
+          padding: 1rem;
+          border-right: 1px solid #d1d5db;
+          border-bottom: 1px solid #d1d5db;
+          border-left: 1px solid #d1d5db;
+          color: #303030;
+          font-family: "Josefin Sans", sans-serif;
+          line-height: 1.6;
+        }
+
+        .blog-content tr:nth-child(even) {
+          background-color: #f8fafc;
+        }
+
+        .blog-content tr:hover {
+          background-color: rgba(205, 176, 78, 0.05);
+        }
+
+        .blog-content tr:last-child td {
+          border-bottom: 1px solid #d1d5db;
+        }
+
+        .blog-content tr td:first-child {
+          border-left: 1px solid #d1d5db;
+        }
+
+        .blog-content tr td:last-child {
+          border-right: 1px solid #d1d5db;
+        }
+
+        /* Enhanced List Styles */
+        .blog-content ul {
+          list-style-type: none;
+          padding-left: 0;
+          margin: 1.5rem 0;
+        }
+
+        .blog-content ul li {
+          position: relative;
+          padding-left: 2rem;
+          margin-bottom: 0.75rem;
+          line-height: 1.7;
+          color: #303030;
+        }
+
+        .blog-content ul li::before {
+          content: "▸";
+          color: #cdb04e;
+          font-weight: bold;
+          position: absolute;
+          left: 0;
+          top: 0;
+          font-size: 1rem;
+        }
+
+        .blog-content ol {
+          counter-reset: custom-counter;
+          padding-left: 0;
+          margin: 1.5rem 0;
+        }
+
+        .blog-content ol li {
+          counter-increment: custom-counter;
+          position: relative;
+          padding-left: 3rem;
+          margin-bottom: 0.75rem;
+          line-height: 1.7;
+          color: #303030;
+        }
+
+        .blog-content ol li::before {
+          content: counter(custom-counter) ".";
+          color: #cdb04e;
+          font-weight: bold;
+          position: absolute;
+          left: 0;
+          top: 0;
+          font-family: "Cinzel", serif;
+          font-size: 0.875rem;
+        }
+
+        /* Nested Lists */
+        .blog-content ul ul,
+        .blog-content ol ol,
+        .blog-content ul ol,
+        .blog-content ol ul {
+          margin-top: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .blog-content ul ul li::before {
+          content: "◦";
+          font-size: 0.875rem;
+        }
+
+        .blog-content ol ol li::before {
+          content: counter(custom-counter, lower-alpha) ")";
+          font-size: 0.75rem;
+        }
+
+        /* Responsive Table Styles */
+        @media (max-width: 768px) {
+          .blog-content table {
+            font-size: 0.875rem;
+            border-radius: 0.5rem;
+          }
+
+          .blog-content th,
+          .blog-content td {
+            padding: 0.75rem 0.5rem;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .blog-content table {
+            font-size: 0.8rem;
+          }
+
+          .blog-content th,
+          .blog-content td {
+            padding: 0.5rem 0.25rem;
+          }
+        }
+
+        /* Additional Enhanced Styles */
+        .blog-content strong {
+          font-weight: 600;
+          color: #01292b;
+        }
+
+        .blog-content em {
+          font-style: italic;
+          color: #cdb04e;
+        }
+
+        .blog-content hr {
+          border: none;
+          height: 2px;
+          background: linear-gradient(90deg, #cdb04e, transparent);
+          margin: 3rem 0;
         }
       `}</style>
     </section>

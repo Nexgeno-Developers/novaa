@@ -131,7 +131,18 @@ export default function InvestorInsightsManager({
       });
 
       if (sectionData.testimonials) {
-        setLocalTestimonials(sectionData.testimonials);
+        // Ensure each testimonial has a proper _id
+        const testimonialsWithIds = sectionData.testimonials.map(
+          (testimonial: any, index: number) => ({
+            ...testimonial,
+            _id:
+              testimonial._id ||
+              `temp-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}-${index}`,
+          })
+        );
+        setLocalTestimonials(testimonialsWithIds);
       }
 
       initialDataSetRef.current = true;
@@ -141,7 +152,18 @@ export default function InvestorInsightsManager({
         setContentForm(data?.content);
       }
       if (data?.testimonials) {
-        setLocalTestimonials(data.testimonials);
+        // Ensure each testimonial has a proper _id
+        const testimonialsWithIds = data.testimonials.map(
+          (testimonial: any, index: number) => ({
+            ...testimonial,
+            _id:
+              testimonial._id ||
+              `temp-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 9)}-${index}`,
+          })
+        );
+        setLocalTestimonials(testimonialsWithIds);
       }
       if (data || !loading) {
         initialDataSetRef.current = true;
@@ -242,17 +264,23 @@ export default function InvestorInsightsManager({
 
     try {
       if (editingTestimonial?._id) {
+        // Check if this is a MongoDB _id (24 character hex string) or temporary ID
+        const isMongoId = /^[0-9a-fA-F]{24}$/.test(editingTestimonial._id);
+
         const updatedTestimonials = localTestimonials.map((t) =>
           t._id === editingTestimonial._id ? { ...t, ...testimonialForm } : t
         );
         updateTestimonials(updatedTestimonials);
 
-        await dispatch(
-          updateTestimonial({
-            id: editingTestimonial._id,
-            testimonial: testimonialForm,
-          })
-        ).unwrap();
+        // Only call API if it's a real MongoDB ID, otherwise just update locally
+        if (isMongoId) {
+          await dispatch(
+            updateTestimonial({
+              id: editingTestimonial._id,
+              testimonial: testimonialForm,
+            })
+          ).unwrap();
+        }
 
         // Trigger onChange to update the section and mark for global save
         const combinedData = {
@@ -390,7 +418,7 @@ export default function InvestorInsightsManager({
   ]);
 
   const handleDragEnd = useCallback(
-    async (result: DropResult) => {
+    (result: DropResult) => {
       if (!result.destination) return;
 
       const items = Array.from(localTestimonials);
@@ -404,25 +432,18 @@ export default function InvestorInsightsManager({
 
       updateTestimonials(updatedTestimonials);
 
-      try {
-        await dispatch(reorderTestimonials(updatedTestimonials)).unwrap();
+      // Trigger onChange to update the section and mark for global save
+      const combinedData = {
+        title: contentForm.title,
+        subtitle: contentForm.subtitle,
+        description: contentForm.description,
+        testimonials: updatedTestimonials,
+      };
+      onChange({ content: combinedData });
 
-        // Trigger onChange to update the section and mark for global save
-        const combinedData = {
-          title: contentForm.title,
-          subtitle: contentForm.subtitle,
-          description: contentForm.description,
-          testimonials: updatedTestimonials,
-        };
-        onChange({ content: combinedData });
-
-        toast.success("Testimonials reordered successfully!");
-      } catch (error) {
-        console.error("Failed to reorder testimonials:", error);
-        toast.error("Failed to reorder testimonials");
-      }
+      toast.success("Testimonials reordered successfully!");
     },
-    [localTestimonials, updateTestimonials, dispatch, onChange, contentForm]
+    [localTestimonials, updateTestimonials, onChange, contentForm]
   );
 
   useEffect(() => {
@@ -548,8 +569,8 @@ export default function InvestorInsightsManager({
                         .sort((a, b) => a.order - b.order)
                         .map((testimonial, index) => (
                           <Draggable
-                            key={testimonial._id}
-                            draggableId={testimonial._id as string}
+                            key={testimonial._id || `temp-${index}`}
+                            draggableId={testimonial._id || `temp-${index}`}
                             index={index}
                           >
                             {(provided, snapshot) => (
