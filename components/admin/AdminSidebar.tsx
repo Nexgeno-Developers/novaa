@@ -6,13 +6,10 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   FileText,
-  Settings,
   Image,
   ChevronDown,
   ChevronRight,
   MessageSquare,
-  ChevronLeft,
-  ChevronRight as ChevronRightIcon,
   Tag,
   BookOpen,
   Briefcase,
@@ -22,6 +19,9 @@ import {
   Navigation,
   Columns3,
   BookCopy,
+  Sparkles,
+  X,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -58,33 +58,33 @@ const navigation: NavigationItem[] = [
     href: "#",
     icon: PanelsTopLeft,
     children: [
-      { name: "Navbar Section", href: "/admin/navbar", icon: Navigation }, 
-      { name: "Footer Section", href: "/admin/footer", icon: Columns3 },
+      { name: "Navigation", href: "/admin/navbar", icon: Navigation },
+      { name: "Footer", href: "/admin/footer", icon: Columns3 },
     ],
   },
   {
-    name: "Blog Management",
+    name: "Blog",
     href: "#",
     icon: BookCopy,
     children: [
-      { name: "Blog Categories", href: "/admin/blog-categories", icon: Tag },
-      { name: "Blogs", href: "/admin/blogs", icon: FileText },
+      { name: "Categories", href: "/admin/blog-categories", icon: Tag },
+      { name: "Our Blogs", href: "/admin/blogs", icon: FileText },
     ],
   },
   {
-    name: "Project Management",
+    name: "Projects",
     href: "#",
     icon: Briefcase,
     children: [
       {
-        name: "Project Categories",
+        name: "Categories",
         href: "/admin/categories",
         icon: FolderTree,
       },
-      { name: "Projects", href: "/admin/projects", icon: LayoutPanelLeft },
+      { name: "Our Projects", href: "/admin/projects", icon: LayoutPanelLeft },
     ],
   },
-  { name: "Media Library", href: "/admin/media", icon: Image },
+  { name: "Media", href: "/admin/media", icon: Image },
   {
     name: "Enquiries",
     href: "/admin/enquiries",
@@ -133,34 +133,49 @@ export default function AdminSidebar({
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedItems.has(item.name);
     const itemIsActive = item.href !== "#" && isActive(item.href);
-    
+
     // Check if any child is active for parent highlighting
-    const hasActiveChild = hasChildren && item.children?.some(child => isActive(child.href));
+    const hasActiveChild =
+      hasChildren &&
+      !isCollapsed &&
+      item.children?.some((child) => isActive(child.href));
 
     if (isCollapsed && hasChildren) {
       return (
         <TooltipProvider>
-          <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={200}>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                className={`admin-theme w-full justify-center p-0 h-10 sm:h-12 mb-1 rounded-xl transition-all duration-200 group ${
+                className={`w-full justify-center p-0 h-12 mb-2 rounded-xl transition-all duration-300 group relative ${
                   hasActiveChild
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:text-white shadow-lg shadow-blue-500/25"
-                    : "text-slate-600 hover:text-background hover:bg-primary hover:shadow-md hover:shadow-slate-200/50 backdrop-blur-sm"
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-50 hover:shadow-sm"
                 }`}
               >
-                <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 ${hasActiveChild ? '' : 'group-hover:scale-110'}`} />
+                <item.icon
+                  className={`h-5 w-5 transition-all duration-300 ${
+                    hasActiveChild ? "drop-shadow-sm" : "group-hover:scale-110"
+                  }`}
+                />
+                {hasActiveChild && (
+                  <div className="absolute -right-1 top-2 w-1.5 h-8 bg-emerald-500 rounded-full shadow-sm" />
+                )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="admin-theme bg-background text-primary/90 backdrop-blur-sm border-slate-200/50 shadow-xl z-50">
-              <div className="flex flex-col space-y-2 p-1 max-w-xs">
-                <span className="font-medium text-primary">{item.name}</span>
+            <TooltipContent
+              side="right"
+              className="admin-sidebar-tooltip admin-theme"
+            >
+              <div className="flex flex-col space-y-1 min-w-[160px]">
+                <span className="font-semibold text-yellow-400 text-base mb-2">
+                  {item.name}
+                </span>
                 {item.children?.map((child) => (
                   <Link
                     key={child.name}
                     href={child.href}
-                    className="block px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm bg-indigo-50 text-primary/90 hover:text-background hover:bg-primary rounded-lg transition-colors"
+                    className="block px-3 py-2 text-sm text-yellow-300 hover:text-yellow-200 hover:bg-yellow-500/20 rounded-lg transition-all duration-200"
                   >
                     {child.name}
                   </Link>
@@ -175,24 +190,30 @@ export default function AdminSidebar({
     if (isCollapsed && !hasChildren) {
       return (
         <TooltipProvider>
-          <Tooltip delayDuration={0}>
+          <Tooltip delayDuration={200}>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                className={`w-full justify-center p-0 h-10 sm:h-12 mb-1 rounded-xl transition-all duration-200 group ${
+                className={`w-full justify-center p-0 h-12 mb-2 rounded-xl transition-all duration-300 group relative ${
                   itemIsActive
-                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:text-white"
-                    : "text-slate-600 hover:text-background hover:bg-primary hover:shadow-md hover:shadow-slate-200/50 backdrop-blur-sm"
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
+                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-50 hover:shadow-sm"
                 }`}
                 asChild
               >
                 <Link href={item.href}>
-                  <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 ${itemIsActive ? '' : 'group-hover:scale-110'}`} />
+                  <item.icon
+                    className={`h-5 w-5 transition-all duration-300 ${
+                      itemIsActive ? "drop-shadow-sm" : "group-hover:scale-110"
+                    }`}
+                  />
                 </Link>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="bg-indigo-50 text-primary/90 hover:text-background hover:bg-primary backdrop-blur-sm border-slate-200/50 shadow-xl z-50">
-              <span className="text-sm font-medium">{item.name}</span>
+            <TooltipContent side="right" className="admin-sidebar-tooltip">
+              <span className="text-sm font-semibold text-yellow-400">
+                {item.name}
+              </span>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -208,25 +229,23 @@ export default function AdminSidebar({
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className={`admin-theme w-full justify-start px-2 sm:px-3 py-2 h-10 sm:h-12 mb-1 rounded-xl transition-all duration-200 group ${
-                hasActiveChild
-                  ? "bg-primary/15 hover:bg-primary/20 hover:text-primary shadow-lg ring-1 ring-primary/20"
-                  : " hover:bg-primary/15 hover:text-primary hover:shadow-md backdrop-blur-sm"
-              }`}
+              className="w-full justify-start px-4 py-3 h-12 mb-1 rounded-xl transition-all duration-300 group hover:bg-slate-50/50 text- hover:text-primary-foreground"
             >
-              <item.icon className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3 hover:text-primary/90 transition-transform duration-200 group-hover:scale-110 shrink-0" />
-              <span className="flex-1 text-left hover:text-primary/90 transition-colors duration-200 cursor-pointer font-medium text-sm sm:text-base truncate group-hover:text-primary/80">{item.name}</span>
+              <item.icon className="h-5 w-5 mr-3 text-slate-500 transition-all duration-300 group-hover:text-slate-700 group-hover:scale-105" />
+              <span className="flex-1 text-left font-medium text-sm">
+                {item.name}
+              </span>
               {isExpanded ? (
-                <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-primary hover:text-primary/90 transition-transform duration-200 shrink-0" />
+                <ChevronDown className="h-4 w-4 text-slate-400 transition-transform duration-300" />
               ) : (
-                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-primary hover:text-primary/90 transition-transform duration-200 shrink-0" />
+                <ChevronRight className="h-4 w-4 text-slate-400 transition-transform duration-300" />
               )}
             </Button>
           </CollapsibleTrigger>
-          <CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out admin-theme">
-            <div className="space-y-1 ml-1 sm:ml-2 pt-1 pb-2">
+          <CollapsibleContent className="overflow-hidden transition-all duration-300 ease-out">
+            <div className="space-y-1 ml-8 mb-2">
               {item.children?.map((child) => (
-                <div className="w-[95%]" key={child.name}>
+                <div key={child.name}>
                   <NavItem item={child} level={level + 1} />
                 </div>
               ))}
@@ -239,18 +258,27 @@ export default function AdminSidebar({
     return (
       <Button
         variant="ghost"
-        className={`admin-theme w-full justify-start px-2 sm:px-3 pr-3 sm:pr-4 py-2 sm:py-3 h-10 sm:h-12 mb-1 rounded-xl transition-all duration-200 group ${
-          level > 0 ? 'ml-1 sm:ml-2' : ''
+        className={`w-full justify-start px-4 py-3 h-12 mb-1 rounded-xl transition-all duration-300 group relative ${
+          level > 0 ? "ml-0" : ""
         } ${
           itemIsActive
-            ? "bg-gradient-to-r from-primary to-accent text-primary-foreground hover:text-white shadow-lg ring-2 ring-primary/20" 
-            : "text-sidebar-foreground hover:bg-primary/15 hover:text-primary hover:shadow-md"
+            ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:text-white hover:shadow-xl hover:shadow-emerald-500/40"
+            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/70 hover:shadow-sm"
         }`}
         asChild
       >
         <Link href={item.href}>
-          <item.icon className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3 transition-transform duration-200 group-hover:scale-110 shrink-0" />
-          <span className="font-medium text-sm sm:text-base truncate">{item.name}</span>
+          <item.icon
+            className={`h-5 w-5 mr-3 transition-all duration-300 ${
+              itemIsActive ? "drop-shadow-sm" : "group-hover:scale-110"
+            } ${
+              itemIsActive ? "" : "text-slate-500 group-hover:text-slate-700"
+            }`}
+          />
+          <span className="font-medium text-sm">{item.name}</span>
+          {itemIsActive && (
+            <div className="absolute right-3 w-2 h-2 bg-white/40 rounded-full shadow-sm" />
+          )}
         </Link>
       </Button>
     );
@@ -262,74 +290,115 @@ export default function AdminSidebar({
 
   return (
     <div
-      className={`admin-theme flex h-full flex-col bg-sidebar backdrop-blur-sm border-r border-sidebar-border/50 shadow-xl transition-all duration-500 ease-in-out ${
-        isCollapsed ? "w-16 sm:w-20" : "w-72 sm:w-72"
-      }`}
+      className={`flex h-full flex-col border-r transition-all duration-500 ease-out ${
+        isCollapsed ? "w-20" : "w-72"
+      } admin-sidebar-gradient admin-sidebar-gradient-fallback`}
+      style={{
+        boxShadow:
+          "inset -1px 0 0 rgba(205, 176, 78, 0.1), 4px 0 20px rgba(0,0,0,0.1)",
+      }}
     >
       {/* Logo - Fixed at top */}
-      <div className="flex h-16 sm:h-20 shrink-0 items-center justify-between px-2 sm:px-4 border-b border-slate-200/50 bg-sidebar/95">
+      <div className="flex h-20 shrink-0 items-center justify-between px-4 relative">
         {!isCollapsed && (
           <Link href="/admin/dashboard" className="flex items-center group">
-            <div className="h-8 w-8 sm:h-10 sm:w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow duration-200">
-              <span className="text-white font-bold text-sm sm:text-lg">
-                N
-              </span>
+            <div className="ml-4">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent">
+                Novaa Dashboard
+              </h1>
+              <p className="text-xs text-slate-500 font-medium">Admin Portal</p>
             </div>
-            <span className="ml-2 sm:ml-3 text-lg sm:text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent truncate">
-              Novaa Admin
-            </span>
           </Link>
         )}
-
+        {/* 
         {isCollapsed && (
           <Link
             href="/admin/dashboard"
             className="flex items-center justify-center w-full group"
           >
-            <div className="h-8 w-8 sm:h-10 sm:w-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow duration-200">
-              <span className="text-white font-bold text-sm sm:text-lg">
-                N
-              </span>
-            </div>
+            
           </Link>
-        )}
+        )} */}
 
-        {/* Collapse Toggle */}
+        {/* Modern Toggle Button */}
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggleCollapse}
-          className={`admin-theme hidden lg:flex h-6 w-6 sm:h-8 sm:w-8 p-0 rounded-lg hover:bg-white/70 hover:shadow-md transition-all duration-200 ${
-            isCollapsed ? "mx-auto mt-2" : ""
+          className={`hidden lg:flex h-10 w-10 p-0 rounded-2xl sidebar-toggle-btn ${
+            isCollapsed
+              ? "mx-auto sidebar-collapsed"
+              : "ml-auto sidebar-expanded"
           }`}
         >
-          {isCollapsed ? (
-            <ChevronRightIcon className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
-          ) : (
-            <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 text-slate-600" />
-          )}
+          <div className="relative w-5 h-5">
+            {/* Menu Icon */}
+            <Menu
+              className={`sidebar-toggle-icon absolute inset-0 h-5 w-5 text-primary-foreground ${
+                isCollapsed
+                  ? "sidebar-toggle-icon-enter opacity-100"
+                  : "sidebar-toggle-icon-exit opacity-0"
+              }`}
+            />
+            {/* X Icon */}
+            <X
+              className={`sidebar-toggle-icon absolute inset-0 h-5 w-5 text-primary-foreground ${
+                !isCollapsed
+                  ? "sidebar-toggle-icon-enter opacity-100"
+                  : "sidebar-toggle-icon-exit opacity-0"
+              }`}
+            />
+          </div>
         </Button>
+
       </div>
 
       {/* Navigation - Scrollable area */}
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full px-2 sm:px-3 py-4 sm:py-6">
-          <nav className="space-y-1 pb-4">
-            {navigation.map((item) => (
-              <NavItem key={item.name} item={item} />
-            ))}
+      <div className="flex-1 overflow-hidden pt-2">
+        <ScrollArea className="h-full px-3">
+          <nav className="space-y-2 pb-6">
+            {/* Primary Navigation */}
+            <div className="space-y-1">
+              {navigation.slice(0, 2).map((item) => (
+                <NavItem key={item.name} item={item} />
+              ))}
+            </div>
+            {/* Secondary Navigation */}
+            <div className="space-y-1">
+              {navigation.slice(2).map((item) => (
+                <NavItem key={item.name} item={item} />
+              ))}
+            </div>
           </nav>
         </ScrollArea>
       </div>
 
       {/* Bottom section - Fixed at bottom */}
-      <div className="shrink-0 p-2 sm:p-4 border-t border-slate-200/50 bg-sidebar/95">
+      <div className="shrink-0 p-4 border-t border-slate-200/30 bg-gradient-to-r from-slate-50/50 to-white/50 backdrop-blur-sm">
         {!isCollapsed ? (
-          <div className="text-xs text-slate-500 text-center font-medium">
-            © 2025 Novaa Global Properties
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="h-8 w-8 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center shadow-sm">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-primary-foreground truncate">
+                Novaa Global Properties
+              </p>
+              <p className="text-xs text-slate-500">ADMIN CMS</p>
+            </div>
           </div>
         ) : (
-          <div className="h-4" />
+          <div className="flex justify-center">
+            <div className="relative">
+              <div className="h-8 w-8 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center shadow-sm">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm" />
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -50,7 +50,7 @@ interface MediaSelectButtonProps {
 
 //   const getFileIcon = (format?: string) => {
 //     if (!format) return <File className="h-6 w-6 text-gray-400" />;
-    
+
 //     const lowerFormat = format.toLowerCase();
 //     if (lowerFormat === 'pdf') return <FileText className="h-6 w-6 text-red-500" />;
 //     if (['doc', 'docx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-blue-500" />;
@@ -114,7 +114,7 @@ interface MediaSelectButtonProps {
 //       <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50">
 //         {getFileIcon(selectedMedia?.format)}
 //         <p className="text-xs text-gray-600 mt-2 text-center px-2">
-//           {selectedMedia 
+//           {selectedMedia
 //             ? formatFileName(selectedMedia.public_id, selectedMedia.format)
 //             : value.split("/").pop()
 //           }
@@ -277,7 +277,8 @@ const MediaSelectButton = ({
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
-  const [localSelectedMedia, setLocalSelectedMedia] = useState<MediaItem | null>(null);
+  const [localSelectedMedia, setLocalSelectedMedia] =
+    useState<MediaItem | null>(null);
 
   const { items: mediaItems, status } = useSelector(
     (state: RootState) => state.media
@@ -286,16 +287,20 @@ const MediaSelectButton = ({
   // Resolve selected media independently of current Redux filter state
   const selectedMedia = useMemo(() => {
     // First try to find in current Redux items
-    let found = mediaItems.find((item) => 
-      item.secure_url === value || item.url === value
+    let found = mediaItems.find(
+      (item) => item.secure_url === value || item.url === value
     );
-    
+
     // If not found in Redux but we have a local cache, use that
-    if (!found && localSelectedMedia && 
-        (localSelectedMedia.secure_url === value || localSelectedMedia.url === value)) {
+    if (
+      !found &&
+      localSelectedMedia &&
+      (localSelectedMedia.secure_url === value ||
+        localSelectedMedia.url === value)
+    ) {
       found = localSelectedMedia;
     }
-    
+
     return found;
   }, [mediaItems, value, localSelectedMedia]);
 
@@ -326,11 +331,14 @@ const MediaSelectButton = ({
 
   const getFileIcon = (format?: string) => {
     if (!format) return <File className="h-6 w-6 text-gray-400" />;
-    
+
     const lowerFormat = format.toLowerCase();
-    if (lowerFormat === 'pdf') return <FileText className="h-6 w-6 text-red-500" />;
-    if (['doc', 'docx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-blue-500" />;
-    if (['xls', 'xlsx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-green-500" />;
+    if (lowerFormat === "pdf")
+      return <FileText className="h-6 w-6 text-red-500" />;
+    if (["doc", "docx"].includes(lowerFormat))
+      return <FileText className="h-6 w-6 text-blue-500" />;
+    if (["xls", "xlsx"].includes(lowerFormat))
+      return <FileText className="h-6 w-6 text-green-500" />;
     return <File className="h-6 w-6 text-gray-400" />;
   };
 
@@ -340,7 +348,7 @@ const MediaSelectButton = ({
     value?.startsWith("/assets/");
 
   const isMediaLoading = status === "loading";
-  
+
   // Use either selectedMedia or localSelectedMedia for display
   const displayMedia = selectedMedia || localSelectedMedia;
   const hasValidMedia = displayMedia || isLocalDefault;
@@ -393,10 +401,9 @@ const MediaSelectButton = ({
       <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50">
         {getFileIcon(displayMedia?.format)}
         <p className="text-xs text-gray-600 mt-2 text-center px-2">
-          {displayMedia 
+          {displayMedia
             ? formatFileName(displayMedia.public_id, displayMedia.format)
-            : value.split("/").pop()
-          }
+            : value.split("/").pop()}
         </p>
         {displayMedia && (
           <p className="text-xs text-gray-500">
@@ -461,11 +468,19 @@ const MediaSelectButton = ({
                   )}
                 </div>
                 <div className="text-left">
-                  <p className="font-medium text-sm truncate group-hover:text-primary/90 transition-all duration-500">
-                    {displayMedia
-                      ? formatFileName(displayMedia.public_id, displayMedia.format)
-                      : value.split("/").pop()
-                    }
+                  <p className="font-medium text-sm group-hover:text-primary/90 transition-all duration-500">
+                    {(() => {
+                      const fileName = displayMedia
+                        ? formatFileName(
+                            displayMedia.public_id,
+                            displayMedia.format
+                          )
+                        : value.split("/").pop();
+
+                      return fileName?.length && fileName.length > 40
+                        ? fileName.substring(0, 40) + "..."
+                        : fileName || "";
+                    })()}
                   </p>
                   {displayMedia && (
                     <p className="text-xs text-gray-500">

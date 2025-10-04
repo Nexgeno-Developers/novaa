@@ -111,7 +111,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             side="left"
             className="p-0 w-72 bg-gradient-to-b from-slate-50 to-white border-slate-200/60"
           >
-            <AdminSidebar isCollapsed={false} onToggleCollapse={() => {}} />
+            <div className="relative">
+              {/* Close Button for Mobile */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(false)}
+                className="absolute top-4 right-4 z-10 h-10 w-10 rounded-2xl sidebar-toggle-btn sidebar-expanded"
+              >
+                <div className="relative w-5 h-5">
+                  <X className="sidebar-toggle-icon sidebar-toggle-icon-enter opacity-100 h-5 w-5 text-slate-500" />
+                </div>
+              </Button>
+              <AdminSidebar isCollapsed={false} onToggleCollapse={() => {}} />
+            </div>
           </SheetContent>
         </Sheet>
 
@@ -135,16 +148,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-white/60 backdrop-blur-xl border border-slate-200/50 hover:bg-white/80 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-200"
+                className="lg:hidden h-10 w-10 rounded-2xl mobile-menu-btn"
                 onClick={() => setSidebarOpen(true)}
               >
-                <Menu className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
+                <div className="relative w-5 h-5">
+                  <Menu className="sidebar-toggle-icon sidebar-toggle-icon-enter opacity-100 h-5 w-5 text-slate-600" />
+                </div>
                 <span className="sr-only">Open sidebar</span>
               </Button>
 
               {/* Header content */}
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                <AdminHeader user={user} />
+                <AdminHeader
+                  user={user}
+                  isSidebarCollapsed={isCollapsed}
+                  onToggleSidebar={() => setIsCollapsed(false)}
+                />
               </div>
             </div>
           </header>

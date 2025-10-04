@@ -437,14 +437,14 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
             Refresh
           </Button>
 
-          <Button
+          {/* <Button
             variant="outline"
             className="bg-primary/90 text-gray-100 hover:bg-primary/80 cursor-pointer"
             onClick={() => setIsOrderModalOpen(true)}
           >
             <ArrowUpDown className="h-4 w-4 mr-2" />
             Change Order
-          </Button>
+          </Button> */}
         </div>
       </div>
 

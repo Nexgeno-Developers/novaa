@@ -12,11 +12,15 @@ import {
   Command,
   Plus,
   Activity,
+  ChevronLeft,
+  ChevronRight,
   ChevronDown,
   FileText,
   Image,
   Briefcase,
   BookOpen,
+  X,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +55,8 @@ interface AdminHeaderProps {
     email?: string;
     role?: string;
   } | null;
+  isSidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 // Mock notifications data
@@ -91,7 +97,11 @@ const commandItems = [
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminHeader({ user }: AdminHeaderProps) {
+export default function AdminHeader({
+  user,
+  isSidebarCollapsed = false,
+  onToggleSidebar,
+}: AdminHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -170,35 +180,51 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
   return (
     <>
       <div className="flex w-full items-center justify-between h-full">
-        {/* Left side - Page info - Enhanced for mobile */}
+        {/* Left side - Modern Page info */}
         <div className="flex flex-col justify-center min-w-0 flex-1">
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <h1 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-primary/90 tracking-tight truncate">
-              {getPageTitle()}
-            </h1>
-            <Badge
-              variant="outline"
-              className="text-xs font-medium hidden sm:inline-flex shrink-0"
-            >
-              <Activity className="h-3 w-3 mr-1" />
-              Live
-            </Badge>
+          <div className="flex items-center space-x-3">
+            {/* Page Icon */}
+            <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-500/20">
+              <Activity className="h-4 w-4 text-white" />
+            </div>
+
+            {/* Page Title and Status */}
+            <div className="flex items-center space-x-3 min-w-0">
+              <div className="flex flex-col">
+                <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent truncate">
+                  {getPageTitle()}
+                </h1>
+                <span className="text-xs text-slate-500 font-medium">
+                  Admin Panel
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full shadow-sm animate-pulse" />
+                <Badge
+                  variant="secondary"
+                  className="text-xs font-medium bg-green-50 text-green-700 hidden sm:inline-flex"
+                >
+                  Online
+                </Badge>
+              </div>
+            </div>
           </div>
+
           {breadcrumbs.length > 0 && (
             <nav
-              className="hidden sm:flex items-center text-xs sm:text-sm text-muted-foreground mt-1"
+              className="hidden sm:flex items-center text-sm text-slate-500 mt-2"
               aria-label="Breadcrumb"
             >
-              <span className="font-medium">Admin</span>
+              <span className="font-medium text-slate-600">•</span>
               {breadcrumbs.map((breadcrumb, index) => (
                 <span key={index} className="flex items-center">
-                  <ChevronDown className="mx-1 sm:mx-2 h-3 w-3 rotate-[-90deg]" />
+                  <ChevronDown className="mx-2 h-3 w-3 rotate-[-90deg] text-slate-400" />
                   <button
                     onClick={() => router.push(breadcrumb.path)}
-                    className={`transition-colors hover:text-foreground truncate ${
+                    className={`transition-colors hover:text-slate-700 truncate font-medium ${
                       breadcrumb.isLast
-                        ? "text-primary font-medium"
-                        : "cursor-pointer"
+                        ? "text-emerald-600"
+                        : "cursor-pointer text-slate-500"
                     }`}
                   >
                     {breadcrumb.label}
@@ -209,49 +235,69 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
           )}
         </div>
 
-        {/* Right side - Search and actions */}
-        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 shrink-0">
-          {/* Search with Command palette style - Hidden on small screens */}
+        {/* Desktop Sidebar Toggle - Only shown when sidebar is collapsed */}
+        {isSidebarCollapsed && onToggleSidebar && (
+          <div className="hidden lg:flex mr-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onToggleSidebar}
+              className="h-10 w-10 p-0 rounded-2xl sidebar-toggle-btn sidebar-expanded"
+            >
+              <div className="relative w-5 h-5">
+                <Menu className="sidebar-toggle-icon sidebar-toggle-icon-enter opacity-100 h-5 w-5 text-slate-500" />
+              </div>
+            </Button>
+          </div>
+        )}
+
+        {/* Right side - Modern Search and actions */}
+        <div className="flex items-center space-x-2 lg:space-x-3 shrink-0">
+          {/* Modern Search - Desktop */}
           <div className="relative hidden lg:block">
             <Button
               variant="outline"
-              className="relative w-64 xl:w-80 h-10 justify-start text-sm text-gray-800 hover:text-primary/90 hover:bg-gray-50 cursor-pointer"
+              className="relative w-64 xl:w-80 h-11 justify-start text-sm bg-white/60 backdrop-blur-xl border-slate-200/60 hover:bg-white/80 hover:shadow-lg transition-all duration-300 cursor-pointer group"
               onClick={() => setCommandOpen(true)}
             >
-              <Search className="mr-2 h-4 w-4" />
-              <span className="hidden xl:inline">Search or jump to...</span>
-              <span className="xl:hidden">Search...</span>
-              <div className="absolute right-2 flex items-center space-x-1">
-                <kbd className="inline-flex items-center rounded border border-border/50 px-1.5 py-0.5 text-xs font-mono">
+              <Search className="mr-3 h-4 w-4 text-slate-500 group-hover:text-emerald-600 transition-colors" />
+              <span className="hidden xl:inline text-slate-600 group-hover:text-slate-800">
+                Search or jump to...
+              </span>
+              <span className="xl:hidden text-slate-600 group-hover:text-slate-800">
+                Search...
+              </span>
+              <div className="absolute right-3 flex items-center space-x-1">
+                <kbd className="inline-flex items-center rounded-lg border border-slate-200/60 px-1.5 py-0.5 text-xs font-mono bg-white/80">
                   <Command className="h-3 w-3" />
                 </kbd>
-                <kbd className="inline-flex items-center rounded border border-border/50 px-1.5 py-0.5 text-xs font-mono">
+                <kbd className="inline-flex items-center rounded-lg border border-slate-200/60 px-1.5 py-0.5 text-xs font-mono bg-white/80">
                   K
                 </kbd>
               </div>
             </Button>
           </div>
 
-          {/* Search button for mobile and tablet */}
+          {/* Mobile Search Button */}
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden h-8 w-8 sm:h-9 sm:w-9 rounded-xl hover:bg-accent/20 transition-all duration-300"
+            className="lg:hidden h-10 w-10 rounded-2xl bg-white/60 backdrop-blur-xl border border-slate-200/60 hover:bg-white/80 hover:shadow-lg transition-all duration-300"
             onClick={() => setCommandOpen(true)}
           >
-            <Search className="h-4 w-4 sm:h-4 sm:w-4 text-primary" />
+            <Search className="h-4 w-4 text-slate-500 hover:text-emerald-600 transition-colors" />
           </Button>
 
-          {/* Quick Actions */}
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            {/* Quick Add Button - Enhanced for mobile */}
+          {/* Modern Action Buttons */}
+          <div className="flex items-center space-x-2">
+            {/* Quick Add Button */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   size="sm"
-                  className="h-8 w-8 sm:h-9 sm:w-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="h-10 w-10 bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-2xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 hover:scale-105"
                 >
-                  <Plus className="h-4 w-4 sm:h-4 sm:w-4" />
+                  <Plus className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -291,24 +337,24 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Notifications */}
+            {/* Modern Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl hover:bg-accent/20 transition-all duration-300 hover:scale-105"
+                  className="relative h-10 w-10 rounded-2xl bg-white/60 backdrop-blur-xl border border-slate-200/60 hover:bg-white/80 hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
-                  <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                  <Bell className="h-4 w-4 text-slate-500 hover:text-slate-700 transition-colors" />
                   {unreadCount > 0 && (
                     <Badge
                       variant="destructive"
-                      className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 text-xs flex items-center justify-center animate-pulse"
+                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center bg-red-500"
                     >
                       {unreadCount}
                     </Badge>
                   )}
-                  <span className="sr-only">View notifications</span>
+                  <span className="sr-only slim;">View notifications</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -378,16 +424,16 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* User Menu */}
+            {/* Modern User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl hover:bg-accent/50 transition-all duration-300 hover:scale-105"
+                  className="relative h-10 w-10 rounded-2xl bg-white/60 backdrop-blur-xl border border-slate-200/60 hover:bg-white/80 hover:shadow-lg transition-all duration-300 hover:scale-105 group"
                 >
-                  <Avatar className="h-6 w-6 sm:h-8 sm:w-8 ring-2 ring-primary/20">
+                  <Avatar className="h-7 w-7 ring-2 ring-emerald-500/20 group-hover:ring-emerald-500/30 transition-all duration-300">
                     <AvatarImage src={"/avatars/admin.svg"} alt="Admin" />
-                    <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground font-semibold text-sm">
+                    <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-semibold text-sm shadow-sm">
                       {user?.name ? user.name.charAt(0).toUpperCase() : "AD"}
                     </AvatarFallback>
                   </Avatar>
