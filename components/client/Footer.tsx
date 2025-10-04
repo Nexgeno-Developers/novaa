@@ -159,7 +159,7 @@ export default function Footer({ data }: FooterProps) {
             </div>
 
             {/* Quick Links - Dynamic */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-start sm:items-center">
               <h3 className="text-[#CDB04E] text-base sm:text-lg font-semibold mb-6">
                 {data.quickLinks.title}
               </h3>
@@ -186,7 +186,7 @@ export default function Footer({ data }: FooterProps) {
             </div>
 
             {/* Contact & Socials - Dynamic */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-start sm:items-center">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <a

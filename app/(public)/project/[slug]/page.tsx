@@ -1,9 +1,5 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import connectDB from "@/lib/mongodb";
-import Project from "@/models/Project";
-import Category from "@/models/Category";
-import Section from "@/models/Section";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import ProjectHeroSection from "@/components/client/ProjectHeroSection";
 import ProjectHighlights from "@/components/client/ProjectHighlights";
@@ -14,42 +10,57 @@ import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 
-// Direct database query without unstable_cache - following blog pattern
+// API-based fetch function to avoid Mongoose schema issues
 async function getProjectBySlug(slug: string) {
   try {
-    await connectDB();
+    console.log("Fetching project with slug via API:", slug);
 
-    console.log("Fetching project with slug:", slug);
+    const response = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+      }/api/projects/slug/${slug}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Add cache control for better performance
+        next: { revalidate: 60 },
+      }
+    );
 
-    const project = await Project.findOne({ slug, isActive: true })
-      .populate("category", "name _id")
-      .lean();
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log("Project not found with slug:", slug);
+        return null;
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    console.log("Project found:", !!project);
+    const result = await response.json();
 
-    if (!project) {
-      console.log("Project not found with slug:", slug);
+    if (!result.success) {
+      console.log("API returned error:", result.error);
       return null;
     }
 
-    // Convert all BSON/ObjectId fields into plain strings
-    const updatedProject = JSON.parse(JSON.stringify(project));
+    const project = result.data;
+    console.log("Project found via API:", !!project);
 
     // Ensure required fields exist with defaults
-    updatedProject.images = updatedProject.images || [];
-    updatedProject.location = updatedProject.location || "";
-    updatedProject.description = updatedProject.description || "";
-    updatedProject.badge = updatedProject.badge || "";
-    updatedProject.price = updatedProject.price || "";
-    updatedProject.categoryName =
-      updatedProject.categoryName || updatedProject.category?.name || "";
+    const updatedProject = {
+      ...project,
+      images: project.images || [],
+      location: project.location || "",
+      description: project.description || "",
+      badge: project.badge || "",
+      categoryName: project.categoryName || project.category?.name || "",
 
-    // Ensure projectDetail exists with defaults
-    if (!updatedProject.projectDetail) {
-      updatedProject.projectDetail = {
+      // Ensure projectDetail exists with defaults
+      projectDetail: project.projectDetail || {
         hero: {
           backgroundImage: "",
-          title: updatedProject.name,
+          title: project.name,
           subtitle: "",
           scheduleMeetingButton: "Schedule a meeting",
           getBrochureButton: "Get Brochure",
@@ -97,45 +108,55 @@ async function getProjectBySlug(slug: string) {
           mapImage: "",
           categories: [],
         },
-      };
-    }
+      },
+    };
 
-    console.log("Project data processed successfully");
+    console.log("Project data processed successfully via API");
     return updatedProject;
   } catch (error) {
-    console.error("Error fetching project:", error);
+    console.error("Error fetching project via API:", error);
     return null;
   }
 }
 
-// Direct database query for breadcrumb data - following blog pattern
+// API-based fetch for breadcrumb data
 async function getBreadcrumbData() {
   try {
-    await connectDB();
-
-    const breadcrumbSection = await Section.findOne({
-      pageSlug: "project",
-      type: "breadcrumb",
-      status: "active",
-      "settings.isVisible": true,
-    }).lean();
-
-    return JSON.parse(JSON.stringify(breadcrumbSection));
+    // For now, return null for breadcrumbs - can be implemented later if needed
+    return null;
   } catch (error) {
     console.error("Error fetching breadcrumb data:", error);
     return null;
   }
 }
 
-// generateStaticParams for better production performance - following blog pattern
+// Updated generateStaticParams using API to avoid Mongoose schema issues
 export async function generateStaticParams() {
   try {
-    await connectDB();
-    const projects = await Project.find({ isActive: true })
-      .select("slug")
-      .lean();
+    const response = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+      }/api/cms/projects`,
+      {
+        // Use static generation
+        next: { revalidate: 3600 }, // Revalidate every hour
+      }
+    );
 
-    return projects.map((project) => ({
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (!result.success) {
+      console.log("API returned error:", result.error);
+      return [];
+    }
+
+    const projects = result.data.filter((project: any) => project.isActive);
+
+    return projects.map((project: any) => ({
       slug: project.slug,
     }));
   } catch (error) {
@@ -228,6 +249,6 @@ export default async function ProjectDetailPage({
   }
 }
 
-// These exports control Next.js ISR behavior - following blog pattern
+// These exports control Next.js ISR behavior
 export const dynamicParams = true; // Allow dynamic segments not in generateStaticParams
 export const revalidate = 60; // Revalidate page every 60 seconds (ISR)

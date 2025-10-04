@@ -124,9 +124,17 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, X, AlertCircle, Loader2 } from "lucide-react";
 import parse from "html-react-parser";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux";
+import {
+  createEnquiry,
+  resetSubmissionStatus,
+} from "@/redux/slices/enquirySlice";
+import { toast } from "sonner";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 interface ProjectHeroSectionProps {
   project: {
@@ -145,17 +153,26 @@ interface ProjectHeroSectionProps {
 }
 
 const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useNavigationRouter();
+  const { submissionStatus, error } = useSelector(
+    (state: RootState) => state.enquiry
+  );
+
   const [showBrochureForm, setShowBrochureForm] = useState(false);
   const [formData, setFormData] = useState({
+    fullName: "",
     phone: "",
     email: "",
-    description: "",
+    message: "",
   });
   const [showNotification, setShowNotification] = useState(false);
   const [formErrors, setFormErrors] = useState({
+    fullName: "",
     phone: "",
     email: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const heroData = project.projectDetail?.hero;
 
@@ -170,24 +187,37 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
 
   const validateForm = () => {
     const errors = {
+      fullName: "",
       phone: "",
       email: "",
     };
 
+    // Full name validation (mandatory)
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Full name is required";
+    } else if (formData.fullName.trim().length < 2) {
+      errors.fullName = "Full name must be at least 2 characters";
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.fullName)) {
+      errors.fullName = "Name can only contain letters and spaces";
+    }
+
     // Phone validation (mandatory)
     if (!formData.phone.trim()) {
       errors.phone = "Phone number is required";
-    } else if (!/^[0-9]{10}$/.test(formData.phone.replace(/\s/g, ""))) {
-      errors.phone = "Please enter a valid 10-digit phone number";
+    } else if (!/^[0-9+\-\s()]{10,}$/.test(formData.phone)) {
+      errors.phone = "Please enter a valid phone number";
     }
 
     // Email validation (optional, but if provided must be valid)
-    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (
+      formData.email.trim() &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    ) {
       errors.email = "Please enter a valid email address";
     }
 
     setFormErrors(errors);
-    return !errors.phone && !errors.email;
+    return !errors.fullName && !errors.phone && !errors.email;
   };
 
   const handleBrochureClick = () => {
@@ -196,8 +226,9 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
 
   const handleCloseForm = () => {
     setShowBrochureForm(false);
-    setFormData({ phone: "", email: "", description: "" });
-    setFormErrors({ phone: "", email: "" });
+    setFormData({ fullName: "", phone: "", email: "", message: "" });
+    setFormErrors({ fullName: "", phone: "", email: "" });
+    dispatch(resetSubmissionStatus());
   };
 
   const handleInputChange = (
@@ -217,34 +248,54 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
+    try {
+      setIsSubmitting(true);
 
-    // Download the brochure
-    if (brochurePdf) {
-      const link = document.createElement("a");
-      link.href = brochurePdf;
-      link.download = `${project.name}-Brochure.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Prepare enquiry data with project title as location
+      const enquiryData = {
+        fullName: formData.fullName,
+        emailAddress: formData.email || undefined,
+        phoneNo: formData.phone,
+        location: project.name, // Use project title as location
+        message: formData.message,
+      };
+
+      // Submit enquiry using Redux
+      await dispatch(createEnquiry(enquiryData)).unwrap();
+
+      // Download the brochure
+      // if (brochurePdf) {
+      //   const link = document.createElement("a");
+      //   link.href = brochurePdf;
+      //   link.download = `${project.name}-Brochure.pdf`;
+      //   document.body.appendChild(link);
+      //   link.click();
+      //   document.body.removeChild(link);
+      // }
+
+      // Close form
+      handleCloseForm();
+
+      // Reset submission status
+      dispatch(resetSubmissionStatus());
+
+      // Redirect to thanks page
+      router.push("/thanks?from=project");
+    } catch (error: any) {
+      console.error("Enquiry submission error:", error);
+      toast.error(
+        error.message || "Failed to submit enquiry. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Close form and show notification
-    handleCloseForm();
-    setShowNotification(true);
-
-    // Hide notification after 5 seconds
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 5000);
   };
 
   const handleScheduleMeeting = () => {
@@ -338,13 +389,44 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
               </button>
 
               <h3 className="text-2xl font-cinzel font-bold text-primary mb-2">
-                Get Brochure
+                Enquire Now
               </h3>
               <p className="text-gray-300 font-josefin mb-6 text-sm">
-                Fill in your details to receive the brochure
+                Fill in your details to receive the brochure and get more
+                information about this project
               </p>
 
               <form onSubmit={handleFormSubmit} className="space-y-4">
+                {/* Full Name Field */}
+                <div>
+                  <label
+                    htmlFor="fullName"
+                    className="block text-sm font-josefin font-medium text-white mb-1"
+                  >
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    className={`w-full px-4 py-2 bg-[#012020] border ${
+                      formErrors.fullName
+                        ? "border-red-500"
+                        : "border-[#CDB04E]/30"
+                    } rounded-md text-white placeholder:font-josefin placeholder-gray-500 focus:outline-none focus:border-[#CDB04E] transition-colors`}
+                  />
+                  {formErrors.fullName && (
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {formErrors.fullName}
+                    </p>
+                  )}
+                </div>
+
+                {/* Phone Number Field */}
                 <div>
                   <label
                     htmlFor="phone"
@@ -360,11 +442,16 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     onChange={handleInputChange}
                     placeholder="Enter your phone number"
                     className={`w-full px-4 py-2 bg-[#012020] border ${
-                      formErrors.phone ? "border-red-500" : "border-[#CDB04E]/30"
+                      formErrors.phone
+                        ? "border-red-500"
+                        : "border-[#CDB04E]/30"
                     } rounded-md text-white placeholder:font-josefin placeholder-gray-500 focus:outline-none focus:border-[#CDB04E] transition-colors`}
                   />
                   {formErrors.phone && (
-                    <p className="text-red-500 text-xs mt-1">{formErrors.phone}</p>
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {formErrors.phone}
+                    </p>
                   )}
                 </div>
 
@@ -383,25 +470,30 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     onChange={handleInputChange}
                     placeholder="Enter your email"
                     className={`w-full px-4 py-2 bg-[#012020] border ${
-                      formErrors.email ? "border-red-500" : "border-[#CDB04E]/30"
+                      formErrors.email
+                        ? "border-red-500"
+                        : "border-[#CDB04E]/30"
                     } rounded-md text-white placeholder:font-josefin placeholder-gray-500 focus:outline-none focus:border-[#CDB04E] transition-colors`}
                   />
                   {formErrors.email && (
-                    <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>
+                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {formErrors.email}
+                    </p>
                   )}
                 </div>
 
                 <div>
                   <label
-                    htmlFor="description"
+                    htmlFor="message"
                     className="block text-sm font-josefin font-medium text-white mb-1"
                   >
                     Message (Optional)
                   </label>
                   <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
+                    id="message"
+                    name="message"
+                    value={formData.message}
                     onChange={handleInputChange}
                     placeholder="Any specific requirements or questions?"
                     rows={3}
@@ -410,12 +502,24 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 </div>
 
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                   type="submit"
-                  className="w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:brightness-110 font-josefin py-3 rounded-md text-background font-semibold shadow-lg transition-all duration-300"
+                  disabled={isSubmitting || submissionStatus === "submitting"}
+                  className={`w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:brightness-110 font-josefin py-3 rounded-md text-background font-semibold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                    isSubmitting || submissionStatus === "submitting"
+                      ? "opacity-70 cursor-not-allowed"
+                      : ""
+                  }`}
                 >
-                  Get Brochure
+                  {isSubmitting || submissionStatus === "submitting" ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit Enquiry"
+                  )}
                 </motion.button>
               </form>
             </motion.div>

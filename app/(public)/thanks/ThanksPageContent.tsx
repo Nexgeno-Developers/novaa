@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle, Mail, Phone, MapPin } from "lucide-react";
+import { ArrowLeft, CheckCircle, Mail, Phone, MapPin, Home } from "lucide-react";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 export default function ThanksPageContent() {
-  const router = useRouter();
+  const router = useNavigationRouter();
   const searchParams = useSearchParams();
   const [fromPage, setFromPage] = useState<string>("");
 
@@ -29,7 +30,7 @@ export default function ThanksPageContent() {
     <div className="min-h-screen bg-gradient-to-br from-[#01292B] via-[#072D2C] to-[#01292B] flex flex-col py-10 sm:py-30">
       {/* Back Button */}
       <div className="container">
-        <motion.button
+        {/* <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -38,7 +39,7 @@ export default function ThanksPageContent() {
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" />
           <span className="font-josefin text-sm sm:text-base">Go Back</span>
-        </motion.button>
+        </motion.button> */}
       </div>
 
       {/* Main Content */}
@@ -65,8 +66,8 @@ export default function ThanksPageContent() {
             }}
             className="mb-8"
           >
-            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] rounded-full flex items-center justify-center mx-auto shadow-2xl">
-              <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-[#01292B]" />
+            <div className="w-16 h-16 sm:w-24 sm:h-24  bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] rounded-full flex items-center justify-center mx-auto shadow-2xl">
+              <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-[#01292B]" />
             </div>
           </motion.div>
 
@@ -102,7 +103,7 @@ export default function ThanksPageContent() {
           </motion.div>
 
           {/* Next Steps */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
@@ -155,7 +156,7 @@ export default function ThanksPageContent() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* Additional Actions */}
           <motion.div
@@ -169,18 +170,22 @@ export default function ThanksPageContent() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="tel:+1234567890"
+                href="tel:+9867724223"
                 className="inline-flex items-center gap-2 px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/20"
               >
                 <Phone className="w-4 h-4" />
                 <span className="font-josefin text-sm">Call Us</span>
               </a>
               <a
-                href="mailto:info@yourcompany.com"
+                href="mailto:karan@novaaglobal.com"
                 className="inline-flex items-center gap-2 px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/20"
               >
                 <Mail className="w-4 h-4" />
                 <span className="font-josefin text-sm">Email Us</span>
+              </a>
+              <a href="/" className="inline-flex items-center gap-2 px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/20">
+                <Home className="w-4 h-4" />
+                <span className="font-josefin text-sm pt-[2px]">Go Back</span>
               </a>
             </div>
           </motion.div>

@@ -327,7 +327,7 @@ export default function NovaaAdvantageSection({
           >
             {sortedAdvantages.map((advantage) => (
               <motion.div
-                key={`mobile-${advantage._id}`}
+                key={`mobile-${advantage.title}`}
                 className="bg-white rounded-xl p-2 my-2 shadow-lg"
                 variants={itemVariants}
               >
