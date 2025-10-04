@@ -58,6 +58,7 @@ import {
 import {
   Search,
   Eye,
+  Edit,
   Trash2,
   Filter,
   Mail,
@@ -71,6 +72,8 @@ import {
   CheckCircle,
   Clock,
   Star,
+  MessageCircle,
+  BarChart3,
 } from "lucide-react";
 import { toast } from "sonner";
 import { EnquiryUpdateData } from "@/redux/slices/enquirySlice";
@@ -204,86 +207,111 @@ const EnquiriesManager = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white p-6 -m-6 space-y-8 font-poppins">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-primary/90">
-            Enquiries Management
-          </h1>
-          <p className="text-muted-foreground">
-            Manage and track customer enquiries from your contact form
-          </p>
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-sm">
+            <MessageCircle className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent">
+              Enquiries Hub
+            </h1>
+            <p className="text-slate-600 font-medium">
+              Track and manage customer inquiries from your website
+            </p>
+          </div>
         </div>
         <Button
           onClick={() => dispatch(fetchEnquiries(filters))}
-          className="text-background cursor-pointer"
+          className="bg-emerald-900 border-slate-200/60 text-white hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer disabled:opacity-50 hover:text-primary"
           disabled={loading}
         >
           <RefreshCw
             className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
           />
-          Refresh
+          <span className="font-medium">Refresh</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-sm font-semibold text-slate-600">
               Total Enquiries
             </CardTitle>
-            <User className="h-4 w-4 text-muted-foreground" />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+              <User className="h-4 w-4 text-white" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{statusSummary.total}</div>
+            <div className="text-3xl font-bold text-slate-800">
+              {statusSummary.total}
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">New</CardTitle>
-            <AlertCircle className="h-4 w-4 text-blue-600" />
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-sm font-semibold text-slate-600">
+              New
+            </CardTitle>
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+              <AlertCircle className="h-4 w-4 text-white" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statusSummary.new}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contacted</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-600" />
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-sm font-semibold text-slate-600">
+              Contacted
+            </CardTitle>
+            <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center shadow-sm">
+              <Clock className="h-4 w-4 text-white" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-3xl font-bold text-yellow-600">
               {statusSummary.contacted}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Interested</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-sm font-semibold text-slate-600">
+              Interested
+            </CardTitle>
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
+              <CheckCircle className="h-4 w-4 text-white" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-3xl font-bold text-green-600">
               {statusSummary.interested}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Closed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-gray-600" />
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-sm font-semibold text-slate-600">
+              Closed
+            </CardTitle>
+            <div className="w-8 h-8 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg flex items-center justify-center shadow-sm">
+              <CheckCircle className="h-4 w-4 text-white" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-600">
+            <div className="text-3xl font-bold text-gray-600">
               {statusSummary.closed}
             </div>
           </CardContent>
@@ -291,37 +319,47 @@ const EnquiriesManager = () => {
       </div>
 
       {/* Filters */}
-      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
+      <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="w-5 h-5" />
-            Filters & Search
-          </CardTitle>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
+              <Filter className="h-4 w-4 text-white" />
+            </div>
+            <CardTitle className="text-xl font-bold">
+              Filters & Search
+            </CardTitle>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <Label htmlFor="search">Search</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Label
+                htmlFor="search"
+                className="text-sm font-semibold text-slate-600"
+              >
+                Search
+              </Label>
+              <div className="relative mt-2">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <Input
                   id="search"
                   placeholder="Search by name, email, country..."
                   value={filters.search || ""}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="pl-9 mt-2 bg-accent-foreground ring-2 ring-primary/20"
+                  className="pl-9 bg-white/60 border-slate-200/60 focus:bg-white transition-colors duration-200"
                 />
               </div>
             </div>
 
             <div className="w-full md:w-68">
-              <Label>Status</Label>
-
+              <Label className="text-sm font-semibold text-slate-600">
+                Status
+              </Label>
               <Select value={filters.status} onValueChange={handleStatusFilter}>
-                <SelectTrigger className="bg-accent-foreground ring-2 ring-primary/20 cursor-pointer mt-2 w-full">
+                <SelectTrigger className="bg-white/60 border-slate-200/60 focus:bg-white transition-colors duration-200 cursor-pointer mt-2 w-full">
                   <SelectValue className="pb-1" />
                 </SelectTrigger>
-                <SelectContent className="admin-theme">
+                <SelectContent>
                   <SelectItem value="all" className="cursor-pointer">
                     All Status
                   </SelectItem>
@@ -342,19 +380,29 @@ const EnquiriesManager = () => {
             </div>
 
             <div className="w-full md:w-48">
-              <Label>Priority</Label>
+              <Label className="text-sm font-semibold text-slate-600">
+                Priority
+              </Label>
               <Select
                 value={filters.priority}
                 onValueChange={handlePriorityFilter}
               >
-                <SelectTrigger className="bg-accent-foreground ring-2 ring-primary/20 cursor-pointer mt-2 w-full">
+                <SelectTrigger className="bg-white/60 border-slate-200/60 focus:bg-white transition-colors duration-200 cursor-pointer mt-2 w-full">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="admin-theme">
-                  <SelectItem value="all" className="cursor-pointer">All Priority</SelectItem>
-                  <SelectItem value="low" className="cursor-pointer">Low</SelectItem>
-                  <SelectItem value="medium" className="cursor-pointer" >Medium</SelectItem>
-                  <SelectItem value="high" className="cursor-pointer" >High</SelectItem>
+                <SelectContent>
+                  <SelectItem value="all" className="cursor-pointer">
+                    All Priority
+                  </SelectItem>
+                  <SelectItem value="low" className="cursor-pointer">
+                    Low
+                  </SelectItem>
+                  <SelectItem value="medium" className="cursor-pointer">
+                    Medium
+                  </SelectItem>
+                  <SelectItem value="high" className="cursor-pointer">
+                    High
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -363,17 +411,28 @@ const EnquiriesManager = () => {
       </Card>
 
       {/* Enquiries Table */}
-      <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
-        <CardHeader>
-          <CardTitle>Enquiries ({pagination.totalEnquiries})</CardTitle>
-          <CardDescription>
-            Showing {(pagination.currentPage - 1) * filters.limit + 1} to{" "}
-            {Math.min(
-              pagination.currentPage * filters.limit,
-              pagination.totalEnquiries
-            )}{" "}
-            of {pagination.totalEnquiries} enquiries
-          </CardDescription>
+      <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-200/60">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-sm">
+                <BarChart3 className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent">
+                  Enquiries Overview
+                </CardTitle>
+                <CardDescription className="text-sm text-slate-500 font-medium">
+                  Showing {(pagination.currentPage - 1) * filters.limit + 1} to{" "}
+                  {Math.min(
+                    pagination.currentPage * filters.limit,
+                    pagination.totalEnquiries
+                  )}{" "}
+                  of {pagination.totalEnquiries} enquiries
+                </CardDescription>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -386,22 +445,39 @@ const EnquiriesManager = () => {
               No enquiries found
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/60 shadow-sm">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name & Email</TableHead>
-                    <TableHead>Contact Info</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Actions</TableHead>
+                <TableHeader className="bg-gradient-to-r from-slate-600 to-slate-700 shadow-lg">
+                  <TableRow className="border-slate-300/20">
+                    <TableHead className="text-white font-semibold">
+                      Name & Email
+                    </TableHead>
+                    <TableHead className="text-white font-semibold">
+                      Contact Info
+                    </TableHead>
+                    <TableHead className="text-white font-semibold">
+                      Location
+                    </TableHead>
+                    <TableHead className="text-white font-semibold">
+                      Status
+                    </TableHead>
+                    <TableHead className="text-white font-semibold">
+                      Priority
+                    </TableHead>
+                    <TableHead className="text-white font-semibold">
+                      Date
+                    </TableHead>
+                    <TableHead className="text-white font-semibold">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {enquiries.map((enquiry) => (
-                    <TableRow key={enquiry._id}>
+                    <TableRow
+                      key={enquiry._id}
+                      className="hover:bg-slate-50/80 transition-colors duration-200 border-slate-200/40"
+                    >
                       <TableCell>
                         <div>
                           <div className="font-medium">{enquiry.fullName}</div>
@@ -439,27 +515,32 @@ const EnquiriesManager = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          {/* View Details Button */}
                           <Button
                             size="sm"
                             variant="outline"
-                            className="cursor-pointer"
+                            className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 hover:text-white border-white/20 hover:border-blue-400 transition-all duration-200 cursor-pointer rounded-lg"
                             onClick={() => handleViewDetails(enquiry)}
                           >
                             <Eye className="w-4 h-4" />
                           </Button>
+
+                          {/* Edit Button */}
                           <Button
                             size="sm"
                             variant="outline"
-                            className="cursor-pointer"
+                            className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-emerald-500 hover:to-emerald-600 hover:text-white border-white/20 hover:border-emerald-400 transition-all duration-200 cursor-pointer rounded-lg"
                             onClick={() => handleEditEnquiry(enquiry)}
                           >
-                            Edit
+                            <Edit className="w-4 h-4" />
                           </Button>
+
+                          {/* Delete Button */}
                           <Button
                             size="sm"
-                            variant="destructive"
-                            className="cursor-pointer"
+                            variant="outline"
+                            className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-red-500 hover:to-red-600 hover:text-white border-white/20 hover:border-red-400 transition-all duration-200 cursor-pointer rounded-lg"
                             onClick={() => setDeleteDialogId(enquiry._id)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -475,23 +556,25 @@ const EnquiriesManager = () => {
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-200/60">
               <Button
                 variant="outline"
+                className="bg-white/60 border-slate-200/60 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer disabled:opacity-50"
                 disabled={!pagination.hasPrevPage}
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
               >
-                Previous
+                <span className="font-medium">Previous</span>
               </Button>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm font-semibold text-slate-600">
                 Page {pagination.currentPage} of {pagination.totalPages}
               </span>
               <Button
                 variant="outline"
+                className="bg-white/60 border-slate-200/60 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer disabled:opacity-50"
                 disabled={!pagination.hasNextPage}
                 onClick={() => handlePageChange(pagination.currentPage + 1)}
               >
-                Next
+                <span className="font-medium">Next</span>
               </Button>
             </div>
           )}
@@ -500,7 +583,7 @@ const EnquiriesManager = () => {
 
       {/* Enquiry Detail Dialog */}
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent className="max-w-2xl admin-theme bg-sidebar">
+        <DialogContent className="max-w-2xl bg-sidebar">
           <DialogHeader>
             <DialogTitle>Enquiry Details</DialogTitle>
             <DialogDescription>
@@ -541,9 +624,7 @@ const EnquiriesManager = () => {
               </div>
 
               <div>
-                <Label className="text-sm font-medium">
-                  Location
-                </Label>
+                <Label className="text-sm font-medium">Location</Label>
                 <p className="text-sm text-muted-foreground">
                   {selectedEnquiry.location}
                 </p>
@@ -582,6 +663,22 @@ const EnquiriesManager = () => {
                 </div>
               )}
 
+              {selectedEnquiry.pageUrl && (
+                <div>
+                  <Label className="text-sm font-medium">Page URL</Label>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    <a
+                      href={selectedEnquiry.pageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline break-all"
+                    >
+                      {selectedEnquiry.pageUrl}
+                    </a>
+                  </p>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <Label className="text-sm font-medium">Created At</Label>
@@ -606,7 +703,7 @@ const EnquiriesManager = () => {
         open={!!editingEnquiry}
         onOpenChange={() => setEditingEnquiry(null)}
       >
-        <DialogContent className=" max-w-2xl admin-theme bg-sidebar">
+        <DialogContent className=" max-w-2xl bg-sidebar">
           <DialogHeader>
             <DialogTitle>Edit Enquiry</DialogTitle>
             <DialogDescription>
@@ -617,7 +714,9 @@ const EnquiriesManager = () => {
           {editingEnquiry && (
             <div className="space-y-4">
               <div>
-                <Label htmlFor="status" className="pb-2">Status</Label>
+                <Label htmlFor="status" className="pb-2">
+                  Status
+                </Label>
                 <Select
                   value={editingEnquiry.status}
                   onValueChange={(value) =>
@@ -627,17 +726,27 @@ const EnquiriesManager = () => {
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="admin-theme">
-                    <SelectItem value="new" className="cursor-pointer">New</SelectItem>
-                    <SelectItem value="contacted" className="cursor-pointer">Contacted</SelectItem>
-                    <SelectItem value="interested" className="cursor-pointer">Interested</SelectItem>
-                    <SelectItem value="closed" className="cursor-pointer">Closed</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="new" className="cursor-pointer">
+                      New
+                    </SelectItem>
+                    <SelectItem value="contacted" className="cursor-pointer">
+                      Contacted
+                    </SelectItem>
+                    <SelectItem value="interested" className="cursor-pointer">
+                      Interested
+                    </SelectItem>
+                    <SelectItem value="closed" className="cursor-pointer">
+                      Closed
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <Label htmlFor="priority" className="pb-2">Priority</Label>
+                <Label htmlFor="priority" className="pb-2">
+                  Priority
+                </Label>
                 <Select
                   value={editingEnquiry.priority}
                   onValueChange={(value) =>
@@ -656,7 +765,9 @@ const EnquiriesManager = () => {
               </div>
 
               <div>
-                <Label htmlFor="notes" className="pb-2">Admin Notes</Label>
+                <Label htmlFor="notes" className="pb-2">
+                  Admin Notes
+                </Label>
                 <Textarea
                   id="notes"
                   placeholder="Add notes about this enquiry..."
@@ -672,23 +783,27 @@ const EnquiriesManager = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-3">
                 <Button
                   variant="outline"
                   onClick={() => setEditingEnquiry(null)}
-                  className="bg-gray-300 hover:bg-gray-300/70 text-primary hover:text-primary/80 cursor-pointer"
+                  className="bg-white/90 backdrop-blur-xl border border-red-200 hover:border-red-300 text-red-600 hover:text-red-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
-                  Cancel
+                  <span className="font-semibold">Cancel</span>
                 </Button>
                 <Button
-                  onClick={() => handleUpdateEnquiry(editingEnquiry as EnquiryUpdateData)}
+                  onClick={() =>
+                    handleUpdateEnquiry(editingEnquiry as EnquiryUpdateData)
+                  }
                   disabled={loading}
-                  className="text-background cursor-pointer"
+                  className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                  ) : null}
-                  Update Enquiry
+                  ) : (
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                  )}
+                  <span className="font-semibold">Update Enquiry</span>
                 </Button>
               </div>
             </div>
@@ -701,25 +816,28 @@ const EnquiriesManager = () => {
         open={!!deleteDialogId}
         onOpenChange={() => setDeleteDialogId(null)}
       >
-        <AlertDialogContent className="admin-theme">
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-primary">Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle className="text-primary">
+              Are you sure?
+            </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
               enquiry and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="hover:bg-gray-50 hover:text-primary cursor-pointer">
-              Cancel
+          <AlertDialogFooter className="gap-3">
+            <AlertDialogCancel className="bg-white/90 backdrop-blur-xl border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <span className="font-semibold">Cancel</span>
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() =>
                 deleteDialogId && handleDeleteEnquiry(deleteDialogId)
               }
-              className="bg-destructive text-white cursor-pointer hover:bg-destructive/90"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
-              Delete
+              <Trash2 className="w-4 h-4 mr-2" />
+              <span className="font-semibold">Delete Enquiry</span>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

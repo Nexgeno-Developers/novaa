@@ -48,6 +48,7 @@ export default function BlogForm({ blog, isEdit = false }: BlogFormProps) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [tagInput, setTagInput] = useState("");
+  const [editorReady, setEditorReady] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -99,6 +100,14 @@ export default function BlogForm({ blog, isEdit = false }: BlogFormProps) {
           avatar: "",
         },
       });
+      
+      // Mark editor as ready after form data is loaded
+      setTimeout(() => {
+        setEditorReady(true);
+      }, 100);
+    } else {
+      // For create mode, editor is ready immediately
+      setEditorReady(true);
     }
   }, [blog, isEdit]);
 
@@ -386,14 +395,23 @@ export default function BlogForm({ blog, isEdit = false }: BlogFormProps) {
 
             <div className="space-y-2">
               <Label className="text-primary">Blog Content *</Label>
-              <div>
-                <Editor
-                  value={formData.content}
-                  onEditorChange={(content) =>
-                    handleInputChange("content", content)
-                  }
-                  height={500}
-                />
+              <div className="relative min-h-[500px]">
+                {!editorReady ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div className="text-center">
+                      <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">Loading editor...</p>
+                    </div>
+                  </div>
+                ) : (
+                  <Editor
+                    value={formData.content}
+                    onEditorChange={(content) =>
+                      handleInputChange("content", content)
+                    }
+                    height={500}
+                  />
+                )}
               </div>
             </div>
 

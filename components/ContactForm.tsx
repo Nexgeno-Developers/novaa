@@ -67,16 +67,25 @@ const ContactForm = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      await dispatch(createEnquiry(data as any)).unwrap();
+      // Get current page URL
+      const pageUrl = window.location.href;
+
+      // Add pageUrl to the data
+      const enquiryData = {
+        ...data,
+        pageUrl,
+      };
+
+      await dispatch(createEnquiry(enquiryData as any)).unwrap();
 
       // Reset form after successful submission
       reset();
-      
+
       // Reset submission status
       dispatch(resetSubmissionStatus());
 
       // Redirect to thanks page
-      router.push('/thanks?from=project');
+      router.push("/thanks?from=project");
     } catch (error: any) {
       toast.error(
         error.message || "Failed to submit enquiry. Please try again."

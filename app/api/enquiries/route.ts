@@ -88,14 +88,15 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { fullName, emailAddress, phoneNo, location, message } = body;
+    const { fullName, emailAddress, phoneNo, location, message, pageUrl } =
+      body;
 
     // Validation - phoneNo and location are mandatory
     if (!fullName || !phoneNo || !location) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: "Full name, phone number, and location are required" 
+        {
+          success: false,
+          message: "Full name, phone number, and location are required",
         },
         { status: 400 }
       );
@@ -105,9 +106,9 @@ export async function POST(request: NextRequest) {
     const phoneRegex = /^[+]?[\d\s\-\(\)]+$/;
     if (!phoneRegex.test(phoneNo)) {
       return NextResponse.json(
-        { 
-          success: false, 
-          message: "Invalid phone number format" 
+        {
+          success: false,
+          message: "Invalid phone number format",
         },
         { status: 400 }
       );
@@ -118,9 +119,9 @@ export async function POST(request: NextRequest) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(emailAddress)) {
         return NextResponse.json(
-          { 
-            success: false, 
-            message: "Invalid email address format" 
+          {
+            success: false,
+            message: "Invalid email address format",
           },
           { status: 400 }
         );
@@ -156,6 +157,11 @@ export async function POST(request: NextRequest) {
     // Only add message if provided
     if (message && message.trim() !== "") {
       enquiryData.message = message;
+    }
+
+    // Only add pageUrl if provided
+    if (pageUrl && pageUrl.trim() !== "") {
+      enquiryData.pageUrl = pageUrl;
     }
 
     const enquiry = await Enquiry.create(enquiryData);

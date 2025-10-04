@@ -23,7 +23,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Edit, Trash2, Loader2, GripVertical } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Loader2,
+  GripVertical,
+  Tags,
+  Building2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { RootState } from "@/redux";
 import {
@@ -175,18 +183,30 @@ export default function CategoriesSection() {
   };
 
   return (
-    <Card className="py-6 bg-sidebar ring-2 ring-primary/20">
+    <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          Categories Management
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-sm">
+              <Building2 className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent">
+                Project Categories
+              </CardTitle>
+              <p className="text-slate-600 font-medium text-sm">
+                Manage project categories and organize your portfolio
+              </p>
+            </div>
+          </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button
                 onClick={openCreateDialog}
-                className="text-background cursor-pointer"
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 flex items-center space-x-2"
               >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Category
+                <Plus className="h-4 w-4" />
+                <span className="font-medium">Add Category</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-xl admin-theme">
@@ -274,7 +294,7 @@ export default function CategoriesSection() {
               </form>
             </DialogContent>
           </Dialog>
-        </CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         {loading ? (
@@ -292,16 +312,22 @@ export default function CategoriesSection() {
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   <Table>
-                    <TableHeader className="bg-primary/90">
-                      <TableRow>
+                    <TableHeader className="bg-gradient-to-r from-slate-600 to-slate-700">
+                      <TableRow className="border-slate-300/20">
                         <TableHead className="w-8"></TableHead>
-                        <TableHead className="text-background">Name</TableHead>
-                        <TableHead className="text-background">Slug</TableHead>
-                        <TableHead className="text-background">
-                          Status
+                        <TableHead className="text-white font-semibold">
+                          Name
                         </TableHead>
-                        <TableHead className="text-background">Order</TableHead>
-                        <TableHead className="text-right text-background">
+                        <TableHead className="text-white font-semibold">
+                          Slug
+                        </TableHead>
+                        <TableHead className="text-white font-semibold">
+                          URL
+                        </TableHead>
+                        <TableHead className="text-white font-semibold">
+                          Order
+                        </TableHead>
+                        <TableHead className="text-right text-white font-semibold">
                           Actions
                         </TableHead>
                       </TableRow>
@@ -317,23 +343,30 @@ export default function CategoriesSection() {
                             <TableRow
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              className={snapshot.isDragging ? "bg-muted" : ""}
+                              className={`hover:bg-slate-50/80 transition-colors duration-200 border-slate-200/40 ${
+                                snapshot.isDragging
+                                  ? "bg-slate-100/80 shadow-lg"
+                                  : ""
+                              }`}
                             >
                               <TableCell {...provided.dragHandleProps}>
                                 <GripVertical className="h-4 w-4 text-muted-foreground" />
                               </TableCell>
-                              <TableCell className="font-medium">
+                              <TableCell className="font-semibold text-slate-800 py-4">
                                 {category.name}
                               </TableCell>
-                              <TableCell className="text-muted-foreground">
-                                {category.slug}
+                              <TableCell className="text-slate-500 py-4">
+                                <code className="text-sm bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg font-mono border border-indigo-200/50">
+                                  {category.slug}
+                                </code>
                               </TableCell>
                               <TableCell>
                                 <Badge
-                                  className="text-background"
-                                  variant={
-                                    category.isActive ? "default" : "secondary"
-                                  }
+                                  className={`px-3 py-1 font-medium ${
+                                    category.isActive
+                                      ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                                      : "bg-slate-100 text-slate-700 border border-slate-200"
+                                  }`}
                                 >
                                   {category.isActive ? "Active" : "Inactive"}
                                 </Badge>
@@ -344,7 +377,7 @@ export default function CategoriesSection() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="cursor-pointer text-primary hover:text-primary/80"
+                                    className="hover:bg-emerald-500 hover:text-white transition-all duration-200 cursor-pointer"
                                     onClick={() => openEditDialog(category)}
                                   >
                                     <Edit className="h-4 w-4" />
@@ -355,7 +388,7 @@ export default function CategoriesSection() {
                                     onClick={() =>
                                       setDeleteDialogId(category._id)
                                     }
-                                    className="text-destructive hover:text-destructive cursor-pointer"
+                                    className="hover:bg-red-500 hover:text-white transition-all duration-200 cursor-pointer"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>

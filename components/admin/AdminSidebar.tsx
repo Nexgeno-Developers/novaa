@@ -40,6 +40,7 @@ import {
 interface AdminSidebarProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  isMobile?: boolean;
 }
 
 interface NavigationItem {
@@ -95,6 +96,7 @@ const navigation: NavigationItem[] = [
 export default function AdminSidebar({
   isCollapsed,
   onToggleCollapse,
+  isMobile = false,
 }: AdminSidebarProps) {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -149,8 +151,8 @@ export default function AdminSidebar({
                 variant="ghost"
                 className={`w-full justify-center p-0 h-12 mb-2 rounded-xl transition-all duration-300 group relative ${
                   hasActiveChild
-                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
-                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-50 hover:shadow-sm"
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:text-white hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 hover:-translate-y-0.5"
+                    : "text-slate-500 hover:text-white hover:bg-gradient-to-br hover:from-emerald-500 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105 hover:-translate-y-0.5"
                 }`}
               >
                 <item.icon
@@ -163,19 +165,16 @@ export default function AdminSidebar({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent
-              side="right"
-              className="admin-sidebar-tooltip admin-theme"
-            >
-              <div className="flex flex-col space-y-1 min-w-[160px]">
-                <span className="font-semibold text-yellow-400 text-base mb-2">
+            <TooltipContent side="right" className="admin-sidebar-tooltip">
+              <div className="flex flex-col space-y-2 min-w-[160px]">
+                <span className="font-bold text-slate-800 text-base border-b border-emerald-200 pb-1">
                   {item.name}
                 </span>
                 {item.children?.map((child) => (
                   <Link
                     key={child.name}
                     href={child.href}
-                    className="block px-3 py-2 text-sm text-yellow-300 hover:text-yellow-200 hover:bg-yellow-500/20 rounded-lg transition-all duration-200"
+                    className="block px-3 py-2 text-sm text-slate-600 hover:text-slate-800 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 rounded-lg transition-all duration-200 border border-transparent hover:border-emerald-200 hover:shadow-sm"
                   >
                     {child.name}
                   </Link>
@@ -196,8 +195,8 @@ export default function AdminSidebar({
                 variant="ghost"
                 className={`w-full justify-center p-0 h-12 mb-2 rounded-xl transition-all duration-300 group relative ${
                   itemIsActive
-                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30"
-                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-50 hover:shadow-sm"
+                    ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:text-white hover:shadow-xl hover:shadow-emerald-500/50 hover:scale-105 hover:-translate-y-0.5"
+                    : "text-slate-500 hover:text-white hover:bg-gradient-to-br hover:from-emerald-500 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-105 hover:-translate-y-0.5"
                 }`}
                 asChild
               >
@@ -211,7 +210,7 @@ export default function AdminSidebar({
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right" className="admin-sidebar-tooltip">
-              <span className="text-sm font-semibold text-yellow-400">
+              <span className="text-sm font-bold text-slate-800">
                 {item.name}
               </span>
             </TooltipContent>
@@ -229,16 +228,16 @@ export default function AdminSidebar({
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className="w-full justify-start px-4 py-3 h-12 mb-1 rounded-xl transition-all duration-300 group hover:bg-slate-50/50 text- hover:text-primary-foreground"
+              className="w-full justify-start px-4 py-3 h-12 mb-1 rounded-xl transition-all duration-300 group hover:bg-gradient-to-r hover:from-emerald-500 hover:to-teal-600 hover:text-white text-slate-700 hover:shadow-lg hover:shadow-emerald-500/25"
             >
-              <item.icon className="h-5 w-5 mr-3 text-slate-500 transition-all duration-300 group-hover:text-slate-700 group-hover:scale-105" />
+              <item.icon className="h-5 w-5 mr-3 text-slate-500 transition-all duration-300 group-hover:text-white group-hover:scale-110" />
               <span className="flex-1 text-left font-medium text-sm">
                 {item.name}
               </span>
               {isExpanded ? (
-                <ChevronDown className="h-4 w-4 text-slate-400 transition-transform duration-300" />
+                <ChevronDown className="h-4 w-4 text-slate-400 group-hover:text-white transition-all duration-300 group-hover:rotate-180" />
               ) : (
-                <ChevronRight className="h-4 w-4 text-slate-400 transition-transform duration-300" />
+                <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-white transition-all duration-300 group-hover:translate-x-1" />
               )}
             </Button>
           </CollapsibleTrigger>
@@ -262,8 +261,8 @@ export default function AdminSidebar({
           level > 0 ? "ml-0" : ""
         } ${
           itemIsActive
-            ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:text-white hover:shadow-xl hover:shadow-emerald-500/40"
-            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50/70 hover:shadow-sm"
+            ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:text-white hover:shadow-xl hover:shadow-emerald-500/50"
+            : "text-slate-600 hover:text-white hover:bg-gradient-to-r hover:from-emerald-500 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/25"
         }`}
         asChild
       >
@@ -271,9 +270,7 @@ export default function AdminSidebar({
           <item.icon
             className={`h-5 w-5 mr-3 transition-all duration-300 ${
               itemIsActive ? "drop-shadow-sm" : "group-hover:scale-110"
-            } ${
-              itemIsActive ? "" : "text-slate-500 group-hover:text-slate-700"
-            }`}
+            } ${itemIsActive ? "" : "text-slate-500 group-hover:text-white"}`}
           />
           <span className="font-medium text-sm">{item.name}</span>
           {itemIsActive && (
@@ -334,7 +331,7 @@ export default function AdminSidebar({
           <div className="relative w-5 h-5">
             {/* Menu Icon */}
             <Menu
-              className={`sidebar-toggle-icon absolute inset-0 h-5 w-5 text-primary-foreground ${
+              className={`sidebar-toggle-icon absolute inset-0 h-5 w-5 text-gray-900 ${
                 isCollapsed
                   ? "sidebar-toggle-icon-enter opacity-100"
                   : "sidebar-toggle-icon-exit opacity-0"
@@ -342,7 +339,7 @@ export default function AdminSidebar({
             />
             {/* X Icon */}
             <X
-              className={`sidebar-toggle-icon absolute inset-0 h-5 w-5 text-primary-foreground ${
+              className={`hidden lg:flex sidebar-toggle-icon absolute inset-0 h-5 w-5 text-gray-900 ${
                 !isCollapsed
                   ? "sidebar-toggle-icon-enter opacity-100"
                   : "sidebar-toggle-icon-exit opacity-0"
@@ -350,21 +347,20 @@ export default function AdminSidebar({
             />
           </div>
         </Button>
-
       </div>
 
       {/* Navigation - Scrollable area */}
       <div className="flex-1 overflow-hidden pt-2">
         <ScrollArea className="h-full px-3">
-          <nav className="space-y-2 pb-6">
+          <nav>
             {/* Primary Navigation */}
-            <div className="space-y-1">
+            <div>
               {navigation.slice(0, 2).map((item) => (
                 <NavItem key={item.name} item={item} />
               ))}
             </div>
             {/* Secondary Navigation */}
-            <div className="space-y-1">
+            <div>
               {navigation.slice(2).map((item) => (
                 <NavItem key={item.name} item={item} />
               ))}
@@ -384,10 +380,10 @@ export default function AdminSidebar({
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-primary-foreground truncate">
+              <p className="text-sm font-medium text-primary truncate">
                 Novaa Global Properties
               </p>
-              <p className="text-xs text-slate-500">ADMIN CMS</p>
+              <p className="text-xs text-emerald-500">ADMIN CMS</p>
             </div>
           </div>
         ) : (

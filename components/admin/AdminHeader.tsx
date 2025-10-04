@@ -261,13 +261,13 @@ export default function AdminHeader({
               onClick={() => setCommandOpen(true)}
             >
               <Search className="mr-3 h-4 w-4 text-slate-500 group-hover:text-emerald-600 transition-colors" />
-              <span className="hidden xl:inline text-slate-600 group-hover:text-slate-800">
+              <span className="hidden xl:inline text-slate-600 group-hover:text-gray-900">
                 Search or jump to...
               </span>
               <span className="xl:hidden text-slate-600 group-hover:text-slate-800">
                 Search...
               </span>
-              <div className="absolute right-3 flex items-center space-x-1">
+              <div className="absolute right-3 flex items-center space-x-1 group-hover:text-gray-900">
                 <kbd className="inline-flex items-center rounded-lg border border-slate-200/60 px-1.5 py-0.5 text-xs font-mono bg-white/80">
                   <Command className="h-3 w-3" />
                 </kbd>

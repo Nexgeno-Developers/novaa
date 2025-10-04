@@ -248,11 +248,11 @@ const FooterManagerPage = () => {
     if (!formData) return;
     setSaving(true);
     try {
-      console.log("test")
+      console.log("test");
       await dispatch(updateFooterData(formData)).unwrap();
       toast.success("Footer has been updated.");
     } catch (error) {
-      console.log("error" , error)
+      console.log("error", error);
       toast.error("Failed to update footer.");
     } finally {
       setSaving(false);
@@ -276,16 +276,38 @@ const FooterManagerPage = () => {
   }
 
   return (
-    <div className="sm:p-8 space-y-6 font-poppins">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white p-6 -m-6 space-y-8 font-poppins">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Footer Manager</h1>
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm">
+            <Images className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent">
+              Footer Manager
+            </h1>
+            <p className="text-slate-600 font-medium">
+              Design and customize your website footer content
+            </p>
+          </div>
+        </div>
       </div>
 
-      <Card className="py-6 mt-2 bg-sidebar ring-2 ring-primary/20">
-        <CardHeader>
-          <CardTitle className="text-accent">
-            Footer Tagline & Background Images
-          </CardTitle>
+      <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold">
+                Content & Branding
+              </CardTitle>
+              <CardDescription className="text-slate-600">
+                Configure footer taglines, descriptions, and background images
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
 
         <CardContent>
@@ -392,9 +414,16 @@ const FooterManagerPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* About Us */}
-        <Card className="py-6 mt-4 bg-sidebar ring-2 ring-primary/20">
-          <CardHeader>
-            <CardTitle className="text-accent">About Us Column</CardTitle>
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+                <Book className="h-4 w-4 text-white" />
+              </div>
+              <CardTitle className="text-lg font-bold">
+                About Us Section
+              </CardTitle>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -421,19 +450,24 @@ const FooterManagerPage = () => {
         </Card>
 
         {/* Quick Links with CRUD */}
-        <Card className="bg-sidebar py-6 mt-4 ring-2 ring-primary/20">
-          <CardHeader>
-            <CardTitle className="text-accent flex items-center justify-between">
-              Quick Links Column
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-sm">
+                  <Plus className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg font-bold">Quick Links</CardTitle>
+              </div>
               <Button
                 onClick={addQuickLink}
                 size="sm"
-                className="h-8 w-8 p-0"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 h-8 w-8 p-0"
                 title="Add Quick Link"
               >
                 <Plus className="h-4 w-4" />
               </Button>
-            </CardTitle>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -498,9 +532,30 @@ const FooterManagerPage = () => {
         </Card>
 
         {/* Contact & Socials with CRUD */}
-        <Card className="bg-sidebar py-6 mt-4 ring-2 ring-primary/20">
-          <CardHeader>
-            <CardTitle className="text-accent">Contact Column</CardTitle>
+        <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-sm">
+                  <Copyright className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg font-bold">
+                  Contact & Socials
+                </CardTitle>
+              </div>
+              <Button
+                onClick={addSocialLink}
+                size="sm"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 h-8 w-8 p-0"
+                title="Add Social Link"
+                disabled={
+                  formData.socials.links.length >=
+                  availableSocialPlatforms.length
+                }
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -626,25 +681,25 @@ const FooterManagerPage = () => {
           <Button
             onClick={handleDiscardChanges}
             variant="outline"
-            className="shadow-lg hover:shadow-xl transition-all duration-200 bg-white border-2 border-red-200 hover:border-red-300 text-red-600 hover:text-red-700"
+            className="bg-white/90 backdrop-blur-xl border border-red-200 hover:border-red-300 text-red-600 hover:text-red-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             <XCircle className="h-4 w-4 mr-2" />
-            Discard
+            <span className="font-medium">Discard Changes</span>
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={saving}
-            className="shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 text-background"
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
+                <span className="font-medium">Saving...</span>
               </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                <span className="font-medium">Save Changes</span>
               </>
             )}
           </Button>

@@ -51,6 +51,7 @@ export default function RichTextEditor({
   const autoId = useId();
   const editorId = id ?? `editor-${autoId}`;
   const editorInstanceRef = useRef<any>(null);
+  const isUserTypingRef = useRef(false);
 
   useEffect(() => {
     const initEditor = async () => {
@@ -91,6 +92,18 @@ export default function RichTextEditor({
               }, 100);
             });
 
+            // Track when user is actively typing/editing
+            editor.on("keydown mousedown focus", () => {
+              isUserTypingRef.current = true;
+            });
+
+            // Clear typing flag after a delay
+            editor.on("blur", () => {
+              setTimeout(() => {
+                isUserTypingRef.current = false;
+              }, 100);
+            });
+
             // Handle content changes - but ignore during initial load
             editor.on("change keyup undo redo", () => {
               if (!isInitialLoad) {
@@ -128,22 +141,15 @@ export default function RichTextEditor({
         }
       }
     };
-  }, [editorId, height, disabled, value]); // Include value in deps to re-initialize when content changes
+  }, [editorId, height, disabled]);
 
-  // Update content when value prop changes
+  // Update content when value prop changes - BUT NOT WHILE USER IS TYPING
   useEffect(() => {
     if (editorInstanceRef.current && editorInstanceRef.current.initialized) {
       const currentContent = editorInstanceRef.current.getContent();
-      const hasValue = !!value && value.trim().length > 0;
-      const hasCurrentContent =
-        !!currentContent && currentContent.trim().length > 0;
-
-      // Special case: Editor was initialized with empty content but now we have content
-      const shouldUpdateContent =
-        currentContent !== value &&
-        (!hasCurrentContent && hasValue ? true : hasValue);
-
-      if (shouldUpdateContent) {
+      
+      // CRITICAL: Only update if user is NOT actively typing/editing
+      if (currentContent !== value && !isUserTypingRef.current) {
         // Mark this as a programmatic update to prevent triggering onChange
         editorInstanceRef.current._programmingUpdate = true;
         editorInstanceRef.current.setContent(value || "");

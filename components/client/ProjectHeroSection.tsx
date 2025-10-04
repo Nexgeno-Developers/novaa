@@ -258,6 +258,9 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
     try {
       setIsSubmitting(true);
 
+      // Get current page URL
+      const pageUrl = window.location.href;
+
       // Prepare enquiry data with project title as location
       const enquiryData = {
         fullName: formData.fullName,
@@ -265,6 +268,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
         phoneNo: formData.phone,
         location: project.name, // Use project title as location
         message: formData.message,
+        pageUrl,
       };
 
       // Submit enquiry using Redux

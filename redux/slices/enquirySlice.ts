@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Enquiry {
   _id: string;
@@ -7,9 +7,10 @@ export interface Enquiry {
   phoneNo: string;
   location: string;
   message?: string;
-  status: 'new' | 'contacted' | 'interested' | 'closed';
-  priority: 'low' | 'medium' | 'high';
+  status: "new" | "contacted" | "interested" | "closed";
+  priority: "low" | "medium" | "high";
   notes?: string;
+  pageUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -20,12 +21,13 @@ export interface EnquiryFormData {
   phoneNo: string;
   location: string;
   message?: string;
+  pageUrl?: string;
 }
 
 export interface EnquiryUpdateData {
   id: string;
-  status?: 'new' | 'contacted' | 'interested' | 'closed';
-  priority?: 'low' | 'medium' | 'high';
+  status?: "new" | "contacted" | "interested" | "closed";
+  priority?: "low" | "medium" | "high";
   notes?: string;
 }
 
@@ -61,7 +63,7 @@ interface EnquiryState {
   filters: EnquiryFilters;
   loading: boolean;
   error: string | null;
-  submissionStatus: 'idle' | 'submitting' | 'success' | 'error';
+  submissionStatus: "idle" | "submitting" | "success" | "error";
 }
 
 const initialState: EnquiryState = {
@@ -84,113 +86,113 @@ const initialState: EnquiryState = {
   filters: {
     page: 1,
     limit: 10,
-    status: 'all',
-    priority: 'all',
-    search: '',
+    status: "all",
+    priority: "all",
+    search: "",
   },
   loading: false,
   error: null,
-  submissionStatus: 'idle',
+  submissionStatus: "idle",
 };
 
 // Async thunks
 export const fetchEnquiries = createAsyncThunk(
-  'enquiry/fetchEnquiries',
+  "enquiry/fetchEnquiries",
   async (filters: Partial<EnquiryFilters> = {}) => {
     const params = new URLSearchParams();
-    
+
     Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
+      if (value !== undefined && value !== null && value !== "") {
         params.append(key, value.toString());
       }
     });
 
     const response = await fetch(`/api/enquiries?${params.toString()}`);
-    
+
     if (!response.ok) {
-      throw new Error('Failed to fetch enquiries');
+      throw new Error("Failed to fetch enquiries");
     }
-    
+
     const data = await response.json();
     return data.data;
   }
 );
 
 export const fetchSingleEnquiry = createAsyncThunk(
-  'enquiry/fetchSingleEnquiry',
+  "enquiry/fetchSingleEnquiry",
   async (id: string) => {
     const response = await fetch(`/api/enquiries/${id}`);
-    
+
     if (!response.ok) {
-      throw new Error('Failed to fetch enquiry');
+      throw new Error("Failed to fetch enquiry");
     }
-    
+
     const data = await response.json();
     return data.data;
   }
 );
 
 export const createEnquiry = createAsyncThunk(
-  'enquiry/createEnquiry',
+  "enquiry/createEnquiry",
   async (enquiryData: EnquiryFormData) => {
-    const response = await fetch('/api/enquiries', {
-      method: 'POST',
+    const response = await fetch("/api/enquiries", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(enquiryData),
     });
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to submit enquiry');
+      throw new Error(data.message || "Failed to submit enquiry");
     }
-    
+
     return data.data;
   }
 );
 
 export const updateEnquiry = createAsyncThunk(
-  'enquiry/updateEnquiry',
+  "enquiry/updateEnquiry",
   async ({ id, ...updateData }: EnquiryUpdateData) => {
     const response = await fetch(`/api/enquiries/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(updateData),
     });
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to update enquiry');
+      throw new Error(data.message || "Failed to update enquiry");
     }
-    
+
     return data.data;
   }
 );
 
 export const deleteEnquiry = createAsyncThunk(
-  'enquiry/deleteEnquiry',
+  "enquiry/deleteEnquiry",
   async (id: string) => {
     const response = await fetch(`/api/enquiries/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
-      throw new Error(data.message || 'Failed to delete enquiry');
+      throw new Error(data.message || "Failed to delete enquiry");
     }
-    
+
     return id;
   }
 );
 
 const enquirySlice = createSlice({
-  name: 'enquiry',
+  name: "enquiry",
   initialState,
   reducers: {
     setFilters: (state, action: PayloadAction<Partial<EnquiryFilters>>) => {
@@ -203,7 +205,7 @@ const enquirySlice = createSlice({
       state.error = null;
     },
     resetSubmissionStatus: (state) => {
-      state.submissionStatus = 'idle';
+      state.submissionStatus = "idle";
     },
   },
   extraReducers: (builder) => {
@@ -221,9 +223,9 @@ const enquirySlice = createSlice({
       })
       .addCase(fetchEnquiries.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch enquiries';
+        state.error = action.error.message || "Failed to fetch enquiries";
       })
-      
+
       // Fetch single enquiry
       .addCase(fetchSingleEnquiry.pending, (state) => {
         state.loading = true;
@@ -235,22 +237,22 @@ const enquirySlice = createSlice({
       })
       .addCase(fetchSingleEnquiry.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch enquiry';
+        state.error = action.error.message || "Failed to fetch enquiry";
       })
-      
+
       // Create enquiry
       .addCase(createEnquiry.pending, (state) => {
-        state.submissionStatus = 'submitting';
+        state.submissionStatus = "submitting";
         state.error = null;
       })
       .addCase(createEnquiry.fulfilled, (state) => {
-        state.submissionStatus = 'success';
+        state.submissionStatus = "success";
       })
       .addCase(createEnquiry.rejected, (state, action) => {
-        state.submissionStatus = 'error';
-        state.error = action.error.message || 'Failed to submit enquiry';
+        state.submissionStatus = "error";
+        state.error = action.error.message || "Failed to submit enquiry";
       })
-      
+
       // Update enquiry
       .addCase(updateEnquiry.pending, (state) => {
         state.loading = true;
@@ -258,7 +260,9 @@ const enquirySlice = createSlice({
       })
       .addCase(updateEnquiry.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.enquiries.findIndex(e => e._id === action.payload._id);
+        const index = state.enquiries.findIndex(
+          (e) => e._id === action.payload._id
+        );
         if (index !== -1) {
           state.enquiries[index] = action.payload;
         }
@@ -268,9 +272,9 @@ const enquirySlice = createSlice({
       })
       .addCase(updateEnquiry.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to update enquiry';
+        state.error = action.error.message || "Failed to update enquiry";
       })
-      
+
       // Delete enquiry
       .addCase(deleteEnquiry.pending, (state) => {
         state.loading = true;
@@ -278,17 +282,24 @@ const enquirySlice = createSlice({
       })
       .addCase(deleteEnquiry.fulfilled, (state, action) => {
         state.loading = false;
-        state.enquiries = state.enquiries.filter(e => e._id !== action.payload);
+        state.enquiries = state.enquiries.filter(
+          (e) => e._id !== action.payload
+        );
         if (state.selectedEnquiry?._id === action.payload) {
           state.selectedEnquiry = null;
         }
       })
       .addCase(deleteEnquiry.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to delete enquiry';
+        state.error = action.error.message || "Failed to delete enquiry";
       });
   },
 });
 
-export const { setFilters, clearSelectedEnquiry, clearError, resetSubmissionStatus } = enquirySlice.actions;
+export const {
+  setFilters,
+  clearSelectedEnquiry,
+  clearError,
+  resetSubmissionStatus,
+} = enquirySlice.actions;
 export default enquirySlice.reducer;

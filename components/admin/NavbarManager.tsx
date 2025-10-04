@@ -25,6 +25,8 @@ import {
   Loader2,
   ChevronDown,
   ChevronRight,
+  Book,
+  Images,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -156,12 +158,12 @@ function DraggableNavItem({
           />
         )}
         <div
-          className={`flex items-center space-x-4 p-4 border rounded-lg bg-white ring-2 ring-primary/10 cursor-grab transition-opacity ${
-            dragging ? "opacity-40" : "opacity-100"
+          className={`flex items-center space-x-4 p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-slate-200/60 cursor-grab transition-all duration-200 hover:shadow-lg hover:shadow-slate-200/20 hover:-translate-y-1 ${
+            dragging ? "opacity-40 scale-95" : "opacity-100"
           }`}
         >
           <GripVertical className="h-4 w-4 text-gray-400" />
-          
+
           {/* Expand/Collapse Button */}
           {hasSubmenu && (
             <Button
@@ -177,7 +179,7 @@ function DraggableNavItem({
               )}
             </Button>
           )}
-          
+
           <div className="flex-1">
             <div className="flex items-center space-x-2">
               <span className="font-medium">{item.label}</span>
@@ -190,12 +192,12 @@ function DraggableNavItem({
             </div>
             <span className="text-sm text-gray-500">{item.href}</span>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
               size="sm"
-              className="bg-green-500 hover:bg-green-600 text-white cursor-pointer"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm hover:shadow-md transition-all duration-200"
               onClick={() => onAddSubmenu(item._id!)}
               title="Add Submenu"
             >
@@ -204,7 +206,7 @@ function DraggableNavItem({
             <Button
               variant="outline"
               size="sm"
-              className="bg-primary text-background cursor-pointer"
+              className="bg-slate-600 hover:bg-slate-700 text-white shadow-sm hover:shadow-md transition-all duration-200"
               onClick={() => onEdit(item)}
             >
               <Edit className="h-4 w-4" />
@@ -212,7 +214,7 @@ function DraggableNavItem({
             <Button
               variant="outline"
               size="sm"
-              className="bg-red-500 hover:bg-red-600 text-white cursor-pointer"
+              className="bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md transition-all duration-200"
               onClick={() => onDelete(item._id!)}
             >
               <Trash2 className="h-4 w-4" />
@@ -227,16 +229,22 @@ function DraggableNavItem({
           {item.submenu?.map((submenuItem, subIndex) => (
             <div
               key={submenuItem._id || subIndex}
-              className="flex items-center space-x-4 p-3 border border-gray-200 rounded-lg bg-gray-50"
+              className="flex items-center space-x-4 p-3 rounded-lg bg-slate-50/80 border border-slate-200/60 hover:bg-slate-100/80 transition-colors duration-200"
             >
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
-                  <span className="font-medium text-sm">{submenuItem.label}</span>
+                  <span className="font-medium text-sm">
+                    {submenuItem.label}
+                  </span>
                   {!submenuItem.isActive && (
-                    <Badge variant="secondary" className="text-xs">Inactive</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      Inactive
+                    </Badge>
                   )}
                 </div>
-                <span className="text-xs text-gray-500">{submenuItem.href}</span>
+                <span className="text-xs text-gray-500">
+                  {submenuItem.href}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button
@@ -307,7 +315,7 @@ export default function NavbarManager() {
 
   // Toggle expanded state for nav items
   const toggleExpanded = (id: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -375,7 +383,9 @@ export default function NavbarManager() {
   };
 
   const handleAddSubmenu = (parentId: string) => {
-    const parentItem = localNavbarState.items.find(item => item._id === parentId);
+    const parentItem = localNavbarState.items.find(
+      (item) => item._id === parentId
+    );
     const newSubmenu: SubmenuItem = {
       label: "",
       href: "",
@@ -412,23 +422,33 @@ export default function NavbarManager() {
   };
 
   const handleSaveSubmenu = () => {
-    if (!editingSubmenu || !editingSubmenu.submenu?.label || !editingSubmenu.submenu?.href) return;
-    
+    if (
+      !editingSubmenu ||
+      !editingSubmenu.submenu?.label ||
+      !editingSubmenu.submenu?.href
+    )
+      return;
+
     const updatedItems = localNavbarState.items.map((item) => {
       if (item._id === editingSubmenu.parentId) {
         const updatedItem = { ...item };
         if (!updatedItem.submenu) {
           updatedItem.submenu = [];
         }
-        
+
         if (editingSubmenu.submenu!._id) {
           // Editing existing submenu
           updatedItem.submenu = updatedItem.submenu.map((sub) =>
-            sub._id === editingSubmenu.submenu!._id ? editingSubmenu.submenu! : sub
+            sub._id === editingSubmenu.submenu!._id
+              ? editingSubmenu.submenu!
+              : sub
           );
         } else {
           // Adding new submenu
-          updatedItem.submenu = [...updatedItem.submenu, editingSubmenu.submenu!];
+          updatedItem.submenu = [
+            ...updatedItem.submenu,
+            editingSubmenu.submenu!,
+          ];
         }
         return updatedItem;
       }
@@ -439,7 +459,9 @@ export default function NavbarManager() {
     setEditingSubmenu(null);
     setShowSubmenuForm(false);
     toast.success(
-      editingSubmenu.submenu!._id ? "Submenu updated locally" : "New submenu added locally"
+      editingSubmenu.submenu!._id
+        ? "Submenu updated locally"
+        : "New submenu added locally"
     );
   };
 
@@ -495,13 +517,22 @@ export default function NavbarManager() {
   }
 
   return (
-    <div className="p-8 space-y-6 font-poppins">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white p-6 -m-6 space-y-8 font-poppins">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Navbar Management</h1>
-          <p className="text-gray-600">
-            Manage your website navigation, logo, and submenus
-          </p>
+          <div className="flex items-center space-x-3 mb-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-sm">
+              <Book className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-700 bg-clip-text text-transparent">
+                Navigation Manager
+              </h1>
+              <p className="text-slate-600 font-medium">
+                Design and organize your website navigation structure
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -512,35 +543,56 @@ export default function NavbarManager() {
       )}
 
       {/* Logo Management */}
-      <Card className="py-6 bg-sidebar text-primary shadow-lg ring-2 ring-primary/20">
-        <CardHeader>
-          <CardTitle>Logo Settings</CardTitle>
-          <CardDescription>
-            Manage your website logo and branding
-          </CardDescription>
+      <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
+              <Images className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold">
+                Brand Identity
+              </CardTitle>
+              <CardDescription className="text-slate-600">
+                Upload and manage your website logo
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4 flex justify-between">
+        <CardContent className="space-y-6">
           {localNavbarState.logo && localNavbarState.logo.url && (
-            <div className="flex items-center space-x-4">
-              <img
-                src={localNavbarState.logo.url}
-                alt="Current Logo"
-                className="h-18 w-auto border rounded p-2 bg-gray-300 ring-2 ring-primary/20"
-              />
-              <span className="text-sm text-gray-600">Current logo</span>
+            <div className="flex items-center space-x-4 p-4 rounded-xl bg-slate-50/60 border border-slate-200/40">
+              <div className="w-16 h-16 bg-gray-400 rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+                <img
+                  src={localNavbarState.logo.url}
+                  alt="Current Logo"
+                  className="w-full h-full object-contain p-2"
+                />
+              </div>
+              <div>
+                <span className="text-sm font-semibold text-slate-800">
+                  Current Logo
+                </span>
+                <p className="text-xs text-slate-500">Ready for display</p>
+              </div>
             </div>
           )}
-          <div className="pt-4">
-            <Label>Select Logo</Label>
-            <div className="flex items-center space-x-4 mt-2">
-              <Button
-                onClick={() => setIsLogoSelectorOpen(true)}
-                className="flex items-center space-x-2 text-background cursor-pointer"
-              >
-                <Upload className="h-4 w-4" />
-                <span>Choose from Media</span>
-              </Button>
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-semibold text-slate-700 mb-2 block">
+                Upload New Logo
+              </Label>
+              <p className="text-xs text-slate-500 mb-3">
+                Choose an image from your media library or upload a new one
+              </p>
             </div>
+            <Button
+              onClick={() => setIsLogoSelectorOpen(true)}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 flex items-center space-x-2"
+            >
+              <Upload className="h-4 w-4" />
+              <span className="font-medium">Choose Logo</span>
+            </Button>
           </div>
           <AdvancedMediaSelector
             isOpen={isLogoSelectorOpen}
@@ -560,21 +612,30 @@ export default function NavbarManager() {
       </Card>
 
       {/* Navigation Items */}
-      <Card className="py-6 bg-sidebar text-primary shadow-lg ring-2 ring-primary/20">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Navigation Items</CardTitle>
-            <CardDescription>
-              Manage your website navigation menu and submenus. Drag to reorder items.
-            </CardDescription>
+      <Card className="bg-white/80 backdrop-blur-xl border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-sm">
+                <ChevronDown className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold">
+                  Menu Structure
+                </CardTitle>
+                <CardDescription className="text-slate-600">
+                  Organize navigation items and create hierarchical menus
+                </CardDescription>
+              </div>
+            </div>
+            <Button
+              onClick={handleAddItem}
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 flex items-center space-x-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="font-medium">Add Menu Item</span>
+            </Button>
           </div>
-          <Button
-            onClick={handleAddItem}
-            className="flex items-center space-x-2 text-background cursor-pointer"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add Item</span>
-          </Button>
         </CardHeader>
         <CardContent>
           {localNavbarState.items.length === 0 ? (
@@ -790,7 +851,9 @@ export default function NavbarManager() {
                 }
               />
               <Label
-                htmlFor={`submenu-active-${editingSubmenu?.submenu?._id || "new"}`}
+                htmlFor={`submenu-active-${
+                  editingSubmenu?.submenu?._id || "new"
+                }`}
                 className="text-sm text-gray-700"
               >
                 Active (visible in submenu)
@@ -830,25 +893,25 @@ export default function NavbarManager() {
           <Button
             onClick={handleDiscardChanges}
             variant="outline"
-            className="shadow-lg hover:shadow-xl transition-all duration-200 bg-white border-2 border-red-200 hover:border-red-300 text-red-600 hover:text-red-700"
+            className="bg-white/90 backdrop-blur-xl border border-red-200 hover:border-red-300 text-red-600 hover:text-red-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             <XCircle className="h-4 w-4 mr-2" />
-            Discard
+            <span className="font-medium">Discard Changes</span>
           </Button>
           <Button
             onClick={handleSaveChanges}
             disabled={saving}
-            className="cursor-pointer shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90 text-background"
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
+                <span className="font-medium">Saving...</span>
               </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                <span className="font-medium">Save Changes</span>
               </>
             )}
           </Button>

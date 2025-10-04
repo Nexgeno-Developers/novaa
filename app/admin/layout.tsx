@@ -5,6 +5,22 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import AuthGuard from "@/components/auth/AuthGuard";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
@@ -102,6 +118,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <AdminSidebar
             isCollapsed={isCollapsed}
             onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+            isMobile={false}
           />
         </div>
 
@@ -109,21 +126,27 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
           <SheetContent
             side="left"
-            className="p-0 w-72 bg-gradient-to-b from-slate-50 to-white border-slate-200/60"
+            className="p-0 w-72 bg-gradient-to-b from-slate-50 to-white border-slate-200/60 h-full flex flex-col"
           >
-            <div className="relative">
-              {/* Close Button for Mobile */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSidebarOpen(false)}
-                className="absolute top-4 right-4 z-10 h-10 w-10 rounded-2xl sidebar-toggle-btn sidebar-expanded"
-              >
-                <div className="relative w-5 h-5">
-                  <X className="sidebar-toggle-icon sidebar-toggle-icon-enter opacity-100 h-5 w-5 text-slate-500" />
-                </div>
-              </Button>
-              <AdminSidebar isCollapsed={false} onToggleCollapse={() => {}} />
+            {/* Close Button for Mobile - Using modern gradient button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(false)}
+              className="absolute top-4 right-4 z-10 h-12 w-12 rounded-2xl bg-gradient-to-br from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm"
+            >
+              <div className="flex items-center justify-center relative">
+                <X className="h-6 w-6 drop-shadow-sm" />
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-white rounded-full shadow-sm animate-pulse"></div>
+              </div>
+            </Button>
+            {/* Mobile AdminSidebar - hide the built-in toggle button */}
+            <div className="mobile-sidebar-wrapper flex-1 flex flex-col h-full">
+              <AdminSidebar
+                isCollapsed={false}
+                onToggleCollapse={() => {}}
+                isMobile={true}
+              />
             </div>
           </SheetContent>
         </Sheet>
