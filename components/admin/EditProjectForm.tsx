@@ -659,7 +659,14 @@ export default function EditProjectPage() {
     if (newGatewayLocation.name && newGatewayLocation.image) {
       setProjectDetailData((prev) => {
         const updatedCategories = [...prev.gateway.categories];
-        updatedCategories[categoryIndex].locations.push(newGatewayLocation);
+        // Create a new category object with updated locations array
+        updatedCategories[categoryIndex] = {
+          ...updatedCategories[categoryIndex],
+          locations: [
+            ...updatedCategories[categoryIndex].locations,
+            newGatewayLocation,
+          ],
+        };
         return {
           ...prev,
           gateway: {

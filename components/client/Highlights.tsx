@@ -120,7 +120,7 @@ const Highlights: React.FC<HighlightsProps> = ({ project }) => {
               >
                 <div className="flex-shrink-0 mt-1">
                   <Image
-                    src="/icons/pin.svg"
+                    src="/icons/checked-icon.svg"
                     alt="pin icon"
                     width={30}
                     height={30}
