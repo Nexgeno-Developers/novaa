@@ -77,10 +77,10 @@ export default function InvestorInsightsManager({
   const isInitializedRef = useRef(false);
   const initialDataSetRef = useRef(false);
   const userHasInteractedRef = useRef(false);
- 
+
   const [contentForm, setContentForm] = useState<IInvestorInsightsContent>({
     title: section?.content?.title || "",
-    subtitle: section?.content?.subtitle ||  "",
+    subtitle: section?.content?.subtitle || "",
     description: section?.content?.description || "",
   });
 
@@ -105,6 +105,7 @@ export default function InvestorInsightsManager({
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState<{
     isOpen: boolean;
     testimonial: ITestimonial | null;
+    index?: number;
   }>({
     isOpen: false,
     testimonial: null,
@@ -252,15 +253,36 @@ export default function InvestorInsightsManager({
             testimonial: testimonialForm,
           })
         ).unwrap();
+
+        // Trigger onChange to update the section and mark for global save
+        const combinedData = {
+          title: contentForm.title,
+          subtitle: contentForm.subtitle,
+          description: contentForm.description,
+          testimonials: updatedTestimonials,
+        };
+        onChange({ content: combinedData });
+
         toast.success("Testimonial updated successfully!");
       } else {
         const newTestimonial: ITestimonial = {
           ...testimonialForm,
           _id: Date.now().toString(),
         };
-        updateTestimonials([...localTestimonials, newTestimonial]);
+        const updatedTestimonials = [...localTestimonials, newTestimonial];
+        updateTestimonials(updatedTestimonials);
 
         await dispatch(addTestimonial(testimonialForm)).unwrap();
+
+        // Trigger onChange to update the section and mark for global save
+        const combinedData = {
+          title: contentForm.title,
+          subtitle: contentForm.subtitle,
+          description: contentForm.description,
+          testimonials: updatedTestimonials,
+        };
+        onChange({ content: combinedData });
+
         toast.success("Testimonial added successfully!");
       }
 
@@ -277,38 +299,94 @@ export default function InvestorInsightsManager({
     updateTestimonials,
     dispatch,
     resetTestimonialForm,
+    onChange,
+    contentForm,
   ]);
 
-  const handleDeleteTestimonial = useCallback((testimonial: ITestimonial) => {
-    setDeleteConfirmDialog({
-      isOpen: true,
-      testimonial,
-    });
-  }, []);
+  const handleDeleteTestimonial = useCallback(
+    (testimonial: ITestimonial, index: number) => {
+      setDeleteConfirmDialog({
+        isOpen: true,
+        testimonial,
+        index,
+      });
+    },
+    []
+  );
 
   const confirmDelete = useCallback(async () => {
-    if (deleteConfirmDialog.testimonial?._id) {
-      try {
-        const updatedTestimonials = localTestimonials.filter(
-          (t) => t._id !== deleteConfirmDialog.testimonial?._id
-        );
-        updateTestimonials(updatedTestimonials);
+    if (!deleteConfirmDialog.testimonial) return;
 
-        await dispatch(
-          deleteTestimonial(deleteConfirmDialog.testimonial._id)
-        ).unwrap();
-        toast.success("Testimonial deleted successfully!");
-        setDeleteConfirmDialog({ isOpen: false, testimonial: null });
-      } catch (error) {
-        console.error("Failed to delete testimonial:", error);
-        toast.error("Failed to delete testimonial");
+    try {
+      const testimonialToDelete = deleteConfirmDialog.testimonial;
+
+      // Only make API call for testimonials that exist in the individual testimonial collection
+      // (Section testimonials don't have individual database records)
+      if (
+        testimonialToDelete._id &&
+        testimonialToDelete._id.toString().length === 24
+      ) {
+        // Real MongoDB ObjectId is 24 characters hex
+        await dispatch(deleteTestimonial(testimonialToDelete._id)).unwrap();
       }
+
+      // Delete from local testimonials array regardless of database status
+      const updatedTestimonials = [...localTestimonials];
+
+      if (deleteConfirmDialog.index !== undefined) {
+        // Use index-based deletion (most reliable for section testimonials)
+        updatedTestimonials.splice(deleteConfirmDialog.index, 1);
+      } else if (testimonialToDelete._id) {
+        // Use _id matching as fallback
+        const filteredTestimonials = updatedTestimonials.filter(
+          (t) => t._id !== testimonialToDelete._id
+        );
+        updatedTestimonials.splice(
+          0,
+          updatedTestimonials.length,
+          ...filteredTestimonials
+        );
+      } else {
+        // Use content matching as last resort
+        const filteredTestimonials = updatedTestimonials.filter(
+          (t) =>
+            !(
+              t.content === testimonialToDelete.content &&
+              t.designation === testimonialToDelete.designation &&
+              t.order === testimonialToDelete.order
+            )
+        );
+        updatedTestimonials.splice(
+          0,
+          updatedTestimonials.length,
+          ...filteredTestimonials
+        );
+      }
+
+      updateTestimonials(updatedTestimonials);
+
+      // Trigger onChange to update the section and mark for global save
+      const combinedData = {
+        title: contentForm.title,
+        subtitle: contentForm.subtitle,
+        description: contentForm.description,
+        testimonials: updatedTestimonials,
+      };
+      onChange({ content: combinedData });
+
+      toast.success("Testimonial deleted successfully!");
+      setDeleteConfirmDialog({ isOpen: false, testimonial: null });
+    } catch (error) {
+      toast.error("Failed to delete testimonial. Please try again.");
     }
   }, [
     deleteConfirmDialog.testimonial,
+    deleteConfirmDialog.index,
     localTestimonials,
     updateTestimonials,
     dispatch,
+    onChange,
+    contentForm,
   ]);
 
   const handleDragEnd = useCallback(
@@ -328,18 +406,28 @@ export default function InvestorInsightsManager({
 
       try {
         await dispatch(reorderTestimonials(updatedTestimonials)).unwrap();
+
+        // Trigger onChange to update the section and mark for global save
+        const combinedData = {
+          title: contentForm.title,
+          subtitle: contentForm.subtitle,
+          description: contentForm.description,
+          testimonials: updatedTestimonials,
+        };
+        onChange({ content: combinedData });
+
         toast.success("Testimonials reordered successfully!");
       } catch (error) {
         console.error("Failed to reorder testimonials:", error);
         toast.error("Failed to reorder testimonials");
       }
     },
-    [localTestimonials, updateTestimonials, dispatch]
+    [localTestimonials, updateTestimonials, dispatch, onChange, contentForm]
   );
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(`Error: ${error}`);
       dispatch(clearError());
     }
   }, [error, dispatch]);
@@ -374,7 +462,6 @@ export default function InvestorInsightsManager({
             <Button
               variant="ghost"
               size="sm"
-              
               className="ml-auto cursor-pointer"
               onClick={() => dispatch(clearError())}
             >
@@ -420,8 +507,14 @@ export default function InvestorInsightsManager({
         {/* Testimonials */}
 
         <div className="flex justify-between items-center">
-          <p className="text-sm font-semibold">Testimonials ({localTestimonials.length})</p>
-          <Button size="sm" onClick={handleAddTestimonial} className="cursor-pointer">
+          <p className="text-sm font-semibold">
+            Testimonials ({localTestimonials.length})
+          </p>
+          <Button
+            size="sm"
+            onClick={handleAddTestimonial}
+            className="cursor-pointer"
+          >
             <Plus className="mr-1 h-3 w-3" />
             Add
           </Button>
@@ -432,7 +525,11 @@ export default function InvestorInsightsManager({
             {!localTestimonials || localTestimonials.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
                 <p className="text-sm mb-3">No testimonials found</p>
-                <Button size="sm" onClick={handleAddTestimonial} className="cursor-pointer">
+                <Button
+                  size="sm"
+                  onClick={handleAddTestimonial}
+                  className="cursor-pointer"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Add First Testimonial
                 </Button>
@@ -498,27 +595,41 @@ export default function InvestorInsightsManager({
                                     </Badge>
                                   </div>
 
-                                  <div className="flex items-center gap-1">
+                                  <div
+                                    className="flex items-center gap-1"
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                  >
                                     <Button
                                       variant="outline"
                                       size="sm"
                                       className="cursor-pointer"
-                                      onClick={() =>
-                                        handleEditTestimonial(testimonial)
-                                      }
+                                      onMouseDown={(e) => e.stopPropagation()}
+                                      onPointerDown={(e) => e.stopPropagation()}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleEditTestimonial(testimonial);
+                                      }}
                                     >
                                       <Edit2 className="h-3 w-3" />
                                     </Button>
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      className="cursor-pointer"
-                                      onClick={() =>
-                                        handleDeleteTestimonial(testimonial)
-                                      }
+                                    <button
+                                      type="button"
+                                      className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-8 px-3 py-2 text-destructive"
+                                      onMouseDown={(e) => e.stopPropagation()}
+                                      onPointerDown={(e) => e.stopPropagation()}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleDeleteTestimonial(
+                                          testimonial,
+                                          index
+                                        );
+                                      }}
                                     >
-                                      <Trash2 className="h-3 w-3" />
-                                    </Button>
+                                      <Trash2 className="h-3 w-3 text-white" />
+                                    </button>
                                   </div>
                                 </div>
                               </div>
@@ -629,6 +740,7 @@ export default function InvestorInsightsManager({
                       quote: content,
                     }))
                   }
+                  height={350}
                 />
               </div>
             </div>
@@ -675,7 +787,7 @@ export default function InvestorInsightsManager({
             setDeleteConfirmDialog({ isOpen: false, testimonial: null })
           }
         >
-          <DialogContent>
+          <DialogContent className="max-w-xl admin-theme">
             <DialogHeader>
               <DialogTitle>Confirm Deletion</DialogTitle>
               <DialogDescription>
@@ -718,7 +830,6 @@ export default function InvestorInsightsManager({
                 size="sm"
                 className="cursor-pointer"
                 onClick={confirmDelete}
-                disabled={saving}
               >
                 {saving ? (
                   <Loader2 className="h-3 w-3 animate-spin" />

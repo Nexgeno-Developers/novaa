@@ -250,7 +250,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                         whileHover={{ x: 6 }}
                       >
                         <Link href={`/blog/${relatedBlog.slug}`}>
-                          <div className="flex items-start gap-4">
+                          <div className="flex items-start gap-4 font-josefin">
                             <div className="overflow-hidden rounded-[12px] flex-shrink-0">
                               <img
                                 src={relatedBlog.image}
@@ -299,7 +299,7 @@ export default function BlogDetailClient({ blog, relatedBlogs }: BlogDetailClien
                       <Button 
                         variant="outline" 
                         onClick={() => router.push('/blog')}
-                        className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B] cursor-pointer"
+                        className="w-full border-[#CDB04E] text-[#CDB04E] hover:bg-[#CDB04E] hover:text-[#01292B] cursor-pointer font-josefin"
                       >
                         View All Blogs
                         <ArrowRight className="ml-2 h-4 w-4" />

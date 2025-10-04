@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import parse from "html-react-parser";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 interface ContactDetail {
   _id?: string;
@@ -80,7 +81,7 @@ export default function ContactSection({
   ...props
 }: ContactSectionProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const router = useNavigationRouter();
   const { submissionStatus, error } = useSelector(
     (state: RootState) => state.enquiry
   );
@@ -294,28 +295,17 @@ export default function ContactSection({
                   >
                     Location *
                   </label>
-                  <select
+                    <input
                     {...register("location")}
                     id="location"
-                    className={`w-full bg-transparent border px-4 py-2 rounded text-white focus:bg-background ${
-                      errors.location ? "border-red-400" : "border-[#FFFFFFCC]"
+                    type="text"
+                    placeholder="Enter your location"
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      errors.location
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
                     }`}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      Select your location
-                    </option>
-                    <option value="thailand">Thailand</option>
-                    <option value="uae">UAE</option>
-                    <option value="uk">UK</option>
-                    <option value="usa">USA</option>
-                    <option value="australia">Australia</option>
-                    <option value="singapore">Singapore</option>
-                    <option value="india">India</option>
-                    <option value="canada">Canada</option>
-                    <option value="germany">Germany</option>
-                    <option value="france">France</option>
-                  </select>
+                  />
                   {errors.location && (
                     <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />

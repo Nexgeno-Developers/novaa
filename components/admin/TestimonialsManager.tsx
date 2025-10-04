@@ -531,7 +531,7 @@ const TestimonialsManagerContent = ({
                                       <Trash2 className="w-3 h-3" />
                                     </Button>
                                   </AlertDialogTrigger>
-                                  <AlertDialogContent>
+                                  <AlertDialogContent className="admin-theme">
                                     <AlertDialogHeader>
                                       <AlertDialogTitle>
                                         Delete Testimonial
@@ -543,7 +543,7 @@ const TestimonialsManagerContent = ({
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>
+                                      <AlertDialogCancel className="cursor-pointer">
                                         Cancel
                                       </AlertDialogCancel>
                                       <AlertDialogAction
@@ -552,7 +552,7 @@ const TestimonialsManagerContent = ({
                                             testimonial.id
                                           )
                                         }
-                                        className="bg-red-600 hover:bg-red-700"
+                                        className="bg-red-600 hover:bg-red-700 cursor-pointer"
                                       >
                                         Delete
                                       </AlertDialogAction>

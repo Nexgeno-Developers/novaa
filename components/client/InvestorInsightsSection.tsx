@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigationRouter } from "@/hooks/useNavigationRouter";
 
 type Testimonial = {
   _id?: string;
@@ -28,6 +29,7 @@ const AnimatedTestimonials = ({
   autoplay?: boolean;
 }) => {
   const [active, setActive] = useState(0);
+  const router = useNavigationRouter();
 
   const handleNext = () => {
     setActive((prev) => (prev + 1) % testimonials.length);
@@ -39,6 +41,22 @@ const AnimatedTestimonials = ({
 
   const isActive = (index: number) => {
     return index === active;
+  };
+
+  // Function to generate slug from title
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "") // Remove special characters
+      .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+  };
+
+  // Handle testimonial click - navigate to blog
+  const handleTestimonialClick = (testimonial: Testimonial) => {
+    const slug = generateSlug(testimonial.content);
+    router.push(`/blog/${slug}`);
   };
 
   useEffect(() => {
@@ -74,7 +92,7 @@ const AnimatedTestimonials = ({
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial._id || index}
-              onClick={handleNext}
+              onClick={() => handleTestimonialClick(testimonial)}
               initial={{
                 opacity: 0,
                 scale: 0.9,
@@ -101,7 +119,7 @@ const AnimatedTestimonials = ({
               }}
               className="absolute inset-0 origin-bottom"
             >
-              <div className="relative h-full rounded-3xl bg-white overflow-hidden cursor-pointer">
+              <div className="relative h-full rounded-3xl bg-white overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-xl hover:shadow-primary/20">
                 {/* Image Container with padding */}
                 <div className="p-2 sm:p-4 pb-2">
                   <img
@@ -114,12 +132,12 @@ const AnimatedTestimonials = ({
 
                 {/* Content below image */}
                 <div className="px-2 sm:px-4 pb-2 sm:pb-4">
-                  <h1 className="py-1 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background">
+                  <h1 className="py-1 font-josefin font-medium text-xs xs:text-md sm:text-xl text-background line-clamp-2">
                     {testimonial.content}
                   </h1>
-                  <div className="relative font-josefin pt-2 sm:pt-3 text-[10px] xs:text-sm sm:text-base text-[#303030]">
-                    <div 
-                      dangerouslySetInnerHTML={{ __html: testimonial.quote }} 
+                  <div className="relative font-josefin pt-2 sm:pt-3 text-[10px] xs:text-sm sm:text-base text-[#303030] line-clamp-3">
+                    <div
+                      dangerouslySetInnerHTML={{ __html: testimonial.quote }}
                       className="prose prose-sm max-w-none"
                     />
                     <span className="absolute top-0 left-0 w-1/2 h-[0.5px] bg-[#01292BCC]"></span>
@@ -134,14 +152,13 @@ const AnimatedTestimonials = ({
   );
 };
 
-export default function InvestorInsightsSection({ 
+export default function InvestorInsightsSection({
   mainTitle = "Insights for the",
   highlightedTitle = "Discerning Investor",
   description = "Stay informed with trending stories, industry updates, and thoughtful articles curated just for you.",
   testimonials = [],
-  ...props 
+  ...props
 }: InvestorInsightsSectionProps) {
-
   // Show empty state
   if (!testimonials || testimonials.length === 0) {
     return (
@@ -153,7 +170,8 @@ export default function InvestorInsightsSection({
               <span
                 className="font-bold bg-clip-text text-transparent"
                 style={{
-                  background: "linear-gradient(99.93deg, #C3912F 6.79%, #F5E7A8 31.89%, #C3912F 59.78%)",
+                  background:
+                    "linear-gradient(99.93deg, #C3912F 6.79%, #F5E7A8 31.89%, #C3912F 59.78%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
@@ -164,7 +182,9 @@ export default function InvestorInsightsSection({
             <div className="font-josefin description-text text-[#FFFFFFE5] mb-8">
               {description}
             </div>
-            <p className="text-white/50">No insights available at the moment.</p>
+            <p className="text-white/50">
+              No insights available at the moment.
+            </p>
           </div>
         </div>
       </div>
@@ -172,7 +192,9 @@ export default function InvestorInsightsSection({
   }
 
   // Sort testimonials by order
-  const sortedTestimonials = [...testimonials].sort((a, b) => a.order - b.order);
+  const sortedTestimonials = [...testimonials].sort(
+    (a, b) => a.order - b.order
+  );
 
   return (
     <div className="bg-background relative overflow-hidden py-10 lg:py-20">

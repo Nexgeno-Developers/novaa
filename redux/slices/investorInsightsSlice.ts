@@ -1,5 +1,5 @@
 // store/slices/investorInsightsSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ITestimonial {
   _id?: string;
@@ -41,12 +41,12 @@ const initialState: InvestorInsightsState = {
 
 // Async thunks
 export const fetchInvestorInsights = createAsyncThunk(
-  'investorInsights/fetch',
+  "investorInsights/fetch",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/cms/investor-insights');
+      const response = await fetch("/api/cms/investor-insights");
       if (!response.ok) {
-        throw new Error('Failed to fetch investor insights');
+        throw new Error("Failed to fetch investor insights");
       }
       const data = await response.json();
       return data;
@@ -57,19 +57,19 @@ export const fetchInvestorInsights = createAsyncThunk(
 );
 
 export const updateInvestorInsightsContent = createAsyncThunk(
-  'investorInsights/updateContent',
+  "investorInsights/updateContent",
   async (content: IInvestorInsightsContent, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/cms/investor-insights/content', {
-        method: 'PUT',
+      const response = await fetch("/api/cms/investor-insights/content", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ content }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update content');
+        throw new Error("Failed to update content");
       }
 
       const data = await response.json();
@@ -81,19 +81,19 @@ export const updateInvestorInsightsContent = createAsyncThunk(
 );
 
 export const addTestimonial = createAsyncThunk(
-  'investorInsights/addTestimonial',
-  async (testimonial: Omit<ITestimonial, '_id'>, { rejectWithValue }) => {
+  "investorInsights/addTestimonial",
+  async (testimonial: Omit<ITestimonial, "_id">, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/cms/investor-insights/testimonials', {
-        method: 'POST',
+      const response = await fetch("/api/cms/investor-insights/testimonials", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(testimonial),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add testimonial');
+        throw new Error("Failed to add testimonial");
       }
 
       const data = await response.json();
@@ -105,19 +105,25 @@ export const addTestimonial = createAsyncThunk(
 );
 
 export const updateTestimonial = createAsyncThunk(
-  'investorInsights/updateTestimonial',
-  async ({ id, testimonial }: { id: string; testimonial: Partial<ITestimonial> }, { rejectWithValue }) => {
+  "investorInsights/updateTestimonial",
+  async (
+    { id, testimonial }: { id: string; testimonial: Partial<ITestimonial> },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await fetch(`/api/cms/investor-insights/testimonials/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(testimonial),
-      });
+      const response = await fetch(
+        `/api/cms/investor-insights/testimonials/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(testimonial),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to update testimonial');
+        throw new Error("Failed to update testimonial");
       }
 
       const data = await response.json();
@@ -129,38 +135,52 @@ export const updateTestimonial = createAsyncThunk(
 );
 
 export const deleteTestimonial = createAsyncThunk(
-  'investorInsights/deleteTestimonial',
+  "investorInsights/deleteTestimonial",
   async (id: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/cms/investor-insights/testimonials/${id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `/api/cms/investor-insights/testimonials/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to delete testimonial');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || `HTTP error! status: ${response.status}`
+        );
       }
 
+      const result = await response.json();
       return id;
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      console.error("Delete testimonial API error:", error);
+      return rejectWithValue(error.message || "Failed to delete testimonial");
     }
   }
 );
 
 export const reorderTestimonials = createAsyncThunk(
-  'investorInsights/reorderTestimonials',
+  "investorInsights/reorderTestimonials",
   async (testimonials: ITestimonial[], { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/cms/investor-insights/testimonials/reorder', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ testimonials }),
-      });
+      const response = await fetch(
+        "/api/cms/investor-insights/testimonials/reorder",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ testimonials }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to reorder testimonials');
+        throw new Error("Failed to reorder testimonials");
       }
 
       const data = await response.json();
@@ -172,13 +192,16 @@ export const reorderTestimonials = createAsyncThunk(
 );
 
 const investorInsightsSlice = createSlice({
-  name: 'investorInsights',
+  name: "investorInsights",
   initialState,
   reducers: {
     clearError: (state) => {
       state.error = null;
     },
-    setLocalContent: (state, action: PayloadAction<IInvestorInsightsContent>) => {
+    setLocalContent: (
+      state,
+      action: PayloadAction<IInvestorInsightsContent>
+    ) => {
       if (state.data) {
         state.data.content = action.payload;
       }
@@ -204,7 +227,7 @@ const investorInsightsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Update content
       .addCase(updateInvestorInsightsContent.pending, (state) => {
         state.saving = true;
@@ -220,7 +243,7 @@ const investorInsightsSlice = createSlice({
         state.saving = false;
         state.error = action.payload as string;
       })
-      
+
       // Add testimonial
       .addCase(addTestimonial.pending, (state) => {
         state.saving = true;
@@ -236,7 +259,7 @@ const investorInsightsSlice = createSlice({
         state.saving = false;
         state.error = action.payload as string;
       })
-      
+
       // Update testimonial
       .addCase(updateTestimonial.pending, (state) => {
         state.saving = true;
@@ -245,7 +268,9 @@ const investorInsightsSlice = createSlice({
       .addCase(updateTestimonial.fulfilled, (state, action) => {
         state.saving = false;
         if (state.data) {
-          const index = state.data.testimonials.findIndex(t => t._id === action.payload._id);
+          const index = state.data.testimonials.findIndex(
+            (t) => t._id === action.payload._id
+          );
           if (index !== -1) {
             state.data.testimonials[index] = action.payload;
           }
@@ -255,7 +280,7 @@ const investorInsightsSlice = createSlice({
         state.saving = false;
         state.error = action.payload as string;
       })
-      
+
       // Delete testimonial
       .addCase(deleteTestimonial.pending, (state) => {
         state.saving = true;
@@ -264,14 +289,16 @@ const investorInsightsSlice = createSlice({
       .addCase(deleteTestimonial.fulfilled, (state, action) => {
         state.saving = false;
         if (state.data) {
-          state.data.testimonials = state.data.testimonials.filter(t => t._id !== action.payload);
+          state.data.testimonials = state.data.testimonials.filter(
+            (t) => t._id !== action.payload
+          );
         }
       })
       .addCase(deleteTestimonial.rejected, (state, action) => {
         state.saving = false;
         state.error = action.payload as string;
       })
-      
+
       // Reorder testimonials
       .addCase(reorderTestimonials.pending, (state) => {
         state.saving = true;
@@ -290,5 +317,6 @@ const investorInsightsSlice = createSlice({
   },
 });
 
-export const { clearError, setLocalContent, setLocalTestimonials } = investorInsightsSlice.actions;
+export const { clearError, setLocalContent, setLocalTestimonials } =
+  investorInsightsSlice.actions;
 export default investorInsightsSlice.reducer;
