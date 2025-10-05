@@ -16,11 +16,34 @@ const WhatsAppChat = ({
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [showTypingIndicator, setShowTypingIndicator] = useState(false);
   const chatInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (isOpen && chatInputRef.current) {
-      chatInputRef.current.focus();
+    if (isOpen) {
+      // Show typing indicator after 500ms
+      const typingTimer = setTimeout(() => {
+        setShowTypingIndicator(true);
+      }, 500);
+
+      // Hide typing indicator and show message after 1.5s total
+      const messageTimer = setTimeout(() => {
+        setShowTypingIndicator(false);
+        setShowMessage(true);
+        if (chatInputRef.current) {
+          chatInputRef.current.focus();
+        }
+      }, 1500);
+
+      return () => {
+        clearTimeout(typingTimer);
+        clearTimeout(messageTimer);
+      };
+    } else {
+      // Reset when closed
+      setShowMessage(false);
+      setShowTypingIndicator(false);
     }
   }, [isOpen]);
 
@@ -61,7 +84,6 @@ const WhatsAppChat = ({
                 alt="Avatar"
                 className="avatar-img"
               />
-              <span className="online-indicator" />
             </div>
             <div className="header-info">
               <h4 className="company-name">{companyName}</h4>
@@ -87,17 +109,31 @@ const WhatsAppChat = ({
         {/* Chat Body */}
         <div className="whatsapp-chat-body">
           <div className="message-container">
-            <div className="received-message">
-              <div className="message-bubble">
-                <p className="message-text">
-                  Hi there! 👋
-                  <br />
-                  <br />
-                  How can I help you today?
-                </p>
-                <span className="message-time">Just now</span>
+            {/* Typing Indicator */}
+            {showTypingIndicator && (
+              <div className="typing-indicator-wrapper">
+                <div className="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Received Message */}
+            {showMessage && (
+              <div className="received-message">
+                <div className="message-bubble">
+                  <p className="message-text">
+                    Hi there! 👋
+                    <br />
+                    <br />
+                    How can I help you today?
+                  </p>
+                  <span className="message-time">Just now</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -108,7 +144,7 @@ const WhatsAppChat = ({
               ref={chatInputRef}
               placeholder="Type a message..."
               maxLength={500}
-              rows={2}
+              rows={1}
               value={message}
               onChange={handleInputChange}
               onKeyDown={handleKeyPress}
@@ -156,6 +192,8 @@ const WhatsAppChat = ({
             </svg>
             <span className="button-text">Chat with Us</span>
           </div>
+          {/* <span className="pulse-ring" />
+          <span className="pulse-ring-2" /> */}
         </button>
       )}
 
@@ -165,7 +203,7 @@ const WhatsAppChat = ({
           bottom: 24px;
           right: 24px;
           width: 380px;
-          height: 400px;
+          height: 500px;
           background: #fff;
           border-radius: 16px;
           box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15),
@@ -220,28 +258,6 @@ const WhatsAppChat = ({
           border-radius: 50%;
           object-fit: cover;
           border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .online-indicator {
-          position: absolute;
-          bottom: 2px;
-          right: 2px;
-          width: 12px;
-          height: 12px;
-          background: #00e676;
-          border: 2px solid #128c7e;
-          border-radius: 50%;
-          animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-          0%,
-          100% {
-            box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7);
-          }
-          50% {
-            box-shadow: 0 0 0 4px rgba(0, 230, 118, 0);
-          }
         }
 
         .header-info {
@@ -307,6 +323,64 @@ const WhatsAppChat = ({
           display: flex;
           flex-direction: column;
           gap: 12px;
+        }
+
+        .typing-indicator-wrapper {
+          display: flex;
+          justify-content: flex-start;
+          animation: slideIn 0.3s ease-out;
+        }
+
+        .typing-indicator {
+          background: #fff;
+          padding: 16px 20px;
+          border-radius: 8px 8px 8px 0;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          position: relative;
+          display: flex;
+          gap: 4px;
+          align-items: center;
+        }
+
+        .typing-indicator::before {
+          content: "";
+          position: absolute;
+          left: -8px;
+          bottom: 0;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 0 0 12px 12px;
+          border-color: transparent transparent #fff transparent;
+        }
+
+        .typing-indicator span {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #90949c;
+          animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+          0%,
+          60%,
+          100% {
+            transform: translateY(0);
+            opacity: 0.7;
+          }
+          30% {
+            transform: translateY(-10px);
+            opacity: 1;
+          }
         }
 
         .received-message {
@@ -467,77 +541,23 @@ const WhatsAppChat = ({
           position: relative;
         }
 
-        .whatsapp-icon,
-        .close-icon {
+        .whatsapp-icon {
           flex-shrink: 0;
-          transition: all 0.3s ease;
-        }
-
-        .whatsapp-icon.visible,
-        .close-icon.visible {
-          opacity: 1;
-          transform: rotate(0deg) scale(1);
-        }
-
-        .whatsapp-icon.hidden,
-        .close-icon.hidden {
-          opacity: 0;
-          transform: rotate(90deg) scale(0.5);
-          position: absolute;
-          left: 0;
         }
 
         .button-text {
           font-size: 15px;
           font-weight: 600;
           white-space: nowrap;
-          transition: all 0.3s ease;
           letter-spacing: 0.3px;
-        }
-
-        .button-text.visible {
-          opacity: 1;
-          transform: translateX(0);
-        }
-
-        .button-text.hidden {
-          opacity: 0;
-          transform: translateX(-10px);
-          position: absolute;
-        }
-
-        .pulse-ring,
-        .pulse-ring-2 {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          border: 3px solid #25d366;
-          border-radius: 50%;
-          animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-          opacity: 0;
-        }
-
-        .pulse-ring-2 {
-          animation-delay: 1s;
-        }
-
-        @keyframes pulse-ring {
-          0% {
-            transform: scale(0.95);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1.8);
-            opacity: 0;
-          }
         }
 
         @media (max-width: 768px) {
           .whatsapp-chat-container {
             width: calc(100vw - 32px);
-            height: calc(100vh - 340px);
+            height: calc(100vh - 180px);
             right: 16px;
-            bottom: 20px;
+            bottom: 100px;
             max-width: 420px;
           }
 
@@ -552,8 +572,7 @@ const WhatsAppChat = ({
             font-size: 14px;
           }
 
-          .whatsapp-icon,
-          .close-icon {
+          .whatsapp-icon {
             width: 22px;
             height: 22px;
           }
@@ -563,7 +582,7 @@ const WhatsAppChat = ({
           .whatsapp-chat-container {
             width: calc(100vw - 24px);
             right: 12px;
-            bottom: 20px;
+            bottom: 90px;
             border-radius: 12px;
           }
 
@@ -578,8 +597,7 @@ const WhatsAppChat = ({
             font-size: 13px;
           }
 
-          .whatsapp-icon,
-          .close-icon {
+          .whatsapp-icon {
             width: 20px;
             height: 20px;
           }
