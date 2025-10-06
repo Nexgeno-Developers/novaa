@@ -38,10 +38,10 @@ export default function CounterManager({
   const initialDataSetRef = useRef(false);
 
   const [localData, setLocalData] = useState({
-    title: section?.content?.title || "Why Choose NOVAAA?",
+    title: section?.content?.title || "",
     subtitle:
       section?.content?.subtitle ||
-      "Trusted Real Estate Partner Delivering Value, Transparency & Growth",
+      "",
     cards: section?.content?.cards || [],
   });
 
@@ -56,10 +56,10 @@ export default function CounterManager({
   useEffect(() => {
     if (section?.content && !initialDataSetRef.current) {
       const newData = {
-        title: section.content.title || "Why Choose NOVAAA?",
+        title: section.content.title || "",
         subtitle:
           section.content.subtitle ||
-          "Trusted Real Estate Partner Delivering Value, Transparency & Growth",
+          "",
         cards: section.content.cards || [],
       };
       setLocalData(newData);

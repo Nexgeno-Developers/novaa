@@ -9,7 +9,7 @@ async function getBlogBySlug(slug: string) {
 
     const response = await fetch(
       `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/api/blogs/slug/${slug}`,
       {
         method: "GET",
@@ -65,7 +65,7 @@ async function getBreadcrumbData() {
   try {
     const response = await fetch(
       `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/api/cms/sections?pageSlug=blog`,
       {
         method: "GET",
@@ -117,7 +117,7 @@ export async function generateStaticParams() {
   try {
     const response = await fetch(
       `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/api/blogs`,
       {
         // Use static generation

@@ -136,6 +136,7 @@ export default function WhyInvestDetailClient({
         {/* </motion.section> */}
 
         {/* Investment Points Detail Sections */}
+        {/* Investment Points Detail Sections */}
         <div className="py-20">
           {investmentPoints.map((point, index) => (
             <InvestmentPointDetail
@@ -147,7 +148,46 @@ export default function WhyInvestDetailClient({
               index={index}
             />
           ))}
+          
+          {/* Static Investment Points */}
+          <InvestmentPointDetail
+            key="proposed-government-initiatives"
+            point={{
+              _id: "static-5",
+              title: "Proposed Government Initiatives",
+              description: `
+                <p>Thailand's government is actively opening doors to international investors, with several forward-looking initiatives designed to make foreign property ownership easier, longer-term, and more attractive:</p>
+                <ul style="margin-top: 1rem; margin-bottom: 1rem; list-style-type: disc; padding-left: 2rem;">
+                  <li>Increasing foreign freehold quota from 49% to 74%</li>
+                  <li>99-year land leases for foreign nationals</li>
+                  <li>10-year tourist visa for long-stay international visitors</li>
+                  <li>Golden Visa programs to encourage property-linked residency</li>
+                  <li>Expansion of Phuket International Airport from a current capacity of 12.5 million to 19 million passengers unlocking even more global connectivity</li>
+                </ul>
+                <p>These proposed changes signal a clear direction: Thailand wants serious investors and is building the ecosystem to support them.</p>
+              `,
+              icon: "/icons/government.svg"
+            }}
+            image={images[0]}
+            index={investmentPoints.length}
+          />
+          
+          <InvestmentPointDetail
+            key="currency"
+            point={{
+              _id: "static-6",
+              title: "Currency",
+              description: `
+                <p>The Thai Baht (THB) has steadily appreciated at an average rate of 5% per year over the last two decades making it one of Asia's more stable and strengthening currencies.</p>
+                <p style="margin-top: 1rem;">For Indian investors, this offers added currency gains over time, strengthening both capital returns and rental income in INR terms. In a world of currency volatility, the Baht's performance is yet another layer of confidence.</p>
+              `,
+              icon: "/icons/currency.svg"
+            }}
+            image={images[1] || images[0]}
+            index={investmentPoints.length + 1}
+          />
         </div>
+
       </div>
     </>
   );
@@ -181,7 +221,7 @@ function InvestmentPointDetail({
     <section
       id={point.title.replace(/\s+/g, "-").toLowerCase()}
       ref={ref}
-      className="relative first:pt-20 overflow-hidden scroll-mt-20"
+      className="relative overflow-hidden scroll-mt-20"
     >
       <div className="container">
         <div

@@ -133,6 +133,7 @@ export default function Footer({ data }: FooterProps) {
               className="font-josefin group relative bg-[#30303033] border-4 border-[#F0DE9C] text-[#F0DE9C] 
                      w-28 h-28 sm:w-34 sm:h-34 rounded-full 
                      transition-all duration-300 flex flex-col justify-center items-center text-center cursor-pointer overflow-hidden"
+                      onClick={() => router.push("/project")}
             >
               {data?.ctaButtonLines.map((line, i) => (
                 <span key={i} className="leading-tight text-sm sm:text-base">

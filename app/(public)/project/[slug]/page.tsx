@@ -17,7 +17,7 @@ async function getProjectBySlug(slug: string) {
 
     const response = await fetch(
       `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/api/projects/slug/${slug}`,
       {
         method: "GET",
@@ -135,7 +135,7 @@ export async function generateStaticParams() {
   try {
     const response = await fetch(
       `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3001"
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/api/cms/projects`,
       {
         // Use static generation

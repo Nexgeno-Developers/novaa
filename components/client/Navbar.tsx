@@ -116,12 +116,12 @@ export default function Navbar({ data }: NavbarProps) {
           ></div>
 
           {/* Right extended background */}
-          <div
+          {/* <div
             className="absolute right-0 top-0 h-20 bg-[#00000033] border border-[#00000033] 
                lg:[width:calc((100vw-1536px)/2+680px)]
                xl:[width:calc((100vw-1536px)/2+550px)]
                2xl:[width:calc((100vw-1536px)/2+420px)]"
-          ></div>
+          ></div> */}
 
           <div className="container relative flex items-center justify-between h-20">
             {/* Logo */}
