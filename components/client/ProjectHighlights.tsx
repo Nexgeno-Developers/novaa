@@ -22,10 +22,10 @@
 // export default function ProjectHighlights({ project }: ProjectHighlightsProps) {
 //   const highlightsData = project.projectDetail?.projectHighlights;
 //   const projectName = project.name;
-  
+
 //   // Default values
 //   const highlights = highlightsData?.highlights || [];
-//   const description = highlightsData?.description || 
+//   const description = highlightsData?.description ||
 //     `${projectName} is a luxury development, set in lush tropical greenery. Managed by top hospitality brands, it blends five-star living with natural serenity. Each unit features curated landscapes, wellness-focused design, and premium amenities.`;
 
 //   if (highlights.length === 0) {
@@ -42,7 +42,7 @@
 //               {projectName}
 //             </span>
 //           </h2>
-//           <div 
+//           <div
 //             className="font-josefin lowercase text-white description-text text-center"
 //             dangerouslySetInnerHTML={{ __html: description }}
 //           />
@@ -50,8 +50,8 @@
 
 //         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mt-6 sm:mt-12">
 //           {highlights.map((highlight, index) => (
-//             <HoverImageCard 
-//               key={index} 
+//             <HoverImageCard
+//               key={index}
 //               defaultImage={highlight.image}
 //               hoverImage={highlight.image} // Using same image for hover, you can modify this
 //               title={highlight.title}
@@ -417,121 +417,146 @@ interface ProjectTabsProps {
 // Mock data for the tabs - replace with your CMS data
 const tabsData = [
   {
-    id: "amenities",
-    label: "Amenities",
+    id: "exterior",
+    label: "Exterior",
     items: [
       {
-        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
-        title: "Infinity Pool",
-      },
-      {
-        image: "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80",
-        title: "Fitness Center",
-      },
-      {
-        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
-        title: "Spa & Wellness",
-      },
-      {
-        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80",
-        title: "Clubhouse",
-      },
-      {
-        image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80",
-        title: "Garden Terrace",
-      },
-      {
-        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
-        title: "Kids Play Area",
-      },
-    ],
-  },
-  {
-    id: "external",
-    label: "External",
-    items: [
-      {
-        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80",
         title: "Building Facade",
       },
       {
-        image: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&q=80",
         title: "Entrance Plaza",
       },
       {
-        image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80",
         title: "Landscape Design",
       },
       {
-        image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80",
         title: "Outdoor Lounge",
       },
       {
-        image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800&q=80",
         title: "Walking Paths",
       },
       {
-        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80",
         title: "Night View",
       },
     ],
   },
   {
-    id: "internal",
-    label: "Internal",
+    id: "interior",
+    label: "Interior",
     items: [
       {
-        image: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80",
         title: "Living Room",
       },
       {
-        image: "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800&q=80",
         title: "Master Bedroom",
       },
       {
-        image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80",
         title: "Modern Kitchen",
       },
       {
-        image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800&q=80",
         title: "Bathroom Suite",
       },
       {
-        image: "https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=800&q=80",
         title: "Dining Area",
       },
       {
-        image: "https://images.unsplash.com/photo-1600566752229-250ed79174a5?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600566752229-250ed79174a5?w=800&q=80",
         title: "Walk-in Closet",
       },
     ],
   },
   {
+    id: "amenities",
+    label: "Amenities",
+    items: [
+      {
+        image:
+          "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+        title: "Infinity Pool",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80",
+        title: "Fitness Center",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
+        title: "Spa & Wellness",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80",
+        title: "Clubhouse",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&q=80",
+        title: "Garden Terrace",
+      },
+      {
+        image:
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+        title: "Kids Play Area",
+      },
+    ],
+  },
+
+  {
     id: "layouts",
     label: "Layouts",
     items: [
       {
-        image: "https://images.unsplash.com/photo-1503174971373-b1f69850bded?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1503174971373-b1f69850bded?w=800&q=80",
         title: "1 Bedroom Layout",
       },
       {
-        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
         title: "2 Bedroom Layout",
       },
       {
-        image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&q=80",
         title: "3 Bedroom Layout",
       },
       {
-        image: "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&q=80",
         title: "Penthouse Layout",
       },
       {
-        image: "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800&q=80",
         title: "Duplex Layout",
       },
       {
-        image: "https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800&q=80",
+        image:
+          "https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800&q=80",
         title: "Studio Layout",
       },
     ],

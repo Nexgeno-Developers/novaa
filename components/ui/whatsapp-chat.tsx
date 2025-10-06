@@ -14,6 +14,7 @@ const WhatsAppChat = ({
   companyName = "Novaa Global Properties",
 }: WhatsAppChatProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
@@ -22,12 +23,10 @@ const WhatsAppChat = ({
 
   useEffect(() => {
     if (isOpen) {
-      // Show typing indicator after 500ms
       const typingTimer = setTimeout(() => {
         setShowTypingIndicator(true);
       }, 500);
 
-      // Hide typing indicator and show message after 1.5s total
       const messageTimer = setTimeout(() => {
         setShowTypingIndicator(false);
         setShowMessage(true);
@@ -41,11 +40,24 @@ const WhatsAppChat = ({
         clearTimeout(messageTimer);
       };
     } else {
-      // Reset when closed
       setShowMessage(false);
       setShowTypingIndicator(false);
     }
   }, [isOpen]);
+
+  const handleChatIconClick = () => {
+    setShowMenu(!showMenu);
+  };
+
+  const handleTalkToUs = () => {
+    window.location.href = `tel:${phoneNumber}`;
+    setShowMenu(false);
+  };
+
+  const handleChatWithUs = () => {
+    setIsOpen(true);
+    setShowMenu(false);
+  };
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -170,30 +182,65 @@ const WhatsAppChat = ({
         </div>
       </div>
 
-      {/* WhatsApp Chat Button */}
-      {!isOpen && (
-        <button
-          className="whatsapp-float-button"
-          onClick={() => setIsOpen(true)}
-          aria-label="Open WhatsApp chat"
-        >
-          <div className="button-content">
-            <svg
-              className="whatsapp-icon"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
+      {/* Options Menu */}
+      <div className={`options-menu ${showMenu ? "show" : "hide"}`}>
+        <button className="menu-option" onClick={handleTalkToUs}>
+          <div className="option-icon phone-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
+          <span className="option-text">Talk to our Experts</span>
+        </button>
+
+        <button className="menu-option whatsapp-option" onClick={handleChatWithUs}>
+          <div className="option-icon whatsapp-icon-option">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
                 fill="currentColor"
               />
             </svg>
-            <span className="button-text">Chat with Us</span>
           </div>
-          {/* <span className="pulse-ring" />
-          <span className="pulse-ring-2" /> */}
+          <span className="option-text">Chat on Whatsapp</span>
+        </button>
+      </div>
+
+      {/* Chat Icon Button */}
+      {!isOpen && (
+        <button
+          className={`chat-float-button ${showMenu ? 'close-mode' : ''}`}
+          onClick={handleChatIconClick}
+          aria-label={showMenu ? "Close menu" : "Open chat options"}
+        >
+          {showMenu ? (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="#F5F5F5"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : (
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+                stroke="#F5F5F5"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          )}
         </button>
       )}
 
@@ -505,76 +552,154 @@ const WhatsAppChat = ({
           transform: scale(0.95);
         }
 
-        .whatsapp-float-button {
+        /* Options Menu */
+        .options-menu {
+          position: fixed;
+          bottom: 100px;
+          right: 24px;
+          border-radius: 16px;
+          padding: 12px;
+          z-index: 998;
+          min-width: 280px;
+          transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          transform-origin: bottom right;
+        }
+
+        .options-menu.show {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+          visibility: visible;
+        }
+
+        .options-menu.hide {
+          opacity: 0;
+          transform: scale(0.8) translateY(20px);
+          visibility: hidden;
+          pointer-events: none;
+        }
+
+        .menu-option {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 16px 18px;
+          border: none;
+          background: #F5F5F5;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-bottom: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .menu-option:last-of-type {
+          margin-bottom: 0;
+        }
+
+        .menu-option:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .menu-option:active {
+          transform: translateY(0);
+        }
+
+        .option-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .phone-icon {
+          background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
+          color: #F5F5F5;
+        }
+
+        .whatsapp-icon-option {
+          background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
+          color: #F5F5F5;
+        }
+
+        .option-text {
+          font-size: 15px;
+          font-weight: 600;
+          color: #01292b;
+          text-align: left;
+          flex: 1;
+        }
+
+        /* Chat Float Button */
+        .chat-float-button {
           position: fixed;
           bottom: 24px;
           right: 24px;
-          height: 56px;
-          padding: 0 24px;
-          border-radius: 28px;
-          background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          background: #d4af37;
           border: none;
-          box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+          box-shadow: 0 8px 24px rgba(1, 41, 43, 0.35);
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 998;
+          z-index: 997;
           transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
           color: #fff;
-          gap: 10px;
         }
 
-        .whatsapp-float-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 32px rgba(37, 211, 102, 0.45);
+        .chat-float-button:hover {
+          transform: translateY(-2px) scale(1.05);
+          box-shadow: 0 12px 32px rgba(1, 41, 43, 0.45);
         }
 
-        .whatsapp-float-button:active {
-          transform: translateY(0);
+        .chat-float-button:active {
+          transform: translateY(0) scale(1);
         }
 
-        .button-content {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          position: relative;
+        .chat-float-button.close-mode {
+          background: #d4af37;
+          box-shadow: 0 8px 24px rgba(212, 165, 116, 0.35);
+          transform: rotate(90deg);
         }
 
-        .whatsapp-icon {
-          flex-shrink: 0;
-        }
-
-        .button-text {
-          font-size: 15px;
-          font-weight: 600;
-          white-space: nowrap;
-          letter-spacing: 0.3px;
+        .chat-float-button.close-mode:hover {
+          transform: rotate(90deg) translateY(-2px) scale(1.05);
+          box-shadow: 0 12px 32px rgba(212, 165, 116, 0.45);
         }
 
         @media (max-width: 768px) {
           .whatsapp-chat-container {
             width: calc(100vw - 32px);
-            height: calc(100vh - 180px);
+            height: calc(100vh - 550px);
             right: 16px;
-            bottom: 100px;
+            bottom: 8px;
             max-width: 420px;
           }
 
-          .whatsapp-float-button {
-            height: 52px;
-            padding: 0 20px;
+          .options-menu {
+            right: 16px;
+            bottom: 90px;
+            min-width: calc(100vw - 32px);
+            max-width: 320px;
+          }
+
+          .chat-float-button {
+            width: 56px;
+            height: 56px;
             right: 20px;
             bottom: 20px;
           }
 
-          .button-text {
-            font-size: 14px;
-          }
-
-          .whatsapp-icon {
-            width: 22px;
-            height: 22px;
+          .chat-float-button svg {
+            width: 24px;
+            height: 24px;
           }
         }
 
@@ -582,24 +707,26 @@ const WhatsAppChat = ({
           .whatsapp-chat-container {
             width: calc(100vw - 24px);
             right: 12px;
-            bottom: 90px;
+            bottom: 14px;
             border-radius: 12px;
           }
 
-          .whatsapp-float-button {
-            height: 48px;
-            padding: 0 18px;
+          .options-menu {
+            right: 12px;
+            bottom: 80px;
+            min-width: calc(100vw - 24px);
+          }
+
+          .chat-float-button {
+            width: 52px;
+            height: 52px;
             right: 16px;
             bottom: 16px;
           }
 
-          .button-text {
-            font-size: 13px;
-          }
-
-          .whatsapp-icon {
-            width: 20px;
-            height: 20px;
+          .chat-float-button svg {
+            width: 22px;
+            height: 22px;
           }
         }
       `}</style>

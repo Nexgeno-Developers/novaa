@@ -816,7 +816,7 @@ const EnquiriesManager = () => {
         open={!!deleteDialogId}
         onOpenChange={() => setDeleteDialogId(null)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-sidebar">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-primary">
               Are you sure?
@@ -827,14 +827,14 @@ const EnquiriesManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">
-            <AlertDialogCancel className="bg-white/90 backdrop-blur-xl border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <AlertDialogCancel className="cursor-pointer bg-white/90 backdrop-blur-xl border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <span className="font-semibold">Cancel</span>
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() =>
                 deleteDialogId && handleDeleteEnquiry(deleteDialogId)
               }
-              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="cursor-pointer bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               <span className="font-semibold">Delete Enquiry</span>

@@ -1,6 +1,7 @@
 import Navbar from "@/components/client/Navbar";
 import Footer from "@/components/client/Footer";
 import WhatsAppChat from "@/components/ui/whatsapp-chat";
+import PopupEnquiryForm from "@/components/client/PopupEnquiryForm";
 import { getFooterData } from "@/lib/data/getFooterData";
 import { getNavbarData } from "@/lib/data/getNavbarData";
 import LoadingBarWrapper from "@/components/client/LoadingBarWrapper";
@@ -32,6 +33,7 @@ export default async function PublicLayout({
             websiteUrl="https://novaa-pi.vercel.app/"
             companyName="Novaa Global Properties"
           />
+          <PopupEnquiryForm />
         </NavigationLoadingProvider>
       </LoadingBarWrapper>
     </>
