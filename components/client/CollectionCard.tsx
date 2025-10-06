@@ -358,7 +358,7 @@ export default function CollectionCard({
                   "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
               }}
             >
-              <VerifiedIcon className="w-5 h-5 mb-1" color="green" />
+              <VerifiedIcon className="w-5 h-5 mb-1"/>
               {property.badge}
             </div>
           )}

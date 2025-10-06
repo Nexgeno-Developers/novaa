@@ -134,7 +134,7 @@ export default function Navbar({ data }: NavbarProps) {
                   src={data.logo.url}
                   width={155}
                   height={60}
-                  alt={data.logo.alt}
+                  alt={data.logo.url}
                   priority
                   className="w-[140px] sm:w-[155px] 2xl:w-[180px] h-auto pt-[7px]"
                 />

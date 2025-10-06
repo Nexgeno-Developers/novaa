@@ -89,6 +89,7 @@ interface Project {
   projectDetail: {
     hero: {
       backgroundImage: string;
+      mediaType?: "image" | "video";
       title: string;
       subtitle: string;
       scheduleMeetingButton: string;
@@ -177,6 +178,7 @@ export default function EditProjectPage() {
   const [projectDetailData, setProjectDetailData] = useState({
     hero: {
       backgroundImage: "",
+      mediaType: "image" as "image" | "video",
       title: "",
       subtitle: "",
       scheduleMeetingButton: "Schedule a meeting",
@@ -289,10 +291,25 @@ export default function EditProjectPage() {
 
       // Set project detail data if exists
       if (currentProject.projectDetail) {
+        // Auto-detect media type if not set
+        const backgroundImage =
+          currentProject.projectDetail.hero?.backgroundImage || "";
+        const isVideoUrl =
+          backgroundImage.includes(".mp4") ||
+          backgroundImage.includes(".webm") ||
+          backgroundImage.includes(".mov") ||
+          backgroundImage.includes("video/upload");
+        const detectedMediaType = isVideoUrl ? "video" : "image";
+
+        // If mediaType is missing from database, auto-detect and prepare to save it
+        const shouldUpdateMediaType =
+          !currentProject.projectDetail.hero?.mediaType;
+
         setProjectDetailData({
           hero: {
-            backgroundImage:
-              currentProject.projectDetail.hero?.backgroundImage || "",
+            backgroundImage,
+            mediaType:
+              currentProject.projectDetail.hero?.mediaType || detectedMediaType,
             title: currentProject.projectDetail.hero?.title || "",
             subtitle: currentProject.projectDetail.hero?.subtitle || "",
             scheduleMeetingButton:
@@ -1071,16 +1088,47 @@ export default function EditProjectPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <MediaSelectButton
-                value={projectDetailData.hero.backgroundImage}
-                onSelect={(url) =>
-                  handleProjectDetailChange("hero", "backgroundImage", url)
-                }
-                mediaType="image"
-                label="Hero Background Image"
-                placeholder="Select background image for hero section"
-              />
+            {/* Media Type and Selection */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="heroMediaType" className="text-primary">
+                  Hero Media Type
+                </Label>
+                <Select
+                  value={projectDetailData.hero.mediaType || "image"}
+                  onValueChange={(value: "image" | "video") =>
+                    handleProjectDetailChange("hero", "mediaType", value)
+                  }
+                >
+                  <SelectTrigger className="cursor-pointer">
+                    <SelectValue placeholder="Select media type" />
+                  </SelectTrigger>
+                  <SelectContent className="admin-theme">
+                    <SelectItem value="image">Image</SelectItem>
+                    <SelectItem value="video">Video</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.hero.backgroundImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange("hero", "backgroundImage", url)
+                  }
+                  mediaType={projectDetailData.hero.mediaType || "image"}
+                  label={`Hero Background ${
+                    projectDetailData.hero.mediaType === "video"
+                      ? "Video"
+                      : "Image"
+                  }`}
+                  placeholder={`Select background ${
+                    projectDetailData.hero.mediaType === "video"
+                      ? "video"
+                      : "image"
+                  } for hero section`}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

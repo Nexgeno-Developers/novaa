@@ -142,6 +142,7 @@ interface ProjectHeroSectionProps {
     projectDetail?: {
       hero?: {
         backgroundImage?: string;
+        mediaType?: "image" | "video";
         title?: string;
         subtitle?: string;
         scheduleMeetingButton?: string;
@@ -178,6 +179,15 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
 
   const backgroundImage =
     heroData?.backgroundImage || "/images/project-details-hero.jpg";
+
+  // Auto-detect media type if not set, fallback to explicit mediaType
+  const isVideoUrl =
+    backgroundImage.includes(".mp4") ||
+    backgroundImage.includes(".webm") ||
+    backgroundImage.includes(".mov") ||
+    backgroundImage.includes("video/upload");
+  const mediaType = heroData?.mediaType || (isVideoUrl ? "video" : "image");
+
   const title = heroData?.title || project.name;
   const subtitle = heroData?.subtitle || "A Resort-Inspired Lifestyle";
   const scheduleMeetingText =
@@ -308,14 +318,25 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
 
   return (
     <section className="relative h-screen overflow-hidden bg-background">
-      {/* Background Image */}
-      <Image
-        src={backgroundImage}
-        alt="project details background"
-        fill
-        priority
-        className="object-cover"
-      />
+      {/* Background Media */}
+      {mediaType === "video" ? (
+        <video
+          src={backgroundImage}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <Image
+          src={backgroundImage}
+          alt="project details background"
+          fill
+          priority
+          className="object-cover"
+        />
+      )}
 
       {/* Dark overlay */}
       <div className="absolute bottom-0 w-full h-1/2 inset-x-0 z-0 bg-gradient-to-b from-bg-[#01292B00] to-[#01292B]" />

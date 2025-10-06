@@ -109,6 +109,7 @@ export default function CreateProjectPage() {
   const [projectDetailData, setProjectDetailData] = useState({
     hero: {
       backgroundImage: "",
+      mediaType: "image" as "image" | "video",
       title: "",
       subtitle: "",
       scheduleMeetingButton: "Schedule a meeting",
@@ -859,16 +860,47 @@ export default function CreateProjectPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <MediaSelectButton
-                value={projectDetailData.hero.backgroundImage}
-                onSelect={(url) =>
-                  handleProjectDetailChange("hero", "backgroundImage", url)
-                }
-                mediaType="image"
-                label="Hero Background Image"
-                placeholder="Select background image for hero section"
-              />
+            {/* Media Type and Selection */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="heroMediaType" className="text-primary">
+                  Hero Media Type
+                </Label>
+                <Select
+                  value={projectDetailData.hero.mediaType || "image"}
+                  onValueChange={(value: "image" | "video") =>
+                    handleProjectDetailChange("hero", "mediaType", value)
+                  }
+                >
+                  <SelectTrigger className="cursor-pointer">
+                    <SelectValue placeholder="Select media type" />
+                  </SelectTrigger>
+                  <SelectContent className="admin-theme">
+                    <SelectItem value="image">Image</SelectItem>
+                    <SelectItem value="video">Video</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.hero.backgroundImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange("hero", "backgroundImage", url)
+                  }
+                  mediaType={projectDetailData.hero.mediaType || "image"}
+                  label={`Hero Background ${
+                    projectDetailData.hero.mediaType === "video"
+                      ? "Video"
+                      : "Image"
+                  }`}
+                  placeholder={`Select background ${
+                    projectDetailData.hero.mediaType === "video"
+                      ? "video"
+                      : "image"
+                  } for hero section`}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

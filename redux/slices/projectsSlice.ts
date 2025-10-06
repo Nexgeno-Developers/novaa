@@ -47,6 +47,7 @@ interface GatewayCategory {
 interface ProjectDetail {
   hero: {
     backgroundImage: string;
+    mediaType?: "image" | "video";
     title: string;
     subtitle: string;
     scheduleMeetingButton: string;

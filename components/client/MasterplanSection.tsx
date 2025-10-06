@@ -33,6 +33,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
   const [activeTab, setActiveTab] = useState(
     project.projectDetail?.masterPlan?.tabs?.length ? 0 : null
   );
+  const [hoveredTab, setHoveredTab] = useState<number | null>(null);
 
   const masterPlan = project.projectDetail?.masterPlan;
 
@@ -70,7 +71,8 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
           >
             {masterPlan.title && masterPlan.subtitle && (
               <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-4 px-4">
-                {masterPlan.title} {" "}  <span className="text-primary">{masterPlan.subtitle}</span>
+                {masterPlan.title}{" "}
+                <span className="text-primary">{masterPlan.subtitle}</span>
               </h2>
             )}
             {/* {masterPlan.subtitle && (
@@ -79,7 +81,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
               </h3>
             )} */}
             {masterPlan.description && (
-              <div 
+              <div
                 className="font-josefin text-white max-w-4xl mx-auto description-text"
                 dangerouslySetInnerHTML={{ __html: masterPlan.description }}
               />
@@ -92,9 +94,13 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
               <motion.div
                 key={index}
                 layout // This prop enables the magic layout animation
-                onClick={() => setActiveTab(index)}
+                onMouseEnter={() => {
+                  setHoveredTab(index);
+                  setActiveTab(index);
+                }}
+                onMouseLeave={() => setHoveredTab(null)}
                 className="w-full overflow-hidden cursor-pointer"
-                transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
+                transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 {activeTab === index ? (
                   // --- ACTIVE TAB VIEW ---
@@ -103,7 +109,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                     className="relative w-full h-[400px] sm:h-[600px] bg-center bg-cover flex items-center justify-center"
                     initial={{ opacity: 0.8 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                   >
                     {/* Dark overlay for text readability */}
                     <div className="bg-black/50 w-full h-full inset-0 absolute"></div>
@@ -119,7 +125,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                         <motion.p
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.4, duration: 0.5 }}
+                          transition={{ delay: 0.2, duration: 0.4 }}
                           className="text-white font-medium text-base sm:text-2xl mb-1"
                         >
                           C1 -{" "}
@@ -130,28 +136,26 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                         <motion.p
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.5, duration: 0.5 }}
+                          transition={{ delay: 0.3, duration: 0.4 }}
                           className="text-white font-medium text-base sm:text-2xl"
                         >
                           C2 -{" "}
-                          <span className="font-light">
-                            {tab.subtitle2}
-                          </span>
+                          <span className="font-light">{tab.subtitle2}</span>
                         </motion.p>
                       )}
                     </div>
                   </motion.div>
                 ) : (
                   // --- INACTIVE TAB VIEW ---
-                  <div className="relative group w-full h-[100px] sm:h-[180px] flex items-center justify-center text-center bg-background hover:bg-[#024f53] transition-colors duration-300">
+                  <div className="relative group w-full h-[100px] sm:h-[180px] flex items-center justify-center text-center bg-background hover:bg-[#024f53] transition-all duration-300">
                     {/* Background image revealed on hover */}
                     <div
                       style={{ backgroundImage: `url(${tab.image})` }}
-                      className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-20 transition-opacity duration-500 ease-in-out"
+                      className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-20 transition-opacity duration-400 ease-out"
                     />
                     <motion.h3
                       layoutId={`title-${index}`} // Match layoutId for smooth title transition
-                      className="relative z-10 font-josefin text-2xl md:text-4xl font-normal text-white leading-tight p-4"
+                      className="relative z-10 font-josefin text-2xl md:text-4xl font-normal text-white leading-tight p-4 transition-all duration-300 group-hover:scale-105"
                     >
                       {tab.title}
                     </motion.h3>
