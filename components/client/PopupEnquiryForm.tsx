@@ -203,7 +203,7 @@ const PopupEnquiryForm = () => {
                 <h3 className="text-2xl font-bold text-primary mb-2 font-cinzel">
                   Get Your Dream Property
                 </h3>
-                <p className="text-white/80 text-sm">
+                <p className="text-white/80 text-sm font-josefin">
                   Fill in your details and we'll help you find the perfect home
                 </p>
               </div>
@@ -300,11 +300,6 @@ const PopupEnquiryForm = () => {
                   </button>
                 </div>
               </form>
-
-              {/* Footer */}
-              <p className="text-xs text-white/80 text-center mt-4">
-                By submitting this form, you agree to our privacy policy
-              </p>
             </motion.div>
           </motion.div>
         </>
