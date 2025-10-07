@@ -408,17 +408,17 @@ export default function Navbar({ data }: NavbarProps) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-gradient-to-br from-background to-[#0a0a0a] border border-[#F0DE9C]/20 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+              className="bg-background border border-[#F0DE9C]/20 rounded-2xl p-8 max-w-md w-full shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white font-josefin">
+                <h2 className="text-2xl font-bold text-primary font-josefin">
                   Download Brochure
                 </h2>
                 <button
                   onClick={() => setIsBrochureModalOpen(false)}
-                  className="text-white/60 hover:text-white transition-colors"
+                  className="text-white/60 hover:text-white transition-colors cursor-pointer"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -468,7 +468,7 @@ export default function Navbar({ data }: NavbarProps) {
                     htmlFor="phone"
                     className="block text-sm font-medium text-white/80 mb-2"
                   >
-                    Phone Number *
+                    Phone Number <span className="text-primary">*</span>
                   </label>
                   <input
                     type="tel"

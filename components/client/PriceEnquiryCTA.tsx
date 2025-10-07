@@ -167,11 +167,10 @@ const PriceEnquiryCTA = () => {
     <>
       {/* Floating CTA Button */}
       <motion.button
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 2, type: "spring", stiffness: 200 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2 group"
+        className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2 group cursor-pointer"
       >
         <DollarSign className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
         <span className="hidden sm:block font-josefin text-sm">
@@ -222,7 +221,7 @@ const PriceEnquiryCTA = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Full Name Field */}
                   <div>
-                    <label className="block text-primary text-sm font-medium mb-2">
+                    <label className="block text-white/80 text-sm font-medium mb-2">
                       Full Name (Optional)
                     </label>
                     <div className="relative">
@@ -250,7 +249,7 @@ const PriceEnquiryCTA = () => {
 
                   {/* Phone Field */}
                   <div>
-                    <label className="block text-primary text-sm font-medium mb-2">
+                    <label className="block text-white/80 text-sm font-medium mb-2">
                       Phone Number *
                     </label>
                     <div className="relative">
@@ -281,7 +280,7 @@ const PriceEnquiryCTA = () => {
 
                  {/* Email Field */}
                  <div>
-                  <label className="block text-primary text-sm font-medium mb-2">
+                  <label className="block text-white/80 text-sm font-medium mb-2">
                     Email Address (Optional)
                   </label>
                   <div className="relative">
@@ -308,7 +307,7 @@ const PriceEnquiryCTA = () => {
 
                 {/* Location Field */}
                 <div>
-                  <label className="block text-primary text-sm font-medium mb-2">
+                  <label className="block text-white/80 text-sm font-medium mb-2">
                     City *
                   </label>
                   <div className="relative">
@@ -337,8 +336,8 @@ const PriceEnquiryCTA = () => {
 
                 {/* Message Field */}
                 <div>
-                  <label className="block text-primary text-sm font-medium mb-2">
-                    Message (Optional)
+                  <label className="block text-white/80 text-sm font-medium mb-2">
+                    Description (Optional)
                   </label>
                   <div className="relative">
                     <MessageSquare className="absolute left-3 top-3 text-gray-400 w-4 h-4" />

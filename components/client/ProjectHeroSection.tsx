@@ -428,7 +428,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     htmlFor="fullName"
                     className="block text-sm font-josefin font-medium text-white mb-1"
                   >
-                    Full Name <span className="text-red-500">*</span>
+                    Full Name (Optional)
                   </label>
                   <input
                     type="text"
@@ -457,7 +457,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     htmlFor="phone"
                     className="block text-sm font-josefin font-medium text-white mb-1"
                   >
-                    Phone Number <span className="text-red-500">*</span>
+                    Phone Number <span className="text-primary">*</span>
                   </label>
                   <input
                     type="tel"
@@ -513,7 +513,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     htmlFor="message"
                     className="block text-sm font-josefin font-medium text-white mb-1"
                   >
-                    Message (Optional)
+                    Description (Optional)
                   </label>
                   <textarea
                     id="message"
@@ -531,7 +531,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                   whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                   type="submit"
                   disabled={isSubmitting || submissionStatus === "submitting"}
-                  className={`w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:brightness-110 font-josefin py-3 rounded-md text-background font-semibold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                  className={`w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:brightness-110 font-josefin py-3 rounded-md text-background font-semibold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                     isSubmitting || submissionStatus === "submitting"
                       ? "opacity-70 cursor-not-allowed"
                       : ""
@@ -543,7 +543,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                       Submitting...
                     </>
                   ) : (
-                    "Submit Enquiry"
+                    "Submit"
                   )}
                 </motion.button>
               </form>

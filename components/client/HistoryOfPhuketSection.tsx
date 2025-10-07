@@ -117,13 +117,13 @@ const HistoryOfPhuketSection = () => {
             onClick={togglePlayPause}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-black/60 backdrop-blur-md text-white p-4 rounded-full hover:bg-black/80 transition-all duration-300 border-2 border-white/30 shadow-2xl hover:shadow-white/20"
+            className="bg-background cursor-pointer backdrop-blur-md text-white p-4 rounded-full hover:bg-background/80 transition-all duration-300 border-2 border-white/30 shadow-2xl hover:shadow-white/20"
             aria-label={isPlaying ? "Pause video" : "Play video"}
           >
             {isPlaying && isInView ? (
-              <Pause className="w-6 h-6" fill="white" />
+              <Pause className="w-6 h-6 text-primary" />
             ) : (
-              <Play className="w-6 h-6 ml-0.5" fill="white" />
+              <Play className="w-6 h-6 ml-0.5 text-primary"  />
             )}
           </motion.button>
 
@@ -132,13 +132,13 @@ const HistoryOfPhuketSection = () => {
             onClick={toggleMute}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-black/60 backdrop-blur-md text-white p-4 rounded-full hover:bg-black/80 transition-all duration-300 border-2 border-white/30 shadow-2xl hover:shadow-white/20"
+            className="bg-background cursor-pointer backdrop-blur-md text-white p-4 rounded-full hover:bg-background/80 transition-all duration-300 border-2 border-white/30 shadow-2xl hover:shadow-white/20"
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
             {isMuted ? (
-              <VolumeX className="w-6 h-6" strokeWidth={2.5} />
+              <VolumeX className="w-6 h-6 text-primary" strokeWidth={2.5} />
             ) : (
-              <Volume2 className="w-6 h-6" strokeWidth={2.5} />
+              <Volume2 className="w-6 h-6 text-primary" strokeWidth={2.5} />
             )}
           </motion.button>
         </div>
