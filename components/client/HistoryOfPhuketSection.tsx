@@ -75,7 +75,7 @@ const HistoryOfPhuketSection = () => {
   return (
     <>
       {/* Heading Section with Secondary Background */}
-      <section className="relative py-16 lg:py-24 bg-secondary overflow-hidden">
+      <section className="relative py-16 lg:pt-24 lg:pb-8 bg-secondary overflow-hidden">
         {/* Background Elements */}
         {/* <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#CDB04E] rounded-full blur-[120px]" />
