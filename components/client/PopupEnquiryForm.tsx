@@ -187,7 +187,7 @@ const PopupEnquiryForm = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="bg-white rounded-2xl p-6 w-full max-w-md relative shadow-2xl"
+              className="bg-background rounded-2xl p-6 w-full max-w-md relative shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -195,15 +195,15 @@ const PopupEnquiryForm = () => {
                 onClick={handleCloseForm}
                 className="cursor-pointer absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 text-primary" />
               </button>
 
               {/* Header */}
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-primary mb-2">
                   Get Your Dream Property
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-white/80 text-sm">
                   Fill in your details and we'll help you find the perfect home
                 </p>
               </div>
@@ -212,17 +212,17 @@ const PopupEnquiryForm = () => {
               <form onSubmit={handleFormSubmit} className="space-y-4">
                 {/* Name Field (Optional) */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-white/80 mb-1">
                     Name (Optional)
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-4 h-4" />
                     <input
                       type="text"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all"
+                      className="w-full pl-10 pr-4 py-3 border border-white/80 rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -230,18 +230,18 @@ const PopupEnquiryForm = () => {
 
                 {/* Phone Field (Mandatory) */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-white/80 mb-1">
                     Phone Number *
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-4 h-4" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
-                        formErrors.phone ? "border-red-500" : "border-gray-300"
+                        formErrors.phone ? "border-red-500" : "border-white/80"
                       }`}
                       placeholder="Enter your phone number"
                       required
@@ -256,11 +256,11 @@ const PopupEnquiryForm = () => {
 
                 {/* City Field (Mandatory) */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-white/80 mb-1">
                     City *
                   </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-4 h-4" />
                     <input
                       type="text"
                       name="location"
@@ -269,7 +269,7 @@ const PopupEnquiryForm = () => {
                       className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
                         formErrors.location
                           ? "border-red-500"
-                          : "border-gray-300"
+                          : "border-white/80"
                       }`}
                       placeholder="Enter your city"
                       required
@@ -300,7 +300,7 @@ const PopupEnquiryForm = () => {
               </form>
 
               {/* Footer */}
-              <p className="text-xs text-gray-500 text-center mt-4">
+              <p className="text-xs text-white/80 text-center mt-4">
                 By submitting this form, you agree to our privacy policy
               </p>
             </motion.div>
