@@ -200,7 +200,7 @@ const PopupEnquiryForm = () => {
 
               {/* Header */}
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-primary mb-2">
+                <h3 className="text-2xl font-bold text-primary mb-2 font-cinzel">
                   Get Your Dream Property
                 </h3>
                 <p className="text-white/80 text-sm">
@@ -209,7 +209,7 @@ const PopupEnquiryForm = () => {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleFormSubmit} className="space-y-4">
+              <form onSubmit={handleFormSubmit} className="space-y-4 font-josefin">
                 {/* Name Field (Optional) */}
                 <div>
                   <label className="block text-sm font-medium text-white/80 mb-1">
@@ -222,7 +222,7 @@ const PopupEnquiryForm = () => {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 py-3 border border-white/80 rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all"
+                      className="w-full pl-10 pr-4 text-white/80 placeholder-white/80 py-3 border border-white/80 rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all"
                       placeholder="Enter your name"
                     />
                   </div>
@@ -240,7 +240,7 @@ const PopupEnquiryForm = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
+                      className={`w-full pl-10 pr-4 text-white/80 placeholder-white/80 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
                         formErrors.phone ? "border-red-500" : "border-white/80"
                       }`}
                       placeholder="Enter your phone number"
@@ -266,7 +266,7 @@ const PopupEnquiryForm = () => {
                       name="location"
                       value={formData.location}
                       onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
+                      className={`w-full pl-10 pr-4 text-white/80 placeholder-white/80 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
                         formErrors.location
                           ? "border-red-500"
                           : "border-white/80"
@@ -286,7 +286,7 @@ const PopupEnquiryForm = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full cursor-pointer bg-[#CDB04E] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#B89A3E] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full cursor-pointer bg-[#CDB04E] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#B89A3E] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-josefin"
                 >
                   {isSubmitting ? (
                     <>
