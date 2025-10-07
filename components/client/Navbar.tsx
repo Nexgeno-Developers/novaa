@@ -425,31 +425,12 @@ export default function Navbar({ data }: NavbarProps) {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleBrochureSubmit} className="space-y-4">
-                {/* <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-white/80 mb-2"
-                  >
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
-                    placeholder="Enter your name"
-                  />
-                </div> */}
-
+              <form
+                onSubmit={handleBrochureSubmit}
+                className="space-y-4 font-josefin text-[14px]"
+              >
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-white/80 mb-2"
-                  >
+                  <label className="text-primary block mb-1 font-normal">
                     Email Address (optional)
                   </label>
                   <input
@@ -458,17 +439,14 @@ export default function Navbar({ data }: NavbarProps) {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
+                    className="w-full bg-transparent border px-4 py-2 rounded text-white placeholder-white/40"
                     placeholder="your.email@example.com"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-white/80 mb-2"
-                  >
-                    Phone Number <span className="text-primary">*</span>
+                  <label className="text-primary block mb-1 font-normal">
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -477,16 +455,13 @@ export default function Navbar({ data }: NavbarProps) {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
+                    className="w-full bg-transparent border px-4 py-2 rounded text-white placeholder-white/40"
                     placeholder="+1 (555) 000-0000"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-white/80 mb-2"
-                  >
+                  <label className="text-primary block mb-1 font-normal">
                     Description (optional)
                   </label>
                   <textarea
@@ -495,35 +470,33 @@ export default function Navbar({ data }: NavbarProps) {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-[#F0DE9C]/50 transition-colors"
+                    className="w-full bg-transparent border px-4 py-2 rounded min-h-[96px] text-white placeholder-white/40"
                     placeholder="Description (optional)"
                   />
                 </div>
 
                 {/* Submit Button */}
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 mt-6 rounded-lg text-background font-semibold shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  style={{
-                    background:
-                      "radial-gradient(114.24% 114.24% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
-                  }}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-5 h-5" />
-                      Download Brochure
-                    </>
-                  )}
-                </motion.button>
+                <div className="flex justify-center items-center">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-[#01292B]/30 border-t-[#01292B] rounded-full animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4" />
+                        Download
+                      </>
+                    )}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>

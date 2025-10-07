@@ -421,13 +421,13 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 information about this project
               </p>
 
-              <form onSubmit={handleFormSubmit} className="space-y-4">
+              <form
+                onSubmit={handleFormSubmit}
+                className="space-y-4 font-josefin text-[14px]"
+              >
                 {/* Full Name Field */}
                 <div>
-                  <label
-                    htmlFor="fullName"
-                    className="block text-sm font-josefin font-medium text-white mb-1"
-                  >
+                  <label className="text-primary block mb-1 font-normal">
                     Full Name (Optional)
                   </label>
                   <input
@@ -437,14 +437,14 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="Enter your full name"
-                    className={`w-full px-4 py-2 bg-[#012020] border ${
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                       formErrors.fullName
-                        ? "border-red-500"
-                        : "border-[#CDB04E]/30"
-                    } rounded-md text-white placeholder:font-josefin placeholder-gray-500 focus:outline-none focus:border-[#CDB04E] transition-colors`}
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
                   />
                   {formErrors.fullName && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
                       {formErrors.fullName}
                     </p>
@@ -453,11 +453,8 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
 
                 {/* Phone Number Field */}
                 <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-josefin font-medium text-white mb-1"
-                  >
-                    Phone Number <span className="text-primary">*</span>
+                  <label className="text-primary block mb-1 font-normal">
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -466,14 +463,14 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="Enter your phone number"
-                    className={`w-full px-4 py-2 bg-[#012020] border ${
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                       formErrors.phone
-                        ? "border-red-500"
-                        : "border-[#CDB04E]/30"
-                    } rounded-md text-white placeholder:font-josefin placeholder-gray-500 focus:outline-none focus:border-[#CDB04E] transition-colors`}
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
                   />
                   {formErrors.phone && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
                       {formErrors.phone}
                     </p>
@@ -481,10 +478,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-josefin font-medium text-white mb-1"
-                  >
+                  <label className="text-primary block mb-1 font-normal">
                     Email (Optional)
                   </label>
                   <input
@@ -494,14 +488,14 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email"
-                    className={`w-full px-4 py-2 bg-[#012020] border ${
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                       formErrors.email
-                        ? "border-red-500"
-                        : "border-[#CDB04E]/30"
-                    } rounded-md text-white placeholder:font-josefin placeholder-gray-500 focus:outline-none focus:border-[#CDB04E] transition-colors`}
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
                   />
                   {formErrors.email && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
                       {formErrors.email}
                     </p>
@@ -509,10 +503,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-josefin font-medium text-white mb-1"
-                  >
+                  <label className="text-primary block mb-1 font-normal">
                     Description (Optional)
                   </label>
                   <textarea
@@ -522,30 +513,31 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     onChange={handleInputChange}
                     placeholder="Any specific requirements or questions?"
                     rows={3}
-                    className="w-full px-4 py-2 bg-[#012020] border border-[#CDB04E]/30 rounded-md text-white placeholder-gray-500 focus:outline-none placeholder:font-josefin focus:border-[#CDB04E] transition-colors resize-none"
+                    className="w-full bg-transparent border px-4 py-2 rounded min-h-[96px] text-white"
                   />
                 </div>
 
-                <motion.button
-                  whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-                  whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                  type="submit"
-                  disabled={isSubmitting || submissionStatus === "submitting"}
-                  className={`w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:brightness-110 font-josefin py-3 rounded-md text-background font-semibold shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                    isSubmitting || submissionStatus === "submitting"
-                      ? "opacity-70 cursor-not-allowed"
-                      : ""
-                  }`}
-                >
-                  {isSubmitting || submissionStatus === "submitting" ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit"
-                  )}
-                </motion.button>
+                {/* Submit Button */}
+                <div className="flex justify-center items-center">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || submissionStatus === "submitting"}
+                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                      isSubmitting || submissionStatus === "submitting"
+                        ? "opacity-70 cursor-not-allowed"
+                        : ""
+                    }`}
+                  >
+                    {isSubmitting || submissionStatus === "submitting" ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>

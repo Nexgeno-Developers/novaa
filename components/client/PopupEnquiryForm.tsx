@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Phone, User, MapPin, Loader2 } from "lucide-react";
+import { X, Phone, User, MapPin, Loader2, AlertCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux";
 import {
@@ -178,7 +178,7 @@ const PopupEnquiryForm = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
             onClick={handleCloseForm}
           >
             {/* Form */}
@@ -209,46 +209,46 @@ const PopupEnquiryForm = () => {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleFormSubmit} className="space-y-4 font-josefin">
+              <form
+                onSubmit={handleFormSubmit}
+                className="space-y-4 font-josefin text-[14px]"
+              >
                 {/* Name Field (Optional) */}
                 <div>
-                  <label className="block text-sm font-medium text-white/80 mb-1">
+                  <label className="text-primary block mb-1 font-normal">
                     Name (Optional)
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-4 h-4" />
-                    <input
-                      type="text"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      className="w-full pl-10 pr-4 text-white/80 placeholder-white/80 py-3 border border-white/80 rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all"
-                      placeholder="Enter your name"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    className="w-full bg-transparent border px-4 py-2 rounded text-white"
+                    placeholder="Enter your name"
+                  />
                 </div>
 
                 {/* Phone Field (Mandatory) */}
                 <div>
-                  <label className="block text-sm font-medium text-white/80 mb-1">
+                  <label className="text-primary block mb-1 font-normal">
                     Phone Number *
                   </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-4 h-4" />
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 text-white/80 placeholder-white/80 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
-                        formErrors.phone ? "border-red-500" : "border-white/80"
-                      }`}
-                      placeholder="Enter your phone number"
-                      required
-                    />
-                  </div>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      formErrors.phone
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
+                    placeholder="Enter your phone number"
+                    required
+                  />
                   {formErrors.phone && (
-                    <p className="text-red-500 text-xs mt-1">
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
                       {formErrors.phone}
                     </p>
                   )}
@@ -256,47 +256,49 @@ const PopupEnquiryForm = () => {
 
                 {/* City Field (Mandatory) */}
                 <div>
-                  <label className="block text-sm font-medium text-white/80 mb-1">
+                  <label className="text-primary block mb-1 font-normal">
                     City *
                   </label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80 w-4 h-4" />
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 text-white/80 placeholder-white/80 py-3 border rounded-lg focus:ring-2 focus:ring-[#CDB04E] focus:border-transparent outline-none transition-all ${
-                        formErrors.location
-                          ? "border-red-500"
-                          : "border-white/80"
-                      }`}
-                      placeholder="Enter your city"
-                      required
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      formErrors.location
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
+                    placeholder="Enter your city"
+                    required
+                  />
                   {formErrors.location && (
-                    <p className="text-red-500 text-xs mt-1">
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
                       {formErrors.location}
                     </p>
                   )}
                 </div>
 
                 {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full cursor-pointer bg-[#CDB04E] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#B89A3E] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-josefin"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit"
-                  )}
-                </button>
+                <div className="flex justify-center items-center">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
+                </div>
               </form>
 
               {/* Footer */}

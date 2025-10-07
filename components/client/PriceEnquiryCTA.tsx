@@ -11,6 +11,7 @@ import {
   Mail,
   MessageSquare,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux";
@@ -42,6 +43,7 @@ const PriceEnquiryCTA = () => {
     phone: "",
     email: "",
     location: "",
+    message: "",
   });
 
   // Validate form
@@ -51,6 +53,7 @@ const PriceEnquiryCTA = () => {
       phone: "",
       email: "",
       location: "",
+      message: "",
     };
 
     if (!formData.fullName.trim()) {
@@ -79,7 +82,11 @@ const PriceEnquiryCTA = () => {
 
     setFormErrors(errors);
     return (
-      !errors.fullName && !errors.phone && !errors.email && !errors.location
+      !errors.fullName &&
+      !errors.phone &&
+      !errors.email &&
+      !errors.location &&
+      !errors.message
     );
   };
 
@@ -185,7 +192,9 @@ const PriceEnquiryCTA = () => {
             >
               <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-cinzel  text-white mb-2">
                 Get Your{" "}
-                <span className="text-[#CDB04E] font-bold">Personalized Price</span>{" "}
+                <span className="text-[#CDB04E] font-bold">
+                  Personalized Price
+                </span>{" "}
                 Instantly!
               </h2>
             </motion.div>
@@ -249,160 +258,153 @@ const PriceEnquiryCTA = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleFormSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Full Name Field */}
-                  <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
-                      Full Name (Optional)
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleInputChange}
-                        className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
-                          formErrors.fullName
-                            ? "border-red-500"
-                            : "border-[#FFFFFF80]"
-                        }`}
-                        placeholder="Enter your full name"
-                        required
-                      />
-                    </div>
-                    {formErrors.fullName && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {formErrors.fullName}
-                      </p>
-                    )}
-                  </div>
+              <form
+                onSubmit={handleFormSubmit}
+                className="space-y-4 font-josefin text-[14px]"
+              >
+                {/* Full Name */}
+                <div>
+                  <label className="text-primary block mb-1 font-normal">
+                    Full Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      formErrors.fullName
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
+                    placeholder="Enter your full name"
+                    required
+                  />
+                  {formErrors.fullName && (
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {formErrors.fullName}
+                    </p>
+                  )}
+                </div>
 
-                  {/* Phone Field */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Phone Number (Mandatory) */}
                   <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
+                    <label className="text-primary block mb-1 font-normal">
                       Phone Number *
                     </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
-                          formErrors.phone
-                            ? "border-red-500"
-                            : "border-[#FFFFFF80]"
-                        }`}
-                        placeholder="Enter your phone number"
-                        required
-                      />
-                    </div>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                        formErrors.phone
+                          ? "border-red-400"
+                          : "border-[rgba(255,255,255,0.8)]"
+                      }`}
+                      placeholder="Enter your phone number"
+                      required
+                    />
                     {formErrors.phone && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
                         {formErrors.phone}
                       </p>
                     )}
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Email Field */}
+                  {/* Email (Optional) */}
                   <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
+                    <label className="text-primary block mb-1 font-normal">
                       Email Address (Optional)
                     </label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
-                          formErrors.email
-                            ? "border-red-500"
-                            : "border-[#FFFFFF80]"
-                        }`}
-                        placeholder="Enter your email address"
-                      />
-                    </div>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                        formErrors.email
+                          ? "border-red-400"
+                          : "border-[rgba(255,255,255,0.8)]"
+                      }`}
+                      placeholder="Enter your email address"
+                    />
                     {formErrors.email && (
-                      <p className="text-red-500 text-xs mt-1">
+                      <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
                         {formErrors.email}
                       </p>
                     )}
                   </div>
-
-                  {/* Location Field */}
-                  <div>
-                    <label className="block text-white/80 text-sm font-medium mb-2">
-                      City *
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        name="location"
-                        value={formData.location}
-                        onChange={handleInputChange}
-                        className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
-                          formErrors.location
-                            ? "border-red-500"
-                            : "border-[#FFFFFF80]"
-                        }`}
-                        placeholder="Enter your city"
-                        required
-                      />
-                    </div>
-                    {formErrors.location && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {formErrors.location}
-                      </p>
-                    )}
-                  </div>
                 </div>
 
-                {/* Message Field */}
+                {/* Location */}
                 <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">
+                  <label className="text-primary block mb-1 font-normal">
+                    City *
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      formErrors.location
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
+                    placeholder="Enter your city"
+                    required
+                  />
+                  {formErrors.location && (
+                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {formErrors.location}
+                    </p>
+                  )}
+                </div>
+
+                {/* Message (Optional) */}
+                <div>
+                  <label className="text-primary block mb-1 font-normal">
                     Description (Optional)
                   </label>
-                  <div className="relative">
-                    <MessageSquare className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full pl-10 pr-4 py-3 bg-transparent border border-[#FFFFFF80] rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none"
-                      placeholder="Tell us about your requirements..."
-                    />
-                  </div>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className={`w-full bg-transparent border px-4 py-2 rounded min-h-[96px] text-white ${
+                      formErrors.message
+                        ? "border-red-400"
+                        : "border-[rgba(255,255,255,0.8)]"
+                    }`}
+                    placeholder="Tell us about your requirements..."
+                  />
                 </div>
 
                 {/* Submit Button */}
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <DollarSign className="w-4 h-4" />
-                      Get Pricing Information
-                    </>
-                  )}
-                </motion.button>
+                <div className="flex justify-center items-center">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
+                </div>
               </form>
 
               {/* Footer */}
