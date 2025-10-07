@@ -89,7 +89,8 @@ interface Project {
   projectDetail: {
     hero: {
       backgroundImage: string;
-      mediaType?: "image" | "video";
+      mediaType?: "image" | "video" | "vimeo";
+      vimeoUrl?: string;
       title: string;
       subtitle: string;
       scheduleMeetingButton: string;
@@ -178,7 +179,8 @@ export default function EditProjectPage() {
   const [projectDetailData, setProjectDetailData] = useState({
     hero: {
       backgroundImage: "",
-      mediaType: "image" as "image" | "video",
+      mediaType: "image" as "image" | "video" | "vimeo",
+      vimeoUrl: "",
       title: "",
       subtitle: "",
       scheduleMeetingButton: "Schedule a meeting",
@@ -310,6 +312,7 @@ export default function EditProjectPage() {
             backgroundImage,
             mediaType:
               currentProject.projectDetail.hero?.mediaType || detectedMediaType,
+            vimeoUrl: currentProject.projectDetail.hero?.vimeoUrl || "",
             title: currentProject.projectDetail.hero?.title || "",
             subtitle: currentProject.projectDetail.hero?.subtitle || "",
             scheduleMeetingButton:
@@ -1096,7 +1099,7 @@ export default function EditProjectPage() {
                 </Label>
                 <Select
                   value={projectDetailData.hero.mediaType || "image"}
-                  onValueChange={(value: "image" | "video") =>
+                  onValueChange={(value: "image" | "video" | "vimeo") =>
                     handleProjectDetailChange("hero", "mediaType", value)
                   }
                 >
@@ -1104,30 +1107,53 @@ export default function EditProjectPage() {
                     <SelectValue placeholder="Select media type" />
                   </SelectTrigger>
                   <SelectContent className="admin-theme">
-                    <SelectItem value="image">Image</SelectItem>
-                    <SelectItem value="video">Video</SelectItem>
+                    <SelectItem value="image">Background Image</SelectItem>
+                    <SelectItem value="video">Background Video</SelectItem>
+                    <SelectItem value="vimeo">Vimeo Video URL</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.hero.backgroundImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("hero", "backgroundImage", url)
-                  }
-                  mediaType={projectDetailData.hero.mediaType || "image"}
-                  label={`Hero Background ${
-                    projectDetailData.hero.mediaType === "video"
-                      ? "Video"
-                      : "Image"
-                  }`}
-                  placeholder={`Select background ${
-                    projectDetailData.hero.mediaType === "video"
-                      ? "video"
-                      : "image"
-                  } for hero section`}
-                />
+                {projectDetailData.hero.mediaType === "vimeo" ? (
+                  <>
+                    <Label htmlFor="vimeoUrl" className="text-primary">
+                      Vimeo Video URL
+                    </Label>
+                    <Input
+                      id="vimeoUrl"
+                      type="url"
+                      value={projectDetailData.hero.vimeoUrl}
+                      onChange={(e) =>
+                        handleProjectDetailChange(
+                          "hero",
+                          "vimeoUrl",
+                          e.target.value
+                        )
+                      }
+                      placeholder="https://vimeo.com/1125077925?share=copy"
+                      className="w-full"
+                    />
+                  </>
+                ) : (
+                  <MediaSelectButton
+                    value={projectDetailData.hero.backgroundImage}
+                    onSelect={(url) =>
+                      handleProjectDetailChange("hero", "backgroundImage", url)
+                    }
+                    mediaType={projectDetailData.hero.mediaType || "image"}
+                    label={`Hero Background ${
+                      projectDetailData.hero.mediaType === "video"
+                        ? "Video"
+                        : "Image"
+                    }`}
+                    placeholder={`Select background ${
+                      projectDetailData.hero.mediaType === "video"
+                        ? "video"
+                        : "image"
+                    } for hero section`}
+                  />
+                )}
               </div>
             </div>
 

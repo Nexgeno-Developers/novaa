@@ -1,125 +1,3 @@
-// "use client";
-
-// import Image from "next/image";
-// import { motion } from "framer-motion";
-// import { ArrowRight, Divide, Star } from "lucide-react";
-// import parse from "html-react-parser";
-
-// interface ProjectHeroSectionProps {
-//   project: {
-//     name: string;
-//     projectDetail?: {
-//       hero?: {
-//         backgroundImage?: string;
-//         title?: string;
-//         subtitle?: string;
-//         scheduleMeetingButton?: string;
-//         getBrochureButton?: string;
-//         brochurePdf?: string;
-//       };
-//     };
-//   };
-// }
-
-// const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
-//   const heroData = project.projectDetail?.hero;
-
-//   const backgroundImage =
-//     heroData?.backgroundImage || "/images/project-details-hero.jpg";
-//   const title = heroData?.title || project.name;
-//   const subtitle = heroData?.subtitle || "A Resort-Inspired Lifestyle";
-//   const scheduleMeetingText =
-//     heroData?.scheduleMeetingButton || "Schedule a meeting";
-//   const getBrochureText = heroData?.getBrochureButton || "Get Brochure";
-//   const brochurePdf = heroData?.brochurePdf;
-
-//   const handleBrochureDownload = () => {
-//     if (brochurePdf) {
-//       // Create a temporary link and trigger download
-//       const link = document.createElement("a");
-//       link.href = brochurePdf;
-//       link.download = `${project.name}-Brochure.pdf`;
-//       document.body.appendChild(link);
-//       link.click();
-//       document.body.removeChild(link);
-//     } else {
-//       console.log("No brochure PDF available");
-//     }
-//   };
-
-//   const handleScheduleMeeting = () => {
-//     // You can integrate with Calendly or any scheduling service here
-//     // For now, just logging
-//     console.log("Schedule meeting clicked");
-//     // Example Calendly integration:
-//     // window.open('https://calendly.com/your-calendly-link', '_blank');
-//   };
-
-//   return (
-//     <section className="relative h-screen overflow-hidden bg-background">
-//       {/* Background Image - Full Width */}
-//       <Image
-//         src={backgroundImage}
-//         alt="project details background"
-//         fill
-//         priority
-//         className="object-cover"
-//       />
-
-//       {/* Dark overlay */}
-//       <div className="absolute bottom-0 w-full h-1/2 inset-x-0 z-0 bg-gradient-to-b from-bg-[#01292B00] to-[#01292B]" />
-
-//       {/* Content Container - Constrained to container width */}
-//       <div className="container relative h-full z-10">
-//         <div className="relative h-full flex flex-col justify-end mt-10">
-//           {/* Text Content */}
-//           <div className="font-cinzel text-primary pb-5 sm:pb-0">
-//             <motion.h2
-//               initial={{ opacity: 0, y: 40 }}
-//               whileInView={{ opacity: 1, y: 0 }}
-//               transition={{ duration: 1 }}
-//               className="text-[40px] xs:text-[50px] sm:text-[60px] leading-[100%] tracking-[0%] font-cinzel font-bold"
-//             >
-//               {title && <div>{parse(title)}</div>}
-//             </motion.h2>
-//             <motion.h3
-//               initial={{ opacity: 0, y: 40 }}
-//               whileInView={{ opacity: 1, y: 0 }}
-//               transition={{ duration: 1 }}
-//               className="flex items-center description-text gap-4 font-josefin font-light text-white mt-2 pl-1"
-//             >
-//               {subtitle && <div>{parse(subtitle)}</div>}
-//             </motion.h3>
-//           </div>
-
-//           {/* Buttons Container */}
-//           <div className="flex justify-start lg:justify-end gap-4 mb-20 pt-0 sm:pt-5 xl:pt-0">
-//             <motion.button
-//               whileHover={{ scale: 1.05 }}
-//               whileTap={{ scale: 0.95 }}
-//               onClick={handleScheduleMeeting}
-//               className="inline-flex bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] font-josefin items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-md text-background font-semibold shadow-lg cursor-pointer transition-all duration-300 text-xs sm:text-base"
-//             >
-//               {parse(scheduleMeetingText)}
-//               <ArrowRight className="w-5 h-5" />
-//             </motion.button>
-//             <motion.button
-//               whileHover={{ scale: 1.05 }}
-//               whileTap={{ scale: 0.95 }}
-//               onClick={handleBrochureDownload}
-//               className="inline-flex font-josefin items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-md border-[#CDB04E99] bg-[#CDB04E1A] text-primary font-semibold shadow-lg cursor-pointer transition-all duration-300 text-xs sm:text-base"
-//             >
-//               {parse(getBrochureText)}
-//               <ArrowRight className="w-5 h-5" />
-//             </motion.button>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default ProjectHeroSection;
 "use client";
 
 import Image from "next/image";
@@ -142,7 +20,8 @@ interface ProjectHeroSectionProps {
     projectDetail?: {
       hero?: {
         backgroundImage?: string;
-        mediaType?: "image" | "video";
+        mediaType?: "image" | "video" | "vimeo";
+        vimeoUrl?: string;
         title?: string;
         subtitle?: string;
         scheduleMeetingButton?: string;
@@ -316,30 +195,103 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
     console.log("Schedule meeting clicked");
   };
 
+  // Helper function to extract Vimeo video ID from URL
+  const extractVimeoId = (url: string): string | null => {
+    const match = url.match(
+      /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/
+    );
+    return match ? match[1] : null;
+  };
+
+  // Get background media based on mediaType
+  const getBackgroundMedia = () => {
+    const heroData = project.projectDetail?.hero;
+    const mediaType = heroData?.mediaType || "image";
+    const backgroundImage =
+      heroData?.backgroundImage || "/images/project-details-hero.jpg";
+    const vimeoUrl = heroData?.vimeoUrl;
+
+    if (mediaType === "vimeo" && vimeoUrl) {
+      const videoId = extractVimeoId(vimeoUrl);
+      if (videoId) {
+        return {
+          type: "vimeo",
+          src: `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1&loop=1&background=1&controls=0&title=0&byline=0&portrait=0&playsinline=1&autopause=0`,
+        };
+      }
+    } else if (mediaType === "video") {
+      return {
+        type: "video",
+        src: backgroundImage,
+      };
+    } else {
+      return {
+        type: "image",
+        src: backgroundImage,
+      };
+    }
+
+    // Fallback to image if vimeo fails
+    return {
+      type: "image",
+      src: backgroundImage,
+    };
+  };
+
+  const backgroundMedia = getBackgroundMedia();
+
   return (
     <section className="relative h-screen overflow-hidden bg-background">
-      {/* Background Media */}
-      {mediaType === "video" ? (
-        <video
-          src={backgroundImage}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      ) : (
-        <Image
-          src={backgroundImage}
-          alt="project details background"
-          fill
-          priority
-          className="object-cover"
-        />
-      )}
+      {/* Background Media - Conditional Rendering */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        {backgroundMedia.type === "vimeo" ? (
+          <iframe
+            src={backgroundMedia.src}
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+            allowFullScreen
+            style={{
+              pointerEvents: "none",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100vw",
+              height: "62.666vw",
+              minWidth: "159.5vh",
+              minHeight: "100vh",
+            }}
+          />
+        ) : backgroundMedia.type === "video" ? (
+          <video
+            src={backgroundMedia.src}
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100vw",
+              height: "100vh",
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <Image
+            src={backgroundMedia.src}
+            alt="project details background"
+            fill
+            priority
+            className="object-cover"
+          />
+        )}
+      </div>
 
-      {/* Dark overlay */}
-      <div className="absolute bottom-0 w-full h-1/2 inset-x-0 z-0 bg-gradient-to-b from-bg-[#01292B00] to-[#01292B]" />
+      {/* Dark overlay - FIXED */}
+      <div className="absolute bottom-0 left-0 right-0 w-full h-1/2 z-0 bg-gradient-to-b from-transparent to-[#01292B]" />
 
       {/* Content Container */}
       <div className="container relative h-full z-10">

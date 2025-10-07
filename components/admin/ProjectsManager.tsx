@@ -307,7 +307,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="overflow-x-auto rounded-xl border border-slate-200/60">
+              <div className="hidden lg:block overflow-x-auto rounded-xl border border-slate-200/60">
                 <Table>
                   <TableHeader className="bg-gradient-to-r from-slate-600 to-slate-700">
                     <TableRow className="border-slate-300/20">

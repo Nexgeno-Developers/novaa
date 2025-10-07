@@ -39,7 +39,12 @@ const projectSchema = new mongoose.Schema(
       // Hero Section
       hero: {
         backgroundImage: { type: String, default: "" },
-        mediaType: { type: String, enum: ["image", "video"], default: "image" },
+        mediaType: {
+          type: String,
+          enum: ["image", "video", "vimeo"],
+          default: "image",
+        },
+        vimeoUrl: { type: String, default: "" },
         title: { type: String, default: "" },
         subtitle: { type: String, default: "" },
         scheduleMeetingButton: { type: String, default: "Schedule a meeting" },

@@ -109,7 +109,8 @@ export default function CreateProjectPage() {
   const [projectDetailData, setProjectDetailData] = useState({
     hero: {
       backgroundImage: "",
-      mediaType: "image" as "image" | "video",
+      mediaType: "image" as "image" | "video" | "vimeo",
+      vimeoUrl: "",
       title: "",
       subtitle: "",
       scheduleMeetingButton: "Schedule a meeting",
@@ -868,7 +869,7 @@ export default function CreateProjectPage() {
                 </Label>
                 <Select
                   value={projectDetailData.hero.mediaType || "image"}
-                  onValueChange={(value: "image" | "video") =>
+                  onValueChange={(value: "image" | "video" | "vimeo") =>
                     handleProjectDetailChange("hero", "mediaType", value)
                   }
                 >
@@ -876,30 +877,53 @@ export default function CreateProjectPage() {
                     <SelectValue placeholder="Select media type" />
                   </SelectTrigger>
                   <SelectContent className="admin-theme">
-                    <SelectItem value="image">Image</SelectItem>
-                    <SelectItem value="video">Video</SelectItem>
+                    <SelectItem value="image">Background Image</SelectItem>
+                    <SelectItem value="video">Background Video</SelectItem>
+                    <SelectItem value="vimeo">Vimeo Video URL</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.hero.backgroundImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("hero", "backgroundImage", url)
-                  }
-                  mediaType={projectDetailData.hero.mediaType || "image"}
-                  label={`Hero Background ${
-                    projectDetailData.hero.mediaType === "video"
-                      ? "Video"
-                      : "Image"
-                  }`}
-                  placeholder={`Select background ${
-                    projectDetailData.hero.mediaType === "video"
-                      ? "video"
-                      : "image"
-                  } for hero section`}
-                />
+                {projectDetailData.hero.mediaType === "vimeo" ? (
+                  <>
+                    <Label htmlFor="vimeoUrl" className="text-primary">
+                      Vimeo Video URL
+                    </Label>
+                    <Input
+                      id="vimeoUrl"
+                      type="url"
+                      value={projectDetailData.hero.vimeoUrl}
+                      onChange={(e) =>
+                        handleProjectDetailChange(
+                          "hero",
+                          "vimeoUrl",
+                          e.target.value
+                        )
+                      }
+                      placeholder="https://vimeo.com/1125077925?share=copy"
+                      className="w-full"
+                    />
+                  </>
+                ) : (
+                  <MediaSelectButton
+                    value={projectDetailData.hero.backgroundImage}
+                    onSelect={(url) =>
+                      handleProjectDetailChange("hero", "backgroundImage", url)
+                    }
+                    mediaType={projectDetailData.hero.mediaType || "image"}
+                    label={`Hero Background ${
+                      projectDetailData.hero.mediaType === "video"
+                        ? "Video"
+                        : "Image"
+                    }`}
+                    placeholder={`Select background ${
+                      projectDetailData.hero.mediaType === "video"
+                        ? "video"
+                        : "image"
+                    } for hero section`}
+                  />
+                )}
               </div>
             </div>
 

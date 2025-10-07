@@ -47,7 +47,8 @@ interface GatewayCategory {
 interface ProjectDetail {
   hero: {
     backgroundImage: string;
-    mediaType?: "image" | "video";
+    mediaType?: "image" | "video" | "vimeo";
+    vimeoUrl?: string;
     title: string;
     subtitle: string;
     scheduleMeetingButton: string;
