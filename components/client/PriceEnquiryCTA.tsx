@@ -182,11 +182,19 @@ const PriceEnquiryCTA = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
+
+         {/* Color Overlay */}
+      <div
+        className="absolute inset-0 w-full h-full"
+        style={{ backgroundColor: "#01292BCC" }}
+      />
         {/* Background Elements */}
-        <div className="absolute inset-0 opacity-5">
+        {/* <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#CDB04E] rounded-full blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#CDB04E] rounded-full blur-[120px]" />
-        </div>
+        </div> */}
+
+
 
         <div className="container relative z-10 px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
@@ -235,7 +243,7 @@ const PriceEnquiryCTA = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
             onClick={handleCloseForm}
           >
             <motion.div
@@ -243,7 +251,7 @@ const PriceEnquiryCTA = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-[#01292BE5] backdrop-blur-xs rounded-[30px] p-6 sm:p-8 max-w-xl w-full relative shadow-2xl"
+              className="bg-[#01292BE5] backdrop-blur-xs rounded-[30px] p-4 sm:p-6 md:p-8 max-w-xl w-full relative shadow-2xl max-h-[90vh] overflow-y-auto my-4"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -253,14 +261,11 @@ const PriceEnquiryCTA = () => {
                 <X className="w-6 h-6" />
               </button>
 
-              <div className="text-center mb-6">
-                {/* <div className="w-16 h-16 bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <DollarSign className="w-8 h-8 text-background" />
-                </div> */}
-                <h3 className="text-2xl font-cinzel font-bold text-primary mb-2 cursor-pointer">
+              <div className="text-center mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-cinzel font-bold text-primary mb-2 cursor-pointer">
                   Get Pricing Information
                 </h3>
-                <p className="text-gray-300 font-josefin text-sm">
+                <p className="text-gray-300 font-josefin text-xs sm:text-sm">
                   Fill in your details to receive pricing information and get
                   more details about our properties
                 </p>
@@ -268,7 +273,7 @@ const PriceEnquiryCTA = () => {
 
               <form
                 onSubmit={handleFormSubmit}
-                className="space-y-4 font-josefin text-[14px]"
+                className="space-y-3 sm:space-y-4 font-josefin text-[14px]"
               >
                 {/* Full Name */}
                 <div>
@@ -387,17 +392,17 @@ const PriceEnquiryCTA = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-center pt-2">
+                <div className="flex justify-center pt-1 sm:pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
+                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-8 sm:px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-sm sm:text-base md:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
                       isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                         Submitting...
                       </>
                     ) : (
@@ -406,11 +411,6 @@ const PriceEnquiryCTA = () => {
                   </button>
                 </div>
               </form>
-
-              {/* Footer */}
-              <p className="text-xs text-gray-500 text-center mt-4">
-                By submitting this form, you agree to our privacy policy
-              </p>
             </motion.div>
           </motion.div>
         )}

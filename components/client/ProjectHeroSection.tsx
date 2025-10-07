@@ -395,7 +395,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
             onClick={handleCloseForm}
           >
             <motion.div
@@ -403,7 +403,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-[#01292B] border border-[#CDB04E]/30 rounded-lg p-6 sm:p-8 max-w-md w-full relative shadow-2xl"
+              className="bg-[#01292BE5] backdrop-blur-xs rounded-[30px] p-4 sm:p-6 md:p-8 max-w-md w-full relative shadow-2xl max-h-[90vh] overflow-y-auto my-4"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -413,17 +413,17 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 <X className="w-6 h-6" />
               </button>
 
-              <h3 className="text-2xl font-cinzel font-bold text-primary mb-2">
+              <h3 className="text-xl sm:text-2xl font-cinzel font-bold text-primary mb-2">
                 Enquire Now
               </h3>
-              <p className="text-gray-300 font-josefin mb-6 text-sm">
+              <p className="text-gray-300 font-josefin mb-4 sm:mb-6 text-xs sm:text-sm">
                 Fill in your details to receive the brochure and get more
                 information about this project
               </p>
 
               <form
                 onSubmit={handleFormSubmit}
-                className="space-y-4 font-josefin text-[14px]"
+                className="space-y-3 sm:space-y-4 font-josefin text-[14px]"
               >
                 {/* Full Name Field */}
                 <div>
@@ -514,11 +514,11 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-center pt-2">
+                <div className="flex justify-center pt-1 sm:pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting || submissionStatus === "submitting"}
-                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
+                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-8 sm:px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-sm sm:text-base md:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
                       isSubmitting || submissionStatus === "submitting"
                         ? "opacity-70 cursor-not-allowed"
                         : ""
@@ -526,7 +526,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                   >
                     {isSubmitting || submissionStatus === "submitting" ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                         Submitting...
                       </>
                     ) : (
