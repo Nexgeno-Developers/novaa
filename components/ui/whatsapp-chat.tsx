@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 
 interface WhatsAppChatProps {
   phoneNumber?: string;
@@ -13,37 +13,7 @@ const WhatsAppChat = ({
   websiteUrl = "https://novaaglobal.com/",
   companyName = "Novaa Global Properties",
 }: WhatsAppChatProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
-  const [showTypingIndicator, setShowTypingIndicator] = useState(false);
-  const chatInputRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      const typingTimer = setTimeout(() => {
-        setShowTypingIndicator(true);
-      }, 500);
-
-      const messageTimer = setTimeout(() => {
-        setShowTypingIndicator(false);
-        setShowMessage(true);
-        if (chatInputRef.current) {
-          chatInputRef.current.focus();
-        }
-      }, 1500);
-
-      return () => {
-        clearTimeout(typingTimer);
-        clearTimeout(messageTimer);
-      };
-    } else {
-      setShowMessage(false);
-      setShowTypingIndicator(false);
-    }
-  }, [isOpen]);
 
   const handleChatIconClick = () => {
     setShowMenu(!showMenu);
@@ -55,39 +25,19 @@ const WhatsAppChat = ({
   };
 
   const handleChatWithUs = () => {
-    setIsOpen(true);
+    // Direct WhatsApp link with default message
+    const defaultMessage = encodeURIComponent(
+      `Hi, I am contacting you through your website ${websiteUrl}`
+    );
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${defaultMessage}`;
+    window.open(whatsappUrl, "_blank");
     setShowMenu(false);
-  };
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      const encodedMessage = encodeURIComponent(
-        `${message}\n\nHi, I am contacting you through your website ${websiteUrl}`
-      );
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
-      window.open(whatsappUrl, "_blank");
-      setMessage("");
-      setIsTyping(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessage(e.target.value);
-    setIsTyping(e.target.value.length > 0);
   };
 
   return (
     <>
-      {/* WhatsApp Chat Widget */}
-      <div className={`whatsapp-chat-container ${isOpen ? "show" : "hide"}`}>
-        {/* Header */}
+      {/* WhatsApp Chat Widget - COMMENTED OUT FOR NOW */}
+      {/* <div className={`whatsapp-chat-container ${isOpen ? "show" : "hide"}`}>
         <div className="whatsapp-chat-header">
           <div className="header-content">
             <div className="whatsapp-chat-avatar">
@@ -118,10 +68,8 @@ const WhatsAppChat = ({
           </button>
         </div>
 
-        {/* Chat Body */}
         <div className="whatsapp-chat-body">
           <div className="message-container">
-            {/* Typing Indicator */}
             {showTypingIndicator && (
               <div className="typing-indicator-wrapper">
                 <div className="typing-indicator">
@@ -132,7 +80,6 @@ const WhatsAppChat = ({
               </div>
             )}
 
-            {/* Received Message */}
             {showMessage && (
               <div className="received-message">
                 <div className="message-bubble">
@@ -149,7 +96,6 @@ const WhatsAppChat = ({
           </div>
         </div>
 
-        {/* Input Area */}
         <div className="chat-input-container">
           <div className="input-wrapper">
             <textarea
@@ -180,7 +126,7 @@ const WhatsAppChat = ({
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Options Menu */}
       <div className={`options-menu ${showMenu ? "show" : "hide"}`}>
@@ -214,38 +160,37 @@ const WhatsAppChat = ({
       </div>
 
       {/* Chat Icon Button */}
-      {!isOpen && (
-        <button
-          className={`chat-float-button ${showMenu ? 'close-mode' : ''}`}
-          onClick={handleChatIconClick}
-          aria-label={showMenu ? "Close menu" : "Open chat options"}
-        >
-          {showMenu ? (
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M18 6L6 18M6 6l12 12"
-                stroke="#F5F5F5"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          ) : (
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-                stroke="#F5F5F5"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </svg>
-          )}
-        </button>
-      )}
+      <button
+        className={`chat-float-button ${showMenu ? 'close-mode' : ''}`}
+        onClick={handleChatIconClick}
+        aria-label={showMenu ? "Close menu" : "Open chat options"}
+      >
+        {showMenu ? (
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M18 6L6 18M6 6l12 12"
+              stroke="#F5F5F5"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        ) : (
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+              stroke="#F5F5F5"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
+        )}
+      </button>
 
       <style jsx>{`
-        .whatsapp-chat-container {
+        /* Commented out chat container styles - keeping for future use */
+        /* .whatsapp-chat-container {
           position: fixed;
           bottom: 24px;
           right: 24px;
@@ -261,296 +206,7 @@ const WhatsAppChat = ({
           overflow: hidden;
           transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
           transform-origin: bottom right;
-        }
-
-        .whatsapp-chat-container.show {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-          visibility: visible;
-        }
-
-        .whatsapp-chat-container.hide {
-          opacity: 0;
-          transform: scale(0.8) translateY(20px);
-          visibility: hidden;
-          pointer-events: none;
-        }
-
-        .whatsapp-chat-header {
-          background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
-          padding: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          flex: 1;
-        }
-
-        .whatsapp-chat-avatar {
-          position: relative;
-          width: 48px;
-          height: 48px;
-          flex-shrink: 0;
-        }
-
-        .avatar-img {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .header-info {
-          flex: 1;
-        }
-
-        .company-name {
-          color: #fff;
-          font-size: 16px;
-          font-weight: 600;
-          margin: 0 0 2px 0;
-          line-height: 1.3;
-        }
-
-        .status-text {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 13px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .status-text::before {
-          content: "";
-          width: 6px;
-          height: 6px;
-          background: #00e676;
-          border-radius: 50%;
-          display: inline-block;
-        }
-
-        .close-chat {
-          background: rgba(255, 255, 255, 0.1);
-          border: none;
-          color: #fff;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-        }
-
-        .close-chat:hover {
-          background: rgba(255, 255, 255, 0.2);
-          transform: rotate(90deg);
-        }
-
-        .whatsapp-chat-body {
-          flex: 1;
-          background: #e5ddd5;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 800 800'%3E%3Cg fill='none' stroke='%23d5cec5' stroke-width='1'%3E%3Cpath d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/%3E%3Cpath d='M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764'/%3E%3Cpath d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/%3E%3Cpath d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/%3E%3Cpath d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/%3E%3C/g%3E%3Cg fill='%23ddd5cc'%3E%3Ccircle cx='769' cy='229' r='5'/%3E%3Ccircle cx='539' cy='769' r='5'/%3E%3Ccircle cx='603' cy='493' r='5'/%3E%3Ccircle cx='731' cy='737' r='5'/%3E%3Ccircle cx='520' cy='660' r='5'/%3E%3Ccircle cx='309' cy='538' r='5'/%3E%3Ccircle cx='295' cy='764' r='5'/%3E%3Ccircle cx='40' cy='599' r='5'/%3E%3Ccircle cx='102' cy='382' r='5'/%3E%3Ccircle cx='127' cy='80' r='5'/%3E%3Ccircle cx='370' cy='105' r='5'/%3E%3Ccircle cx='578' cy='42' r='5'/%3E%3Ccircle cx='237' cy='261' r='5'/%3E%3Ccircle cx='390' cy='382' r='5'/%3E%3C/g%3E%3C/svg%3E");
-          padding: 20px;
-          overflow-y: auto;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .message-container {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .typing-indicator-wrapper {
-          display: flex;
-          justify-content: flex-start;
-          animation: slideIn 0.3s ease-out;
-        }
-
-        .typing-indicator {
-          background: #fff;
-          padding: 16px 20px;
-          border-radius: 8px 8px 8px 0;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-          position: relative;
-          display: flex;
-          gap: 4px;
-          align-items: center;
-        }
-
-        .typing-indicator::before {
-          content: "";
-          position: absolute;
-          left: -8px;
-          bottom: 0;
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 0 0 12px 12px;
-          border-color: transparent transparent #fff transparent;
-        }
-
-        .typing-indicator span {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #90949c;
-          animation: typing 1.4s infinite;
-        }
-
-        .typing-indicator span:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-
-        .typing-indicator span:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-          0%,
-          60%,
-          100% {
-            transform: translateY(0);
-            opacity: 0.7;
-          }
-          30% {
-            transform: translateY(-10px);
-            opacity: 1;
-          }
-        }
-
-        .received-message {
-          display: flex;
-          justify-content: flex-start;
-          animation: slideIn 0.4s ease-out;
-        }
-
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .message-bubble {
-          background: #fff;
-          padding: 10px 14px;
-          border-radius: 8px 8px 8px 0;
-          max-width: 75%;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-          position: relative;
-        }
-
-        .message-bubble::before {
-          content: "";
-          position: absolute;
-          left: -8px;
-          bottom: 0;
-          width: 0;
-          height: 0;
-          border-style: solid;
-          border-width: 0 0 12px 12px;
-          border-color: transparent transparent #fff transparent;
-        }
-
-        .message-text {
-          color: #303030;
-          font-size: 14px;
-          line-height: 1.5;
-          margin: 0 0 4px 0;
-          word-wrap: break-word;
-        }
-
-        .message-time {
-          color: #667781;
-          font-size: 11px;
-          display: block;
-          text-align: right;
-        }
-
-        .chat-input-container {
-          background: #f0f2f5;
-          padding: 12px 16px;
-          border-top: 1px solid #e9edef;
-        }
-
-        .input-wrapper {
-          display: flex;
-          align-items: flex-end;
-          gap: 10px;
-          background: #fff;
-          border-radius: 24px;
-          padding: 8px 12px;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-
-        .chat-input {
-          flex: 1;
-          border: none;
-          outline: none;
-          font-size: 15px;
-          line-height: 1.5;
-          resize: none;
-          max-height: 100px;
-          min-height: 24px;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            Oxygen, Ubuntu, Cantarell, sans-serif;
-          color: #3b4a54;
-        }
-
-        .chat-input::placeholder {
-          color: #8696a0;
-        }
-
-        .send-button {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          border: none;
-          background: #25d366;
-          color: #fff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          flex-shrink: 0;
-          opacity: 0.5;
-        }
-
-        .send-button.active {
-          opacity: 1;
-          transform: scale(1);
-        }
-
-        .send-button:not(.active) {
-          background: #d1d7db;
-          cursor: not-allowed;
-        }
-
-        .send-button.active:hover {
-          background: #20ba5a;
-          transform: scale(1.05);
-        }
-
-        .send-button:active {
-          transform: scale(0.95);
-        }
+        } */
 
         /* Options Menu */
         .options-menu {
@@ -583,7 +239,7 @@ const WhatsAppChat = ({
           display: flex;
           align-items: center;
           gap: 14px;
-          padding: 16px 18px;
+          padding: 8px 12px;
           border: none;
           background: #F5F5F5;
           border-radius: 12px;
@@ -651,7 +307,7 @@ const WhatsAppChat = ({
           justify-content: center;
           z-index: 997;
           transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-          color: #fff;
+          color: #F5F5F5;
         }
 
         .chat-float-button:hover {
@@ -675,14 +331,6 @@ const WhatsAppChat = ({
         }
 
         @media (max-width: 768px) {
-          .whatsapp-chat-container {
-            width: calc(100vw - 32px);
-            height: calc(100vh - 550px);
-            right: 16px;
-            bottom: 8px;
-            max-width: 420px;
-          }
-
           .options-menu {
             right: 16px;
             bottom: 90px;
@@ -704,13 +352,6 @@ const WhatsAppChat = ({
         }
 
         @media (max-width: 480px) {
-          .whatsapp-chat-container {
-            width: calc(100vw - 24px);
-            right: 12px;
-            bottom: 14px;
-            border-radius: 12px;
-          }
-
           .options-menu {
             right: 12px;
             bottom: 80px;
