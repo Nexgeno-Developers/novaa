@@ -2,7 +2,6 @@ import Navbar from "@/components/client/Navbar";
 import Footer from "@/components/client/Footer";
 import WhatsAppChat from "@/components/ui/whatsapp-chat";
 import PopupEnquiryForm from "@/components/client/PopupEnquiryForm";
-import PriceEnquiryCTA from "@/components/client/PriceEnquiryCTA";
 import { getFooterData } from "@/lib/data/getFooterData";
 import { getNavbarData } from "@/lib/data/getNavbarData";
 import LoadingBarWrapper from "@/components/client/LoadingBarWrapper";
@@ -35,7 +34,6 @@ export default async function PublicLayout({
             companyName="Novaa Global Properties"
           />
           <PopupEnquiryForm />
-          <PriceEnquiryCTA />
         </NavigationLoadingProvider>
       </LoadingBarWrapper>
     </>

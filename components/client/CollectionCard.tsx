@@ -352,13 +352,13 @@ export default function CollectionCard({
           {/* Badge */}
           {property.badge && (
             <div
-              className="absolute flex items-center  gap-2 font-josefin top-15 right-0 bg-[#D4AF37] text-background pl-5 pr-4 pt-2 pb-1 rounded-l-[20px] text-lg font-medium z-20"
+              className="absolute flex items-center  gap-2 font-josefin top-15 right-0 bg-[#D4AF37] text-background pl-5 pr-4 pt-2 pb-1 rounded-l-[20px] text-base font-medium z-20"
               style={{
                 background:
                   "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
               }}
             >
-              <VerifiedIcon className="w-5 h-5 mb-1"/>
+              <VerifiedIcon className="w-4 h-4 mb-1"/>
               {property.badge}
             </div>
           )}

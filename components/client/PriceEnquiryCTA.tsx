@@ -165,19 +165,51 @@ const PriceEnquiryCTA = () => {
 
   return (
     <>
-      {/* Floating CTA Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 z-40 bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2 group cursor-pointer"
-      >
-        <DollarSign className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
-        <span className="hidden sm:block font-josefin text-sm">
-          For Prices, Please Contact Us
-        </span>
-        <span className="sm:hidden font-josefin text-sm">Prices</span>
-      </motion.button>
+      {/* Horizontal CTA Section */}
+      <section className="py-10 sm:py-20 bg-background relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#CDB04E] rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#CDB04E] rounded-full blur-[120px]" />
+        </div>
+
+        <div className="container relative z-10 px-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
+            {/* Left Side - Text */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-center sm:text-left max-w-[60%]"
+            >
+              <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-cinzel  text-white mb-2">
+                Get Your{" "}
+                <span className="text-[#CDB04E] font-bold">Personalized Price</span>{" "}
+                Instantly!
+              </h2>
+            </motion.div>
+
+            {/* Right Side - Button */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+              className="max-w-[40%]"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsOpen(true)}
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold w-full px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 group cursor-pointer font-josefin text-lg"
+              >
+                Contact for Prices
+              </motion.button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Popup Form Modal */}
       <AnimatePresence>
@@ -276,62 +308,61 @@ const PriceEnquiryCTA = () => {
                   </div>
                 </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                 {/* Email Field */}
-                 <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">
-                    Email Address (Optional)
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
-                        formErrors.email
-                          ? "border-red-500"
-                          : "border-[#FFFFFF80]"
-                      }`}
-                      placeholder="Enter your email address"
-                    />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Email Field */}
+                  <div>
+                    <label className="block text-white/80 text-sm font-medium mb-2">
+                      Email Address (Optional)
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
+                          formErrors.email
+                            ? "border-red-500"
+                            : "border-[#FFFFFF80]"
+                        }`}
+                        placeholder="Enter your email address"
+                      />
+                    </div>
+                    {formErrors.email && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.email}
+                      </p>
+                    )}
                   </div>
-                  {formErrors.email && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {formErrors.email}
-                    </p>
-                  )}
-                </div>
 
-                {/* Location Field */}
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">
-                    City *
-                  </label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
-                        formErrors.location
-                          ? "border-red-500"
-                          : "border-[#FFFFFF80]"
-                      }`}
-                      placeholder="Enter your city"
-                      required
-                    />
+                  {/* Location Field */}
+                  <div>
+                    <label className="block text-white/80 text-sm font-medium mb-2">
+                      City *
+                    </label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-4 py-3 bg-transparent border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all ${
+                          formErrors.location
+                            ? "border-red-500"
+                            : "border-[#FFFFFF80]"
+                        }`}
+                        placeholder="Enter your city"
+                        required
+                      />
+                    </div>
+                    {formErrors.location && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {formErrors.location}
+                      </p>
+                    )}
                   </div>
-                  {formErrors.location && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {formErrors.location}
-                    </p>
-                  )}
-                </div>
                 </div>
 
                 {/* Message Field */}

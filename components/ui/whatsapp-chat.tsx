@@ -143,7 +143,7 @@ const WhatsAppChat = ({
               />
             </svg>
           </div>
-          <span className="option-text">Talk to our Experts</span>
+          <span className="option-text" style={{ color: "#592720" }}>Talk to our Experts</span>
         </button>
 
         <button className="menu-option whatsapp-option" onClick={handleChatWithUs}>
@@ -241,7 +241,7 @@ const WhatsAppChat = ({
           gap: 14px;
           padding: 8px 12px;
           border: none;
-          background: #F5F5F5;
+          background: #E5E4E2;
           border-radius: 12px;
           cursor: pointer;
           transition: all 0.3s ease;
@@ -273,22 +273,23 @@ const WhatsAppChat = ({
         }
 
         .phone-icon {
-          background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
-          color: #F5F5F5;
+          // background: #9F8170;
+          color: #592720;
         }
 
         .whatsapp-icon-option {
-          background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
-          color: #F5F5F5;
+          // background: linear-gradient(135deg, #25d366 0%, #20ba5a 100%);
+          color: #22CD63;
         }
 
         .option-text {
-          font-size: 15px;
+          font-size: 18px;
           font-weight: 600;
-          color: #01292b;
+          color: #22CD63;
           text-align: left;
           flex: 1;
         }
+
 
         /* Chat Float Button */
         .chat-float-button {

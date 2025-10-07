@@ -9,6 +9,8 @@ import MasterPlanSection from "@/components/client/MasterplanSection";
 import InvestmentPlans from "@/components/client/InvestmentPlans";
 import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
+import ProjectClientsVideoSection from "@/components/client/ProjectClientsVideoSection";
+import PriceEnquiryCTA from "@/components/client/PriceEnquiryCTA";
 
 // API-based fetch function to avoid Mongoose schema issues
 async function getProjectBySlug(slug: string) {
@@ -235,8 +237,10 @@ export default async function ProjectDetailPage({
         )} */}
         <ProjectHeroSection project={project} />
         <GatewaySection project={project} />
+        <PriceEnquiryCTA />
         <ProjectHighlights project={project} />
         <Highlights project={project} />
+        <ProjectClientsVideoSection projectName={project.name} />
         {/* <ModernAmenities project={project} /> */}
         <MasterPlanSection project={project} />
         <InvestmentPlans project={project} />

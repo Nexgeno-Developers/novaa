@@ -11,10 +11,10 @@ import {
   resetSubmissionStatus,
 } from "@/redux/slices/enquirySlice";
 import { toast } from "sonner";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
-import parse from "html-react-parser";
 import { useNavigationRouter } from "@/hooks/useNavigationRouter";
+import parse from "html-react-parser";
 
 interface ContactDetail {
   _id?: string;
@@ -56,6 +56,17 @@ const contactFormSchema = z.object({
 });
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
+
+// Helper function to parse addresses - split by line breaks
+const parseAddresses = (addressString: string) => {
+  // Split by newlines and filter empty strings
+  const addresses = addressString
+    .split("\n")
+    .map((addr) => addr.trim().replace(/^[\s\u00A0]+/, ""))
+    .filter((addr) => addr.length > 0);
+
+  return addresses;
+};
 
 export default function ContactSection({
   details = [
@@ -104,10 +115,7 @@ export default function ContactSection({
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      // Get current page URL
       const pageUrl = window.location.href;
-
-      // Transform the data to match API expectations
       const enquiryData = {
         fullName: data.fullName,
         emailAddress: data.emailAddress || undefined,
@@ -118,14 +126,8 @@ export default function ContactSection({
       };
 
       await dispatch(createEnquiry(enquiryData)).unwrap();
-
-      // Reset form after successful submission
       reset();
-
-      // Reset submission status
       dispatch(resetSubmissionStatus());
-
-      // Redirect to thanks page instead of showing success message
       router.push("/thanks?from=contact");
     } catch (error: any) {
       toast.error(
@@ -134,51 +136,126 @@ export default function ContactSection({
     }
   };
 
+  // Find office details
+  const officeDetail = details.find((detail) =>
+    detail.title.toLowerCase().includes("visit our office")
+  );
+
+  const otherDetails = details.filter(
+    (detail) => !detail.title.toLowerCase().includes("visit our office")
+  );
+
   return (
     <section className="bg-[#FFFDF5] pt-10 sm:py-20">
       <div className="container">
         {/* Top Info Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-8 sm:mb-20">
-          {details.map((detail, index) => (
-            <div
-              key={detail._id || index}
-              className="flex flex-col lg:flex-row items-center gap-4"
-            >
-              <div className="w-[77px] h-[77px] rounded-[50px] bg-[#CDB04E] flex items-center justify-center shrink-0">
-                <Image
-                  src={detail.icon}
-                  alt={detail.title}
-                  width={24}
-                  height={24}
-                  className="object-contain"
-                />
-              </div>
-              <div className="font-josefin max-w-[278px] text-center lg:text-left">
-                <h3 className="text-[#01292B] text-[20px] font-bold leading-[20px] mb-1">
-                  {detail.title}
+        <div className="sm:mb-20">
+          {/* Visit our office section - Enhanced Layout */}
+          {officeDetail && (
+            <div className="mb-12 sm:mb-16">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-[77px] h-[77px] rounded-full bg-[#CDB04E] mb-4">
+                  <Image
+                    src={officeDetail.icon}
+                    alt={officeDetail.title}
+                    width={32}
+                    height={32}
+                    className="object-contain"
+                  />
+                </div>
+                <h3 className="text-[#01292B] text-2xl sm:text-3xl font-bold font-josefin mb-2">
+                  {parse(officeDetail.title)}
                 </h3>
-                <p className="text-[#01292B] description-text leading-[22px]">
-                  {detail.title.toLowerCase() === "call us" ? (
-                    <a
-                      href={`tel:${detail.description}`}
-                      className="hover:text-primary transition-colors duration-300"
+                {/* <p className="text-[#01292B]/70 font-josefin text-sm sm:text-base">
+                  Find us at any of our convenient locations
+                </p> */}
+              </div>
+
+              {/* Addresses Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                {parseAddresses(officeDetail.description).map(
+                  (address, index) => (
+                    <div
+                      key={index}
+                      className="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-[#CDB04E]/20 hover:border-[#CDB04E]/40"
                     >
-                      {detail.description}
-                    </a>
-                  ) : detail.title.toLowerCase() === "email us" ? (
-                    <a
-                      href={`mailto:${detail.description}`}
-                      className="hover:text-primary transition-colors duration-300"
-                    >
-                      {detail.description}
-                    </a>
-                  ) : (
-                    detail.description
-                  )}
-                </p>
+                      {/* Location Badge */}
+                      <div className="absolute -top-3 left-6 bg-gradient-to-r from-[#CDB04E] to-[#B89D3F] text-white px-4 py-1 rounded-full text-xs font-semibold font-josefin">
+                        Office {index + 1}
+                      </div>
+
+                      <div className="flex items-start gap-3 mt-2">
+                        <div className="flex-shrink-0 mt-1">
+                          <div className="w-10 h-10 rounded-full bg-[#CDB04E]/10 flex items-center justify-center group-hover:bg-[#CDB04E]/20 transition-colors duration-300">
+                            <MapPin className="w-5 h-5 text-[#CDB04E]" />
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[#01292B] font-josefin text-sm leading-relaxed">
+                            {parse(address)}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Decorative corner */}
+                      {/* <div className="absolute bottom-0 right-0 w-16 h-16 opacity-5">
+                      <svg viewBox="0 0 100 100" className="text-[#CDB04E]">
+                        <circle cx="100" cy="100" r="100" fill="currentColor" />
+                      </svg>
+                    </div> */}
+                    </div>
+                  )
+                )}
               </div>
             </div>
-          ))}
+          )}
+
+           {/* Other contact details - Enhanced Grid layout */}
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+            {otherDetails.map((detail, index) => (
+              <div
+                key={detail._id || index}
+                className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-[#CDB04E]/10 hover:border-[#CDB04E]/30"
+              >
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                  <div className="w-[70px] h-[70px] rounded-full bg-gradient-to-br from-[#CDB04E] to-[#B89D3F] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <Image
+                      src={detail.icon}
+                      alt={detail.title}
+                      width={28}
+                      height={28}
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="font-josefin text-center sm:text-left flex-1">
+                    <h3 className="text-[#01292B] text-lg sm:text-xl font-semibold leading-tight mb-2 font-josefin">
+                      {parse(detail.title)}
+                    </h3>
+                    <div className="text-[#01292B]/80 text-sm sm:text-base leading-relaxed">
+                      {detail.title.toLowerCase() === "call us" ? (
+                        <a
+                          href={`tel:${detail.description.replace(/\s/g, '')}`}
+                          className="hover:text-[#CDB04E] transition-colors duration-300 font-medium"
+                        >
+                          {parse(detail.description)}
+                        </a>
+                      ) : detail.title.toLowerCase() === "email us" ? (
+                        <a
+                          href={`mailto:${detail.description}`}
+                          className="hover:text-[#CDB04E] transition-colors duration-300 font-medium break-all"
+                        >
+                          {parse(detail.description)}
+                        </a>
+                      ) : (
+                        parse(detail.description)
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
 
         {/* Form and Map Section */}

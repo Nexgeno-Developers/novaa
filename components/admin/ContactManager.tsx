@@ -143,14 +143,13 @@ const ContactManager: React.FC<ContactManagerProps> = ({
 
                 <div>
                   <Label className="text-xs">Description</Label>
-                  <Input
-                    value={detail.description}
-                    onChange={(e) =>
-                      handleDetailChange(index, "description", e.target.value)
-                    }
-                    placeholder="Enter description"
-                    className="text-sm"
-                  />
+                  <div>
+                    <Editor
+                      value={detail.description || ""}
+                      height={300}
+                      onEditorChange={(content) => handleDetailChange(index, "description", content)}
+                    />
+                  </div>
                 </div>
               </div>
             ))}

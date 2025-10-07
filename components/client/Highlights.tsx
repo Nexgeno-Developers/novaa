@@ -23,17 +23,19 @@ const Highlights: React.FC<HighlightsProps> = ({ project }) => {
   const projectName = project.name;
 
   // Default values
-  const backgroundImage = highlightsData?.backgroundImage || '/images/highlights/bg.jpg';
-  const description = highlightsData?.description || 
+  const backgroundImage =
+    highlightsData?.backgroundImage || "/images/highlights/bg.jpg";
+  const description =
+    highlightsData?.description ||
     "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.";
-  
+
   const highlights = highlightsData?.highlights || [
     { text: "1 & 2 BHK premium apartments" },
     { text: "Vastu-compliant homes" },
     { text: "G+4 storey towers" },
     { text: "Prime Location" },
     { text: "Surrounded by nature and green zones" },
-    { text: "Modern amenities and facilities" }
+    { text: "Modern amenities and facilities" },
   ];
 
   const containerVariants: Variants = {
@@ -101,7 +103,7 @@ const Highlights: React.FC<HighlightsProps> = ({ project }) => {
             <h2 className="font-cinzel text-2xl sm:text-3xl lg:text-[50px] font-normal text-white mb-6 text-center sm:text-left">
               PROJECT <span className="text-primary font-bold">HIGHLIGHTS</span>
             </h2>
-            <div 
+            <div
               className="font-josefin text-white description-text max-w-2xl text-center sm:text-left"
               dangerouslySetInnerHTML={{ __html: description }}
             />
@@ -112,25 +114,47 @@ const Highlights: React.FC<HighlightsProps> = ({ project }) => {
             variants={containerVariants}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-8 lg:gap-12"
           >
-            {highlights.map((highlight, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="flex items-center space-x-4 group"
-              >
-                <div className="flex-shrink-0 mt-1">
-                  <Image
-                    src="/icons/checked-icon.svg"
-                    alt="pin icon"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="font-josefin text-white text-base md:text-xl font-normal leading-relaxed group-hover:text-primary transition-colors duration-300">
-                  {highlight.text}
-                </p>
-              </motion.div>
-            ))}
+            {highlights.map((highlight, index) => {
+              // Map each highlight to its corresponding icon
+              const iconMap = [
+                "/highlights/highlights-icon-one.svg",
+                "/highlights/highlights-icon-two.svg",
+                "/highlights/highlights-icon-three.svg",
+                "/highlights/highlights-icon-four.svg",
+                "/highlights/highlights-icon-five.svg",
+                "/highlights/highlights-icon-six.svg",
+              ];
+
+              const iconSrc =
+                iconMap[index] || "/highlights/highlights-icon-one.svg";
+
+              return (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="flex items-center space-x-4 group"
+                >
+                  <div
+                    className="flex-shrink-0 mt-1 rounded-full flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 group-hover:scale-110 transition-all duration-300"
+                    style={{
+                      background:
+                        "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
+                    }}
+                  >
+                    <Image
+                      src={iconSrc}
+                      alt={`highlight icon ${index + 1}`}
+                      width={30}
+                      height={30}
+                      className="w-4 h-4 sm:w-5 sm:h-5"
+                    />
+                  </div>
+                  <p className="font-josefin text-white text-base md:text-xl font-normal leading-relaxed group-hover:text-primary transition-colors duration-300">
+                    {highlight.text}
+                  </p>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </motion.div>
       </div>

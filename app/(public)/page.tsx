@@ -12,6 +12,7 @@ import FaqSection from "@/components/client/FaqSection";
 import HistoryOfPhuketSection from "@/components/client/HistoryOfPhuketSection";
 import InvestorInsightsSection from "@/components/client/InvestorInsightsSection";
 import TestimonialsSection from "@/components/client/Testimonials";
+import ClientsVideoSection from "@/components/client/ClientsVideoSection";
 import { getSectionData } from "@/lib/data/getSectionData";
 import CounterSection from "@/components/client/CounterSection";
 
@@ -55,6 +56,7 @@ const sectionComponentMap: {
   "history-of-phuket": HistoryOfPhuketSection,
   counter: CounterSection,
   testimonials: TestimonialsSection,
+  "clients-video": ClientsVideoSection,
   insights: InvestorInsightsSection,
 };
 
@@ -83,6 +85,16 @@ export default async function Home() {
             {...(section.content.heroSection || section.content)}
           />
         ) : null;
+
+        // Check if this is the Testimonials section and insert Client Videos after it
+        if (section.type === "testimonials") {
+          return (
+            <React.Fragment key={`${section._id}-with-videos`}>
+              {sectionElement}
+              <ClientsVideoSection />
+            </React.Fragment>
+          );
+        }
 
         // Check if this is the FAQ section and insert History of Phuket after it
         if (section.type === "faq") {
