@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/dofyqpsar/**", // Match your specific Cloudinary path
       },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        port: "",
+        pathname: "/**", // Match your specific Cloudinary path
+      },
     ],
   },
 };

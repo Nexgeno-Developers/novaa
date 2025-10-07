@@ -187,7 +187,7 @@ const PopupEnquiryForm = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="bg-background rounded-2xl p-6 w-full max-w-md relative shadow-2xl"
+              className="bg-[#01292BE5] backdrop-blur-xs rounded-[30px] p-6 w-full max-w-md relative shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -215,7 +215,7 @@ const PopupEnquiryForm = () => {
               >
                 {/* Name Field (Optional) */}
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Name (Optional)
                   </label>
                   <input
@@ -223,14 +223,14 @@ const PopupEnquiryForm = () => {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border px-4 py-2 rounded text-white"
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                     placeholder="Enter your name"
                   />
                 </div>
 
                 {/* Phone Field (Mandatory) */}
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -238,17 +238,17 @@ const PopupEnquiryForm = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.phone
-                        ? "border-red-400"
-                        : "border-[rgba(255,255,255,0.8)]"
+                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                        : "border-[#FFFFFF80]"
                     }`}
                     placeholder="Enter your phone number"
                     required
                   />
                   {formErrors.phone && (
-                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
+                    <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
                       {formErrors.phone}
                     </p>
                   )}
@@ -256,7 +256,7 @@ const PopupEnquiryForm = () => {
 
                 {/* City Field (Mandatory) */}
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     City *
                   </label>
                   <input
@@ -264,34 +264,34 @@ const PopupEnquiryForm = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.location
-                        ? "border-red-400"
-                        : "border-[rgba(255,255,255,0.8)]"
+                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                        : "border-[#FFFFFF80]"
                     }`}
                     placeholder="Enter your city"
                     required
                   />
                   {formErrors.location && (
-                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
+                    <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
                       {formErrors.location}
                     </p>
                   )}
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
                       isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin" />
                         Submitting...
                       </>
                     ) : (

@@ -381,7 +381,7 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
               {/* Left Column - Section Title */}
               <motion.div variants={itemVariants} className="font-josefin">
                 <h3 className="text-white font-medium text-lg lg:text-4xl text-center lg:text-left lg:mt-10">
-                  {gatewayData.sectionTitle}
+                  {/* {gatewayData.sectionTitle} */}
                 </h3>
               </motion.div>
 
@@ -496,12 +496,12 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
 
               {/* Right Column - Section Description */}
               <motion.div variants={itemVariants} className="font-josefin">
-                <div
+                {/* <div
                   className="text-[#FFFFFFE5] description-text w-full text-center lg:text-left"
                   dangerouslySetInnerHTML={{
                     __html: gatewayData.sectionDescription,
                   }}
-                />
+                /> */}
               </motion.div>
 
               {/* Left Column - First 2 Category Buttons (Second Row) */}

@@ -6,6 +6,10 @@ import Image from "next/image";
 import parse from "html-react-parser";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 
+const imageFifthLink = "https://images.pexels.com/photos/290275/pexels-photo-290275.jpeg"
+const imageSixthLink = "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg"
+
+
 interface InvestmentPoint {
   _id: string;
   title: string;
@@ -168,7 +172,7 @@ export default function WhyInvestDetailClient({
               `,
               icon: "/icons/government.svg"
             }}
-            image={images[0]}
+            image={imageFifthLink}
             index={investmentPoints.length}
           />
           
@@ -183,7 +187,7 @@ export default function WhyInvestDetailClient({
               `,
               icon: "/icons/currency.svg"
             }}
-            image={images[1] || images[0]}
+            image={imageSixthLink}
             index={investmentPoints.length + 1}
           />
         </div>

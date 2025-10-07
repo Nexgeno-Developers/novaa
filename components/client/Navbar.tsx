@@ -430,7 +430,7 @@ export default function Navbar({ data }: NavbarProps) {
                 className="space-y-4 font-josefin text-[14px]"
               >
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Email Address (optional)
                   </label>
                   <input
@@ -439,13 +439,13 @@ export default function Navbar({ data }: NavbarProps) {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border px-4 py-2 rounded text-white placeholder-white/40"
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                     placeholder="your.email@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -455,13 +455,13 @@ export default function Navbar({ data }: NavbarProps) {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border px-4 py-2 rounded text-white placeholder-white/40"
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                     placeholder="+1 (555) 000-0000"
                   />
                 </div>
 
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Description (optional)
                   </label>
                   <textarea
@@ -470,29 +470,29 @@ export default function Navbar({ data }: NavbarProps) {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
-                    className="w-full bg-transparent border px-4 py-2 rounded min-h-[96px] text-white placeholder-white/40"
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none border-[#FFFFFF80]"
                     placeholder="Description (optional)"
                   />
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
                       isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-[#01292B]/30 border-t-[#01292B] rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-[#01292B]/30 border-t-[#01292B] rounded-full animate-spin" />
                         Processing...
                       </>
                     ) : (
                       <>
-                        <Download className="w-4 h-4" />
-                        Download
+                        <Download className="w-5 h-5" />
+                        Download Brochure
                       </>
                     )}
                   </button>

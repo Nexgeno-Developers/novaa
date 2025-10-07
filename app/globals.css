@@ -19,6 +19,52 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Embla Carousel Styles */
+.embla {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+}
+
+.embla__slide {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* Responsive slide sizing */
+@media (max-width: 639px) {
+  .embla__slide {
+    flex: 0 0 100%;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  .embla__slide {
+    flex: 0 0 50%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .embla__slide {
+    flex: 0 0 33.333%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .embla__slide {
+    flex: 0 0 25%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .embla__slide {
+    flex: 0 0 20%;
+  }
+}
+
+
 /* Font family classes */
 .font-cinzel {
   font-family: 'Cinzel', serif;

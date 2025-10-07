@@ -56,7 +56,7 @@ const sectionComponentMap: {
   "history-of-phuket": HistoryOfPhuketSection,
   counter: CounterSection,
   testimonials: TestimonialsSection,
-  "clients-video": ClientsVideoSection,
+
   insights: InvestorInsightsSection,
 };
 
@@ -86,25 +86,25 @@ export default async function Home() {
           />
         ) : null;
 
-        // Check if this is the Testimonials section and insert Client Videos after it
-        if (section.type === "testimonials") {
-          return (
-            <React.Fragment key={`${section._id}-with-videos`}>
-              {sectionElement}
-              <ClientsVideoSection />
-            </React.Fragment>
-          );
-        }
-
         // Check if this is the FAQ section and insert History of Phuket after it
         if (section.type === "faq") {
           return (
             <React.Fragment key={`${section._id}-with-history`}>
               {sectionElement}
               <HistoryOfPhuketSection />
+              <ClientsVideoSection />
             </React.Fragment>
           );
         }
+
+        // Check if this is the Counter section and insert it after ClientsVideoSection
+        // if (section.type === "counter") {
+        //   return (
+        //     <React.Fragment key={`${section._id}-counter`}>
+        //       {sectionElement}
+        //     </React.Fragment>
+        //   );
+        // }
 
         return sectionElement;
       })}

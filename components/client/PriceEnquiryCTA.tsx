@@ -173,7 +173,15 @@ const PriceEnquiryCTA = () => {
   return (
     <>
       {/* Horizontal CTA Section */}
-      <section className="py-10 sm:py-20 bg-background relative overflow-hidden">
+      <section
+        className="py-10 sm:py-20 relative overflow-hidden"
+        style={{
+          background: `url('https://images.pexels.com/photos/1004366/pexels-photo-1004366.jpeg')`,
+          backgroundSize: "cover",
+          backgroundPosition: "bottom",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         {/* Background Elements */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#CDB04E] rounded-full blur-[120px]" />
@@ -205,13 +213,13 @@ const PriceEnquiryCTA = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-              className="max-w-[40%]"
+              className="max-w-[40%] cursor-pointer"
             >
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(true)}
-                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold w-full px-8 py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 group cursor-pointer font-josefin text-lg"
+                className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold w-full px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 group font-josefin text-lg cursor-pointer"
               >
                 Contact for Prices
               </motion.button>
@@ -235,7 +243,7 @@ const PriceEnquiryCTA = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-[#01292B] border border-[#CDB04E]/30 rounded-lg p-6 sm:p-8 max-w-xl w-full relative shadow-2xl"
+              className="bg-[#01292BE5] backdrop-blur-xs rounded-[30px] p-6 sm:p-8 max-w-xl w-full relative shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <button
@@ -264,7 +272,7 @@ const PriceEnquiryCTA = () => {
               >
                 {/* Full Name */}
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Full Name (Optional)
                   </label>
                   <input
@@ -272,17 +280,13 @@ const PriceEnquiryCTA = () => {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
-                      formErrors.fullName
-                        ? "border-red-400"
-                        : "border-[rgba(255,255,255,0.8)]"
-                    }`}
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                     placeholder="Enter your full name"
                     required
                   />
                   {formErrors.fullName && (
-                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
+                    <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
                       {formErrors.fullName}
                     </p>
                   )}
@@ -291,7 +295,7 @@ const PriceEnquiryCTA = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Phone Number (Mandatory) */}
                   <div>
-                    <label className="text-primary block mb-1 font-normal">
+                    <label className="block text-primary text-sm font-medium mb-2">
                       Phone Number *
                     </label>
                     <input
@@ -299,17 +303,17 @@ const PriceEnquiryCTA = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                         formErrors.phone
-                          ? "border-red-400"
-                          : "border-[rgba(255,255,255,0.8)]"
+                          ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                          : "border-[#FFFFFF80]"
                       }`}
                       placeholder="Enter your phone number"
                       required
                     />
                     {formErrors.phone && (
-                      <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" />
+                      <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
                         {formErrors.phone}
                       </p>
                     )}
@@ -317,7 +321,7 @@ const PriceEnquiryCTA = () => {
 
                   {/* Email (Optional) */}
                   <div>
-                    <label className="text-primary block mb-1 font-normal">
+                    <label className="block text-primary text-sm font-medium mb-2">
                       Email Address (Optional)
                     </label>
                     <input
@@ -325,16 +329,16 @@ const PriceEnquiryCTA = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                      className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                         formErrors.email
-                          ? "border-red-400"
-                          : "border-[rgba(255,255,255,0.8)]"
+                          ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                          : "border-[#FFFFFF80]"
                       }`}
                       placeholder="Enter your email address"
                     />
                     {formErrors.email && (
-                      <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" />
+                      <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
                         {formErrors.email}
                       </p>
                     )}
@@ -343,7 +347,7 @@ const PriceEnquiryCTA = () => {
 
                 {/* Location */}
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     City *
                   </label>
                   <input
@@ -351,17 +355,17 @@ const PriceEnquiryCTA = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
+                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.location
-                        ? "border-red-400"
-                        : "border-[rgba(255,255,255,0.8)]"
+                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                        : "border-[#FFFFFF80]"
                     }`}
                     placeholder="Enter your city"
                     required
                   />
                   {formErrors.location && (
-                    <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
+                    <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
                       {formErrors.location}
                     </p>
                   )}
@@ -369,7 +373,7 @@ const PriceEnquiryCTA = () => {
 
                 {/* Message (Optional) */}
                 <div>
-                  <label className="text-primary block mb-1 font-normal">
+                  <label className="block text-primary text-sm font-medium mb-2">
                     Description (Optional)
                   </label>
                   <textarea
@@ -377,27 +381,23 @@ const PriceEnquiryCTA = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     rows={3}
-                    className={`w-full bg-transparent border px-4 py-2 rounded min-h-[96px] text-white ${
-                      formErrors.message
-                        ? "border-red-400"
-                        : "border-[rgba(255,255,255,0.8)]"
-                    }`}
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none border-[#FFFFFF80]"
                     placeholder="Tell us about your requirements..."
                   />
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-[132px] h-[40px] rounded-[10px] border border-[#233C30] bg-gradient-to-br from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#d8bc59] text-[#01292B] font-josefin font-semibold text-[14px] leading-[100%] text-center cursor-pointer flex items-center justify-center gap-2 transition-all duration-300 ${
+                    className={`bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] text-background font-semibold px-12 py-2 sm:py-3 rounded-[10px] cursor-pointer text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 ${
                       isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin" />
                         Submitting...
                       </>
                     ) : (
