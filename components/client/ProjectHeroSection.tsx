@@ -2,9 +2,18 @@
 
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, X, AlertCircle, Loader2 } from "lucide-react";
+import {
+  ArrowRight,
+  X,
+  AlertCircle,
+  Loader2,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import parse from "html-react-parser";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux";
 import {
@@ -54,12 +63,18 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Video control states
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const vimeoIframeRef = useRef<HTMLIFrameElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
   const heroData = project.projectDetail?.hero;
 
   const backgroundImage =
     heroData?.backgroundImage || "/images/project-details-hero.jpg";
 
-  // Auto-detect media type if not set, fallback to explicit mediaType
   const isVideoUrl =
     backgroundImage.includes(".mp4") ||
     backgroundImage.includes(".webm") ||
@@ -74,6 +89,180 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
   const getBrochureText = heroData?.getBrochureButton || "Get Brochure";
   const brochurePdf = heroData?.brochurePdf;
 
+  // Helper function to extract Vimeo video ID from URL
+  const extractVimeoId = (url: string): string | null => {
+    const match = url.match(
+      /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/
+    );
+    return match ? match[1] : null;
+  };
+
+  // Get background media based on mediaType
+  const getBackgroundMedia = () => {
+    const heroData = project.projectDetail?.hero;
+    const mediaType = heroData?.mediaType || "image";
+    const backgroundImage =
+      heroData?.backgroundImage || "/images/project-details-hero.jpg";
+    const vimeoUrl = heroData?.vimeoUrl;
+
+    if (mediaType === "vimeo" && vimeoUrl) {
+      const videoId = extractVimeoId(vimeoUrl);
+      if (videoId) {
+        return {
+          type: "vimeo",
+          videoId: videoId,
+          src: `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1&loop=1&background=1&controls=0&title=0&byline=0&portrait=0&playsinline=1&autopause=0`,
+        };
+      }
+    } else if (mediaType === "video") {
+      return {
+        type: "video",
+        src: backgroundImage,
+      };
+    } else {
+      return {
+        type: "image",
+        src: backgroundImage,
+      };
+    }
+
+    return {
+      type: "image",
+      src: backgroundImage,
+    };
+  };
+
+  const backgroundMedia = getBackgroundMedia();
+
+  // Vimeo Player API functions
+  const sendVimeoCommand = (action: string, value?: any) => {
+    if (vimeoIframeRef.current) {
+      const data =
+        value !== undefined ? { method: action, value } : { method: action };
+      vimeoIframeRef.current.contentWindow?.postMessage(
+        JSON.stringify(data),
+        "*"
+      );
+    }
+  };
+
+  // Toggle play/pause
+  const togglePlayPause = () => {
+    if (backgroundMedia.type === "video" && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    } else if (backgroundMedia.type === "vimeo") {
+      if (isPlaying) {
+        sendVimeoCommand("pause");
+      } else {
+        sendVimeoCommand("play");
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  // Toggle mute/unmute
+  const toggleMute = () => {
+    if (backgroundMedia.type === "video" && videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    } else if (backgroundMedia.type === "vimeo") {
+      sendVimeoCommand("setVolume", isMuted ? 1 : 0);
+      setIsMuted(!isMuted);
+    }
+  };
+
+  // Intersection Observer to pause/resume video based on visibility
+  useEffect(() => {
+    if (backgroundMedia.type === "image") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            // Section is out of view - pause and mute
+            if (backgroundMedia.type === "video" && videoRef.current) {
+              videoRef.current.pause();
+              videoRef.current.muted = true;
+            } else if (backgroundMedia.type === "vimeo") {
+              sendVimeoCommand("pause");
+              sendVimeoCommand("setVolume", 0);
+            }
+            setIsPlaying(false);
+            setIsMuted(true);
+          } else {
+            // Section is back in view - resume playing with sound
+            if (backgroundMedia.type === "video" && videoRef.current) {
+              videoRef.current.play().catch(console.error);
+              videoRef.current.muted = false;
+            } else if (backgroundMedia.type === "vimeo") {
+              sendVimeoCommand("play");
+              sendVimeoCommand("setVolume", 1);
+            }
+            setIsPlaying(true);
+            setIsMuted(false);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Trigger when 50% of section is visible/hidden
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [backgroundMedia.type]);
+
+  // Initialize video state synchronization
+  useEffect(() => {
+    if (backgroundMedia.type === "video" && videoRef.current) {
+      const video = videoRef.current;
+
+      // Ensure video starts muted and playing
+      video.muted = true;
+      video.play().catch(console.error);
+      setIsPlaying(true);
+      setIsMuted(true);
+
+      // Sync state with video element properties
+      const syncState = () => {
+        setIsPlaying(!video.paused);
+        setIsMuted(video.muted);
+      };
+
+      // Listen for video events to keep state in sync
+      video.addEventListener("play", syncState);
+      video.addEventListener("pause", syncState);
+      video.addEventListener("volumechange", syncState);
+
+      return () => {
+        video.removeEventListener("play", syncState);
+        video.removeEventListener("pause", syncState);
+        video.removeEventListener("volumechange", syncState);
+      };
+    } else if (backgroundMedia.type === "vimeo" && vimeoIframeRef.current) {
+      // Wait for iframe to load and ensure muted state
+      const timer = setTimeout(() => {
+        sendVimeoCommand("setVolume", 0);
+        setIsPlaying(true);
+        setIsMuted(true);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [backgroundMedia.type]);
+
   const validateForm = () => {
     const errors = {
       fullName: "",
@@ -81,7 +270,6 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       email: "",
     };
 
-    // Full name validation (mandatory)
     if (!formData.fullName.trim()) {
       errors.fullName = "Full name is required";
     } else if (formData.fullName.trim().length < 2) {
@@ -90,14 +278,12 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       errors.fullName = "Name can only contain letters and spaces";
     }
 
-    // Phone validation (mandatory)
     if (!formData.phone.trim()) {
       errors.phone = "Phone number is required";
     } else if (!/^[0-9+\-\s()]{10,}$/.test(formData.phone)) {
       errors.phone = "Please enter a valid phone number";
     }
 
-    // Email validation (optional, but if provided must be valid)
     if (
       formData.email.trim() &&
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
@@ -128,7 +314,6 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
     if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors((prev) => ({
         ...prev,
@@ -146,40 +331,19 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
 
     try {
       setIsSubmitting(true);
-
-      // Get current page URL
       const pageUrl = window.location.href;
-
-      // Prepare enquiry data with project title as location
       const enquiryData = {
         fullName: formData.fullName,
         emailAddress: formData.email || undefined,
         phoneNo: formData.phone,
-        location: project.name, // Use project title as location
+        location: project.name,
         message: formData.message,
         pageUrl,
       };
 
-      // Submit enquiry using Redux
       await dispatch(createEnquiry(enquiryData)).unwrap();
-
-      // Download the brochure
-      // if (brochurePdf) {
-      //   const link = document.createElement("a");
-      //   link.href = brochurePdf;
-      //   link.download = `${project.name}-Brochure.pdf`;
-      //   document.body.appendChild(link);
-      //   link.click();
-      //   document.body.removeChild(link);
-      // }
-
-      // Close form
       handleCloseForm();
-
-      // Reset submission status
       dispatch(resetSubmissionStatus());
-
-      // Redirect to thanks page
       router.push("/thanks?from=project");
     } catch (error: any) {
       console.error("Enquiry submission error:", error);
@@ -195,57 +359,16 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
     console.log("Schedule meeting clicked");
   };
 
-  // Helper function to extract Vimeo video ID from URL
-  const extractVimeoId = (url: string): string | null => {
-    const match = url.match(
-      /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/
-    );
-    return match ? match[1] : null;
-  };
-
-  // Get background media based on mediaType
-  const getBackgroundMedia = () => {
-    const heroData = project.projectDetail?.hero;
-    const mediaType = heroData?.mediaType || "image";
-    const backgroundImage =
-      heroData?.backgroundImage || "/images/project-details-hero.jpg";
-    const vimeoUrl = heroData?.vimeoUrl;
-
-    if (mediaType === "vimeo" && vimeoUrl) {
-      const videoId = extractVimeoId(vimeoUrl);
-      if (videoId) {
-        return {
-          type: "vimeo",
-          src: `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1&loop=1&background=1&controls=0&title=0&byline=0&portrait=0&playsinline=1&autopause=0`,
-        };
-      }
-    } else if (mediaType === "video") {
-      return {
-        type: "video",
-        src: backgroundImage,
-      };
-    } else {
-      return {
-        type: "image",
-        src: backgroundImage,
-      };
-    }
-
-    // Fallback to image if vimeo fails
-    return {
-      type: "image",
-      src: backgroundImage,
-    };
-  };
-
-  const backgroundMedia = getBackgroundMedia();
-
   return (
-    <section className="relative h-screen overflow-hidden bg-background">
+    <section
+      ref={sectionRef}
+      className="relative h-screen overflow-hidden bg-background"
+    >
       {/* Background Media - Conditional Rendering */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         {backgroundMedia.type === "vimeo" ? (
           <iframe
+            ref={vimeoIframeRef}
             src={backgroundMedia.src}
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
@@ -264,6 +387,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
           />
         ) : backgroundMedia.type === "video" ? (
           <video
+            ref={videoRef}
             src={backgroundMedia.src}
             autoPlay
             muted
@@ -290,7 +414,43 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
         )}
       </div>
 
-      {/* Dark overlay - FIXED */}
+      {/* Video Controls - Only show for video/vimeo */}
+      {(backgroundMedia.type === "video" ||
+        backgroundMedia.type === "vimeo") && (
+        <div className="absolute flex-col bottom-28 right-8 z-20 flex gap-3">
+          {/* Play/Pause Button */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={togglePlayPause}
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 cursor-pointer"
+            aria-label={isPlaying ? "Pause video" : "Play video"}
+          >
+            {isPlaying ? (
+              <Pause className="w-5 h-5" />
+            ) : (
+              <Play className="w-5 h-5 ml-0.5" />
+            )}
+          </motion.button>
+
+          {/* Mute/Unmute Button */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleMute}
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 cursor-pointer"
+            aria-label={isMuted ? "Unmute video" : "Mute video"}
+          >
+            {isMuted ? (
+              <VolumeX className="w-5 h-5" />
+            ) : (
+              <Volume2 className="w-5 h-5" />
+            )}
+          </motion.button>
+        </div>
+      )}
+
+      {/* Dark overlay */}
       <div className="absolute bottom-0 left-0 right-0 w-full h-1/2 z-0 bg-gradient-to-b from-transparent to-[#01292B]" />
 
       {/* Content Container */}
@@ -310,7 +470,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="flex items-center description-text gap-4 font-josefin font-light text-white mt-2 pl-1"
+              className="flex items-center description-text gap-4 font-josefin font-light text-white mt-2 pl-1 max-w-[80%] lg:max-w-full"
             >
               {subtitle && <div>{parse(subtitle)}</div>}
             </motion.h3>
@@ -377,7 +537,6 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 onSubmit={handleFormSubmit}
                 className="space-y-3 sm:space-y-4 font-josefin text-[14px]"
               >
-                {/* Full Name Field */}
                 <div>
                   <label className="block text-primary text-sm font-medium mb-2">
                     Full Name (Optional)
@@ -399,7 +558,6 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                   )}
                 </div>
 
-                {/* Phone Number Field */}
                 <div>
                   <label className="block text-primary text-sm font-medium mb-2">
                     Phone Number *
@@ -465,7 +623,6 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                   />
                 </div>
 
-                {/* Submit Button */}
                 <div className="flex justify-center pt-1 sm:pt-2">
                   <button
                     type="submit"

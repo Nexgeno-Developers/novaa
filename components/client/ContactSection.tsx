@@ -209,9 +209,8 @@ export default function ContactSection({
               </div>
             </div>
           )}
-
-           {/* Other contact details - Enhanced Grid layout */}
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          {/* Other contact details - Enhanced Grid layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             {otherDetails.map((detail, index) => (
               <div
                 key={detail._id || index}
@@ -234,7 +233,7 @@ export default function ContactSection({
                     <div className="text-[#01292B]/80 text-sm sm:text-base leading-relaxed">
                       {detail.title.toLowerCase() === "call us" ? (
                         <a
-                          href={`tel:${detail.description.replace(/\s/g, '')}`}
+                          href={`tel:${detail.description.replace(/\s/g, "")}`}
                           className="hover:text-[#CDB04E] transition-colors duration-300 font-medium"
                         >
                           {parse(detail.description)}
@@ -255,7 +254,6 @@ export default function ContactSection({
               </div>
             ))}
           </div>
-
         </div>
 
         {/* Form and Map Section */}
