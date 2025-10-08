@@ -221,7 +221,7 @@ const PriceEnquiryCTA = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-              className="max-w-[40%] cursor-pointer"
+              className=" sm:max-w-[40%] cursor-pointer"
             >
               <motion.button
                 whileHover={{ scale: 1.05 }}
