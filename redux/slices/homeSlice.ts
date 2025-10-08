@@ -1,5 +1,5 @@
 // redux/slices/homeSlice.ts
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface HighlightedWord {
   word: string;
@@ -21,8 +21,9 @@ interface CtaButton {
 }
 
 interface HeroSection {
-  mediaType: 'image' | 'video';
+  mediaType: "image" | "video" | "vimeo";
   mediaUrl: string;
+  vimeoUrl?: string;
   title: string;
   subtitle?: string;
   highlightedWords?: HighlightedWord[];
@@ -49,12 +50,12 @@ const initialState: HomeState = {
 
 // Fetch home page data
 export const fetchHomePage = createAsyncThunk(
-  'home/fetchHomePage',
+  "home/fetchHomePage",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/cms/home');
+      const response = await fetch("/api/cms/home");
       if (!response.ok) {
-        throw new Error('Failed to fetch home page data');
+        throw new Error("Failed to fetch home page data");
       }
       const data = await response.json();
       return data.heroSection;
@@ -66,19 +67,19 @@ export const fetchHomePage = createAsyncThunk(
 
 // Update home page data
 export const updateHomePage = createAsyncThunk(
-  'home/updateHomePage',
+  "home/updateHomePage",
   async (heroData: HeroSection, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/cms/home', {
-        method: 'PUT',
+      const response = await fetch("/api/cms/home", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ heroSection: heroData }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update home page');
+        throw new Error("Failed to update home page");
       }
 
       const data = await response.json();
@@ -90,7 +91,7 @@ export const updateHomePage = createAsyncThunk(
 );
 
 const homeSlice = createSlice({
-  name: 'home',
+  name: "home",
   initialState,
   reducers: {
     clearError: (state) => {

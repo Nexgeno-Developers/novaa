@@ -55,6 +55,7 @@ export default function HomePageManager({
   const initialDataSetRef = useRef(false);
   const userHasInteractedRef = useRef(false);
 
+
   const [heroData, setHeroData] = useState<HeroSection>({
     mediaType: "image",
     mediaUrl: "/images/hero.jpg",
@@ -236,12 +237,14 @@ export default function HomePageManager({
                 label={`Background ${
                   heroData.mediaType === "video"
                     ? "Video"
-                    : heroData.mediaType === "vimeo"
+                    : (heroData.mediaType as string) === "vimeo"
                     ? "Vimeo Video"
                     : "Image"
                 }`}
                 mediaType={
-                  heroData.mediaType === "vimeo" ? "video" : heroData.mediaType
+                  (heroData.mediaType as string) === "vimeo"
+                    ? "video"
+                    : heroData.mediaType
                 }
                 value={heroData.mediaUrl}
                 onSelect={(url: string) => updateHeroData({ mediaUrl: url })}

@@ -634,7 +634,8 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
                             opacity: 0,
                             strokeDashoffset: strokeDasharray
                               .split(",")
-                              .reduce((a, b) => parseInt(a) + parseInt(b), 0),
+                              .reduce((a, b) => a + parseInt(b), 0)
+                              .toString(),
                           }}
                           animate={{
                             opacity: 1,
