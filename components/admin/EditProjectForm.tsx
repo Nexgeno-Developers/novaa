@@ -23,6 +23,7 @@ import { fetchCategories } from "@/redux/slices/categoriesSlice";
 import Editor from "@/components/admin/Editor";
 import MediaMultiSelectButton from "@/components/admin/MediaMultiSelectButton";
 import MediaSelectButton from "@/components/admin/MediaSelectButton";
+import GatewayMapEditor from "@/components/admin/GatewayMapEditor";
 import { useAppDispatch } from "@/redux/hooks";
 
 // Same interfaces as create page
@@ -61,6 +62,11 @@ interface GatewayLocation {
     left: string;
   };
   icon: string;
+  pixelCoords: {
+    x: number;
+    y: number;
+  };
+  categoryId?: string;
 }
 
 interface GatewayCategory {
@@ -227,6 +233,13 @@ export default function EditProjectPage() {
         "Perfectly positioned where tropical elegance meets modern convenience.",
       backgroundImage: "",
       mapImage: "",
+      mainProjectLocation: {
+        title: "",
+        description: "",
+        icon: "/gateway-images/main-project-icon.svg",
+        coords: { x: 0, y: 0 },
+      },
+      curveLines: [] as any[],
       categories: [] as GatewayCategory[],
     },
   });
@@ -260,6 +273,8 @@ export default function EditProjectPage() {
     image: "",
     coords: { top: "50%", left: "50%" },
     icon: "/icons/map-pin.svg",
+    pixelCoords: { x: 0, y: 0 },
+    categoryId: "",
   });
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<
     number | null
@@ -392,6 +407,14 @@ export default function EditProjectPage() {
             backgroundImage:
               currentProject.projectDetail.gateway?.backgroundImage || "",
             mapImage: currentProject.projectDetail.gateway?.mapImage || "",
+            mainProjectLocation: currentProject.projectDetail.gateway
+              ?.mainProjectLocation || {
+              title: "",
+              description: "",
+              icon: "/icons/map-pin.svg",
+              coords: { x: 0, y: 0 },
+            },
+            curveLines: currentProject.projectDetail.gateway?.curveLines || [],
             categories: currentProject.projectDetail.gateway?.categories || [],
           },
         });
@@ -700,6 +723,8 @@ export default function EditProjectPage() {
         image: "",
         coords: { top: "50%", left: "50%" },
         icon: "/icons/map-pin.svg",
+        pixelCoords: { x: 0, y: 0 },
+        categoryId: "",
       });
       setSelectedCategoryIndex(null);
     } else {
@@ -712,15 +737,90 @@ export default function EditProjectPage() {
     locationIndex: number
   ) => {
     setProjectDetailData((prev) => {
-      const updatedCategories = [...prev.gateway.categories];
-      updatedCategories[categoryIndex].locations = updatedCategories[
-        categoryIndex
-      ].locations.filter((_, i) => i !== locationIndex);
+      const categoryToUpdate = prev.gateway.categories[categoryIndex];
+      const locationToRemove = categoryToUpdate.locations[locationIndex];
+
+      console.log("Removing location:", {
+        categoryTitle: categoryToUpdate.title,
+        locationName: locationToRemove.name,
+        currentCurveLines: prev.gateway.curveLines.length,
+      });
+
+      const updatedCategories = prev.gateway.categories.map(
+        (category, index) => {
+          if (index === categoryIndex) {
+            return {
+              ...category,
+              locations: category.locations.filter(
+                (_, i) => i !== locationIndex
+              ),
+            };
+          }
+          return category;
+        }
+      );
+
+      // Remove the curve line associated with this location
+      const updatedCurveLines = prev.gateway.curveLines.filter((curve) => {
+        const shouldKeep = !(
+          curve.categoryId === categoryToUpdate.title &&
+          curve.locationId === locationToRemove.name
+        );
+
+        if (!shouldKeep) {
+          console.log("Removing curve line:", {
+            curveId: curve.id,
+            categoryId: curve.categoryId,
+            locationId: curve.locationId,
+            matchesCategory: curve.categoryId === categoryToUpdate.title,
+            matchesLocation: curve.locationId === locationToRemove.name,
+          });
+        }
+
+        return shouldKeep;
+      });
+
+      console.log("After removal:", {
+        remainingCurveLines: updatedCurveLines.length,
+        removedCount: prev.gateway.curveLines.length - updatedCurveLines.length,
+      });
+
       return {
         ...prev,
         gateway: {
           ...prev.gateway,
           categories: updatedCategories,
+          curveLines: updatedCurveLines,
+        },
+      };
+    });
+  };
+
+  const removeMainProjectLocation = () => {
+    setProjectDetailData((prev) => {
+      console.log("Removing main project location:", {
+        currentCurveLines: prev.gateway.curveLines.length,
+      });
+
+      // Remove all curve lines since main project is being removed
+      const updatedCurveLines: any[] = [];
+
+      console.log("After main project removal:", {
+        remainingCurveLines: updatedCurveLines.length,
+        removedCount: prev.gateway.curveLines.length,
+      });
+
+      return {
+        ...prev,
+        gateway: {
+          ...prev.gateway,
+          mainProjectLocation: {
+            title: "",
+            description: "",
+            icon: "/gateway-images/main-project-icon.svg",
+            coords: { x: 0, y: 0 },
+          },
+          curveLines: updatedCurveLines,
         },
       };
     });
@@ -1283,30 +1383,180 @@ export default function EditProjectPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.backgroundImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("gateway", "backgroundImage", url)
-                  }
-                  mediaType="image"
-                  label="Background Image"
-                  placeholder="Select background image"
-                />
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={projectDetailData.gateway.backgroundImage}
+                    onSelect={(url) =>
+                      handleProjectDetailChange(
+                        "gateway",
+                        "backgroundImage",
+                        url
+                      )
+                    }
+                    mediaType="image"
+                    label="Background Image"
+                    placeholder="Select background image"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={projectDetailData.gateway.mapImage}
+                    onSelect={(url) =>
+                      handleProjectDetailChange("gateway", "mapImage", url)
+                    }
+                    mediaType="image"
+                    label="Map Image"
+                    placeholder="Select map image"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.mapImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("gateway", "mapImage", url)
-                  }
-                  mediaType="image"
-                  label="Map Image"
-                  placeholder="Select map image"
-                />
-              </div>
+              {/* Main Project Location */}
+              {projectDetailData.gateway.mainProjectLocation.title && (
+                <div className="mt-6">
+                  <Card className="border-dashed">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-sm">
+                          Main Project Location
+                        </CardTitle>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={removeMainProjectLocation}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                          <img
+                            src={
+                              projectDetailData.gateway.mainProjectLocation.icon
+                            }
+                            alt="Main Project"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium">
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .title
+                            }
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .description
+                            }
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Position:{" "}
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .coords.x
+                            }
+                            ,{" "}
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .coords.y
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* Interactive Map Editor */}
+              {projectDetailData.gateway.mapImage && (
+                <div className="mt-6">
+                  <GatewayMapEditor
+                    mapImage={projectDetailData.gateway.mapImage}
+                    existingData={{
+                      mainProjectLocation:
+                        projectDetailData.gateway.mainProjectLocation,
+                      curveLines: projectDetailData.gateway.curveLines,
+                      categories: projectDetailData.gateway.categories,
+                    }}
+                    onSave={async (mapData) => {
+                      console.log(
+                        "EditProjectForm onSave called with:",
+                        mapData
+                      );
+
+                      // Update the form state
+                      setProjectDetailData((prev) => ({
+                        ...prev,
+                        gateway: {
+                          ...prev.gateway,
+                          mainProjectLocation: mapData.mainProjectLocation,
+                          curveLines: mapData.curveLines,
+                          categories: mapData.categories,
+                        },
+                      }));
+
+                      // Also save to database immediately
+                      try {
+                        const selectedCategoryObj = categories.find(
+                          (cat) => cat._id === formData.category
+                        );
+
+                        if (!selectedCategoryObj) {
+                          toast.error("Invalid category selected.");
+                          return;
+                        }
+
+                        const finalProjectDetailData = {
+                          ...projectDetailData,
+                          gateway: {
+                            ...projectDetailData.gateway,
+                            mainProjectLocation: mapData.mainProjectLocation,
+                            curveLines: mapData.curveLines,
+                            categories: mapData.categories,
+                          },
+                          hero: {
+                            ...projectDetailData.hero,
+                            title:
+                              projectDetailData.hero.title || formData.name,
+                          },
+                        };
+
+                        const projectData = {
+                          ...formData,
+                          category: {
+                            _id: selectedCategoryObj._id,
+                            name: selectedCategoryObj.name,
+                          },
+                          categoryName: selectedCategoryObj.name,
+                          projectDetail: finalProjectDetailData,
+                        };
+
+                        await dispatch(
+                          updateProject({
+                            id: projectId,
+                            data: projectData,
+                          })
+                        ).unwrap();
+
+                        toast.success("Map configuration saved successfully!");
+                      } catch (error) {
+                        console.error("Error saving map configuration:", error);
+                        toast.error("Failed to save map configuration");
+                      }
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Add New Category */}
@@ -1422,7 +1672,7 @@ export default function EditProjectPage() {
 
                       {/* Add Location to Category */}
                       <div className="border-t pt-4">
-                        <div className="flex items-center justify-between mb-4">
+                        {/* <div className="flex items-center justify-between mb-4">
                           <h5 className="font-medium">
                             Locations ({category.locations.length})
                           </h5>
@@ -1442,7 +1692,7 @@ export default function EditProjectPage() {
                             <Plus className="mr-2 h-3 w-3" />
                             Add Location
                           </Button>
-                        </div>
+                        </div> */}
 
                         {/* Add Location Form */}
                         {selectedCategoryIndex === categoryIndex && (

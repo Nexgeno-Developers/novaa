@@ -108,6 +108,13 @@ async function getProjectBySlug(slug: string) {
             "Perfectly positioned where tropical elegance meets modern convenience.",
           backgroundImage: "",
           mapImage: "",
+          mainProjectLocation: {
+            title: "",
+            description: "",
+            icon: "/icons/map-pin.svg",
+            coords: { x: 0, y: 0 },
+          },
+          curveLines: [],
           categories: [],
         },
       },

@@ -142,6 +142,28 @@ const projectSchema = new mongoose.Schema(
         },
         backgroundImage: { type: String, default: "" },
         mapImage: { type: String, default: "" },
+        // Main project location on the map
+        mainProjectLocation: {
+          title: { type: String, default: "" },
+          description: { type: String, default: "" },
+          icon: { type: String, default: "/icons/map-pin.svg" },
+          coords: {
+            x: { type: Number, default: 0 },
+            y: { type: Number, default: 0 },
+          },
+        },
+        // Curve lines connecting main project to gateway locations
+        curveLines: [
+          {
+            id: { type: String, required: true },
+            categoryId: { type: String, required: true },
+            locationId: { type: String, required: true },
+            svgPath: { type: String, required: true },
+            color: { type: String, default: "#CDB04E" },
+            thickness: { type: Number, default: 2 },
+            dashPattern: [{ type: Number }],
+          },
+        ],
         categories: [
           {
             title: { type: String, required: true },
@@ -156,6 +178,12 @@ const projectSchema = new mongoose.Schema(
                   left: { type: String, required: true },
                 },
                 icon: { type: String, default: "/icons/map-pin.svg" },
+                // Add pixel coordinates for map editor
+                pixelCoords: {
+                  x: { type: Number, default: 0 },
+                  y: { type: Number, default: 0 },
+                },
+                categoryId: { type: String, default: "" },
               },
             ],
           },

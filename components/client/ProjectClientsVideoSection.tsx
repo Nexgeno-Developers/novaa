@@ -32,10 +32,7 @@ const projectVideos: VideoData[] = [
     url: "https://www.youtube.com/shorts/s6_ZgUPRW1Y",
   },
   {
-    url: "https://www.youtube.com/shorts/BKNuvvRgGWg",
-  },
-  {
-    url: "https://www.youtube.com/shorts/s6_ZgUPRW1Y",
+    url: " https://youtube.com/shorts/aqiD0nDdMDU?si=vhZV1VjSGNbL9BmD",
   },
 ];
 

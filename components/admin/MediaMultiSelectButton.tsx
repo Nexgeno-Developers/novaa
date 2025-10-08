@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,9 +12,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Search, ImageIcon, Video, X, Loader2 } from "lucide-react";
+import {
+  Check,
+  Search,
+  ImageIcon,
+  Video,
+  X,
+  Loader2,
+  Upload,
+  Plus,
+} from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
+import { toast } from "sonner";
+import { addMediaItem } from "@/redux/slices/mediaSlice";
 
 interface MediaFile {
   asset_id: string;
@@ -39,9 +51,11 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
   label = "Select Media",
   mediaType = "all",
 }) => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [media, setMedia] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [query, setQuery] = useState("");
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [selectedUrls, setSelectedUrls] = useState<string[]>(selectedImages);
@@ -116,6 +130,63 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
     setOpen(false);
   };
 
+  // Handle file upload
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/api/cms/media", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Add to Redux store
+          dispatch(addMediaItem(result));
+
+          // Add to selected URLs immediately
+          setSelectedUrls((prev) => [...prev, result.secure_url]);
+
+          successCount++;
+          return result;
+        } else {
+          errorCount++;
+          throw new Error(result.error || `Failed to upload ${file.name}`);
+        }
+      });
+
+      await Promise.all(uploadPromises);
+
+      if (successCount > 0) {
+        toast.success(`Successfully uploaded ${successCount} file(s)`);
+      }
+
+      if (errorCount > 0) {
+        toast.error(`Failed to upload ${errorCount} file(s)`);
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload files");
+    } finally {
+      setUploading(false);
+      // Reset input
+      event.target.value = "";
+    }
+  };
+
   const handleImageLoad = (assetId: string) => {
     setImageLoadingStates((prev) => ({ ...prev, [assetId]: false }));
   };
@@ -139,15 +210,29 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
   };
 
   return (
-    <div>
+    <div className="space-y-3">
+      {/* Main selection button */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
             type="button"
             variant="outline"
+            disabled={uploading}
             className="w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
-            {selectedImages.length > 0 ? (
+            {uploading ? (
+              <div className="flex items-center gap-3 w-full">
+                <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                </div>
+                <div className="text-left">
+                  <p className="font-medium text-sm text-gray-500">
+                    Uploading files...
+                  </p>
+                  <p className="text-xs text-gray-400">Please wait</p>
+                </div>
+              </div>
+            ) : selectedImages.length > 0 ? (
               <div className="flex items-center gap-3 w-full">
                 <div className="flex -space-x-2">
                   {selectedImages.slice(0, 3).map((url, index) => (
@@ -186,7 +271,62 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
             )}
           </Button>
         </DialogTrigger>
+      </Dialog>
 
+      {/* Upload buttons */}
+      <div className="flex gap-2">
+        <input
+          type="file"
+          id={`upload-multi-${mediaType}`}
+          accept={
+            mediaType === "image"
+              ? "image/*"
+              : mediaType === "video"
+              ? "video/*"
+              : "*"
+          }
+          multiple
+          onChange={handleFileUpload}
+          className="hidden"
+          disabled={uploading}
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            document.getElementById(`upload-multi-${mediaType}`)?.click()
+          }
+          disabled={uploading}
+          className="flex-1 cursor-pointer"
+        >
+          {uploading ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Uploading...
+            </>
+          ) : (
+            <>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload New
+            </>
+          )}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen(true)}
+          disabled={uploading}
+          className="flex-1 cursor-pointer"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Browse Library
+        </Button>
+      </div>
+
+      {/* Re-open dialog for browsing */}
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col overflow-hidden admin-theme">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex items-center justify-between">

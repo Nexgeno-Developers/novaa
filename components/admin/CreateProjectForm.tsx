@@ -24,6 +24,7 @@ import { fetchCategories } from "@/redux/slices/categoriesSlice";
 import Editor from "@/components/admin/Editor";
 import MediaMultiSelectButton from "@/components/admin/MediaMultiSelectButton";
 import MediaSelectButton from "@/components/admin/MediaSelectButton";
+import GatewayMapEditor from "@/components/admin/GatewayMapEditor";
 import { useAppDispatch } from "@/redux/hooks";
 import { fetchMedia } from "@/redux/slices/mediaSlice";
 
@@ -63,6 +64,11 @@ interface GatewayLocation {
     left: string;
   };
   icon: string;
+  pixelCoords: {
+    x: number;
+    y: number;
+  };
+  categoryId?: string;
 }
 
 interface GatewayCategory {
@@ -157,6 +163,13 @@ export default function CreateProjectPage() {
         "Perfectly positioned where tropical elegance meets modern convenience.",
       backgroundImage: "",
       mapImage: "",
+      mainProjectLocation: {
+        title: "",
+        description: "",
+        icon: "/gateway-images/main-project-icon.svg",
+        coords: { x: 0, y: 0 },
+      },
+      curveLines: [] as any[],
       categories: [] as GatewayCategory[],
     },
   });
@@ -193,6 +206,8 @@ export default function CreateProjectPage() {
     image: "",
     coords: { top: "50%", left: "50%" },
     icon: "/icons/map-pin.svg",
+    pixelCoords: { x: 0, y: 0 },
+    categoryId: "",
   });
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<
     number | null
@@ -485,6 +500,8 @@ export default function CreateProjectPage() {
         image: "",
         coords: { top: "50%", left: "50%" },
         icon: "/icons/map-pin.svg",
+        pixelCoords: { x: 0, y: 0 },
+        categoryId: "",
       });
       setSelectedCategoryIndex(null);
     } else {
@@ -497,15 +514,90 @@ export default function CreateProjectPage() {
     locationIndex: number
   ) => {
     setProjectDetailData((prev) => {
-      const updatedCategories = [...prev.gateway.categories];
-      updatedCategories[categoryIndex].locations = updatedCategories[
-        categoryIndex
-      ].locations.filter((_, i) => i !== locationIndex);
+      const categoryToUpdate = prev.gateway.categories[categoryIndex];
+      const locationToRemove = categoryToUpdate.locations[locationIndex];
+
+      console.log("Removing location:", {
+        categoryTitle: categoryToUpdate.title,
+        locationName: locationToRemove.name,
+        currentCurveLines: prev.gateway.curveLines.length,
+      });
+
+      const updatedCategories = prev.gateway.categories.map(
+        (category, index) => {
+          if (index === categoryIndex) {
+            return {
+              ...category,
+              locations: category.locations.filter(
+                (_, i) => i !== locationIndex
+              ),
+            };
+          }
+          return category;
+        }
+      );
+
+      // Remove the curve line associated with this location
+      const updatedCurveLines = prev.gateway.curveLines.filter((curve) => {
+        const shouldKeep = !(
+          curve.categoryId === categoryToUpdate.title &&
+          curve.locationId === locationToRemove.name
+        );
+
+        if (!shouldKeep) {
+          console.log("Removing curve line:", {
+            curveId: curve.id,
+            categoryId: curve.categoryId,
+            locationId: curve.locationId,
+            matchesCategory: curve.categoryId === categoryToUpdate.title,
+            matchesLocation: curve.locationId === locationToRemove.name,
+          });
+        }
+
+        return shouldKeep;
+      });
+
+      console.log("After removal:", {
+        remainingCurveLines: updatedCurveLines.length,
+        removedCount: prev.gateway.curveLines.length - updatedCurveLines.length,
+      });
+
       return {
         ...prev,
         gateway: {
           ...prev.gateway,
           categories: updatedCategories,
+          curveLines: updatedCurveLines,
+        },
+      };
+    });
+  };
+
+  const removeMainProjectLocation = () => {
+    setProjectDetailData((prev) => {
+      console.log("Removing main project location:", {
+        currentCurveLines: prev.gateway.curveLines.length,
+      });
+
+      // Remove all curve lines since main project is being removed
+      const updatedCurveLines: any[] = [];
+
+      console.log("After main project removal:", {
+        remainingCurveLines: updatedCurveLines.length,
+        removedCount: prev.gateway.curveLines.length,
+      });
+
+      return {
+        ...prev,
+        gateway: {
+          ...prev.gateway,
+          mainProjectLocation: {
+            title: "",
+            description: "",
+            icon: "/gateway-images/main-project-icon.svg",
+            coords: { x: 0, y: 0 },
+          },
+          curveLines: updatedCurveLines,
         },
       };
     });
@@ -1053,30 +1145,131 @@ export default function CreateProjectPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.backgroundImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("gateway", "backgroundImage", url)
-                  }
-                  mediaType="image"
-                  label="Background Image"
-                  placeholder="Select background image"
-                />
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={projectDetailData.gateway.backgroundImage}
+                    onSelect={(url) =>
+                      handleProjectDetailChange(
+                        "gateway",
+                        "backgroundImage",
+                        url
+                      )
+                    }
+                    mediaType="image"
+                    label="Background Image"
+                    placeholder="Select background image"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={projectDetailData.gateway.mapImage}
+                    onSelect={(url) =>
+                      handleProjectDetailChange("gateway", "mapImage", url)
+                    }
+                    mediaType="image"
+                    label="Map Image"
+                    placeholder="Select map image"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <MediaSelectButton
-                  value={projectDetailData.gateway.mapImage}
-                  onSelect={(url) =>
-                    handleProjectDetailChange("gateway", "mapImage", url)
-                  }
-                  mediaType="image"
-                  label="Map Image"
-                  placeholder="Select map image"
-                />
-              </div>
+              {/* Main Project Location */}
+              {projectDetailData.gateway.mainProjectLocation.title && (
+                <div className="mt-6">
+                  <Card className="border-dashed">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-sm">
+                          Main Project Location
+                        </CardTitle>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={removeMainProjectLocation}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                          <img
+                            src={
+                              projectDetailData.gateway.mainProjectLocation.icon
+                            }
+                            alt="Main Project"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium">
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .title
+                            }
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .description
+                            }
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Position:{" "}
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .coords.x
+                            }
+                            ,{" "}
+                            {
+                              projectDetailData.gateway.mainProjectLocation
+                                .coords.y
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* Interactive Map Editor */}
+              {projectDetailData.gateway.mapImage && (
+                <div className="mt-6">
+                  <GatewayMapEditor
+                    mapImage={projectDetailData.gateway.mapImage}
+                    existingData={{
+                      mainProjectLocation:
+                        projectDetailData.gateway.mainProjectLocation,
+                      curveLines: projectDetailData.gateway.curveLines,
+                      categories: projectDetailData.gateway.categories,
+                    }}
+                    onSave={(mapData) => {
+                      console.log(
+                        "CreateProjectForm onSave called with:",
+                        mapData
+                      );
+                      // This should only be called when user clicks "Save Map" button
+                      // Just update the form state
+                      setProjectDetailData((prev) => ({
+                        ...prev,
+                        gateway: {
+                          ...prev.gateway,
+                          mainProjectLocation: mapData.mainProjectLocation,
+                          curveLines: mapData.curveLines,
+                          categories: mapData.categories,
+                        },
+                      }));
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Add New Category */}

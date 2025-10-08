@@ -35,6 +35,11 @@ interface GatewayLocation {
     left: string;
   };
   icon: string;
+  pixelCoords: {
+    x: number;
+    y: number;
+  };
+  categoryId?: string;
 }
 
 interface GatewayCategory {
@@ -42,6 +47,26 @@ interface GatewayCategory {
   description: string;
   icon: string;
   locations: GatewayLocation[];
+}
+
+interface MainProjectLocation {
+  title: string;
+  description: string;
+  icon: string;
+  coords: {
+    x: number;
+    y: number;
+  };
+}
+
+interface CurveLine {
+  id: string;
+  categoryId: string;
+  locationId: string;
+  svgPath: string;
+  color: string;
+  thickness: number;
+  dashPattern: number[];
 }
 
 interface ProjectDetail {
@@ -92,6 +117,8 @@ interface ProjectDetail {
     sectionDescription: string;
     backgroundImage: string;
     mapImage: string;
+    mainProjectLocation: MainProjectLocation;
+    curveLines: CurveLine[];
     categories: GatewayCategory[];
   };
 }

@@ -417,7 +417,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       {/* Video Controls - Only show for video/vimeo */}
       {(backgroundMedia.type === "video" ||
         backgroundMedia.type === "vimeo") && (
-        <div className="absolute flex-col bottom-28 right-8 z-20 flex gap-3">
+        <div className="absolute flex-col bottom-24 xl:bottom-28 right-5 sm:right-8 z-20 flex gap-3">
           {/* Play/Pause Button */}
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -477,7 +477,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
           </div>
 
           {/* Buttons Container */}
-          <div className="flex justify-start lg:justify-end gap-4 mb-20 pt-0 sm:pt-5 xl:pt-0">
+          <div className="flex justify-start gap-4 mb-20 pt-0 sm:pt-5 ">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

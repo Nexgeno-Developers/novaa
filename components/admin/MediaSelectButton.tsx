@@ -1,14 +1,24 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux";
-import { MediaItem } from "@/redux/slices/mediaSlice";
+import { MediaItem, addMediaItem } from "@/redux/slices/mediaSlice";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AdvancedMediaSelector } from "@/components/admin/AdvancedMediaSelector";
-import { ImageIcon, Video, X, Loader2, FileText, File } from "lucide-react";
+import {
+  ImageIcon,
+  Video,
+  X,
+  Loader2,
+  FileText,
+  File,
+  Upload,
+  Plus,
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface MediaSelectButtonProps {
   value: string;
@@ -18,255 +28,6 @@ interface MediaSelectButtonProps {
   placeholder?: string;
 }
 
-// const MediaSelectButton = ({
-//   value,
-//   onSelect,
-//   mediaType,
-//   label,
-//   placeholder,
-// }: MediaSelectButtonProps) => {
-//   const [selectorOpen, setSelectorOpen] = useState(false);
-//   const [imageLoading, setImageLoading] = useState(false);
-//   const [previewLoading, setPreviewLoading] = useState(false);
-
-//   const { items: mediaItems, status } = useSelector(
-//     (state: RootState) => state.media
-//   );
-
-//   const selectedMedia = useMemo(
-//     () => mediaItems.find((item) => item.secure_url === value || item.url === value),
-//     [mediaItems, value]
-//   );
-
-//   const handleMediaSelect = (media: MediaItem) => {
-//     onSelect(media.secure_url);
-//     setSelectorOpen(false);
-//   };
-
-//   const formatFileName = (publicId: string, format: string) => {
-//     const fileName = publicId.split("/").pop() || publicId;
-//     return `${fileName}.${format}`;
-//   };
-
-//   const getFileIcon = (format?: string) => {
-//     if (!format) return <File className="h-6 w-6 text-gray-400" />;
-
-//     const lowerFormat = format.toLowerCase();
-//     if (lowerFormat === 'pdf') return <FileText className="h-6 w-6 text-red-500" />;
-//     if (['doc', 'docx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-blue-500" />;
-//     if (['xls', 'xlsx'].includes(lowerFormat)) return <FileText className="h-6 w-6 text-green-500" />;
-//     return <File className="h-6 w-6 text-gray-400" />;
-//   };
-
-//   const isLocalDefault =
-//     value?.startsWith("/images/") ||
-//     value?.startsWith("/static/") ||
-//     value?.startsWith("/assets/");
-
-//   const isMediaLoading = status === "loading";
-//   const isResolvingMedia = !!value && !isLocalDefault && !selectedMedia && isMediaLoading;
-
-//   const renderIcon = () => {
-//     switch (mediaType) {
-//       case "image":
-//         return <ImageIcon className="h-5 w-5" />;
-//       case "video":
-//         return <Video className="h-5 w-5" />;
-//       case "pdf":
-//         return <FileText className="h-5 w-5" />;
-//       case "file":
-//       default:
-//         return <File className="h-5 w-5" />;
-//     }
-//   };
-
-//   const renderPreview = () => {
-//     if (mediaType === "image") {
-//       return (
-//         <img
-//           src={selectedMedia?.secure_url || value}
-//           alt="Preview"
-//           className="w-full h-full object-cover"
-//           onLoad={() => setPreviewLoading(false)}
-//           onError={() => setPreviewLoading(false)}
-//           onLoadStart={() => setPreviewLoading(true)}
-//           style={{ display: previewLoading ? "none" : "block" }}
-//         />
-//       );
-//     }
-
-//     if (mediaType === "video") {
-//       return (
-//         <video
-//           src={selectedMedia?.secure_url || value}
-//           className="w-full h-full object-cover"
-//           muted
-//           onLoadedData={() => setPreviewLoading(false)}
-//           onError={() => setPreviewLoading(false)}
-//           onLoadStart={() => setPreviewLoading(true)}
-//           style={{ display: previewLoading ? "none" : "block" }}
-//         />
-//       );
-//     }
-
-//     // For files and PDFs
-//     return (
-//       <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50">
-//         {getFileIcon(selectedMedia?.format)}
-//         <p className="text-xs text-gray-600 mt-2 text-center px-2">
-//           {selectedMedia
-//             ? formatFileName(selectedMedia.public_id, selectedMedia.format)
-//             : value.split("/").pop()
-//           }
-//         </p>
-//         {selectedMedia && (
-//           <p className="text-xs text-gray-500">
-//             {(selectedMedia.bytes / 1024 / 1024).toFixed(2)} MB
-//           </p>
-//         )}
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <>
-//       <div className="space-y-3">
-//         <Label className="text-sm font-medium text-primary">{label}</Label>
-
-//         <div className="space-y-3">
-//           <Button
-//             type="button"
-//             variant="outline"
-//             onClick={() => setSelectorOpen(true)}
-//             disabled={isMediaLoading}
-//             className="w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
-//           >
-//             {isMediaLoading || isResolvingMedia ? (
-//               <div className="flex items-center gap-3 w-full">
-//                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
-//                   <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-//                 </div>
-//                 <div className="text-left">
-//                   <p className="font-medium text-sm text-gray-500">
-//                     Loading media...
-//                   </p>
-//                   <p className="text-xs text-gray-400">Please wait</p>
-//                 </div>
-//               </div>
-//             ) : selectedMedia || isLocalDefault ? (
-//               <div className="flex items-center gap-3 w-full">
-//                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 relative">
-//                   {imageLoading && (
-//                     <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-//                       <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
-//                     </div>
-//                   )}
-//                   {mediaType === "image" ? (
-//                     <img
-//                       src={selectedMedia?.secure_url || value}
-//                       alt="Selected"
-//                       className="w-full h-full object-cover"
-//                       onLoad={() => setImageLoading(false)}
-//                       onError={() => setImageLoading(false)}
-//                       onLoadStart={() => setImageLoading(true)}
-//                       style={{ display: imageLoading ? "none" : "block" }}
-//                     />
-//                   ) : mediaType === "video" ? (
-//                     <div className="w-full h-full flex items-center justify-center">
-//                       <Video className="h-6 w-6 text-gray-400" />
-//                     </div>
-//                   ) : (
-//                     <div className="w-full h-full flex items-center justify-center">
-//                       {getFileIcon(selectedMedia?.format)}
-//                     </div>
-//                   )}
-//                 </div>
-//                 <div className="text-left">
-//                   <p className="font-medium text-sm truncate group-hover:text-primary/90 transition-all duration-500">
-//                     {selectedMedia
-//                       ? formatFileName(selectedMedia.public_id, selectedMedia.format)
-//                       : value.split("/").pop()
-//                     }
-//                   </p>
-//                   {selectedMedia && (
-//                     <p className="text-xs text-gray-500">
-//                       {(selectedMedia.bytes / 1024 / 1024).toFixed(2)} MB •{" "}
-//                       {selectedMedia.format.toUpperCase()}
-//                     </p>
-//                   )}
-//                 </div>
-//               </div>
-//             ) : (
-//               <div className="flex items-center gap-2 text-gray-500">
-//                 {renderIcon()}
-//                 <span>{placeholder || `Select ${mediaType}...`}</span>
-//               </div>
-//             )}
-//           </Button>
-
-//           {/* Clear selection button */}
-//           {(selectedMedia || isLocalDefault) && !isMediaLoading && (
-//             <Button
-//               type="button"
-//               variant="ghost"
-//               size="sm"
-//               onClick={() => onSelect("")}
-//               className="text-red-500 hover:text-red-700 cursor-pointer"
-//             >
-//               <X className="h-4 w-4 mr-1" />
-//               Clear Selection
-//             </Button>
-//           )}
-
-//           {/* Preview */}
-//           {(selectedMedia || isLocalDefault) && !isMediaLoading && (
-//             <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
-//               {previewLoading && (
-//                 <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-//                   <div className="text-center">
-//                     <Loader2 className="h-8 w-8 animate-spin text-gray-400 mx-auto mb-2" />
-//                     <p className="text-sm text-gray-500">Loading preview...</p>
-//                   </div>
-//                 </div>
-//               )}
-
-//               {renderPreview()}
-
-//               {!previewLoading && selectedMedia && (
-//                 <div className="absolute top-2 right-2">
-//                   <Badge variant="secondary" className="text-xs">
-//                     {selectedMedia.format.toUpperCase()}
-//                   </Badge>
-//                 </div>
-//               )}
-//             </div>
-//           )}
-
-//           {/* Loading preview while resolving media */}
-//           {isResolvingMedia && (
-//             <div className="w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center">
-//               <div className="text-center">
-//                 <Loader2 className="h-8 w-8 animate-spin text-gray-400 mx-auto mb-2" />
-//                 <p className="text-sm text-gray-500">Loading preview...</p>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Advanced Media Selector Modal */}
-//       <AdvancedMediaSelector
-//         isOpen={selectorOpen}
-//         onOpenChange={setSelectorOpen}
-//         onSelect={handleMediaSelect}
-//         selectedValue={value}
-//         mediaType={mediaType === "pdf" ? "file" : mediaType}
-//         title={`Select ${label}`}
-//       />
-//     </>
-//   );
-// };
-
 const MediaSelectButton = ({
   value,
   onSelect,
@@ -274,9 +35,11 @@ const MediaSelectButton = ({
   label,
   placeholder,
 }: MediaSelectButtonProps) => {
+  const dispatch = useDispatch();
   const [selectorOpen, setSelectorOpen] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [localSelectedMedia, setLocalSelectedMedia] =
     useState<MediaItem | null>(null);
 
@@ -315,6 +78,51 @@ const MediaSelectButton = ({
     onSelect(media.secure_url);
     setLocalSelectedMedia(media); // Cache the selected media locally
     setSelectorOpen(false);
+  };
+
+  // Handle file upload
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+
+    try {
+      const file = files[0]; // Only handle first file for single select
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/cms/media", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Add to Redux store
+        dispatch(addMediaItem(result));
+
+        // Select the uploaded file immediately
+        onSelect(result.secure_url);
+        setLocalSelectedMedia(result);
+
+        toast.success(`Successfully uploaded ${file.name}`);
+      } else {
+        toast.error(`Failed to upload ${file.name}`, {
+          description: result.error,
+        });
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload file");
+    } finally {
+      setUploading(false);
+      // Reset input
+      event.target.value = "";
+    }
   };
 
   // Clear local cache when value changes externally
@@ -420,21 +228,22 @@ const MediaSelectButton = ({
         <Label className="text-sm font-medium">{label}</Label>
 
         <div className="space-y-3">
+          {/* Main selection button */}
           <Button
             type="button"
             variant="outline"
             onClick={() => setSelectorOpen(true)}
-            disabled={isMediaLoading}
+            disabled={isMediaLoading || uploading}
             className="w-full group justify-start hover:bg-primary/20 h-auto p-3 border-2 border-dashed border-gray-300 hover:border-primary transition-colors cursor-pointer"
           >
-            {isMediaLoading ? (
+            {isMediaLoading || uploading ? (
               <div className="flex items-center gap-3 w-full">
                 <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
                   <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
                 </div>
                 <div className="text-left">
                   <p className="font-medium text-sm text-gray-500">
-                    Loading media...
+                    {uploading ? "Uploading..." : "Loading media..."}
                   </p>
                   <p className="text-xs text-gray-400">Please wait</p>
                 </div>
@@ -497,6 +306,59 @@ const MediaSelectButton = ({
               </div>
             )}
           </Button>
+
+          {/* Upload button */}
+          <div className="flex gap-2">
+            <input
+              type="file"
+              id={`upload-${mediaType}`}
+              accept={
+                mediaType === "image"
+                  ? "image/*"
+                  : mediaType === "video"
+                  ? "video/*"
+                  : mediaType === "pdf"
+                  ? ".pdf"
+                  : "*"
+              }
+              onChange={handleFileUpload}
+              className="hidden"
+              disabled={uploading}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                document.getElementById(`upload-${mediaType}`)?.click()
+              }
+              disabled={uploading}
+              className="flex-1 cursor-pointer"
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload New
+                </>
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectorOpen(true)}
+              disabled={isMediaLoading || uploading}
+              className="flex-1 cursor-pointer"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Browse Library
+            </Button>
+          </div>
 
           {/* Clear selection button */}
           {hasValidMedia && !isMediaLoading && (

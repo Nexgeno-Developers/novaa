@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
+import { getSvgViewBox, MapDimensions } from "@/lib/mapUtils";
 
 interface GatewayLocation {
   name: string;
@@ -12,6 +13,11 @@ interface GatewayLocation {
     left: string;
   };
   icon: string;
+  pixelCoords: {
+    x: number;
+    y: number;
+  };
+  categoryId?: string;
 }
 
 interface GatewayCategory {
@@ -19,6 +25,26 @@ interface GatewayCategory {
   description: string;
   icon: string;
   locations: GatewayLocation[];
+}
+
+interface MainProjectLocation {
+  title: string;
+  description: string;
+  icon: string;
+  coords: {
+    x: number;
+    y: number;
+  };
+}
+
+interface CurveLine {
+  id: string;
+  categoryId: string;
+  locationId: string;
+  svgPath: string;
+  color: string;
+  thickness: number;
+  dashPattern: number[];
 }
 
 interface GatewaySectionProps {
@@ -33,6 +59,8 @@ interface GatewaySectionProps {
         sectionDescription: string;
         backgroundImage: string;
         mapImage: string;
+        mainProjectLocation: MainProjectLocation;
+        curveLines: CurveLine[];
         categories: GatewayCategory[];
       };
     };
@@ -93,6 +121,13 @@ const defaultGatewayData = {
     "Perfectly positioned where tropical elegance meets modern convenience, discover a world of luxury at your doorstep.",
   backgroundImage: "/gateway-images/background.png",
   mapImage: "/images/map2.png",
+  mainProjectLocation: {
+    title: "",
+    description: "",
+    icon: "/icons/map-pin.svg",
+    coords: { x: 0, y: 0 },
+  },
+  curveLines: [] as CurveLine[],
   categories: [
     {
       title: "Bangtao & Layan Beach",
@@ -104,30 +139,40 @@ const defaultGatewayData = {
           image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Patong+Beach",
           coords: { top: "33%", left: "15%" },
           icon: "/icons/map-pin.svg",
+          pixelCoords: { x: 0, y: 0 },
+          categoryId: "",
         },
         {
           name: "Karon Beach",
           image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Karon+Beach",
           coords: { top: "50%", left: "15%" },
           icon: "/icons/map-pin.svg",
+          pixelCoords: { x: 0, y: 0 },
+          categoryId: "",
         },
         {
           name: "Kata Beach",
           image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Kata+Beach",
           coords: { top: "55%", left: "45%" },
           icon: "/icons/map-pin.svg",
+          pixelCoords: { x: 0, y: 0 },
+          categoryId: "",
         },
         {
           name: "Kamala Beach",
           image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Kamala+Beach",
           coords: { top: "35%", left: "35%" },
           icon: "/icons/map-pin.svg",
+          pixelCoords: { x: 0, y: 0 },
+          categoryId: "",
         },
         {
           name: "Surin Beach",
           image: "https://placehold.co/200x150/C3912F/FFFFFF?text=Surin+Beach",
           coords: { top: "60%", left: "20%" },
           icon: "/icons/map-pin.svg",
+          pixelCoords: { x: 0, y: 0 },
+          categoryId: "",
         },
       ],
     },
@@ -249,14 +294,112 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
   // Use project data if available, otherwise use default data
   const gatewayData = project?.projectDetail?.gateway || defaultGatewayData;
 
+  // Debug logging
+  console.log("GatewaySection received project:", project);
+  console.log("GatewaySection gatewayData:", gatewayData);
+  console.log(
+    "GatewaySection mainProjectLocation:",
+    gatewayData.mainProjectLocation
+  );
+  console.log("GatewaySection mapImage:", gatewayData.mapImage);
+  console.log("GatewaySection curveLines:", gatewayData.curveLines);
+  console.log(
+    "GatewaySection curveLines length:",
+    gatewayData.curveLines?.length
+  );
+  console.log(
+    "GatewaySection first curve dashPattern:",
+    gatewayData.curveLines?.[0]?.dashPattern
+  );
+  console.log(
+    "GatewaySection mainProjectLocation coords:",
+    gatewayData.mainProjectLocation?.coords
+  );
+  // console.log("GatewaySection svgViewBox:", svgViewBox);
+
   const [activeCategory, setActiveCategory] = useState(0);
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
+  const [svgViewBox, setSvgViewBox] = useState("0 0 800 600");
+
+  // Convert pixel coordinates from map editor (800x600) to SVG coordinates
+  const convertCoordinates = (pixelCoords: { x: number; y: number }) => {
+    const mapDimensions = { width: 800, height: 600 };
+    const viewBoxValues = svgViewBox.split(" ").map(Number);
+    const svgWidth = viewBoxValues[2];
+    const svgHeight = viewBoxValues[3];
+
+    const converted = {
+      x: (pixelCoords.x / mapDimensions.width) * svgWidth,
+      y: (pixelCoords.y / mapDimensions.height) * svgHeight,
+    };
+
+    return converted;
+  };
+
+  // Convert SVG path from map editor coordinates to current SVG coordinates
+  const convertSvgPath = (svgPath: string) => {
+    const mapDimensions = { width: 800, height: 600 };
+    const viewBoxValues = svgViewBox.split(" ").map(Number);
+    const svgWidth = viewBoxValues[2];
+    const svgHeight = viewBoxValues[3];
+
+    const scaleX = svgWidth / mapDimensions.width;
+    const scaleY = svgHeight / mapDimensions.height;
+
+    console.log("Converting SVG path:", {
+      originalPath: svgPath,
+      svgViewBox: svgViewBox,
+      svgWidth: svgWidth,
+      svgHeight: svgHeight,
+      scaleX: scaleX,
+      scaleY: scaleY,
+    });
+
+    // Parse and convert the SVG path
+    const convertedPath = svgPath.replace(/(\d+\.?\d*)/g, (match) => {
+      const num = parseFloat(match);
+      // Check if this is an x-coordinate (even positions) or y-coordinate (odd positions)
+      const isX = svgPath.indexOf(match) % 2 === 0;
+      return isX ? (num * scaleX).toString() : (num * scaleY).toString();
+    });
+
+    console.log("Converted SVG path:", convertedPath);
+
+    return convertedPath;
+  };
+
+  // Calculate responsive SVG viewBox
+  useEffect(() => {
+    const updateViewBox = () => {
+      const container = document.querySelector(".map-container");
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const mapDimensions: MapDimensions = { width: 800, height: 600 };
+        const aspectRatio = mapDimensions.width / mapDimensions.height;
+
+        let responsiveWidth = rect.width;
+        let responsiveHeight = rect.height;
+
+        if (rect.width / rect.height > aspectRatio) {
+          responsiveWidth = rect.height * aspectRatio;
+        } else {
+          responsiveHeight = rect.width / aspectRatio;
+        }
+
+        setSvgViewBox(`0 0 ${responsiveWidth} ${responsiveHeight}`);
+      }
+    };
+
+    updateViewBox();
+    window.addEventListener("resize", updateViewBox);
+    return () => window.removeEventListener("resize", updateViewBox);
+  }, []);
 
   // If no categories are available, use default data
   const categories =
     gatewayData.categories && gatewayData.categories.length > 0
       ? gatewayData.categories
-      : defaultGatewayData.categories;
+      : (defaultGatewayData.categories as any[]);
 
   // Ensure activeCategory doesn't exceed available categories
   const safeActiveCategory =
@@ -392,93 +535,233 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <div className="relative w-full h-full max-w-lg">
+                <div className="relative w-full h-full max-w-lg map-container">
                   <Image
+                    key={mapImage}
                     src={mapImage}
                     alt="Interactive Map"
                     fill
                     className="object-contain"
                   />
 
-                  {/* Map Pins */}
-                  <AnimatePresence mode="wait">
-                    {currentCategory?.locations?.map(
-                      (location, locationIndex) => (
-                        <motion.div
-                          key={`${safeActiveCategory}-${locationIndex}-${location.name}`}
-                          className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
-                          style={{
-                            top: location.coords.top,
-                            left: location.coords.left,
-                          }}
-                          onMouseEnter={() => setHoveredPin(location.name)}
-                          onMouseLeave={() => setHoveredPin(null)}
-                          variants={mapPinVariants}
-                          initial="hidden"
-                          animate="visible"
-                          exit="hidden"
-                          transition={{ delay: locationIndex * 0.1 }}
-                          whileHover={{ scale: 1.2 }}
-                        >
-                          {/* The Pin Icon */}
-                          <motion.div
-                            className="cursor-pointer drop-shadow-lg"
-                            whileHover={{ y: -2 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 20,
-                            }}
+                  {/* SVG Overlay for curves and main project */}
+                  <svg
+                    key={`${mapImage}-${gatewayData.mainProjectLocation?.coords.x}-${gatewayData.mainProjectLocation?.coords.y}`}
+                    className="absolute inset-0 w-full h-full z-5"
+                    viewBox={svgViewBox}
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    {/* Main Project Location */}
+                    {gatewayData.mainProjectLocation &&
+                      gatewayData.mainProjectLocation.coords.x > 0 &&
+                      gatewayData.mainProjectLocation.coords.y > 0 &&
+                      (() => {
+                        const convertedCoords = convertCoordinates(
+                          gatewayData.mainProjectLocation.coords
+                        );
+                        return (
+                          <motion.foreignObject
+                            x={convertedCoords.x - 12}
+                            y={convertedCoords.y - 12}
+                            width="24"
+                            height="24"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
                           >
-                            <Image
-                              src={location.icon}
-                              width={24}
-                              height={24}
-                              alt="Map pin"
-                              className="filter drop-shadow-md"
-                            />
-                          </motion.div>
+                            <div className="w-6 h-6 flex items-center justify-center">
+                              <img
+                                src="/gateway-images/main-project-icon.svg"
+                                alt="Main Project"
+                                className="w-full h-full drop-shadow-lg"
+                              />
+                            </div>
+                          </motion.foreignObject>
+                        );
+                      })()}
 
-                          {/* Hover Image Card */}
-                          <AnimatePresence>
-                            {hoveredPin === location.name && (
-                              <motion.div
-                                className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-32 bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl z-20"
-                                initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 10, scale: 0.8 }}
-                                transition={{
-                                  duration: 0.2,
-                                  type: "spring",
-                                  stiffness: 300,
-                                  damping: 25,
-                                }}
-                              >
-                                <div className="relative h-20 w-full">
+                    {/* Filtered curves for active category */}
+                    {(() => {
+                      const filteredCurves = gatewayData.curveLines?.filter(
+                        (curve) => curve.categoryId === currentCategory?.title
+                      );
+                      console.log("Filtering curves for active category:", {
+                        activeCategory: currentCategory?.title,
+                        allCurves: gatewayData.curveLines,
+                        allCurveCategoryIds: gatewayData.curveLines?.map(
+                          (curve) => curve.categoryId
+                        ),
+                        filteredCurves: filteredCurves,
+                        filteredCount: filteredCurves?.length,
+                      });
+                      return filteredCurves;
+                    })()?.map((curve, index: number) => {
+                      const strokeDasharray =
+                        curve.dashPattern && curve.dashPattern.length > 0
+                          ? curve.dashPattern.join(",")
+                          : "10,5";
+
+                      console.log("Rendering curve:", {
+                        curveId: curve.id,
+                        originalSvgPath: curve.svgPath,
+                        convertedSvgPath: convertSvgPath(curve.svgPath),
+                        strokeDasharray: strokeDasharray,
+                        color: curve.color,
+                        thickness: curve.thickness,
+                        svgViewBox: svgViewBox,
+                        mainProjectCoords:
+                          gatewayData.mainProjectLocation?.coords,
+                      });
+
+                      const convertedPath = convertSvgPath(curve.svgPath);
+                      console.log(
+                        "About to render curve with path:",
+                        convertedPath
+                      );
+
+                      return (
+                        <motion.path
+                          key={curve.id}
+                          d={convertedPath}
+                          stroke={curve.color}
+                          strokeWidth={curve.thickness}
+                          strokeDasharray={strokeDasharray}
+                          strokeDashoffset="0"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                          initial={{
+                            opacity: 0,
+                            strokeDashoffset: strokeDasharray
+                              .split(",")
+                              .reduce((a, b) => parseInt(a) + parseInt(b), 0),
+                          }}
+                          animate={{
+                            opacity: 1,
+                            strokeDashoffset: 0,
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            delay: index * 0.1,
+                            ease: "easeInOut",
+                          }}
+                          className="drop-shadow-sm"
+                          style={{
+                            filter: "drop-shadow(0 0 3px rgba(0,0,0,0.3))",
+                          }}
+                        />
+                      );
+                    })}
+
+                    {/* Gateway Location Markers - SVG elements for responsiveness */}
+                    {currentCategory?.locations?.map(
+                      (location: any, locationIndex: number) => {
+                        // Convert percentage coordinates to pixel coordinates first
+                        const percentageCoords = {
+                          x: parseFloat(location.coords.left.replace("%", "")),
+                          y: parseFloat(location.coords.top.replace("%", "")),
+                        };
+
+                        // Convert to pixel coordinates (assuming 800x600 map)
+                        const pixelCoords = {
+                          x: (percentageCoords.x / 100) * 800,
+                          y: (percentageCoords.y / 100) * 600,
+                        };
+
+                        // Convert to SVG coordinates
+                        const svgCoords = convertCoordinates(pixelCoords);
+
+                        return (
+                          <motion.foreignObject
+                            key={`gateway-svg-${safeActiveCategory}-${locationIndex}-${location.name}`}
+                            x={svgCoords.x - 12}
+                            y={svgCoords.y - 24}
+                            width="24"
+                            height="24"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{
+                              duration: 0.5,
+                              delay: locationIndex * 0.1 + 0.3,
+                            }}
+                            className="cursor-pointer"
+                            onMouseEnter={() => setHoveredPin(location.name)}
+                            onMouseLeave={() => setHoveredPin(null)}
+                            whileHover={{ scale: 1.2 }}
+                          >
+                            <div className="w-full h-full flex items-center justify-center">
+                              <img
+                                src="/gateway-images/location.svg"
+                                alt="Location"
+                                className="w-full h-full drop-shadow-lg"
+                              />
+                            </div>
+                          </motion.foreignObject>
+                        );
+                      }
+                    )}
+
+                    {/* Hover Image Cards for SVG Map Pins */}
+                    <AnimatePresence>
+                      {currentCategory?.locations?.map(
+                        (location: any, locationIndex: number) => {
+                          if (hoveredPin !== location.name) return null;
+
+                          // Convert percentage coordinates to pixel coordinates first
+                          const percentageCoords = {
+                            x: parseFloat(
+                              location.coords.left.replace("%", "")
+                            ),
+                            y: parseFloat(location.coords.top.replace("%", "")),
+                          };
+
+                          // Convert to pixel coordinates (assuming 800x600 map)
+                          const pixelCoords = {
+                            x: (percentageCoords.x / 100) * 800,
+                            y: (percentageCoords.y / 100) * 600,
+                          };
+
+                          // Convert to SVG coordinates
+                          const svgCoords = convertCoordinates(pixelCoords);
+
+                          return (
+                            <motion.foreignObject
+                              key={`hover-${location.name}`}
+                              x={svgCoords.x - 64}
+                              y={svgCoords.y - 100}
+                              width="128"
+                              height="80"
+                              initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                              transition={{
+                                duration: 0.2,
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 25,
+                              }}
+                            >
+                              <div className="w-full h-full bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl">
+                                <div className="relative h-full w-full">
                                   <img
                                     src={location.image}
                                     alt={location.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-[80%] object-cover p-1 rounded-xl"
                                   />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                                  {/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" /> */}
+                                  <div className="absolute bottom-[-8px] left-2 right-2 p-2">
+                                    <p className=" font-josefin text-xs font-medium truncate text-center text-background uppercase">
+                                      {location.name}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="p-2">
-                                  <p className="font-josefin text-center text-xs font-semibold text-gray-800 leading-tight">
-                                    {location.name}
-                                  </p>
-                                </div>
-
-                                {/* Tooltip Arrow */}
-                                <div className="absolute top-full left-1/2 -translate-x-1/2">
-                                  <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white" />
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </motion.div>
-                      )
-                    )}
-                  </AnimatePresence>
+                              </div>
+                            </motion.foreignObject>
+                          );
+                        }
+                      )}
+                    </AnimatePresence>
+                  </svg>
 
                   {/* Map Loading State */}
                   {(!currentCategory?.locations ||

@@ -19,8 +19,9 @@ import MediaSelectButton from "./MediaSelectButton";
 import BaseSectionManager from "./BaseSectionManager";
 
 interface HeroSection {
-  mediaType: "image" | "video";
+  mediaType: "image" | "video" | "vimeo";
   mediaUrl: string;
+  vimeoUrl?: string;
   title: string;
   subtitle: string;
   overlayOpacity: number;
@@ -57,6 +58,7 @@ export default function HomePageManager({
   const [heroData, setHeroData] = useState<HeroSection>({
     mediaType: "image",
     mediaUrl: "/images/hero.jpg",
+    vimeoUrl: "",
     title: "Experience Unparalleled",
     subtitle: "Luxury in Thailand",
     overlayOpacity: 0.4,
@@ -227,17 +229,26 @@ export default function HomePageManager({
 
         {/* Media Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <MediaSelectButton
-              label={`Background ${
-                heroData.mediaType === "video" ? "Video" : "Image"
-              }`}
-              mediaType={heroData.mediaType}
-              value={heroData.mediaUrl}
-              onSelect={(url: string) => updateHeroData({ mediaUrl: url })}
-              placeholder={`Choose ${heroData.mediaType}`}
-            />
-          </div>
+          {/* Only show MediaSelectButton when mediaType is not vimeo */}
+          {heroData.mediaType !== "vimeo" && (
+            <div>
+              <MediaSelectButton
+                label={`Background ${
+                  heroData.mediaType === "video"
+                    ? "Video"
+                    : heroData.mediaType === "vimeo"
+                    ? "Vimeo Video"
+                    : "Image"
+                }`}
+                mediaType={
+                  heroData.mediaType === "vimeo" ? "video" : heroData.mediaType
+                }
+                value={heroData.mediaUrl}
+                onSelect={(url: string) => updateHeroData({ mediaUrl: url })}
+                placeholder={`Choose ${heroData.mediaType}`}
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-1 mt-2 ">
@@ -245,8 +256,12 @@ export default function HomePageManager({
             </label>
             <Select
               value={heroData.mediaType}
-              onValueChange={(value: "image" | "video") => {
-                updateHeroData({ mediaType: value, mediaUrl: "" });
+              onValueChange={(value: "image" | "video" | "vimeo") => {
+                updateHeroData({
+                  mediaType: value,
+                  mediaUrl: value === "vimeo" ? "" : heroData.mediaUrl,
+                  vimeoUrl: value === "vimeo" ? heroData.vimeoUrl : "",
+                });
               }}
             >
               <SelectTrigger className="cursor-pointer">
@@ -255,10 +270,28 @@ export default function HomePageManager({
               <SelectContent className="admin-theme">
                 <SelectItem value="image">Image</SelectItem>
                 <SelectItem value="video">Video</SelectItem>
+                <SelectItem value="vimeo">Vimeo Video</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
+
+        {/* Vimeo URL Field - Only show when mediaType is vimeo */}
+        {heroData.mediaType === "vimeo" && (
+          <div>
+            <label className="block text-sm font-medium mb-1">Vimeo URL</label>
+            <Input
+              value={heroData.vimeoUrl || ""}
+              onChange={(e) => updateHeroData({ vimeoUrl: e.target.value })}
+              placeholder="Enter Vimeo video URL (e.g., https://vimeo.com/123456789)"
+              className="w-full"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Enter the full Vimeo URL. The video will be embedded
+              automatically.
+            </p>
+          </div>
+        )}
       </div>
     );
   };
