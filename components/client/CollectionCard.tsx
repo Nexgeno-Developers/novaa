@@ -358,20 +358,21 @@ export default function CollectionCard({
                   "radial-gradient(117.4% 117.54% at -15.51% 0%, #C3912F 0%, #F5E7A8 16.95%, #C3912F 100%)",
               }}
             >
-              <VerifiedIcon className="w-4 h-4 mb-1"/>
+              <VerifiedIcon className="w-4 h-4 mb-1" />
               {property.badge}
             </div>
           )}
 
           {/* Navigation Arrows for Images */}
           {property.images.length > 1 && (
-            <div className="absolute inset-0 flex items-center justify-between p-4 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
+            <div className="absolute inset-0 flex items-center justify-between p-4 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 pointer-events-none">
               <motion.button
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   prevImage(property._id);
                 }}
-                className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors"
+                className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors pointer-events-auto"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -379,10 +380,11 @@ export default function CollectionCard({
               </motion.button>
               <motion.button
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   nextImage(property._id);
                 }}
-                className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors"
+                className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors pointer-events-auto"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
@@ -399,6 +401,7 @@ export default function CollectionCard({
                   <button
                     key={imgIndex}
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       setCurrentImageIndex((prev) => ({
                         ...prev,
@@ -477,8 +480,12 @@ export default function CollectionCard({
     <div className="w-full relative">
       {currentProjects.length > cardsPerView && (
         <div className="hidden sm:block">
-          <button
-            onClick={scrollPrev}
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              scrollPrev();
+            }}
             disabled={!canScrollPrev}
             className={`absolute sm:-ml-15 left-0 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
               canScrollPrev
@@ -487,10 +494,14 @@ export default function CollectionCard({
             }`}
           >
             <ChevronLeft className="w-6 h-6" />
-          </button>
+          </Button>
 
-          <button
-            onClick={scrollNext}
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              scrollNext();
+            }}
             disabled={!canScrollNext}
             className={`absolute right-0 sm:-mr-15 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all duration-200 ${
               canScrollNext
@@ -499,7 +510,7 @@ export default function CollectionCard({
             }`}
           >
             <ChevronRight className="w-6 h-6" />
-          </button>
+          </Button>
         </div>
       )}
 

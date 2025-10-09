@@ -76,7 +76,7 @@ export default async function Home() {
       {sections.map((section: Section, index: number) => {
         const Component = sectionComponentMap[section.type];
 
-        console.log("Section:", section);
+        // console.log("Section:", section);
 
         // If a component is found, render it. Otherwise, render nothing.
         const sectionElement = Component ? (
