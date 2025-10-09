@@ -12,29 +12,18 @@ const ReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });
 
-interface VideoData {
+interface ClientVideo {
   url: string;
+  order: number;
 }
 
 interface ProjectClientsVideoSectionProps {
   projectName: string;
+  clientVideos: {
+    title: string;
+    videos: ClientVideo[];
+  };
 }
-
-// Project-specific YouTube Shorts URLs
-const projectVideos: VideoData[] = [
-  {
-    url: "https://www.youtube.com/shorts/s6_ZgUPRW1Y",
-  },
-  {
-    url: "https://www.youtube.com/shorts/BKNuvvRgGWg",
-  },
-  {
-    url: "https://www.youtube.com/shorts/s6_ZgUPRW1Y",
-  },
-  {
-    url: " https://youtube.com/shorts/aqiD0nDdMDU?si=vhZV1VjSGNbL9BmD",
-  },
-];
 
 const headingVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -47,11 +36,23 @@ const headingVariants: Variants = {
 
 const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
   projectName,
+  clientVideos,
 }) => {
   const [isInView, setIsInView] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const playerRefs = useRef<{ [key: number]: any }>({});
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Ensure clientVideos has proper structure
+  const safeClientVideos = clientVideos || {
+    title: "in Action",
+    videos: [],
+  };
+
+  // Sort videos by order
+  const sortedVideos = safeClientVideos.videos.sort(
+    (a, b) => a.order - b.order
+  );
 
   // Embla Carousel setup
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -141,6 +142,11 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  // If no videos, don't render the component
+  if (sortedVideos.length === 0) {
+    return null;
+  }
+
   return (
     <section
       ref={sectionRef}
@@ -156,14 +162,16 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
         >
           <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] text-white mb-4 lg:mb-6">
             {projectName}{" "}
-            <span className="text-[#CDB04E] font-bold">in Action</span>
+            <span className="text-[#CDB04E] font-bold">
+              {safeClientVideos.title}
+            </span>
           </h2>
         </motion.div>
 
         <div className="relative">
           <div className="embla" ref={emblaRef}>
             <div className="embla__container flex">
-              {projectVideos.map((video, idx) => {
+              {sortedVideos.map((video, idx) => {
                 const isActive = isInView && idx === selectedIndex;
 
                 return (
@@ -231,7 +239,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
         </div>
 
         <div className="pt-8 flex justify-center gap-2 mt-8">
-          {projectVideos.map((_, idx) => (
+          {sortedVideos.map((_, idx) => (
             <button
               key={idx}
               onClick={() => {

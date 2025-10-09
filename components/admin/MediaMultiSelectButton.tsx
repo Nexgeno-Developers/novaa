@@ -487,7 +487,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
       </Dialog>
 
       {/* Selected images preview */}
-      {selectedImages.length > 0 && (
+      {/* {selectedImages.length > 0 && (
         <div className="mt-3 p-3 bg-gray-50 rounded-lg">
           <p className="text-sm font-medium mb-2">
             Selected Images ({selectedImages.length})
@@ -521,7 +521,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
             ))}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

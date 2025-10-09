@@ -1,17 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-interface ProjectHighlight {
-  image: string;
+interface DiscoverTranquilityTab {
+  id: string;
+  label: string;
+  items: DiscoverTranquilityItem[];
+}
+
+interface DiscoverTranquilityItem {
+  type: "image" | "video";
+  image?: string;
+  youtubeUrl?: string;
   title: string;
+  order: number;
 }
 
 interface KeyHighlight {
   text: string;
 }
 
-interface Amenity {
-  image: string;
-  title: string;
+interface ClientVideo {
+  url: string;
+  order: number;
 }
 
 interface MasterPlanTab {
@@ -80,20 +89,20 @@ interface ProjectDetail {
     getBrochureButton: string;
     brochurePdf: string;
   };
-  projectHighlights: {
+  discoverTranquility: {
+    sectionTitle: string;
     backgroundImage: string;
     description: string;
-    highlights: ProjectHighlight[];
+    tabs: DiscoverTranquilityTab[];
   };
   keyHighlights: {
     backgroundImage: string;
     description: string;
     highlights: KeyHighlight[];
   };
-  modernAmenities: {
+  clientVideos: {
     title: string;
-    description: string;
-    amenities: Amenity[];
+    videos: ClientVideo[];
   };
   masterPlan: {
     title: string;

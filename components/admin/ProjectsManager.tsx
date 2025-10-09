@@ -173,7 +173,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
             onClick={handleRefresh}
             variant="outline"
             size="sm"
-            className="bg-white/60 border-slate-200/60 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer"
+            className="bg-primary/90 text-white border-slate-200/60 hover:bg-primary/80 hover:shadow-sm transition-all duration-200 cursor-pointer"
             disabled={loading || categoriesLoading}
           >
             <RefreshCw
@@ -186,7 +186,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
           <Button
             onClick={handleCreateNew}
             size="sm"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 flex items-center space-x-2"
+            className="bg-gradient-to-r cursor-pointer from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all duration-300 flex items-center space-x-2"
           >
             <Plus className="h-4 w-4" />
             <span className="font-medium">Add Project</span>

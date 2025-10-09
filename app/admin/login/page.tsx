@@ -220,14 +220,17 @@
 //   );
 // }
 
-import ClientWrapper from '@/components/admin/ClientWrapper';
-import AdminLogin from '@/components/admin/AdminLogin';
+import ClientWrapper from "@/components/admin/ClientWrapper";
+import AdminLogin from "@/components/admin/AdminLogin";
+import AdminProgressBar from "@/components/admin/AdminProgressBar";
+import "@/styles/nprogress.css";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function AdminLoginPage() {
   return (
     <ClientWrapper>
+      <AdminProgressBar />
       <AdminLogin />
     </ClientWrapper>
   );

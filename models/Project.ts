@@ -52,14 +52,28 @@ const projectSchema = new mongoose.Schema(
         brochurePdf: { type: String, default: "" },
       },
 
-      // Project Highlights Section
-      projectHighlights: {
+      // Discover Tranquility Section
+      discoverTranquility: {
+        sectionTitle: { type: String, default: "Discover Tranquility at" },
         backgroundImage: { type: String, default: "" },
         description: { type: String, default: "" },
-        highlights: [
+        tabs: [
           {
-            image: { type: String, required: true },
-            title: { type: String, required: true },
+            id: { type: String, required: true },
+            label: { type: String, required: true },
+            items: [
+              {
+                type: {
+                  type: String,
+                  enum: ["image", "video"],
+                  required: true,
+                },
+                image: { type: String, default: "" },
+                youtubeUrl: { type: String, default: "" },
+                title: { type: String, required: true },
+                order: { type: Number, default: 0 },
+              },
+            ],
           },
         ],
       },
@@ -75,17 +89,13 @@ const projectSchema = new mongoose.Schema(
         ],
       },
 
-      // Modern Amenities Section
-      modernAmenities: {
-        title: {
-          type: String,
-          default: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
-        },
-        description: { type: String, default: "" },
-        amenities: [
+      // Client Videos Section
+      clientVideos: {
+        title: { type: String, default: "in Action" },
+        videos: [
           {
-            image: { type: String, required: true },
-            title: { type: String, required: true },
+            url: { type: String, required: true },
+            order: { type: Number, default: 0 },
           },
         ],
       },
@@ -167,12 +177,12 @@ const projectSchema = new mongoose.Schema(
         categories: [
           {
             title: { type: String, required: true },
-            description: { type: String, required: true },
-            icon: { type: String, required: true },
+            description: { type: String, default: "" },
+            icon: { type: String, default: "" },
             locations: [
               {
                 name: { type: String, required: true },
-                image: { type: String, required: true },
+                image: { type: String, default: "" },
                 coords: {
                   top: { type: String, required: true },
                   left: { type: String, required: true },

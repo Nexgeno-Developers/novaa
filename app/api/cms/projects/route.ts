@@ -71,20 +71,20 @@ export async function POST(request: Request) {
         getBrochureButton: "Get Brochure",
         brochurePdf: "",
       },
-      projectHighlights: {
+      discoverTranquility: {
+        sectionTitle: "Discover Tranquility at",
         backgroundImage: "",
         description: "",
-        highlights: [],
+        tabs: [],
       },
       keyHighlights: {
         backgroundImage: "",
         description: "",
         highlights: [],
       },
-      modernAmenities: {
-        title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
-        description: "",
-        amenities: [],
+      clientVideos: {
+        title: "in Action",
+        videos: [],
       },
       masterPlan: {
         title: "",

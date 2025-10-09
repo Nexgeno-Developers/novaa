@@ -68,20 +68,20 @@ async function getProjectBySlug(slug: string) {
           getBrochureButton: "Get Brochure",
           brochurePdf: "",
         },
-        projectHighlights: {
+        discoverTranquility: {
+          sectionTitle: "Discover Tranquility at",
           backgroundImage: "",
           description: "",
-          highlights: [],
+          tabs: [],
         },
         keyHighlights: {
           backgroundImage: "",
           description: "",
           highlights: [],
         },
-        modernAmenities: {
-          title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
-          description: "",
-          amenities: [],
+        clientVideos: {
+          title: "in Action",
+          videos: [],
         },
         masterPlan: {
           title: "",
@@ -247,7 +247,10 @@ export default async function ProjectDetailPage({
         <PriceEnquiryCTA />
         <ProjectHighlights project={project} />
         <Highlights project={project} />
-        <ProjectClientsVideoSection projectName={project.name} />
+        <ProjectClientsVideoSection
+          projectName={project.name}
+          clientVideos={project.projectDetail.clientVideos}
+        />
         {/* <ModernAmenities project={project} /> */}
         <MasterPlanSection project={project} />
         <InvestmentPlans project={project} />

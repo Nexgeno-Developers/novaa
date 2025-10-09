@@ -24,8 +24,10 @@ import { Badge } from "@/components/ui/badge";
 import AuthGuard from "@/components/auth/AuthGuard";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminProgressBar from "@/components/admin/AdminProgressBar";
 import { useAuth } from "@/hooks/useAuth";
 import "@/styles/admin-responsive.css";
+import "@/styles/nprogress.css";
 
 // Force dynamic rendering for all admin pages - this needs to be at the top
 export const dynamic = "force-dynamic";
@@ -108,6 +110,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <AuthGuard>
+      <AdminProgressBar />
       <div className="min-h-screen admin-theme bg-gradient-to-br from-slate-50 via-white to-slate-100">
         {/* Desktop Sidebar - Fixed positioning for better responsive behavior */}
         <div

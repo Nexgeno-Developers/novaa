@@ -16,6 +16,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Loader2, X, ArrowLeft } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux";
@@ -29,18 +38,27 @@ import { useAppDispatch } from "@/redux/hooks";
 import { fetchMedia } from "@/redux/slices/mediaSlice";
 
 // Interfaces
-interface ProjectHighlight {
-  image: string;
+interface DiscoverTranquilityTab {
+  id: string;
+  label: string;
+  items: DiscoverTranquilityItem[];
+}
+
+interface DiscoverTranquilityItem {
+  type: "image" | "video";
+  image?: string;
+  youtubeUrl?: string;
   title: string;
+  order: number;
 }
 
 interface KeyHighlight {
   text: string;
 }
 
-interface Amenity {
-  image: string;
-  title: string;
+interface ClientVideo {
+  url: string;
+  order: number;
 }
 
 interface MasterPlanTab {
@@ -123,20 +141,20 @@ export default function CreateProjectPage() {
       getBrochureButton: "Get Brochure",
       brochurePdf: "",
     },
-    projectHighlights: {
+    discoverTranquility: {
+      sectionTitle: "Discover Tranquility at",
       backgroundImage: "",
       description: "",
-      highlights: [] as ProjectHighlight[],
+      tabs: [] as DiscoverTranquilityTab[],
     },
     keyHighlights: {
       backgroundImage: "",
       description: "",
       highlights: [] as KeyHighlight[],
     },
-    modernAmenities: {
-      title: "MODERN AMENITIES FOR A BALANCED LIFESTYLE",
-      description: "",
-      amenities: [] as Amenity[],
+    clientVideos: {
+      title: "in Action",
+      videos: [] as ClientVideo[],
     },
     masterPlan: {
       title: "",
@@ -178,12 +196,18 @@ export default function CreateProjectPage() {
   const [slugExists, setSlugExists] = useState(false);
 
   // Temporary states for adding new items
-  const [newProjectHighlight, setNewProjectHighlight] = useState({
+  const [newDiscoverTranquilityTab, setNewDiscoverTranquilityTab] = useState({
+    label: "",
+  });
+  const [newDiscoverTranquilityItem, setNewDiscoverTranquilityItem] = useState({
+    type: "image" as "image" | "video",
     image: "",
+    youtubeUrl: "",
     title: "",
+    tabId: "",
   });
   const [newKeyHighlight, setNewKeyHighlight] = useState({ text: "" });
-  const [newAmenity, setNewAmenity] = useState({ image: "", title: "" });
+  const [newClientVideo, setNewClientVideo] = useState({ url: "" });
   const [newMasterPlanTab, setNewMasterPlanTab] = useState({
     title: "",
     subtitle: "",
@@ -212,6 +236,236 @@ export default function CreateProjectPage() {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<
     number | null
   >(null);
+
+  // Edit dialog states
+  const [
+    editDiscoverTranquilityTabDialog,
+    setEditDiscoverTranquilityTabDialog,
+  ] = useState<{
+    isOpen: boolean;
+    index: number;
+    label: string;
+  }>({
+    isOpen: false,
+    index: -1,
+    label: "",
+  });
+
+  const [
+    editDiscoverTranquilityItemDialog,
+    setEditDiscoverTranquilityItemDialog,
+  ] = useState<{
+    isOpen: boolean;
+    tabIndex: number;
+    itemIndex: number;
+    title: string;
+  }>({
+    isOpen: false,
+    tabIndex: -1,
+    itemIndex: -1,
+    title: "",
+  });
+
+  const [editClientVideoDialog, setEditClientVideoDialog] = useState<{
+    isOpen: boolean;
+    index: number;
+    url: string;
+  }>({
+    isOpen: false,
+    index: -1,
+    url: "",
+  });
+
+  const [editGatewayCategoryDialog, setEditGatewayCategoryDialog] = useState<{
+    isOpen: boolean;
+    index: number;
+    title: string;
+    description: string;
+  }>({
+    isOpen: false,
+    index: -1,
+    title: "",
+    description: "",
+  });
+
+  const [editKeyHighlightDialog, setEditKeyHighlightDialog] = useState<{
+    isOpen: boolean;
+    index: number;
+    text: string;
+  }>({
+    isOpen: false,
+    index: -1,
+    text: "",
+  });
+
+  const [editMasterPlanTabDialog, setEditMasterPlanTabDialog] = useState<{
+    isOpen: boolean;
+    index: number;
+    title: string;
+    subtitle: string;
+    subtitle2: string;
+  }>({
+    isOpen: false,
+    index: -1,
+    title: "",
+    subtitle: "",
+    subtitle2: "",
+  });
+
+  const [isAddingItem, setIsAddingItem] = useState(false);
+
+  // Helper functions for opening edit dialogs
+  const openEditDiscoverTranquilityTabDialog = (index: number) => {
+    const tab = projectDetailData.discoverTranquility.tabs[index];
+    setEditDiscoverTranquilityTabDialog({
+      isOpen: true,
+      index,
+      label: tab.label,
+    });
+  };
+
+  const openEditDiscoverTranquilityItemDialog = (
+    tabIndex: number,
+    itemIndex: number
+  ) => {
+    const item =
+      projectDetailData.discoverTranquility.tabs[tabIndex].items[itemIndex];
+    setEditDiscoverTranquilityItemDialog({
+      isOpen: true,
+      tabIndex,
+      itemIndex,
+      title: item.title,
+    });
+  };
+
+  const openEditClientVideoDialog = (index: number) => {
+    const video = projectDetailData.clientVideos.videos[index];
+    setEditClientVideoDialog({
+      isOpen: true,
+      index,
+      url: video.url,
+    });
+  };
+
+  const openEditGatewayCategoryDialog = (index: number) => {
+    const category = projectDetailData.gateway.categories[index];
+    setEditGatewayCategoryDialog({
+      isOpen: true,
+      index,
+      title: category.title,
+      description: category.description,
+    });
+  };
+
+  const openEditKeyHighlightDialog = (index: number) => {
+    const highlight = projectDetailData.keyHighlights.highlights[index];
+    setEditKeyHighlightDialog({
+      isOpen: true,
+      index,
+      text: highlight.text,
+    });
+  };
+
+  const openEditMasterPlanTabDialog = (index: number) => {
+    const tab = projectDetailData.masterPlan.tabs[index];
+    setEditMasterPlanTabDialog({
+      isOpen: true,
+      index,
+      title: tab.title,
+      subtitle: tab.subtitle || "",
+      subtitle2: tab.subtitle2 || "",
+    });
+  };
+
+  // Helper functions for saving edits
+  const saveDiscoverTranquilityTabEdit = () => {
+    if (editDiscoverTranquilityTabDialog.label.trim()) {
+      updateDiscoverTranquilityTab(editDiscoverTranquilityTabDialog.index, {
+        label: editDiscoverTranquilityTabDialog.label.trim(),
+      });
+      setEditDiscoverTranquilityTabDialog({
+        isOpen: false,
+        index: -1,
+        label: "",
+      });
+    }
+  };
+
+  const saveDiscoverTranquilityItemEdit = () => {
+    if (editDiscoverTranquilityItemDialog.title.trim()) {
+      updateDiscoverTranquilityItem(
+        editDiscoverTranquilityItemDialog.tabIndex,
+        editDiscoverTranquilityItemDialog.itemIndex,
+        { title: editDiscoverTranquilityItemDialog.title.trim() }
+      );
+      setEditDiscoverTranquilityItemDialog({
+        isOpen: false,
+        tabIndex: -1,
+        itemIndex: -1,
+        title: "",
+      });
+    }
+  };
+
+  const saveClientVideoEdit = () => {
+    if (editClientVideoDialog.url.trim()) {
+      updateClientVideo(
+        editClientVideoDialog.index,
+        editClientVideoDialog.url.trim()
+      );
+      setEditClientVideoDialog({
+        isOpen: false,
+        index: -1,
+        url: "",
+      });
+    }
+  };
+
+  const saveGatewayCategoryEdit = () => {
+    if (editGatewayCategoryDialog.title.trim()) {
+      updateGatewayCategory(editGatewayCategoryDialog.index, {
+        title: editGatewayCategoryDialog.title.trim(),
+        description: editGatewayCategoryDialog.description.trim(),
+      });
+      setEditGatewayCategoryDialog({
+        isOpen: false,
+        index: -1,
+        title: "",
+        description: "",
+      });
+    }
+  };
+
+  const saveKeyHighlightEdit = () => {
+    if (editKeyHighlightDialog.text.trim()) {
+      updateKeyHighlight(
+        editKeyHighlightDialog.index,
+        editKeyHighlightDialog.text.trim()
+      );
+      setEditKeyHighlightDialog({
+        isOpen: false,
+        index: -1,
+        text: "",
+      });
+    }
+  };
+
+  const saveMasterPlanTabEdit = () => {
+    if (editMasterPlanTabDialog.title.trim()) {
+      updateMasterPlanTab(editMasterPlanTabDialog.index, {
+        title: editMasterPlanTabDialog.title.trim(),
+        subtitle: editMasterPlanTabDialog.subtitle.trim() || undefined,
+        subtitle2: editMasterPlanTabDialog.subtitle2.trim() || undefined,
+      });
+      setEditMasterPlanTabDialog({
+        isOpen: false,
+        index: -1,
+        title: "",
+        subtitle: "",
+        subtitle2: "",
+      });
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -304,33 +558,214 @@ export default function CreateProjectPage() {
     }));
   };
 
-  // Helper functions for adding/removing items
-  const addProjectHighlight = () => {
-    if (newProjectHighlight.image && newProjectHighlight.title) {
+  // Helper functions for Discover Tranquility management
+  const addDiscoverTranquilityTab = () => {
+    if (
+      newDiscoverTranquilityTab.label &&
+      projectDetailData.discoverTranquility.tabs.length < 4
+    ) {
+      const newTab: DiscoverTranquilityTab = {
+        id: `tab-${Date.now()}`,
+        label: newDiscoverTranquilityTab.label,
+        items: [],
+      };
       setProjectDetailData((prev) => ({
         ...prev,
-        projectHighlights: {
-          ...prev.projectHighlights,
-          highlights: [
-            ...prev.projectHighlights.highlights,
-            newProjectHighlight,
-          ],
+        discoverTranquility: {
+          ...prev.discoverTranquility,
+          tabs: [...prev.discoverTranquility.tabs, newTab],
         },
       }));
-      setNewProjectHighlight({ image: "", title: "" });
+      setNewDiscoverTranquilityTab({ label: "" });
+    } else if (projectDetailData.discoverTranquility.tabs.length >= 4) {
+      toast.error("Maximum 4 tabs allowed");
     } else {
-      toast.error("Please fill in all fields for the project highlight");
+      toast.error("Please enter tab label");
     }
   };
 
-  const removeProjectHighlight = (index: number) => {
+  const updateDiscoverTranquilityTab = (
+    index: number,
+    data: Partial<DiscoverTranquilityTab>
+  ) => {
+    setProjectDetailData((prev) => {
+      const updatedTabs = [...prev.discoverTranquility.tabs];
+      updatedTabs[index] = { ...updatedTabs[index], ...data };
+      return {
+        ...prev,
+        discoverTranquility: {
+          ...prev.discoverTranquility,
+          tabs: updatedTabs,
+        },
+      };
+    });
+  };
+
+  const removeDiscoverTranquilityTab = (index: number) => {
     setProjectDetailData((prev) => ({
       ...prev,
-      projectHighlights: {
-        ...prev.projectHighlights,
-        highlights: prev.projectHighlights.highlights.filter(
-          (_, i) => i !== index
-        ),
+      discoverTranquility: {
+        ...prev.discoverTranquility,
+        tabs: prev.discoverTranquility.tabs.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const addDiscoverTranquilityItem = (tabIndex: number) => {
+    if (isAddingItem) return; // Prevent double-clicks
+
+    if (
+      newDiscoverTranquilityItem.title &&
+      (newDiscoverTranquilityItem.type === "image"
+        ? newDiscoverTranquilityItem.image
+        : newDiscoverTranquilityItem.youtubeUrl)
+    ) {
+      setIsAddingItem(true);
+
+      const newItem: DiscoverTranquilityItem = {
+        type: newDiscoverTranquilityItem.type,
+        image:
+          newDiscoverTranquilityItem.type === "image"
+            ? newDiscoverTranquilityItem.image
+            : undefined,
+        youtubeUrl:
+          newDiscoverTranquilityItem.type === "video"
+            ? newDiscoverTranquilityItem.youtubeUrl
+            : undefined,
+        title: newDiscoverTranquilityItem.title,
+        order:
+          projectDetailData.discoverTranquility.tabs[tabIndex].items.length,
+      };
+
+      setProjectDetailData((prev) => {
+        const updatedTabs = [...prev.discoverTranquility.tabs];
+        // Create a copy of the items array before adding new item
+        const updatedItems = [...updatedTabs[tabIndex].items, newItem];
+        updatedTabs[tabIndex] = {
+          ...updatedTabs[tabIndex],
+          items: updatedItems,
+        };
+        return {
+          ...prev,
+          discoverTranquility: {
+            ...prev.discoverTranquility,
+            tabs: updatedTabs,
+          },
+        };
+      });
+
+      setNewDiscoverTranquilityItem({
+        type: "image",
+        image: "",
+        youtubeUrl: "",
+        title: "",
+        tabId: "",
+      });
+
+      // Reset loading state after a short delay to ensure state update is complete
+      setTimeout(() => {
+        setIsAddingItem(false);
+      }, 100);
+    } else {
+      toast.error("Please fill in all required fields");
+    }
+  };
+
+  const updateDiscoverTranquilityItem = (
+    tabIndex: number,
+    itemIndex: number,
+    data: Partial<DiscoverTranquilityItem>
+  ) => {
+    setProjectDetailData((prev) => {
+      const updatedTabs = [...prev.discoverTranquility.tabs];
+      // Create a copy of the items array before updating
+      const updatedItems = [...updatedTabs[tabIndex].items];
+      updatedItems[itemIndex] = {
+        ...updatedItems[itemIndex],
+        ...data,
+      };
+      updatedTabs[tabIndex] = {
+        ...updatedTabs[tabIndex],
+        items: updatedItems,
+      };
+      return {
+        ...prev,
+        discoverTranquility: {
+          ...prev.discoverTranquility,
+          tabs: updatedTabs,
+        },
+      };
+    });
+  };
+
+  const removeDiscoverTranquilityItem = (
+    tabIndex: number,
+    itemIndex: number
+  ) => {
+    setProjectDetailData((prev) => {
+      const updatedTabs = [...prev.discoverTranquility.tabs];
+      // Create a copy of the items array before mutating
+      const updatedItems = [...updatedTabs[tabIndex].items];
+      updatedItems.splice(itemIndex, 1);
+      // Reorder remaining items
+      const reorderedItems = updatedItems.map((item, index) => ({
+        ...item,
+        order: index,
+      }));
+      updatedTabs[tabIndex] = {
+        ...updatedTabs[tabIndex],
+        items: reorderedItems,
+      };
+      return {
+        ...prev,
+        discoverTranquility: {
+          ...prev.discoverTranquility,
+          tabs: updatedTabs,
+        },
+      };
+    });
+  };
+
+  // Helper functions for Client Videos management
+  const addClientVideo = () => {
+    if (newClientVideo.url) {
+      const newVideo: ClientVideo = {
+        url: newClientVideo.url,
+        order: projectDetailData.clientVideos.videos.length,
+      };
+      setProjectDetailData((prev) => ({
+        ...prev,
+        clientVideos: {
+          ...prev.clientVideos,
+          videos: [...prev.clientVideos.videos, newVideo],
+        },
+      }));
+      setNewClientVideo({ url: "" });
+    } else {
+      toast.error("Please enter video URL");
+    }
+  };
+
+  const updateClientVideo = (index: number, url: string) => {
+    setProjectDetailData((prev) => {
+      const updatedVideos = [...prev.clientVideos.videos];
+      updatedVideos[index] = { ...updatedVideos[index], url };
+      return {
+        ...prev,
+        clientVideos: {
+          ...prev.clientVideos,
+          videos: updatedVideos,
+        },
+      };
+    });
+  };
+
+  const removeClientVideo = (index: number) => {
+    setProjectDetailData((prev) => ({
+      ...prev,
+      clientVideos: {
+        ...prev.clientVideos,
+        videos: prev.clientVideos.videos.filter((_, i) => i !== index),
       },
     }));
   };
@@ -360,29 +795,18 @@ export default function CreateProjectPage() {
     }));
   };
 
-  const addAmenity = () => {
-    if (newAmenity.image && newAmenity.title) {
-      setProjectDetailData((prev) => ({
+  const updateKeyHighlight = (index: number, text: string) => {
+    setProjectDetailData((prev) => {
+      const updatedHighlights = [...prev.keyHighlights.highlights];
+      updatedHighlights[index] = { text };
+      return {
         ...prev,
-        modernAmenities: {
-          ...prev.modernAmenities,
-          amenities: [...prev.modernAmenities.amenities, newAmenity],
+        keyHighlights: {
+          ...prev.keyHighlights,
+          highlights: updatedHighlights,
         },
-      }));
-      setNewAmenity({ image: "", title: "" });
-    } else {
-      toast.error("Please fill in all fields for the amenity");
-    }
-  };
-
-  const removeAmenity = (index: number) => {
-    setProjectDetailData((prev) => ({
-      ...prev,
-      modernAmenities: {
-        ...prev.modernAmenities,
-        amenities: prev.modernAmenities.amenities.filter((_, i) => i !== index),
-      },
-    }));
+      };
+    });
   };
 
   const addMasterPlanTab = () => {
@@ -413,6 +837,20 @@ export default function CreateProjectPage() {
         tabs: prev.masterPlan.tabs.filter((_, i) => i !== index),
       },
     }));
+  };
+
+  const updateMasterPlanTab = (index: number, data: Partial<MasterPlanTab>) => {
+    setProjectDetailData((prev) => {
+      const updatedTabs = [...prev.masterPlan.tabs];
+      updatedTabs[index] = { ...updatedTabs[index], ...data };
+      return {
+        ...prev,
+        masterPlan: {
+          ...prev.masterPlan,
+          tabs: updatedTabs,
+        },
+      };
+    });
   };
 
   const addInvestmentPlan = () => {
@@ -482,11 +920,60 @@ export default function CreateProjectPage() {
     }));
   };
 
+  const updateGatewayCategory = (
+    index: number,
+    data: Partial<GatewayCategory>
+  ) => {
+    setProjectDetailData((prev) => {
+      const updatedCategories = [...prev.gateway.categories];
+      const oldCategory = updatedCategories[index];
+      const newCategory = { ...updatedCategories[index], ...data };
+      updatedCategories[index] = newCategory;
+
+      // Only update curve lines if the title actually changed and is not empty
+      const updatedCurveLines = prev.gateway.curveLines.map((curve) => {
+        if (
+          curve.categoryId === oldCategory.title &&
+          newCategory.title &&
+          newCategory.title.trim()
+        ) {
+          return {
+            ...curve,
+            categoryId: newCategory.title.trim(),
+          };
+        }
+        return curve;
+      });
+
+      // Filter out any curve lines with empty categoryId to prevent validation errors
+      const validCurveLines = updatedCurveLines.filter(
+        (curve) => curve.categoryId && curve.categoryId.trim() !== ""
+      );
+
+      return {
+        ...prev,
+        gateway: {
+          ...prev.gateway,
+          categories: updatedCategories,
+          curveLines: validCurveLines,
+        },
+      };
+    });
+  };
+
   const addLocationToCategory = (categoryIndex: number) => {
     if (newGatewayLocation.name && newGatewayLocation.image) {
       setProjectDetailData((prev) => {
         const updatedCategories = [...prev.gateway.categories];
-        updatedCategories[categoryIndex].locations.push(newGatewayLocation);
+        // Create a copy of the locations array before adding new location
+        const updatedLocations = [
+          ...updatedCategories[categoryIndex].locations,
+          newGatewayLocation,
+        ];
+        updatedCategories[categoryIndex] = {
+          ...updatedCategories[categoryIndex],
+          locations: updatedLocations,
+        };
         return {
           ...prev,
           gateway: {
@@ -659,7 +1146,7 @@ export default function CreateProjectPage() {
         projectDetail: finalProjectDetailData,
       };
 
-      await dispatch(createProject(projectData)).unwrap();
+      await dispatch(createProject(projectData as any)).unwrap();
       toast.success("Project created successfully");
       router.push("/admin/projects");
     } catch (error) {
@@ -699,7 +1186,7 @@ export default function CreateProjectPage() {
             <CardTitle className="text-primary">Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label
                   htmlFor="projectName"
@@ -798,13 +1285,13 @@ export default function CreateProjectPage() {
                     handleInputChange("category", value)
                   }
                 >
-                  <SelectTrigger className="text-gray-900 cursor-pointer">
+                  <SelectTrigger className="text-gray-900 cursor-pointer w-full">
                     <SelectValue
                       placeholder="Select category"
                       className="text-gray-900 placeholder:text-gray-900"
                     />
                   </SelectTrigger>
-                  <SelectContent className="admin-theme">
+                  <SelectContent className="admin-theme font-poppins cursor-pointer !z-[60] !isolate">
                     {categories
                       .filter((cat) => cat.isActive)
                       .map((category) => (
@@ -835,17 +1322,17 @@ export default function CreateProjectPage() {
                   min="0"
                 />
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label className="text-primary">Project Images *</Label>
-              <MediaMultiSelectButton
-                onImagesSelect={handleImagesSelect}
-                selectedImages={formData.images}
-                multiple={true}
-                label="Select Project Images"
-                mediaType="image"
-              />
+              <div className="space-y-2">
+                <Label className="text-primary">Project Images *</Label>
+                <MediaMultiSelectButton
+                  onImagesSelect={handleImagesSelect}
+                  selectedImages={formData.images}
+                  multiple={true}
+                  label="Select Project Images"
+                  mediaType="image"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -862,7 +1349,7 @@ export default function CreateProjectPage() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <Switch
                 id="projectActive"
                 checked={formData.isActive}
@@ -874,7 +1361,7 @@ export default function CreateProjectPage() {
               <Label htmlFor="projectActive" className="text-primary">
                 Active
               </Label>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
@@ -968,7 +1455,7 @@ export default function CreateProjectPage() {
                   <SelectTrigger className="cursor-pointer">
                     <SelectValue placeholder="Select media type" />
                   </SelectTrigger>
-                  <SelectContent className="admin-theme">
+                  <SelectContent className="admin-theme !z-[60] !isolate">
                     <SelectItem value="image">Background Image</SelectItem>
                     <SelectItem value="video">Background Video</SelectItem>
                     <SelectItem value="vimeo">Vimeo Video URL</SelectItem>
@@ -1039,7 +1526,7 @@ export default function CreateProjectPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Basic Gateway Settings */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="gatewayTitle" className="text-primary">
                   Main Title
@@ -1124,22 +1611,6 @@ export default function CreateProjectPage() {
                   value={projectDetailData.gateway.description}
                   onEditorChange={(content) =>
                     handleProjectDetailChange("gateway", "description", content)
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary">Section Description</Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.gateway.sectionDescription}
-                  onEditorChange={(content) =>
-                    handleProjectDetailChange(
-                      "gateway",
-                      "sectionDescription",
-                      content
-                    )
                   }
                 />
               </div>
@@ -1345,345 +1816,544 @@ export default function CreateProjectPage() {
 
             {/* Existing Categories */}
             {projectDetailData.gateway.categories.length > 0 && (
-              <div className="space-y-6">
-                <h4 className="font-medium">
+              <div>
+                <h4 className="font-medium mb-4">
                   Gateway Categories (
                   {projectDetailData.gateway.categories.length})
                 </h4>
-                {projectDetailData.gateway.categories.map(
-                  (category, categoryIndex) => (
-                    <div
-                      key={categoryIndex}
-                      className="border rounded-lg p-4 space-y-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
-                            <img
-                              src={category.icon}
-                              alt={category.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div>
-                            <h4 className="font-medium">{category.title}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {category.description}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeGatewayCategory(categoryIndex)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-
-                      {/* Add Location to Category */}
-                      <div className="border-t pt-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h5 className="font-medium">
-                            Locations ({category.locations.length})
-                          </h5>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              setSelectedCategoryIndex(
-                                selectedCategoryIndex === categoryIndex
-                                  ? null
-                                  : categoryIndex
-                              )
-                            }
-                            className="text-primary cursor-pointer"
-                          >
-                            <Plus className="mr-2 h-3 w-3" />
-                            Add Location
-                          </Button>
-                        </div>
-
-                        {/* Add Location Form */}
-                        {selectedCategoryIndex === categoryIndex && (
-                          <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label className="text-primary">
-                                  Location Name
-                                </Label>
-                                <Input
-                                  value={newGatewayLocation.name}
-                                  onChange={(e) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      name: e.target.value,
-                                    }))
-                                  }
-                                  placeholder="Patong Beach"
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <MediaSelectButton
-                                  value={newGatewayLocation.image}
-                                  onSelect={(url) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      image: url,
-                                    }))
-                                  }
-                                  mediaType="image"
-                                  label="Location Image"
-                                  placeholder="Select location image"
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-primary">
-                                  Map Position (Top %)
-                                </Label>
-                                <Input
-                                  value={newGatewayLocation.coords.top}
-                                  onChange={(e) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      coords: {
-                                        ...prev.coords,
-                                        top: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  placeholder="33%"
-                                />
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-primary">
-                                  Map Position (Left %)
-                                </Label>
-                                <Input
-                                  value={newGatewayLocation.coords.left}
-                                  onChange={(e) =>
-                                    setNewGatewayLocation((prev) => ({
-                                      ...prev,
-                                      coords: {
-                                        ...prev.coords,
-                                        left: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  placeholder="15%"
-                                />
-                              </div>
+                <div className="space-y-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {projectDetailData.gateway.categories.map(
+                    (category, categoryIndex) => (
+                      <div
+                        key={categoryIndex}
+                        className="border rounded-lg p-4 space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                              <img
+                                src={category.icon}
+                                alt={category.title}
+                                className="w-full h-full object-cover"
+                              />
                             </div>
-
-                            <div className="flex gap-2">
-                              <Button
-                                type="button"
-                                onClick={() =>
-                                  addLocationToCategory(categoryIndex)
-                                }
-                                className="text-gray-900 cursor-pointer"
-                              >
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add Location
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setSelectedCategoryIndex(null)}
-                              >
-                                Cancel
-                              </Button>
+                            <div>
+                              <h4 className="font-medium">{category.title}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {category.description}
+                              </p>
                             </div>
                           </div>
-                        )}
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                openEditGatewayCategoryDialog(categoryIndex)
+                              }
+                              className="text-primary cursor-pointer"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                removeGatewayCategory(categoryIndex)
+                              }
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
 
-                        {/* Existing Locations */}
-                        {category.locations.length > 0 && (
-                          <div className="space-y-2">
-                            {category.locations.map(
-                              (location, locationIndex) => (
-                                <div
-                                  key={locationIndex}
-                                  className="flex items-center gap-4 p-2 border rounded"
-                                >
-                                  <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
-                                    <img
-                                      src={location.image}
-                                      alt={location.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                  <div className="flex-1">
-                                    <p className="font-medium">
-                                      {location.name}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      Position: {location.coords.top} /{" "}
-                                      {location.coords.left}
-                                    </p>
-                                  </div>
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() =>
-                                      removeLocationFromCategory(
-                                        categoryIndex,
-                                        locationIndex
-                                      )
+                        {/* Add Location to Category */}
+                        <div className="border-t pt-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <h5 className="font-medium">
+                              Locations ({category.locations.length})
+                            </h5>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                setSelectedCategoryIndex(
+                                  selectedCategoryIndex === categoryIndex
+                                    ? null
+                                    : categoryIndex
+                                )
+                              }
+                              className="text-primary cursor-pointer"
+                            >
+                              <Plus className="mr-2 h-3 w-3" />
+                              Add Location
+                            </Button>
+                          </div>
+
+                          {/* Add Location Form */}
+                          {selectedCategoryIndex === categoryIndex && (
+                            <div className="space-y-4 mb-4 p-4 border rounded bg-gray-50">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <Label className="text-primary">
+                                    Location Name
+                                  </Label>
+                                  <Input
+                                    value={newGatewayLocation.name}
+                                    onChange={(e) =>
+                                      setNewGatewayLocation((prev) => ({
+                                        ...prev,
+                                        name: e.target.value,
+                                      }))
                                     }
-                                    className="text-red-500 hover:text-red-700"
-                                  >
-                                    <X className="h-3 w-3" />
-                                  </Button>
+                                    placeholder="Patong Beach"
+                                  />
                                 </div>
-                              )
-                            )}
-                          </div>
-                        )}
+
+                                <div className="space-y-2">
+                                  <MediaSelectButton
+                                    value={newGatewayLocation.image}
+                                    onSelect={(url) =>
+                                      setNewGatewayLocation((prev) => ({
+                                        ...prev,
+                                        image: url,
+                                      }))
+                                    }
+                                    mediaType="image"
+                                    label="Location Image"
+                                    placeholder="Select location image"
+                                  />
+                                </div>
+
+                                <div className="space-y-2">
+                                  <Label className="text-primary">
+                                    Map Position (Top %)
+                                  </Label>
+                                  <Input
+                                    value={newGatewayLocation.coords.top}
+                                    onChange={(e) =>
+                                      setNewGatewayLocation((prev) => ({
+                                        ...prev,
+                                        coords: {
+                                          ...prev.coords,
+                                          top: e.target.value,
+                                        },
+                                      }))
+                                    }
+                                    placeholder="33%"
+                                  />
+                                </div>
+
+                                <div className="space-y-2">
+                                  <Label className="text-primary">
+                                    Map Position (Left %)
+                                  </Label>
+                                  <Input
+                                    value={newGatewayLocation.coords.left}
+                                    onChange={(e) =>
+                                      setNewGatewayLocation((prev) => ({
+                                        ...prev,
+                                        coords: {
+                                          ...prev.coords,
+                                          left: e.target.value,
+                                        },
+                                      }))
+                                    }
+                                    placeholder="15%"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  onClick={() =>
+                                    addLocationToCategory(categoryIndex)
+                                  }
+                                  className="text-gray-900 cursor-pointer"
+                                >
+                                  <Plus className="mr-2 h-4 w-4" />
+                                  Add Location
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  onClick={() => setSelectedCategoryIndex(null)}
+                                >
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Existing Locations */}
+                          {category.locations.length > 0 && (
+                            <div className="space-y-2">
+                              {category.locations.map(
+                                (location, locationIndex) => (
+                                  <div
+                                    key={locationIndex}
+                                    className="flex items-center gap-4 p-2 border rounded"
+                                  >
+                                    <div className="w-10 h-10 rounded overflow-hidden bg-gray-100">
+                                      <img
+                                        src={location.image}
+                                        alt={location.name}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                    <div className="flex-1">
+                                      <p className="font-medium">
+                                        {location.name}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        Position: {location.coords.top} /{" "}
+                                        {location.coords.left}
+                                      </p>
+                                    </div>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() =>
+                                        removeLocationFromCategory(
+                                          categoryIndex,
+                                          locationIndex
+                                        )
+                                      }
+                                      className="text-red-500 hover:text-red-700"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )
-                )}
+                    )
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Project Highlights */}
+        {/* Discover Tranquility */}
         <Card className="py-6">
           <CardHeader>
-            <CardTitle className="text-primary">Project Highlights</CardTitle>
+            <CardTitle className="text-primary">Discover Tranquility</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <MediaSelectButton
-                value={projectDetailData.projectHighlights.backgroundImage}
-                onSelect={(url) =>
-                  handleProjectDetailChange(
-                    "projectHighlights",
-                    "backgroundImage",
-                    url
-                  )
-                }
-                mediaType="image"
-                label="Project Highlights Background Image"
-                placeholder="Select background image"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-primary">
-                Project Highlights Description
-              </Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.projectHighlights.description}
-                  onEditorChange={(content) =>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="discoverTranquilityTitle"
+                  className="text-primary"
+                >
+                  Section Title
+                </Label>
+                <Input
+                  id="discoverTranquilityTitle"
+                  value={projectDetailData.discoverTranquility.sectionTitle}
+                  onChange={(e) =>
                     handleProjectDetailChange(
-                      "projectHighlights",
-                      "description",
-                      content
+                      "discoverTranquility",
+                      "sectionTitle",
+                      e.target.value
                     )
                   }
+                  className="text-gray-900"
+                  placeholder="Discover Tranquility at"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={projectDetailData.discoverTranquility.backgroundImage}
+                  onSelect={(url) =>
+                    handleProjectDetailChange(
+                      "discoverTranquility",
+                      "backgroundImage",
+                      url
+                    )
+                  }
+                  mediaType="image"
+                  label="Background Image"
+                  placeholder="Select background image"
                 />
               </div>
             </div>
 
-            {/* Add New Project Highlight */}
-            <Card className="border-dashed py-6">
-              <CardHeader>
-                <CardTitle className="text-sm">
-                  Add New Project Highlight
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <MediaSelectButton
-                      value={newProjectHighlight.image}
-                      onSelect={(url) =>
-                        setNewProjectHighlight((prev) => ({
-                          ...prev,
-                          image: url,
-                        }))
-                      }
-                      mediaType="image"
-                      label="Select Highlight Image"
-                      placeholder="Select highlight image"
-                    />
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-primary">Description</Label>
+                <div className="min-h-[150px]">
+                  <Editor
+                    value={projectDetailData.discoverTranquility.description}
+                    onEditorChange={(content) =>
+                      handleProjectDetailChange(
+                        "discoverTranquility",
+                        "description",
+                        content
+                      )
+                    }
+                  />
+                </div>
+              </div>
 
-                  <div className="space-y-2 pt-4">
-                    <Label htmlFor="highlightTitle" className="text-primary">
-                      Highlight Title
+              {/* Add New Tab */}
+              <Card className="border-dashed py-6">
+                <CardHeader>
+                  <CardTitle className="text-sm">Add New Tab</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="tabLabel" className="text-primary">
+                      Tab Label
                     </Label>
                     <Input
-                      id="highlightTitle"
-                      value={newProjectHighlight.title}
+                      id="tabLabel"
+                      value={newDiscoverTranquilityTab.label}
                       onChange={(e) =>
-                        setNewProjectHighlight((prev) => ({
-                          ...prev,
-                          title: e.target.value,
-                        }))
+                        setNewDiscoverTranquilityTab({ label: e.target.value })
                       }
-                      placeholder="Enter highlight title"
+                      placeholder="e.g., Exterior, Interior, Amenities"
                     />
                   </div>
-                </div>
 
-                <Button
-                  type="button"
-                  onClick={addProjectHighlight}
-                  className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Project Highlight
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button
+                    type="button"
+                    onClick={addDiscoverTranquilityTab}
+                    disabled={
+                      projectDetailData.discoverTranquility.tabs.length >= 4
+                    }
+                    className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer disabled:opacity-50"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Tab ({projectDetailData.discoverTranquility.tabs.length}
+                    /4)
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
 
-            {/* Existing Project Highlights */}
-            {projectDetailData.projectHighlights.highlights.length > 0 && (
-              <div className="space-y-4">
-                <h4 className="font-medium">
-                  Current Project Highlights (
-                  {projectDetailData.projectHighlights.highlights.length})
+            {/* Existing Tabs */}
+            {projectDetailData.discoverTranquility.tabs.length > 0 && (
+              <div>
+                <h4 className="font-medium mb-4">
+                  Tabs ({projectDetailData.discoverTranquility.tabs.length})
                 </h4>
-                {projectDetailData.projectHighlights.highlights.map(
-                  (highlight, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4 p-4 border rounded-lg"
-                    >
-                      <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                        <img
-                          src={highlight.image}
-                          alt={highlight.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">{highlight.title}</p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeProjectHighlight(index)}
-                        className="text-red-500 hover:text-red-700"
+                <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {projectDetailData.discoverTranquility.tabs.map(
+                    (tab, tabIndex) => (
+                      <div
+                        key={tab.id}
+                        className="border rounded-lg p-4 space-y-4"
                       >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )
-                )}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <h5 className="font-medium">{tab.label}</h5>
+                            <span className="text-sm text-gray-500">
+                              ({tab.items.length} items)
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                openEditDiscoverTranquilityTabDialog(tabIndex)
+                              }
+                              className="text-primary cursor-pointer"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                removeDiscoverTranquilityTab(tabIndex)
+                              }
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Add Item to Tab */}
+                        <div className="border-t pt-4">
+                          <div className="space-y-4">
+                            <h6 className="font-medium">
+                              Add Item to {tab.label}
+                            </h6>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-primary">Type</Label>
+                                <Select
+                                  value={newDiscoverTranquilityItem.type}
+                                  onValueChange={(value: "image" | "video") =>
+                                    setNewDiscoverTranquilityItem((prev) => ({
+                                      ...prev,
+                                      type: value,
+                                    }))
+                                  }
+                                >
+                                  <SelectTrigger className="cursor-pointer">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent className="admin-theme !z-[60] !isolate">
+                                    <SelectItem value="image">Image</SelectItem>
+                                    <SelectItem value="video">Video</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-primary">Title</Label>
+                                <Input
+                                  value={newDiscoverTranquilityItem.title}
+                                  onChange={(e) =>
+                                    setNewDiscoverTranquilityItem((prev) => ({
+                                      ...prev,
+                                      title: e.target.value,
+                                    }))
+                                  }
+                                  placeholder="Enter item title"
+                                />
+                              </div>
+                            </div>
+
+                            {newDiscoverTranquilityItem.type === "image" ? (
+                              <div className="space-y-2">
+                                <MediaSelectButton
+                                  value={newDiscoverTranquilityItem.image}
+                                  onSelect={(url) =>
+                                    setNewDiscoverTranquilityItem((prev) => ({
+                                      ...prev,
+                                      image: url,
+                                    }))
+                                  }
+                                  mediaType="image"
+                                  label="Select Image"
+                                  placeholder="Select image"
+                                />
+                              </div>
+                            ) : (
+                              <div className="space-y-2">
+                                <Label className="text-primary">
+                                  YouTube URL
+                                </Label>
+                                <Input
+                                  value={newDiscoverTranquilityItem.youtubeUrl}
+                                  onChange={(e) =>
+                                    setNewDiscoverTranquilityItem((prev) => ({
+                                      ...prev,
+                                      youtubeUrl: e.target.value,
+                                    }))
+                                  }
+                                  placeholder="https://youtube.com/shorts/..."
+                                />
+                              </div>
+                            )}
+
+                            <Button
+                              type="button"
+                              onClick={() =>
+                                addDiscoverTranquilityItem(tabIndex)
+                              }
+                              disabled={isAddingItem}
+                              className="bg-primary/90 hover:bg-primary/80 text-background cursor-pointer disabled:opacity-50"
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              {isAddingItem
+                                ? "Adding..."
+                                : `Add to ${tab.label}`}
+                            </Button>
+                          </div>
+
+                          {/* Existing Items */}
+                          {tab.items.length > 0 && (
+                            <div className="space-y-2 mt-4">
+                              <h6 className="font-medium">
+                                Items in {tab.label}
+                              </h6>
+                              {[...tab.items]
+                                .sort((a, b) => a.order - b.order)
+                                .map((item, itemIndex) => (
+                                  <div
+                                    key={itemIndex}
+                                    className="flex items-center gap-4 p-3 border rounded"
+                                  >
+                                    <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                                      {item.type === "image" ? (
+                                        <img
+                                          src={item.image}
+                                          alt={item.title}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white text-xs">
+                                          Video
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="flex-1">
+                                      <p className="font-medium">
+                                        {item.title}
+                                      </p>
+                                      <p className="text-xs text-gray-500">
+                                        {item.type} • Order: {item.order}
+                                      </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                          openEditDiscoverTranquilityItemDialog(
+                                            tabIndex,
+                                            itemIndex
+                                          )
+                                        }
+                                        className="text-primary cursor-pointer"
+                                      >
+                                        Edit
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() =>
+                                          removeDiscoverTranquilityItem(
+                                            tabIndex,
+                                            itemIndex
+                                          )
+                                        }
+                                        className="text-red-500 hover:text-red-700"
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
@@ -1760,159 +2430,155 @@ export default function CreateProjectPage() {
 
             {/* Existing Key Highlights */}
             {projectDetailData.keyHighlights.highlights.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-medium">
+              <div>
+                <h4 className="font-medium mb-4">
                   Current Key Highlights (
                   {projectDetailData.keyHighlights.highlights.length})
                 </h4>
-                {projectDetailData.keyHighlights.highlights.map(
-                  (highlight, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <span>{highlight.text}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeKeyHighlight(index)}
-                        className="text-red-500 hover:text-red-700"
+                <div className="space-y-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {projectDetailData.keyHighlights.highlights.map(
+                    (highlight, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 border rounded-lg"
                       >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )
-                )}
+                        <span>{highlight.text}</span>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditKeyHighlightDialog(index)}
+                            className="text-primary cursor-pointer"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeKeyHighlight(index)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Modern Amenities */}
+        {/* Client Videos */}
         <Card className="py-6">
           <CardHeader>
-            <CardTitle className="text-primary">Modern Amenities</CardTitle>
+            <CardTitle className="text-primary">Client Videos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="amenitiesTitle" className="text-primary">
+              <Label htmlFor="clientVideosTitle" className="text-primary">
                 Section Title
               </Label>
               <Input
-                id="amenitiesTitle"
-                value={projectDetailData.modernAmenities.title}
+                id="clientVideosTitle"
+                value={projectDetailData.clientVideos.title}
                 onChange={(e) =>
                   handleProjectDetailChange(
-                    "modernAmenities",
+                    "clientVideos",
                     "title",
                     e.target.value
                   )
                 }
                 className="text-gray-900"
-                placeholder="Section title"
+                placeholder="in Action"
               />
+              <p className="text-xs text-gray-500">
+                This will be displayed as: "{formData.name}{" "}
+                {projectDetailData.clientVideos.title}"
+              </p>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-primary">Amenities Description</Label>
-              <div className="min-h-[150px]">
-                <Editor
-                  value={projectDetailData.modernAmenities.description}
-                  onEditorChange={(content) =>
-                    handleProjectDetailChange(
-                      "modernAmenities",
-                      "description",
-                      content
-                    )
-                  }
-                />
-              </div>
-            </div>
-
-            {/* Add New Amenity */}
+            {/* Add New Video */}
             <Card className="border-dashed py-6">
               <CardHeader>
-                <CardTitle className="text-sm">Add New Amenity</CardTitle>
+                <CardTitle className="text-sm">Add New Video</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <MediaSelectButton
-                      value={newAmenity.image}
-                      onSelect={(url) =>
-                        setNewAmenity((prev) => ({ ...prev, image: url }))
-                      }
-                      mediaType="image"
-                      label="Select Amenity Image"
-                      placeholder="Select amenity image"
-                    />
-                  </div>
-
-                  <div className="space-y-2 pt-4">
-                    <Label htmlFor="amenityTitle" className="text-primary">
-                      Amenity Title
-                    </Label>
-                    <Input
-                      id="amenityTitle"
-                      value={newAmenity.title}
-                      onChange={(e) =>
-                        setNewAmenity((prev) => ({
-                          ...prev,
-                          title: e.target.value,
-                        }))
-                      }
-                      placeholder="Enter amenity title"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="videoUrl" className="text-primary">
+                    YouTube Shorts URL
+                  </Label>
+                  <Input
+                    id="videoUrl"
+                    value={newClientVideo.url}
+                    onChange={(e) => setNewClientVideo({ url: e.target.value })}
+                    placeholder="https://youtube.com/shorts/..."
+                  />
                 </div>
 
                 <Button
                   type="button"
-                  onClick={addAmenity}
+                  onClick={addClientVideo}
                   className="bg-primary/90 hover:bg-primary/80 w-full text-background cursor-pointer"
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Amenity
+                  Add Video
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Existing Amenities */}
-            {projectDetailData.modernAmenities.amenities.length > 0 && (
-              <div className="space-y-4">
-                <h4 className="font-medium">
-                  Current Amenities (
-                  {projectDetailData.modernAmenities.amenities.length})
-                </h4>
-                {projectDetailData.modernAmenities.amenities.map(
-                  (amenity, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4 p-4 border rounded-lg"
-                    >
-                      <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                        <img
-                          src={amenity.image}
-                          alt={amenity.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">{amenity.title}</p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeAmenity(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
+            {/* Existing Videos */}
+            {projectDetailData.clientVideos.videos.length > 0 && (
+              <div>
+                <h4 className="font-medium mb-4">
+                  Current Videos ({projectDetailData.clientVideos.videos.length}
                   )
-                )}
+                </h4>
+                <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[...projectDetailData.clientVideos.videos]
+                    .sort((a, b) => a.order - b.order)
+                    .map((video, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-4 p-4 border rounded-lg"
+                      >
+                        <div className="w-16 h-16 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
+                          <div className="text-gray-500 text-xs">Video</div>
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm break-all">
+                            {video.url}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Order: {video.order}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditClientVideoDialog(index)}
+                            className="text-primary cursor-pointer"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeClientVideo(index)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
               </div>
             )}
           </CardContent>
@@ -2094,53 +2760,67 @@ export default function CreateProjectPage() {
 
             {/* Existing Master Plan Tabs */}
             {projectDetailData.masterPlan.tabs.length > 0 && (
-              <div className="space-y-4">
+              <div>
                 <h4 className="font-medium">
                   Current Master Plan Tabs (
                   {projectDetailData.masterPlan.tabs.length})
                 </h4>
-                {projectDetailData.masterPlan.tabs.map((tab, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-4 p-4 border rounded-lg"
-                  >
-                    <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
-                      <img
-                        src={tab.image}
-                        alt={tab.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{tab.title}</p>
-                      {tab.subtitle && (
-                        <p className="text-sm text-gray-600">
-                          C1 - {tab.subtitle}
-                        </p>
-                      )}
-                      {tab.subtitle2 && (
-                        <p className="text-sm text-gray-600">
-                          C2 - {tab.subtitle2}
-                        </p>
-                      )}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeMasterPlanTab(index)}
-                      className="text-red-500 hover:text-red-700"
+                <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {projectDetailData.masterPlan.tabs.map((tab, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-4 border rounded-lg"
                     >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                      <div className="w-16 h-16 rounded overflow-hidden bg-gray-100">
+                        <img
+                          src={tab.image}
+                          alt={tab.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{tab.title}</p>
+                        {tab.subtitle && (
+                          <p className="text-sm text-gray-600">
+                            C1 - {tab.subtitle}
+                          </p>
+                        )}
+                        {tab.subtitle2 && (
+                          <p className="text-sm text-gray-600">
+                            C2 - {tab.subtitle2}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditMasterPlanTabDialog(index)}
+                          className="text-primary cursor-pointer"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeMasterPlanTab(index)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Investment Plans */}
+        {/* 
         <Card className="py-6">
           <CardHeader>
             <CardTitle className="text-primary">Investment Plans</CardTitle>
@@ -2200,7 +2880,7 @@ export default function CreateProjectPage() {
             </div>
 
             {/* Add New Investment Plan */}
-            <Card className="border-dashed py-6">
+        {/* <Card className="border-dashed py-6">
               <CardHeader>
                 <CardTitle className="text-sm">
                   Add New Investment Plan
@@ -2269,10 +2949,10 @@ export default function CreateProjectPage() {
                   Add Investment Plan
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            {/* Existing Investment Plans */}
-            {projectDetailData.investmentPlans.plans.length > 0 && (
+        {/* Existing Investment Plans */}
+        {/* {projectDetailData.investmentPlans.plans.length > 0 && (
               <div className="space-y-4">
                 <h4 className="font-medium">
                   Current Investment Plans (
@@ -2319,6 +2999,443 @@ export default function CreateProjectPage() {
             )}
           </CardContent>
         </Card>
+        */}
+
+        {/* Edit Dialogs */}
+        {/* Gateway Category Edit Dialog */}
+        <Dialog
+          open={editGatewayCategoryDialog.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditGatewayCategoryDialog({
+                isOpen: false,
+                index: -1,
+                title: "",
+                description: "",
+              });
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Gateway Category</DialogTitle>
+              <DialogDescription>
+                Update the category title and description.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="editCategoryTitle" className="text-primary">
+                  Category Title
+                </Label>
+                <Input
+                  id="editCategoryTitle"
+                  value={editGatewayCategoryDialog.title}
+                  onChange={(e) =>
+                    setEditGatewayCategoryDialog((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter category title"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="editCategoryDescription"
+                  className="text-primary"
+                >
+                  Category Description
+                </Label>
+                <Input
+                  id="editCategoryDescription"
+                  value={editGatewayCategoryDialog.description}
+                  onChange={(e) =>
+                    setEditGatewayCategoryDialog((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter category description"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setEditGatewayCategoryDialog({
+                    isOpen: false,
+                    index: -1,
+                    title: "",
+                    description: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={saveGatewayCategoryEdit}
+                disabled={!editGatewayCategoryDialog.title.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Discover Tranquility Tab Edit Dialog */}
+        <Dialog
+          open={editDiscoverTranquilityTabDialog.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditDiscoverTranquilityTabDialog({
+                isOpen: false,
+                index: -1,
+                label: "",
+              });
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Tab Label</DialogTitle>
+              <DialogDescription>
+                Update the tab label for this category.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="editTabLabel" className="text-primary">
+                  Tab Label
+                </Label>
+                <Input
+                  id="editTabLabel"
+                  value={editDiscoverTranquilityTabDialog.label}
+                  onChange={(e) =>
+                    setEditDiscoverTranquilityTabDialog((prev) => ({
+                      ...prev,
+                      label: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter tab label"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setEditDiscoverTranquilityTabDialog({
+                    isOpen: false,
+                    index: -1,
+                    label: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={saveDiscoverTranquilityTabEdit}
+                disabled={!editDiscoverTranquilityTabDialog.label.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Discover Tranquility Item Edit Dialog */}
+        <Dialog
+          open={editDiscoverTranquilityItemDialog.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditDiscoverTranquilityItemDialog({
+                isOpen: false,
+                tabIndex: -1,
+                itemIndex: -1,
+                title: "",
+              });
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Item Title</DialogTitle>
+              <DialogDescription>
+                Update the title for this item.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="editItemTitle" className="text-primary">
+                  Item Title
+                </Label>
+                <Input
+                  id="editItemTitle"
+                  value={editDiscoverTranquilityItemDialog.title}
+                  onChange={(e) =>
+                    setEditDiscoverTranquilityItemDialog((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter item title"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setEditDiscoverTranquilityItemDialog({
+                    isOpen: false,
+                    tabIndex: -1,
+                    itemIndex: -1,
+                    title: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={saveDiscoverTranquilityItemEdit}
+                disabled={!editDiscoverTranquilityItemDialog.title.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Key Highlight Edit Dialog */}
+        <Dialog
+          open={editKeyHighlightDialog.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditKeyHighlightDialog({
+                isOpen: false,
+                index: -1,
+                text: "",
+              });
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Key Highlight</DialogTitle>
+              <DialogDescription>Update the highlight text.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="editHighlightText" className="text-primary">
+                  Highlight Text
+                </Label>
+                <Input
+                  id="editHighlightText"
+                  value={editKeyHighlightDialog.text}
+                  onChange={(e) =>
+                    setEditKeyHighlightDialog((prev) => ({
+                      ...prev,
+                      text: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter highlight text"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setEditKeyHighlightDialog({
+                    isOpen: false,
+                    index: -1,
+                    text: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={saveKeyHighlightEdit}
+                disabled={!editKeyHighlightDialog.text.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Client Video Edit Dialog */}
+        <Dialog
+          open={editClientVideoDialog.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditClientVideoDialog({
+                isOpen: false,
+                index: -1,
+                url: "",
+              });
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Video URL</DialogTitle>
+              <DialogDescription>
+                Update the YouTube Shorts URL for this video.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="editVideoUrl" className="text-primary">
+                  YouTube Shorts URL
+                </Label>
+                <Input
+                  id="editVideoUrl"
+                  value={editClientVideoDialog.url}
+                  onChange={(e) =>
+                    setEditClientVideoDialog((prev) => ({
+                      ...prev,
+                      url: e.target.value,
+                    }))
+                  }
+                  placeholder="https://youtube.com/shorts/..."
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setEditClientVideoDialog({
+                    isOpen: false,
+                    index: -1,
+                    url: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={saveClientVideoEdit}
+                disabled={!editClientVideoDialog.url.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Master Plan Tab Edit Dialog */}
+        <Dialog
+          open={editMasterPlanTabDialog.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditMasterPlanTabDialog({
+                isOpen: false,
+                index: -1,
+                title: "",
+                subtitle: "",
+                subtitle2: "",
+              });
+            }
+          }}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Master Plan Tab</DialogTitle>
+              <DialogDescription>
+                Update the tab title and subtitles.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="editTabTitle" className="text-primary">
+                  Tab Title
+                </Label>
+                <Input
+                  id="editTabTitle"
+                  value={editMasterPlanTabDialog.title}
+                  onChange={(e) =>
+                    setEditMasterPlanTabDialog((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter tab title"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="editTabSubtitle" className="text-primary">
+                  Tab Subtitle (Optional)
+                </Label>
+                <Input
+                  id="editTabSubtitle"
+                  value={editMasterPlanTabDialog.subtitle}
+                  onChange={(e) =>
+                    setEditMasterPlanTabDialog((prev) => ({
+                      ...prev,
+                      subtitle: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter tab subtitle"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="editTabSubtitle2" className="text-primary">
+                  Tab Subtitle 2 (Optional)
+                </Label>
+                <Input
+                  id="editTabSubtitle2"
+                  value={editMasterPlanTabDialog.subtitle2}
+                  onChange={(e) =>
+                    setEditMasterPlanTabDialog((prev) => ({
+                      ...prev,
+                      subtitle2: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter tab subtitle 2"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setEditMasterPlanTabDialog({
+                    isOpen: false,
+                    index: -1,
+                    title: "",
+                    subtitle: "",
+                    subtitle2: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={saveMasterPlanTabEdit}
+                disabled={!editMasterPlanTabDialog.title.trim()}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Submit Button - Enhanced for mobile */}
         <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4 sm:pt-6 border-t">
