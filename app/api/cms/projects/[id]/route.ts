@@ -5,6 +5,8 @@ import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import { revalidatePath } from "next/cache";
 
+export const maxDuration = 30; // Add this at the top of your file
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

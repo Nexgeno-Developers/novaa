@@ -5,6 +5,8 @@ import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
 import { revalidatePath } from "next/cache";
 
+export const maxDuration = 30; // Critical for Vercel serverless
+
 export async function POST(request: Request) {
   try {
     await connectDB();
