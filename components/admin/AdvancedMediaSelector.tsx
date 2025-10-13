@@ -227,7 +227,7 @@ export function AdvancedMediaSelector({
 
         dispatch(
           fetchMedia({
-            limit: 100,
+            limit: 500,
             reset: !hasRightTypeOfMedia && mediaItems.length > 0,
             type: searchType,
           })
@@ -235,17 +235,15 @@ export function AdvancedMediaSelector({
       }
     }
   }, [isOpen, dispatch, mediaType]);
-  // Handle search with debouncing
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      dispatch(setQuery(localQuery));
-      dispatch(resetMedia());
 
+  // Auto-fetch all media when dialog opens
+  useEffect(() => {
+    if (isOpen && hasMore && !loading && cursor) {
       let searchType: string | undefined;
 
       if (mediaType !== "all") {
         if (mediaType === "file" || mediaType === "pdf") {
-          searchType = "raw"; // Cloudinary stores documents as 'raw'
+          searchType = "raw";
         } else {
           searchType = mediaType;
         }
@@ -259,16 +257,27 @@ export function AdvancedMediaSelector({
 
       dispatch(
         fetchMedia({
-          query: localQuery || undefined,
           type: searchType,
-          reset: true,
-          limit: 100, // Add limit to ensure consistent behavior
+          cursor: cursor,
+          reset: false,
         })
       );
-    }, 300);
+    }
+  }, [isOpen, hasMore, loading, cursor, mediaType, activeTab, dispatch]);
 
-    return () => clearTimeout(timeoutId);
-  }, [localQuery, mediaType, activeTab, dispatch]);
+  // Client-side search filtering (no server calls needed)
+  const searchFilteredMedia = useMemo(() => {
+    if (!localQuery.trim()) {
+      return filteredMedia;
+    }
+
+    const searchTerm = localQuery.toLowerCase();
+    return filteredMedia.filter((item) => {
+      const fileName = item.public_id.toLowerCase();
+      const format = item.format?.toLowerCase() || "";
+      return fileName.includes(searchTerm) || format.includes(searchTerm);
+    });
+  }, [filteredMedia, localQuery]);
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -287,7 +296,6 @@ export function AdvancedMediaSelector({
 
     dispatch(
       fetchMedia({
-        query: localQuery || undefined,
         type: searchType,
         reset: true,
       })
@@ -348,7 +356,6 @@ export function AdvancedMediaSelector({
 
       dispatch(
         fetchMedia({
-          query: localQuery || undefined,
           type: searchType,
           cursor: cursor,
           reset: false,
@@ -579,7 +586,7 @@ export function AdvancedMediaSelector({
                   className="bg-gray-300 cursor-pointer"
                   onClick={() => {
                     dispatch(resetMedia());
-                    dispatch(fetchMedia({ limit: 100, reset: true }));
+                    dispatch(fetchMedia({ limit: 500, reset: true }));
                   }}
                   disabled={loading}
                 >
@@ -629,7 +636,7 @@ export function AdvancedMediaSelector({
                   <span className="text-sm text-gray-600">Total</span>
                 </div>
                 <span className="text-lg font-semibold">
-                  {filteredMedia.length}
+                  {searchFilteredMedia.length}
                 </span>
               </div>
 
@@ -679,14 +686,14 @@ export function AdvancedMediaSelector({
 
           {/* Media Grid/List */}
           <ScrollArea className="h-96 px-4">
-            {loading && filteredMedia.length === 0 ? (
+            {loading && searchFilteredMedia.length === 0 ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
                   {/* <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" /> */}
                   {/* <p className="text-gray-500">Loading media...</p> */}
                 </div>
               </div>
-            ) : filteredMedia.length === 0 ? (
+            ) : searchFilteredMedia.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12">
                 <ImageIcon className="h-12 w-12 text-gray-400 mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -706,7 +713,7 @@ export function AdvancedMediaSelector({
                     : "space-y-2"
                 }
               >
-                {filteredMedia.map((item) => (
+                {searchFilteredMedia.map((item) => (
                   <MediaCard key={item.public_id} item={item} />
                 ))}
               </div>
@@ -736,8 +743,8 @@ export function AdvancedMediaSelector({
           {/* Footer Actions */}
           <div className="flex items-center justify-between p-6 border-t">
             <div className="text-sm text-gray-600">
-              {filteredMedia.length} file{filteredMedia.length !== 1 ? "s" : ""}{" "}
-              available
+              {searchFilteredMedia.length} file
+              {searchFilteredMedia.length !== 1 ? "s" : ""} available
             </div>
 
             <div className="flex items-center gap-3">

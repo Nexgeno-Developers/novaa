@@ -255,6 +255,32 @@ export const deleteProject = createAsyncThunk(
   }
 );
 
+export const cloneProject = createAsyncThunk(
+  "adminProjects/cloneProject",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch("/api/cms/projects/clone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId: id }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to clone project");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Error cloning project:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to clone project"
+      );
+    }
+  }
+);
+
 const adminProjectsSlice = createSlice({
   name: "adminProjects",
   initialState,
@@ -332,6 +358,19 @@ const adminProjectsSlice = createSlice({
         state.projects = state.projects.filter(
           (project) => project._id !== action.payload
         );
+      })
+
+      .addCase(cloneProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cloneProject.fulfilled, (state, action) => {
+        state.loading = false;
+        state.projects.push(action.payload);
+      })
+      .addCase(cloneProject.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) || "Failed to clone project";
       });
   },
 });

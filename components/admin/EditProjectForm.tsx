@@ -333,12 +333,14 @@ export default function EditProjectPage() {
     title: string;
     subtitle: string;
     subtitle2: string;
+    image: string;
   }>({
     isOpen: false,
     index: -1,
     title: "",
     subtitle: "",
     subtitle2: "",
+    image: "",
   });
 
   const [
@@ -362,11 +364,17 @@ export default function EditProjectPage() {
     tabIndex: number;
     itemIndex: number;
     title: string;
+    image?: string;
+    youtubeUrl?: string;
+    type?: "image" | "video";
   }>({
     isOpen: false,
     tabIndex: -1,
     itemIndex: -1,
     title: "",
+    image: "",
+    youtubeUrl: "",
+    type: "image",
   });
 
   const [editClientVideoDialog, setEditClientVideoDialog] = useState<{
@@ -1051,6 +1059,7 @@ export default function EditProjectPage() {
       title: tab.title,
       subtitle: tab.subtitle || "",
       subtitle2: tab.subtitle2 || "",
+      image: tab.image,
     });
   };
 
@@ -1074,6 +1083,9 @@ export default function EditProjectPage() {
       tabIndex,
       itemIndex,
       title: item.title,
+      image: item.image || "",
+      youtubeUrl: item.youtubeUrl || "",
+      type: item.type,
     });
   };
 
@@ -1122,6 +1134,7 @@ export default function EditProjectPage() {
         title: editMasterPlanTabDialog.title.trim(),
         subtitle: editMasterPlanTabDialog.subtitle.trim() || undefined,
         subtitle2: editMasterPlanTabDialog.subtitle2.trim() || undefined,
+        image: editMasterPlanTabDialog.image,
       });
       setEditMasterPlanTabDialog({
         isOpen: false,
@@ -1129,6 +1142,7 @@ export default function EditProjectPage() {
         title: "",
         subtitle: "",
         subtitle2: "",
+        image: "",
       });
     }
   };
@@ -1151,13 +1165,21 @@ export default function EditProjectPage() {
       updateDiscoverTranquilityItem(
         editDiscoverTranquilityItemDialog.tabIndex,
         editDiscoverTranquilityItemDialog.itemIndex,
-        { title: editDiscoverTranquilityItemDialog.title.trim() }
+        {
+          title: editDiscoverTranquilityItemDialog.title.trim(),
+          image: editDiscoverTranquilityItemDialog.image,
+          youtubeUrl: editDiscoverTranquilityItemDialog.youtubeUrl,
+          type: editDiscoverTranquilityItemDialog.type,
+        }
       );
       setEditDiscoverTranquilityItemDialog({
         isOpen: false,
         tabIndex: -1,
         itemIndex: -1,
         title: "",
+        image: "",
+        youtubeUrl: "",
+        type: "image",
       });
     }
   };
@@ -1548,6 +1570,22 @@ export default function EditProjectPage() {
                   placeholder="0"
                   min="0"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="projectActive"
+                    checked={formData.isActive}
+                    className="cursor-pointer"
+                    onCheckedChange={(checked) =>
+                      handleInputChange("isActive", checked)
+                    }
+                  />
+                  <Label htmlFor="projectActive" className="text-primary">
+                    Active
+                  </Label>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -3339,15 +3377,18 @@ export default function EditProjectPage() {
                 tabIndex: -1,
                 itemIndex: -1,
                 title: "",
+                image: "",
+                youtubeUrl: "",
+                type: "image",
               });
             }
           }}
         >
           <DialogContent className="admin-theme max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Edit Item Title</DialogTitle>
+              <DialogTitle>Edit Item</DialogTitle>
               <DialogDescription>
-                Update the title for this item.
+                Update the title and media for this item.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
@@ -3367,6 +3408,58 @@ export default function EditProjectPage() {
                   placeholder="Enter item title"
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label className="text-primary">Media Type</Label>
+                <Select
+                  value={editDiscoverTranquilityItemDialog.type}
+                  onValueChange={(value: "image" | "video") =>
+                    setEditDiscoverTranquilityItemDialog((prev) => ({
+                      ...prev,
+                      type: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="cursor-pointer">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="admin-theme !z-[60] !isolate">
+                    <SelectItem value="image">Image</SelectItem>
+                    <SelectItem value="video">Video</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {editDiscoverTranquilityItemDialog.type === "image" ? (
+                <div className="space-y-2">
+                  <MediaSelectButton
+                    value={editDiscoverTranquilityItemDialog.image || ""}
+                    onSelect={(url) =>
+                      setEditDiscoverTranquilityItemDialog((prev) => ({
+                        ...prev,
+                        image: url,
+                      }))
+                    }
+                    mediaType="image"
+                    label="Select Image"
+                    placeholder="Select image"
+                  />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label className="text-primary">YouTube URL</Label>
+                  <Input
+                    value={editDiscoverTranquilityItemDialog.youtubeUrl || ""}
+                    onChange={(e) =>
+                      setEditDiscoverTranquilityItemDialog((prev) => ({
+                        ...prev,
+                        youtubeUrl: e.target.value,
+                      }))
+                    }
+                    placeholder="https://youtube.com/shorts/..."
+                  />
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button
@@ -3378,6 +3471,9 @@ export default function EditProjectPage() {
                     tabIndex: -1,
                     itemIndex: -1,
                     title: "",
+                    image: "",
+                    youtubeUrl: "",
+                    type: "image",
                   })
                 }
               >
@@ -3613,6 +3709,7 @@ export default function EditProjectPage() {
                 title: "",
                 subtitle: "",
                 subtitle2: "",
+                image: "",
               });
             }
           }}
@@ -3621,7 +3718,7 @@ export default function EditProjectPage() {
             <DialogHeader>
               <DialogTitle>Edit Master Plan Tab</DialogTitle>
               <DialogDescription>
-                Update the tab title and subtitles.
+                Update the tab title, subtitles, and image.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
@@ -3673,6 +3770,20 @@ export default function EditProjectPage() {
                   placeholder="Enter tab subtitle 2"
                 />
               </div>
+              <div className="space-y-2">
+                <MediaSelectButton
+                  value={editMasterPlanTabDialog.image}
+                  onSelect={(url) =>
+                    setEditMasterPlanTabDialog((prev) => ({
+                      ...prev,
+                      image: url,
+                    }))
+                  }
+                  mediaType="image"
+                  label="Tab Background Image"
+                  placeholder="Select tab background image"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button
@@ -3685,6 +3796,7 @@ export default function EditProjectPage() {
                     title: "",
                     subtitle: "",
                     subtitle2: "",
+                    image: "",
                   })
                 }
               >

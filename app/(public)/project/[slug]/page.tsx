@@ -229,8 +229,8 @@ export default async function ProjectDetailPage({
       getBreadcrumbData(),
     ]);
 
-    if (!project) {
-      console.log("Project not found, calling notFound()");
+    if (!project || !project.isActive) {
+      console.log("Project not found or inactive, calling notFound()");
       notFound();
     }
 

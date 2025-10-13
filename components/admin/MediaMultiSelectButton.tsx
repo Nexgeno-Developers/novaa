@@ -62,6 +62,7 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
   const [imageLoadingStates, setImageLoadingStates] = useState<
     Record<string, boolean>
   >({});
+  const [allMedia, setAllMedia] = useState<MediaFile[]>([]);
 
   // Fetch media
   const fetchMedia = async (cursor?: string, reset = false) => {
@@ -69,16 +70,15 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
       setLoading(true);
       const res = await axios.get("/api/cms/media", {
         params: {
-          query,
           type: mediaType,
-          limit: 20,
+          limit: 500,
           cursor,
         },
       });
 
       if (res.data.success) {
         const { resources, next_cursor } = res.data.data;
-        setMedia((prev) => (reset ? resources : [...prev, ...resources]));
+        setAllMedia((prev) => (reset ? resources : [...prev, ...resources]));
         setNextCursor(next_cursor || null);
       }
     } catch (err) {
@@ -95,14 +95,31 @@ const MediaMultiSelectButton: React.FC<MediaMultiSelectButtonProps> = ({
     }
   }, [open, selectedImages]);
 
+  // Auto-fetch all media when dialog opens
   useEffect(() => {
-    if (query) {
-      const debounceTimer = setTimeout(() => {
-        fetchMedia(undefined, true);
-      }, 500);
-      return () => clearTimeout(debounceTimer);
+    if (open && nextCursor && !loading) {
+      fetchMedia(nextCursor, false);
     }
-  }, [query]);
+  }, [open, nextCursor, loading]);
+
+  // Client-side search filtering
+  const filteredMedia = React.useMemo(() => {
+    if (!query.trim()) {
+      return allMedia;
+    }
+
+    const searchTerm = query.toLowerCase();
+    return allMedia.filter((file) => {
+      const fileName = file.public_id.toLowerCase();
+      const format = file.format.toLowerCase();
+      return fileName.includes(searchTerm) || format.includes(searchTerm);
+    });
+  }, [allMedia, query]);
+
+  // Update displayed media when filteredMedia changes
+  useEffect(() => {
+    setMedia(filteredMedia);
+  }, [filteredMedia]);
 
   // Handle select/unselect
   const toggleSelect = (file: MediaFile) => {

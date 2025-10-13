@@ -32,6 +32,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Plus,
   Edit,
   Trash2,
@@ -42,13 +48,13 @@ import {
   AlertCircle,
   Building2,
   Home,
-  TrendingUp,
-  Car,
+  Copy,
+  MoreVertical,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux";
-import { fetchProjects, deleteProject } from "@/redux/slices/projectsSlice";
+import { fetchProjects, deleteProject, cloneProject } from "@/redux/slices/projectsSlice";
 import { fetchCategories } from "@/redux/slices/categoriesSlice";
 import { useAppDispatch } from "@/redux/hooks";
 
@@ -101,7 +107,6 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
-    // If we have initial data, use it to populate the store
     if (initialData) {
       dispatch({
         type: "adminProjects/fetchProjects/fulfilled",
@@ -112,7 +117,6 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
         payload: initialData.categories,
       });
     } else {
-      // Simple, efficient data loading without retry logic
       dispatch(fetchProjects());
       dispatch(fetchCategories());
     }
@@ -135,13 +139,20 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
     router.push(`/admin/projects/edit/${projectId}`);
   };
 
+  const handleClone = async (id: string) => {
+    try {
+      const result = await dispatch(cloneProject(id)).unwrap();
+      toast.success(`Project cloned as "${result.name}"`);
+    } catch (error) {
+      toast.error("Failed to clone project");
+    }
+  };
+
   const handleRefresh = () => {
-    // Simple refresh without await - let Redux handle the loading states
     dispatch(fetchProjects());
     dispatch(fetchCategories());
   };
 
-  // Filter projects based on search and category
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
       project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -153,7 +164,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white p-6 -m-6 space-y-8 font-poppins">
-      {/* Header - Enhanced for mobile */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center space-x-3 mb-2">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
@@ -401,6 +412,26 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="hover:bg-slate-200 transition-all duration-200 cursor-pointer"
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="admin-theme">
+                                <DropdownMenuItem
+                                  onClick={() => handleClone(project._id)}
+                                  className="cursor-pointer"
+                                >
+                                  <Copy className="h-4 w-4 mr-2" />
+                                  Clone Project
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -475,6 +506,26 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="hover:bg-slate-200 transition-all duration-200 h-8 w-8 p-0"
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="admin-theme">
+                                <DropdownMenuItem
+                                  onClick={() => handleClone(project._id)}
+                                  className="cursor-pointer"
+                                >
+                                  <Copy className="h-4 w-4 mr-2" />
+                                  Clone Project
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </div>
                       </div>
@@ -486,6 +537,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
           )}
         </CardContent>
       </Card>
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={!!deleteDialogId}
@@ -498,7 +550,7 @@ export default function ProjectsManager({ initialData }: ProjectsManagerProps) {
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              blog and remove it from our servers.
+              project and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
