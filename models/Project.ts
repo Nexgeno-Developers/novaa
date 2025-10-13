@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Category from "./Category"; // Import to ensure schema registration
+import "@/models/Category"; // Import to ensure schema registration
 
 // Function to generate slug from name
 function generateSlug(name: string) {
