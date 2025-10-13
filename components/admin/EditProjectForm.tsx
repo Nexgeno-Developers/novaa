@@ -1382,6 +1382,11 @@ export default function EditProjectPage() {
         projectDetail: finalProjectDetailData,
       };
 
+      // Show loading toast for long operations
+      const loadingToast = toast.loading(
+        "Saving project... This may take a moment."
+      );
+
       await dispatch(
         updateProject({
           id: projectId,
@@ -1389,10 +1394,33 @@ export default function EditProjectPage() {
         })
       ).unwrap();
 
+      toast.dismiss(loadingToast);
       toast.success("Project updated successfully");
-      router.push("/admin/projects");
-    } catch (error) {
-      toast.error("Failed to update project");
+
+      // Add a small delay before redirecting to ensure state is updated
+      setTimeout(() => {
+        router.push("/admin/projects");
+      }, 500);
+    } catch (error: any) {
+      console.error("Submit error:", error);
+
+      // Provide specific error messages
+      if (error?.includes?.("timeout")) {
+        toast.error(
+          "Request timed out. Your changes may have been saved. Please refresh and check.",
+          { duration: 5000 }
+        );
+      } else if (
+        error?.includes?.("payload") ||
+        error?.includes?.("too large")
+      ) {
+        toast.error(
+          "Project data is too large. Try reducing image sizes or removing unnecessary data.",
+          { duration: 5000 }
+        );
+      } else {
+        toast.error(error || "Failed to update project");
+      }
     } finally {
       setIsSubmitting(false);
     }

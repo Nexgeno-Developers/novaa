@@ -215,31 +215,151 @@ export const fetchProjectBySlug = createAsyncThunk(
   }
 );
 
-export const createProject = createAsyncThunk(
-  "adminProjects/createProject",
-  async (data: Omit<Project, "_id">) => {
-    const response = await fetch("/api/cms/projects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error);
-    return result.data;
+export const updateProject = createAsyncThunk(
+  "adminProjects/updateProject",
+  async (
+    { id, data }: { id: string; data: Omit<Project, "_id"> },
+    { rejectWithValue }
+  ) => {
+    try {
+      // Add timeout to the fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      const response = await fetch(`/api/cms/projects/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          error: `HTTP error! status: ${response.status}`,
+        }));
+        throw new Error(errorData.error || "Failed to update project");
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update project");
+      }
+
+      return result.data;
+    } catch (error: any) {
+      console.error("Error updating project:", error);
+
+      // Handle different error types
+      if (error.name === "AbortError") {
+        return rejectWithValue(
+          "Request timeout. The project data might be too large or the server is slow to respond."
+        );
+      }
+
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to update project"
+      );
+    }
   }
 );
 
-export const updateProject = createAsyncThunk(
-  "adminProjects/updateProject",
-  async ({ id, data }: { id: string; data: Omit<Project, "_id"> }) => {
-    const response = await fetch(`/api/cms/projects/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const result = await response.json();
-    if (!result.success) throw new Error(result.error);
-    return result.data;
+export const createProject = createAsyncThunk(
+  "adminProjects/createProject",
+  async (data: Omit<Project, "_id">, { rejectWithValue }) => {
+    try {
+      // Add timeout to the fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      const response = await fetch("/api/cms/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      // Check if response is ok before parsing
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          error: `HTTP error! status: ${response.status}`,
+        }));
+        throw new Error(errorData.error || "Failed to create project");
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to create project");
+      }
+
+      return result.data;
+    } catch (error: any) {
+      console.error("Error creating project:", error);
+
+      // Handle different error types
+      if (error.name === "AbortError") {
+        return rejectWithValue(
+          "Request timeout. The project data might be too large or the server is slow to respond."
+        );
+      }
+
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to create project"
+      );
+    }
+  }
+);
+
+export const cloneProject = createAsyncThunk(
+  "adminProjects/cloneProject",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      // Add timeout for clone operation
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      const response = await fetch("/api/cms/projects/clone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId: id }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          error: `HTTP error! status: ${response.status}`,
+        }));
+        throw new Error(errorData.error || "Failed to clone project");
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to clone project");
+      }
+
+      return result.data;
+    } catch (error: any) {
+      console.error("Error cloning project:", error);
+
+      if (error.name === "AbortError") {
+        return rejectWithValue(
+          "Request timeout. Try cloning a smaller project or contact support."
+        );
+      }
+
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to clone project"
+      );
+    }
   }
 );
 
@@ -255,31 +375,31 @@ export const deleteProject = createAsyncThunk(
   }
 );
 
-export const cloneProject = createAsyncThunk(
-  "adminProjects/cloneProject",
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const response = await fetch("/api/cms/projects/clone", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId: id }),
-      });
+// export const cloneProject = createAsyncThunk(
+//   "adminProjects/cloneProject",
+//   async (id: string, { rejectWithValue }) => {
+//     try {
+//       const response = await fetch("/api/cms/projects/clone", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ projectId: id }),
+//       });
 
-      const result = await response.json();
+//       const result = await response.json();
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to clone project");
-      }
+//       if (!result.success) {
+//         throw new Error(result.error || "Failed to clone project");
+//       }
 
-      return result.data;
-    } catch (error) {
-      console.error("Error cloning project:", error);
-      return rejectWithValue(
-        error instanceof Error ? error.message : "Failed to clone project"
-      );
-    }
-  }
-);
+//       return result.data;
+//     } catch (error) {
+//       console.error("Error cloning project:", error);
+//       return rejectWithValue(
+//         error instanceof Error ? error.message : "Failed to clone project"
+//       );
+//     }
+//   }
+// );
 
 const adminProjectsSlice = createSlice({
   name: "adminProjects",
