@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import BlogCategory from "./BlogCategory"; // Import to ensure schema registration
+import "@/models/BlogCategory" // Import to ensure schema registration
 
 const blogSchema = new mongoose.Schema(
   {
