@@ -287,11 +287,13 @@ export default function CreateProjectPage() {
     index: number;
     title: string;
     description: string;
+    icon: string;
   }>({
     isOpen: false,
     index: -1,
     title: "",
     description: "",
+    icon: "",
   });
 
   const [editKeyHighlightDialog, setEditKeyHighlightDialog] = useState<{
@@ -365,6 +367,7 @@ export default function CreateProjectPage() {
       index,
       title: category.title,
       description: category.description,
+      icon: category.icon,
     });
   };
 
@@ -446,12 +449,14 @@ export default function CreateProjectPage() {
       updateGatewayCategory(editGatewayCategoryDialog.index, {
         title: editGatewayCategoryDialog.title.trim(),
         description: editGatewayCategoryDialog.description.trim(),
+        icon: editGatewayCategoryDialog.icon,
       });
       setEditGatewayCategoryDialog({
         isOpen: false,
         index: -1,
         title: "",
         description: "",
+        icon: "",
       });
     }
   };
@@ -1182,7 +1187,7 @@ export default function CreateProjectPage() {
       setTimeout(() => {
         router.push("/admin/projects");
       }, 500);
-    } catch (error : any) {
+    } catch (error: any) {
       console.error("Submit error:", error);
 
       // Provide specific error messages
@@ -3063,6 +3068,7 @@ export default function CreateProjectPage() {
                 index: -1,
                 title: "",
                 description: "",
+                icon: "",
               });
             }
           }}
@@ -3110,6 +3116,21 @@ export default function CreateProjectPage() {
                   placeholder="Enter category description"
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="text-primary">Category Icon</Label>
+                <MediaSelectButton
+                  value={editGatewayCategoryDialog.icon}
+                  onSelect={(url) =>
+                    setEditGatewayCategoryDialog((prev) => ({
+                      ...prev,
+                      icon: url,
+                    }))
+                  }
+                  mediaType="image"
+                  label="Select category icon"
+                  placeholder="Select category icon"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button
@@ -3121,6 +3142,7 @@ export default function CreateProjectPage() {
                     index: -1,
                     title: "",
                     description: "",
+                    icon: "",
                   })
                 }
               >

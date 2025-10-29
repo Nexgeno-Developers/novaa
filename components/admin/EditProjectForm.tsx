@@ -310,11 +310,13 @@ export default function EditProjectPage() {
     index: number;
     title: string;
     description: string;
+    icon: string;
   }>({
     isOpen: false,
     index: -1,
     title: "",
     description: "",
+    icon: "",
   });
 
   const [editKeyHighlightDialog, setEditKeyHighlightDialog] = useState<{
@@ -1039,6 +1041,7 @@ export default function EditProjectPage() {
       index,
       title: category.title,
       description: category.description,
+      icon: category.icon,
     });
   };
 
@@ -1104,12 +1107,14 @@ export default function EditProjectPage() {
       updateGatewayCategory(editGatewayCategoryDialog.index, {
         title: editGatewayCategoryDialog.title.trim(),
         description: editGatewayCategoryDialog.description.trim(),
+        icon: editGatewayCategoryDialog.icon,
       });
       setEditGatewayCategoryDialog({
         isOpen: false,
         index: -1,
         title: "",
         description: "",
+        icon: "",
       });
     }
   };
@@ -3591,6 +3596,7 @@ export default function EditProjectPage() {
                 index: -1,
                 title: "",
                 description: "",
+                icon: "",
               });
             }
           }}
@@ -3638,6 +3644,21 @@ export default function EditProjectPage() {
                   placeholder="Enter category description"
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="text-primary">Category Icon</Label>
+                <MediaSelectButton
+                  value={editGatewayCategoryDialog.icon}
+                  onSelect={(url) =>
+                    setEditGatewayCategoryDialog((prev) => ({
+                      ...prev,
+                      icon: url,
+                    }))
+                  }
+                  mediaType="image"
+                  label="Select category icon"
+                  placeholder="Select category icon"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button
@@ -3649,6 +3670,7 @@ export default function EditProjectPage() {
                     index: -1,
                     title: "",
                     description: "",
+                    icon: "",
                   })
                 }
               >
