@@ -12,6 +12,7 @@ interface HighlightsProps {
         description?: string;
         highlights?: Array<{
           text: string;
+          icon?: string;
         }>;
       };
     };
@@ -126,7 +127,9 @@ const Highlights: React.FC<HighlightsProps> = ({ project }) => {
               ];
 
               const iconSrc =
-                iconMap[index] || "/highlights/highlights-icon-one.svg";
+                (highlight as any).icon && (highlight as any).icon.trim()
+                  ? (highlight as any).icon
+                  : iconMap[index] || "/highlights/highlights-icon-one.svg";
 
               return (
                 <motion.div

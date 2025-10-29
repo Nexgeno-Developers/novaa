@@ -85,6 +85,7 @@ const projectSchema = new mongoose.Schema(
         highlights: [
           {
             text: { type: String, required: true },
+            icon: { type: String, default: "" },
           },
         ],
       },

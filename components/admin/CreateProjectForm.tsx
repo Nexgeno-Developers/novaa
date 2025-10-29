@@ -36,6 +36,7 @@ import MediaSelectButton from "@/components/admin/MediaSelectButton";
 import GatewayMapEditor from "@/components/admin/GatewayMapEditor";
 import { useAppDispatch } from "@/redux/hooks";
 import { fetchMedia } from "@/redux/slices/mediaSlice";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Interfaces
 interface DiscoverTranquilityTab {
@@ -54,6 +55,7 @@ interface DiscoverTranquilityItem {
 
 interface KeyHighlight {
   text: string;
+  icon?: string;
 }
 
 interface ClientVideo {
@@ -300,10 +302,12 @@ export default function CreateProjectPage() {
     isOpen: boolean;
     index: number;
     text: string;
+    icon?: string;
   }>({
     isOpen: false,
     index: -1,
     text: "",
+    icon: "",
   });
 
   const [editMasterPlanTabDialog, setEditMasterPlanTabDialog] = useState<{
@@ -377,6 +381,7 @@ export default function CreateProjectPage() {
       isOpen: true,
       index,
       text: highlight.text,
+      icon: (highlight as any).icon || "",
     });
   };
 
@@ -463,14 +468,15 @@ export default function CreateProjectPage() {
 
   const saveKeyHighlightEdit = () => {
     if (editKeyHighlightDialog.text.trim()) {
-      updateKeyHighlight(
-        editKeyHighlightDialog.index,
-        editKeyHighlightDialog.text.trim()
-      );
+      updateKeyHighlight(editKeyHighlightDialog.index, {
+        text: editKeyHighlightDialog.text.trim(),
+        icon: editKeyHighlightDialog.icon || "",
+      });
       setEditKeyHighlightDialog({
         isOpen: false,
         index: -1,
         text: "",
+        icon: "",
       });
     }
   };
@@ -822,10 +828,13 @@ export default function CreateProjectPage() {
     }));
   };
 
-  const updateKeyHighlight = (index: number, text: string) => {
+  const updateKeyHighlight = (index: number, data: Partial<KeyHighlight>) => {
     setProjectDetailData((prev) => {
       const updatedHighlights = [...prev.keyHighlights.highlights];
-      updatedHighlights[index] = { text };
+      updatedHighlights[index] = {
+        ...(updatedHighlights[index] as any),
+        ...data,
+      } as any;
       return {
         ...prev,
         keyHighlights: {
@@ -2343,66 +2352,68 @@ export default function CreateProjectPage() {
                               <h6 className="font-medium">
                                 Items in {tab.label}
                               </h6>
-                              {[...tab.items]
-                                .sort((a, b) => a.order - b.order)
-                                .map((item, itemIndex) => (
-                                  <div
-                                    key={itemIndex}
-                                    className="flex items-center gap-4 p-3 border rounded"
-                                  >
-                                    <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
-                                      {item.type === "image" ? (
-                                        <img
-                                          src={item.image}
-                                          alt={item.title}
-                                          className="w-full h-full object-cover"
-                                        />
-                                      ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white text-xs">
-                                          Video
-                                        </div>
-                                      )}
+                              <ScrollArea className="h-64 pr-2">
+                                {[...tab.items]
+                                  .sort((a, b) => a.order - b.order)
+                                  .map((item, itemIndex) => (
+                                    <div
+                                      key={itemIndex}
+                                      className="flex items-center gap-4 p-3 border rounded"
+                                    >
+                                      <div className="w-12 h-12 rounded overflow-hidden bg-gray-100">
+                                        {item.type === "image" ? (
+                                          <img
+                                            src={item.image}
+                                            alt={item.title}
+                                            className="w-full h-full object-cover"
+                                          />
+                                        ) : (
+                                          <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white text-xs">
+                                            Video
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="flex-1">
+                                        <p className="font-medium">
+                                          {item.title}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                          {item.type} • Order: {item.order}
+                                        </p>
+                                      </div>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() =>
+                                            openEditDiscoverTranquilityItemDialog(
+                                              tabIndex,
+                                              itemIndex
+                                            )
+                                          }
+                                          className="text-primary cursor-pointer"
+                                        >
+                                          Edit
+                                        </Button>
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() =>
+                                            removeDiscoverTranquilityItem(
+                                              tabIndex,
+                                              itemIndex
+                                            )
+                                          }
+                                          className="text-red-500 hover:text-red-700"
+                                        >
+                                          <X className="h-3 w-3" />
+                                        </Button>
+                                      </div>
                                     </div>
-                                    <div className="flex-1">
-                                      <p className="font-medium">
-                                        {item.title}
-                                      </p>
-                                      <p className="text-xs text-gray-500">
-                                        {item.type} • Order: {item.order}
-                                      </p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                      <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() =>
-                                          openEditDiscoverTranquilityItemDialog(
-                                            tabIndex,
-                                            itemIndex
-                                          )
-                                        }
-                                        className="text-primary cursor-pointer"
-                                      >
-                                        Edit
-                                      </Button>
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                          removeDiscoverTranquilityItem(
-                                            tabIndex,
-                                            itemIndex
-                                          )
-                                        }
-                                        className="text-red-500 hover:text-red-700"
-                                      >
-                                        <X className="h-3 w-3" />
-                                      </Button>
-                                    </div>
-                                  </div>
-                                ))}
+                                  ))}
+                              </ScrollArea>
                             </div>
                           )}
                         </div>
@@ -3361,7 +3372,9 @@ export default function CreateProjectPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Key Highlight</DialogTitle>
-              <DialogDescription>Update the highlight text.</DialogDescription>
+              <DialogDescription>
+                Update the highlight text and icon.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -3380,6 +3393,21 @@ export default function CreateProjectPage() {
                   placeholder="Enter highlight text"
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="text-primary">Highlight Icon</Label>
+                <MediaSelectButton
+                  value={editKeyHighlightDialog.icon || ""}
+                  onSelect={(url) =>
+                    setEditKeyHighlightDialog((prev) => ({
+                      ...prev,
+                      icon: url,
+                    }))
+                  }
+                  mediaType="image"
+                  label="Select highlight icon"
+                  placeholder="Select highlight icon"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button
@@ -3390,6 +3418,7 @@ export default function CreateProjectPage() {
                     isOpen: false,
                     index: -1,
                     text: "",
+                    icon: "",
                   })
                 }
               >
