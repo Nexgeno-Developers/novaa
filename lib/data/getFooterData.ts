@@ -28,7 +28,8 @@ const getCachedFooterData = unstable_cache(
   ['footer-data'], // Cache key
   {
     tags: ['footer'], // Cache tag for revalidation
-    revalidate: false, // Revalidate every hour (fallback)
+    //revalidate: false, // Revalidate every hour (fallback)
+    revalidate: 10,
   }
 );
 

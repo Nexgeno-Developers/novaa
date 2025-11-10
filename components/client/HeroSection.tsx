@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
@@ -68,6 +68,30 @@ export default function HeroSection({
   const vimeoIframeRef = useRef<HTMLIFrameElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
+  // --- NEW: state to hide overlay after 10s post full page load
+  const [hideAfterDelay, setHideAfterDelay] = useState(false);
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const startTimer = () => {
+      timer = setTimeout(() => setHideAfterDelay(true), 10_000); // 10s
+    };
+
+    if (typeof window !== "undefined") {
+      if (document.readyState === "complete") {
+        startTimer();
+      } else {
+        window.addEventListener("load", startTimer, { once: true });
+      }
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener("load", startTimer);
+    };
+  }, []);
+  // --- /NEW
+
   // Helper function to extract Vimeo video ID from URL
   const extractVimeoId = (url: string): string | null => {
     const match = url.match(
@@ -82,25 +106,25 @@ export default function HeroSection({
       const videoId = extractVimeoId(vimeoUrl);
       if (videoId) {
         return {
-          type: "vimeo",
+          type: "vimeo" as const,
           videoId: videoId,
           src: `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=1&loop=1&background=1&controls=0&title=0&byline=0&portrait=0&playsinline=1&autopause=0`,
         };
       }
     } else if (mediaType === "video") {
       return {
-        type: "video",
+        type: "video" as const,
         src: mediaUrl,
       };
     } else {
       return {
-        type: "image",
+        type: "image" as const,
         src: mediaUrl,
       };
     }
 
     return {
-      type: "image",
+      type: "image" as const,
       src: mediaUrl,
     };
   };
@@ -236,52 +260,6 @@ export default function HeroSection({
     }
   }, [backgroundMedia.type]);
 
-  // console.log("Props", props.heroSection);
-
-  // const getTitleStyle = () => {
-  //   if (titleGradient && titleGradient !== "none") {
-  //     console.log("Applying title gradient:", titleGradient);
-  //     return {
-  //       background: titleGradient,
-  //       WebkitBackgroundClip: "text",
-  //       backgroundClip: "text",
-  //       WebkitTextFillColor: "transparent",
-  //       color: "transparent",
-  //     };
-  //   }
-  //   return {
-  //     color: "white",
-  //   };
-  // };
-  // console.log("media ", mediaUrl);
-
-  // const renderStyledTitle = () => {
-  //   if (!title) return title;
-
-  //   let styledTitle = title;
-  //   highlightedWords?.forEach(({ word, style }) => {
-  //     const regex = new RegExp(`\\b${word}\\b`, "gi");
-  //     const backgroundStyle = style.background
-  //       ? `background: ${style.background}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;`
-  //       : "";
-
-  //     styledTitle = styledTitle.replace(
-  //       regex,
-  //       `<span class="${style.fontFamily || "font-cinzel"}" style="color: ${
-  //         style.background ? "transparent" : style.color
-  //       }; font-weight: ${style.fontWeight}; font-size: ${
-  //         style.fontSize
-  //       }; font-style: ${style.fontStyle}; ${backgroundStyle} ${
-  //         style.textDecoration
-  //           ? `text-decoration: ${style.textDecoration};`
-  //           : ""
-  //       }">${word}</span>`
-  //     );
-  //   });
-
-  //   return <div dangerouslySetInnerHTML={{ __html: styledTitle }} />;
-  // };
-
   return (
     <section
       ref={sectionRef}
@@ -384,58 +362,68 @@ export default function HeroSection({
             .padStart(2, "0")} 0%, transparent 100%)`,
         }}
       />
-      {/* Text Overlay */}
-      <div className="absolute bottom-6 sm:bottom-10 w-full z-10">
-        <div className="container text-white">
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className={`text-2xl lg:text-3xl xl:text-[60px] font-cinzel  leading-[100%] tracking-[0%] font-normal`}
-            >
-              {title}{" "}
-            </motion.div>
 
-            {subtitle && (
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.2 }}
-                className={`text-2xl lg:text-3xl font-bold xl:text-[60px] leading-[100%] mt-2 ${subtitleFontFamily}`}
-                style={{
-                  background:
-                    "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  color: "transparent",
-                }}
-              >
-                {subtitle}
-              </motion.div>
-            )}
+      {/* Text Overlay — fades out and unmounts after 10s of full page load */}
+      <AnimatePresence>
+        {!hideAfterDelay && (
+          <motion.div
+            className="absolute bottom-6 sm:bottom-10 w-full z-10"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="container text-white hide-af-10-sec">
+              <div>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
+                  className={`text-2xl lg:text-3xl xl:text-[60px] font-cinzel leading-[100%] tracking-[0%] font-normal`}
+                >
+                  {title}{" "}
+                </motion.div>
 
-            {ctaButton?.isActive && (
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.4 }}
-                className="mt-6"
-              >
-                <Link href={ctaButton.href}>
-                  <Button
-                    size="lg"
-                    className="bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:scale-105"
+                {subtitle && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                    className={`text-2xl lg:text-3xl font-bold xl:text-[60px] leading-[100%] mt-2 ${subtitleFontFamily}`}
+                    style={{
+                      background:
+                        "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      color: "transparent",
+                    }}
                   >
-                    {ctaButton.text}
-                  </Button>
-                </Link>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </div>
+                    {subtitle}
+                  </motion.div>
+                )}
+
+                {ctaButton?.isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.4 }}
+                    className="mt-6"
+                  >
+                    <Link href={ctaButton.href}>
+                      <Button
+                        size="lg"
+                        className="bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:scale-105"
+                      >
+                        {ctaButton.text}
+                      </Button>
+                    </Link>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
