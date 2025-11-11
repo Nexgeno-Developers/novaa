@@ -260,13 +260,17 @@ export default function ContactSection({
         <div className="relative flex flex-col sm:flex-row py-4">
           <div className="rounded-[20px] sm:rounded-l-[20px] overflow-hidden bg-[#01292B] flex flex-col sm:flex-row w-full">
             {/* Map Section */}
-            <div className="w-full sm:w-[514px] h-[200px] xs:h-[300px] sm:h-[820px] lg:h-[900px] xl:h-[800px] relative sm:rounded-l-[20px] sm:rounded-r-none">
-              <Image
-                src={mapImage}
-                alt="Map"
-                fill
-                className="object-cover sm:rounded-l-[20px] sm:rounded-r-none"
-              />
+            <div className="w-full sm:w-[514px] h-[200px] xs:h-[300px] sm:h-[820px] lg:h-[900px] xl:h-[800px] relative sm:rounded-l-[20px] sm:rounded-r-none overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.400379628691!2d72.8777!3d19.0760!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7ce62b0b7e84b%3A0xf35f02cb0897a208!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1695658340000!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute top-0 left-0 w-full h-full sm:rounded-l-[20px] sm:rounded-r-none"
+              ></iframe>
             </div>
 
             {/* Form Section */}

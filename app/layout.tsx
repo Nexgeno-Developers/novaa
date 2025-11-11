@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Providers } from "@/lib/providers";
 // const josefin_sans = Josefin_Sans({ subsets: ["latin"] });
 import { Toaster } from "sonner";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 export const metadata = {
   title: "Novaa Global Properties",

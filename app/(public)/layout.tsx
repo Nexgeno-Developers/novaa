@@ -6,6 +6,7 @@ import { getFooterData } from "@/lib/data/getFooterData";
 import { getNavbarData } from "@/lib/data/getNavbarData";
 import LoadingBarWrapper from "@/components/client/LoadingBarWrapper";
 import NavigationLoadingProvider from "@/components/client/NavigationLoadingProvider";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 // Force dynamic rendering
 // export const dynamic = 'force-dynamic';
