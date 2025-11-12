@@ -40,8 +40,11 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
 }) => {
   const [isInView, setIsInView] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(0); // Start with first video playing
   const playerRefs = useRef<{ [key: number]: any }>({});
   const sectionRef = useRef<HTMLElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wasInViewRef = useRef(false); // Track previous in-view state
 
   // Ensure clientVideos has proper structure
   const safeClientVideos = clientVideos || {
@@ -89,16 +92,65 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
     // ]
   );
 
+  // Pause all videos when scrolling away
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        // If section is not in viewport (scrolled away), pause all videos
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          Object.keys(playerRefs.current).forEach((key) => {
+            const index = parseInt(key);
+            const player = playerRefs.current[index];
+            if (player) {
+              try {
+                player.getInternalPlayer()?.pauseVideo?.();
+              } catch (error) {
+                console.log("Error pausing video:", error);
+              }
+            }
+          });
+          setPlayingIndex(null);
+        }
+      }
+    };
+
+    const throttledScroll = () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = setTimeout(handleScroll, 100);
+    };
+
+    window.addEventListener('scroll', throttledScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Intersection Observer to detect when section is in view
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          const isCurrentlyInView = entry.isIntersecting;
+          
+          if (isCurrentlyInView && !wasInViewRef.current) {
+            // Section just came into view - play first video
             setIsInView(true);
-          } else {
+            setPlayingIndex(0); // Play first video when section comes into view
+          } else if (!isCurrentlyInView && wasInViewRef.current) {
+            // Section just went out of view - pause all videos
             setIsInView(false);
+            setPlayingIndex(null);
           }
+          
+          // Update previous state
+          wasInViewRef.current = isCurrentlyInView;
         });
       },
       {
@@ -134,6 +186,22 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
     };
   }, [emblaApi]);
 
+  // Pause all videos except the one that's playing
+  useEffect(() => {
+    Object.keys(playerRefs.current).forEach((key) => {
+      const index = parseInt(key);
+      const player = playerRefs.current[index];
+      if (player && index !== playingIndex) {
+        // Pause other videos
+        try {
+          player.getInternalPlayer()?.pauseVideo?.();
+        } catch (error) {
+          console.log("Error pausing video:", error);
+        }
+      }
+    });
+  }, [playingIndex]);
+
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
@@ -141,6 +209,10 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+  const handleVideoPlay = (index: number) => {
+    setPlayingIndex(index);
+  };
 
   // If no videos, don't render the component
   if (sortedVideos.length === 0) {
@@ -173,6 +245,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
             <div className="embla__container flex">
               {sortedVideos.map((video, idx) => {
                 const isActive = isInView && idx === selectedIndex;
+                const isPlaying = playingIndex === idx;
 
                 return (
                   <div
@@ -196,10 +269,10 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
                             }
                           }}
                           src={video.url}
-                          playing={isActive}
+                          playing={isPlaying}
                           loop={true}
                           muted={false}
-                          volume={isActive ? 1 : 0}
+                          volume={isPlaying ? 1 : 0}
                           width="100%"
                           height="100%"
                           controls={true}
@@ -208,6 +281,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
                             top: 0,
                             left: 0,
                           }}
+                          onPlay={() => handleVideoPlay(idx)}
                         />
                       </div>
 
