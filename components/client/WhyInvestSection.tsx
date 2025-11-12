@@ -369,7 +369,7 @@ export default function WhyInvestSection({
                       },
                     },
                   }}
-                  className="flex items-start gap-6 group pb-4 sm:pb-0"
+                  className="flex items-start gap-6 group pb-4 sm:pb-0 mb-5"
                 >
                   <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
@@ -398,7 +398,7 @@ export default function WhyInvestSection({
                       />
                       <Link
                         href={`/why-invest#${point.title.replace(/\s+/g, '-').toLowerCase()}`}
-                        className="inline-flex items-center gap-1 text-base text-[#D4AF37] hover:text-[#B8851A] font-medium transition-colors group/link absolute sm:bottom-0 right-2 pl-2"
+                        className="inline-flex items-center gap-1 text-base text-[#D4AF37] hover:text-[#B8851A] font-medium transition-colors group/link absolute sm:-bottom-5 right-2 pl-2"
                       >
                         Read More
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
