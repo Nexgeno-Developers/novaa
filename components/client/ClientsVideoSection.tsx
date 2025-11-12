@@ -109,7 +109,7 @@ const ClientVideosSection: React.FC = () => {
               }
             }
           });
-          setPlayingIndex(null);
+          // setPlayingIndex(null);
         }
       }
     };
