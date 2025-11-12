@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Fancybox } from "@fancyapps/ui";
-import { Fancybox } from "@fancyapps/ui";
 
 interface DiscoverTranquilityTab {
   id: string;
