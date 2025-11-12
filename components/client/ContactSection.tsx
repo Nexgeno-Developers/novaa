@@ -266,7 +266,7 @@ export default function ContactSection({
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
-                allowFullScreen=""
+                allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute top-0 left-0 w-full h-full sm:rounded-l-[20px] sm:rounded-r-none"
