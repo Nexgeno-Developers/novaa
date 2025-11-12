@@ -260,17 +260,13 @@ export default function ContactSection({
         <div className="relative flex flex-col sm:flex-row py-4">
           <div className="rounded-[20px] sm:rounded-l-[20px] overflow-hidden bg-[#01292B] flex flex-col sm:flex-row w-full">
             {/* Map Section */}
-            <div className="w-full sm:w-[514px] h-[200px] xs:h-[300px] sm:h-[820px] lg:h-[900px] xl:h-[800px] relative sm:rounded-l-[20px] sm:rounded-r-none overflow-hidden">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.6135251589253!2d100.5086879748317!3d13.802156096126271!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29beca99f58b5%3A0x54ff9c07addbb3a!2sSoi%20Charan%20Sanitwong%2C%20Khwaeng%20Bang%20Ao%2C%20Khet%20Bang%20Phlat%2C%20Krung%20Thep%20Maha%20Nakhon%2010700%2C%20Thailand!5e0!3m2!1sen!2sin!4v1762929732907!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute top-0 left-0 w-full h-full sm:rounded-l-[20px] sm:rounded-r-none"
-              ></iframe>
+            <div className="w-full sm:w-[514px] h-[200px] xs:h-[300px] sm:h-[820px] lg:h-[900px] xl:h-[800px] relative sm:rounded-l-[20px] sm:rounded-r-none">
+              <Image
+                src={mapImage}
+                alt="Map"
+                fill
+                className="object-cover sm:rounded-l-[20px] sm:rounded-r-none"
+              />
             </div>
 
             {/* Form Section */}
