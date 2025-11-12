@@ -457,7 +457,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       <div className="container relative h-full z-10">
         <div className="relative h-full flex flex-col justify-end mt-10">
           {/* Text Content */}
-          {/* <div className="font-cinzel text-primary pb-5 sm:pb-0">
+          <div className="hidden font-cinzel text-primary pb-5 sm:pb-0">
             <motion.h2
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -474,7 +474,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
             >
               {subtitle && <div>{parse(subtitle)}</div>}
             </motion.h3>
-          </div> */}
+          </div>
 
           {/* Buttons Container */}
           <div className="flex justify-start gap-4 mb-20 pt-0 sm:pt-5 ">
