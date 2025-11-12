@@ -35,28 +35,37 @@ interface ProjectTabsProps {
   };
 }
 
-// Helper function to extract YouTube video ID from various URL formats
+/**
+ * Robust YouTube ID extractor for common URL variants.
+ */
 const extractYouTubeId = (url: string): string | null => {
-  const patterns = [
-    /(?:youtube\.com\/shorts\/|youtu\.be\/shorts\/)([a-zA-Z0-9_-]{11})/,
-    /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
-    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-  ];
+  if (!url) return null;
+  // Try common YouTube URL patterns (watch, embed, shorts, youtu.be)
+  const regex =
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const m = url.match(regex);
+  if (m && m[1]) return m[1];
 
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match) return match[1];
+  // As a fallback, try to extract v= query param
+  try {
+    const u = new URL(url);
+    const v = u.searchParams.get("v");
+    if (v && v.length === 11) return v;
+  } catch {
+    /* ignore */
   }
+
   return null;
 };
 
 export default function ProjectTabsSection({ project }: ProjectTabsProps) {
-  const discoverTranquility = project.projectDetail?.discoverTranquility || {
-    sectionTitle: "Discover Tranquility at",
-    backgroundImage: "",
-    description: "",
-    tabs: [],
-  };
+  const discoverTranquility =
+    project.projectDetail?.discoverTranquility || {
+      sectionTitle: "Discover Tranquility at",
+      backgroundImage: "",
+      description: "",
+      tabs: [] as DiscoverTranquilityTab[],
+    };
 
   const [activeTab, setActiveTab] = useState(
     discoverTranquility.tabs[0]?.id || ""
@@ -64,17 +73,49 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   const [showAllItems, setShowAllItems] = useState(false);
   const projectName = project.name;
 
-  // Bind Fancybox once
+  // Re-bind Fancybox on mount and whenever activeTab (or content) changes.
   useEffect(() => {
-    Fancybox.bind("[data-fancybox='tranquility']", {
-      Thumbs: { autoStart: false },
-      Toolbar: { display: ["zoom", "close"] },
-      animated: true,
-    });
-    return () => {
-      Fancybox.destroy();
+    if (typeof window === "undefined") return;
+
+    const bindFancybox = () => {
+      try {
+        (Fancybox as any).bind("[data-fancybox='tranquility']", {
+          Thumbs: { autoStart: false },
+          Toolbar: { display: ["zoom", "close"] },
+          animated: true,
+        });
+      } catch (err) {
+        // non-fatal; helps with debugging in prod builds
+        // eslint-disable-next-line no-console
+        console.warn("Fancybox.bind failed:", err);
+      }
     };
-  }, []);
+
+    // Use requestAnimationFrame so DOM updates from AnimatePresence finish first.
+    let rafId: number | null = null;
+    if (typeof window !== "undefined" && window.requestAnimationFrame) {
+      rafId = window.requestAnimationFrame(() => bindFancybox());
+    } else {
+      // fallback small timeout
+      setTimeout(() => bindFancybox(), 50);
+    }
+
+    return () => {
+      // cancel scheduled bind if any
+      if (rafId && typeof window !== "undefined" && window.cancelAnimationFrame) {
+        window.cancelAnimationFrame(rafId);
+      }
+
+      // safe cleanup; cast to any because types may be missing
+      try {
+        if ((Fancybox as any)?.close) (Fancybox as any).close();
+        if ((Fancybox as any)?.destroy) (Fancybox as any).destroy();
+      } catch {
+        // ignore cleanup failures
+      }
+    };
+    // Re-run binding when activeTab changes (so new anchors are bound).
+  }, [activeTab, showAllItems]);
 
   const activeTabData = discoverTranquility.tabs.find(
     (tab) => tab.id === activeTab
@@ -90,9 +131,8 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
     setShowAllItems((s) => !s);
   };
 
-  // Calculate total items across all tabs (if needed somewhere else)
   const totalItemsAcrossAllTabs = discoverTranquility.tabs.reduce(
-    (total, tab) => total + tab.items.length,
+    (total, tab) => total + (tab.items?.length || 0),
     0
   );
 
@@ -103,7 +143,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   };
 
   const itemsToDisplay = getItemsToDisplay();
-  const hasMoreItems = activeTabData && activeTabData.items.length > 6;
+  const hasMoreItems = !!activeTabData && activeTabData.items.length > 6;
 
   if (!discoverTranquility.tabs || discoverTranquility.tabs.length === 0) {
     return null;
@@ -119,7 +159,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
           </h2>
         </div>
 
-        {/* Region-style Tabs */}
+        {/* Tabs */}
         <div className="flex justify-center items-center mb-10 px-4 overflow-x-auto">
           {discoverTranquility.tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -207,6 +247,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   );
 }
 
+/* ---------------------- HoverImageCard ---------------------- */
 const HoverImageCard = ({
   defaultImage,
   hoverImage,
@@ -277,6 +318,10 @@ const HoverImageCard = ({
   );
 };
 
+/* ---------------------- YouTubeShortCard ----------------------
+   Renders a thumbnail that opens the video in Fancybox as an iframe.
+   This avoids inline iframe sizing/CSP/autoplay issues in the grid.
+-----------------------------------------------------------------*/
 const YouTubeShortCard = ({
   youtubeUrl,
   title,
@@ -285,7 +330,31 @@ const YouTubeShortCard = ({
   title: string;
 }) => {
   const videoId = extractYouTubeId(youtubeUrl);
-  const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+  const embedUrl = videoId
+    ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`
+    : "";
+
+  if (!videoId) {
+    return (
+      <motion.div
+        className="relative overflow-hidden rounded-2xl shadow-lg font-josefin bg-black"
+        whileHover={{ scale: 1.02 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="w-full h-50 sm:h-72 md:h-80 flex items-center justify-center bg-gray-800 text-white">
+          Invalid YouTube URL
+        </div>
+
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 pointer-events-none">
+          <h3 className="text-white text-lg font-semibold font-josefin">
+            {title}
+          </h3>
+        </div>
+      </motion.div>
+    );
+  }
+
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
   return (
     <motion.div
@@ -293,27 +362,30 @@ const YouTubeShortCard = ({
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="w-full h-50 sm:h-72 md:h-80">
-        {embedUrl ? (
-          <iframe
-            src={embedUrl}
-            title={title}
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+      {/* Anchor: Fancybox will open this as an iframe */}
+      <a
+        href={`https://www.youtube.com/watch?v=${videoId}`}
+        data-fancybox="tranquility"
+        data-caption={title}
+        data-type="iframe"
+        className="block w-full h-full"
+      >
+        <div className="w-full h-50 sm:h-72 md:h-80">
+          <Image
+            src={thumbnailUrl}
+            alt={title}
+            width={500}
+            height={280}
+            className="w-full h-full object-cover"
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white">
-            Invalid YouTube URL
-          </div>
-        )}
-      </div>
+        </div>
 
-      <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 pointer-events-none">
-        <h3 className="text-white text-lg font-semibold font-josefin">
-          {title}
-        </h3>
-      </div>
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 pointer-events-none">
+          <h3 className="text-white text-lg font-semibold font-josefin">
+            {title}
+          </h3>
+        </div>
+      </a>
     </motion.div>
   );
 };
