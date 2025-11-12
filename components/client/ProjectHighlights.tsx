@@ -64,17 +64,30 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   const [showAllItems, setShowAllItems] = useState(false);
   const projectName = project.name;
 
-  // Bind Fancybox once
+  // Bind Fancybox on mount and whenever activeTab changes so new anchors are wired
   useEffect(() => {
+    // Ensure no previous instance remains
+    try {
+      Fancybox.destroy();
+    } catch (e) {
+      // ignore if not initialized
+    }
+
+    // v5 includes plugins; cast to `any` because type defs don't include plugin options
     Fancybox.bind("[data-fancybox='tranquility']", {
       Thumbs: { autoStart: false },
       Toolbar: { display: ["zoom", "close"] },
       animated: true,
-    });
+    } as any);
+
     return () => {
-      Fancybox.destroy();
+      try {
+        Fancybox.destroy();
+      } catch (e) {
+        // ignore
+      }
     };
-  }, []);
+  }, [activeTab]);
 
   const activeTabData = discoverTranquility.tabs.find(
     (tab) => tab.id === activeTab
