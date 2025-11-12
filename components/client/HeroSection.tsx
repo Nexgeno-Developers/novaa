@@ -291,7 +291,6 @@ export default function HeroSection({
             ref={videoRef}
             src={backgroundMedia.src}
             autoPlay
-            muted
             loop
             playsInline
             style={{
