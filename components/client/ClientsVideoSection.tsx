@@ -50,7 +50,7 @@ const headingVariants: Variants = {
 const ClientVideosSection: React.FC = () => {
   const [isInView, setIsInView] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [playingIndex, setPlayingIndex] = useState<number | null>(0); // Start with first video playing
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null); // Start with first video playing
   const playerRefs = useRef<{ [key: number]: any }>({});
   const sectionRef = useRef<HTMLElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
