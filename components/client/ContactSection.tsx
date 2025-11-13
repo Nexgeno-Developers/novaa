@@ -262,7 +262,7 @@ export default function ContactSection({
             {/* Map Section */}
             <div className="w-full sm:w-[514px] h-[200px] xs:h-[300px] sm:h-[820px] lg:h-[900px] xl:h-[800px] relative sm:rounded-l-[20px] sm:rounded-r-none overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.400379628691!2d72.8777!3d19.0760!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7ce62b0b7e84b%3A0xf35f02cb0897a208!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1695658340000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.950118115326!2d72.82776097580597!3d19.065930652287374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c912fd99a59f%3A0x459d797a2408f9c!2sBrijbala%20building!5e0!3m2!1sen!2sin!4v1763017040374!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

@@ -56,7 +56,7 @@ export default function WhyInvestDetailClient({
 
   return (
     <>
-      <BreadcrumbsSection title="Our Investment" pageSlug="our-investment" />
+      <BreadcrumbsSection title="Why Invest in Phuket" pageSlug="our-investment" />
       <div ref={containerRef} className="bg-secondary">
         {/* Hero Section */}
         {/* <motion.section
