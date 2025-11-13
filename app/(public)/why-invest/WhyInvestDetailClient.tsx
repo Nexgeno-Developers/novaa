@@ -6,8 +6,8 @@ import Image from "next/image";
 import parse from "html-react-parser";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 
-const imageFifthLink = "https://images.pexels.com/photos/290275/pexels-photo-290275.jpeg"
-const imageSixthLink = "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg"
+const imageFifthLink = "/images/goverment_images.webp"
+const imageSixthLink = "/images/currency_images.webp"
 
 
 interface InvestmentPoint {
