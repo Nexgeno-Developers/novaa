@@ -51,7 +51,7 @@ export default function Breadcrumbs({
       <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-white text-center pt-12 px-4">
         {/* Dynamic Title */}
         <h1
-          className={`${josefin.className} text-[24px] sm:text-[62px] font-medium leading-[100%] max-w-lg mb-15 sm:mb-0`}
+          className={`${josefin.className} text-[24px] sm:text-[62px] font-medium leading-[100%] mb-15 sm:mb-0`}
         >
           {title}
         </h1>
