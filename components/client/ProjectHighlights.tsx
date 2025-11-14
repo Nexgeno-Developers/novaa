@@ -58,8 +58,12 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
     tabs: [],
   };
 
+  // Filter tabs to only include those with items
+  const availableTabs = discoverTranquility.tabs.filter(tab => tab.items && tab.items.length > 0);
+  
+  // Set active tab to first available tab
   const [activeTab, setActiveTab] = useState(
-    discoverTranquility.tabs[0]?.id || ""
+    availableTabs[0]?.id || ""
   );
   const [showAllItems, setShowAllItems] = useState(false);
   const projectName = project.name;
@@ -89,7 +93,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
     };
   }, [activeTab]);
 
-  const activeTabData = discoverTranquility.tabs.find(
+  const activeTabData = availableTabs.find(
     (tab) => tab.id === activeTab
   );
 
@@ -104,7 +108,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   };
 
   // Calculate total items across all tabs (if needed somewhere else)
-  const totalItemsAcrossAllTabs = discoverTranquility.tabs.reduce(
+  const totalItemsAcrossAllTabs = availableTabs.reduce(
     (total, tab) => total + tab.items.length,
     0
   );
@@ -118,7 +122,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   const itemsToDisplay = getItemsToDisplay();
   const hasMoreItems = activeTabData && activeTabData.items.length > 6;
 
-  if (!discoverTranquility.tabs || discoverTranquility.tabs.length === 0) {
+  if (!availableTabs || availableTabs.length === 0) {
     return null;
   }
 
@@ -134,7 +138,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
 
         {/* Region-style Tabs */}
         <div className="flex justify-center items-center mb-10 px-4 overflow-x-auto">
-          {discoverTranquility.tabs.map((tab) => {
+          {availableTabs.map((tab) => {
             const isActive = activeTab === tab.id;
             const itemCount = tab.items.length;
 
