@@ -58,12 +58,8 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
     tabs: [],
   };
 
-  // Filter tabs to only include those with items
-  const availableTabs = discoverTranquility.tabs.filter(tab => tab.items && tab.items.length > 0);
-  
-  // Set active tab to first available tab
   const [activeTab, setActiveTab] = useState(
-    availableTabs[0]?.id || ""
+    discoverTranquility.tabs[0]?.id || ""
   );
   const [showAllItems, setShowAllItems] = useState(false);
   const projectName = project.name;
@@ -93,7 +89,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
     };
   }, [activeTab]);
 
-  const activeTabData = availableTabs.find(
+  const activeTabData = discoverTranquility.tabs.find(
     (tab) => tab.id === activeTab
   );
 
@@ -108,7 +104,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   };
 
   // Calculate total items across all tabs (if needed somewhere else)
-  const totalItemsAcrossAllTabs = availableTabs.reduce(
+  const totalItemsAcrossAllTabs = discoverTranquility.tabs.reduce(
     (total, tab) => total + tab.items.length,
     0
   );
@@ -122,7 +118,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
   const itemsToDisplay = getItemsToDisplay();
   const hasMoreItems = activeTabData && activeTabData.items.length > 6;
 
-  if (!availableTabs || availableTabs.length === 0) {
+  if (!discoverTranquility.tabs || discoverTranquility.tabs.length === 0) {
     return null;
   }
 
@@ -138,33 +134,35 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
 
         {/* Region-style Tabs */}
         <div className="flex justify-center items-center mb-10 px-4 overflow-x-auto">
-          {availableTabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const itemCount = tab.items.length;
+  {discoverTranquility.tabs
+    .filter(tab => tab.items && tab.items.length > 0) // Filter out tabs with no items
+    .map((tab) => {
+      const isActive = activeTab === tab.id;
+      const itemCount = tab.items.length;
 
-            return (
-              <Button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                variant="ghost"
-                className={`font-josefin relative rounded-none px-2 sm:px-10 py-6 sm:py-8 font-medium border-y-2 transition-colors duration-300 text-sm sm:text-[22px]
-                  ${
-                    isActive
-                      ? "border-white text-white"
-                      : "border-white/50 border-y-[1.2px] text-white/80"
-                  }
-                  cursor-pointer hover:text-primary`}
-              >
-                <span className="flex items-center gap-2">
-                  {tab.label}
-                  <span className="text-[10px] sm:text-xs bg-white/10 px-2 py-0.5 rounded-full">
-                    {itemCount}
-                  </span>
-                </span>
-              </Button>
-            );
-          })}
-        </div>
+      return (
+        <Button
+          key={tab.id}
+          onClick={() => handleTabChange(tab.id)}
+          variant="ghost"
+          className={`font-josefin relative rounded-none px-2 sm:px-10 py-6 sm:py-8 font-medium border-y-2 transition-colors duration-300 text-sm sm:text-[22px]
+            ${
+              isActive
+                ? "border-white text-white"
+                : "border-white/50 border-y-[1.2px] text-white/80"
+            }
+            cursor-pointer hover:text-primary`}
+        >
+          <span className="flex items-center gap-2">
+            {tab.label}
+            <span className="text-[10px] sm:text-xs bg-white/10 px-2 py-0.5 rounded-full">
+              {itemCount}
+            </span>
+          </span>
+        </Button>
+      );
+    })}
+</div>
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
