@@ -132,7 +132,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
         <div className="font-cinzel text-center space-y-2 sm:space-y-4 mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl lg:text-[50px] font-normal uppercase text-center">
             {discoverTranquility.sectionTitle}{" "}
-            <span className="text-primary font-bold">{projectName}</span>
+            {/* <span className="text-primary font-bold">{projectName}</span> */}
           </h2>
         </div>
 

@@ -74,6 +74,7 @@ import {
   Star,
   MessageCircle,
   BarChart3,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 import { EnquiryUpdateData } from "@/redux/slices/enquirySlice";
@@ -92,6 +93,7 @@ const EnquiriesManager = () => {
     priority: string;
     notes: string;
   } | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     dispatch(fetchEnquiries(filters));
@@ -206,6 +208,77 @@ const EnquiriesManager = () => {
     });
   };
 
+  const exportToExcel = async () => {
+    setIsExporting(true);
+    try {
+      // Fetch all enquiries
+      const response = await fetch("/api/enquiries/export");
+      const result = await response.json();
+
+      if (!result.success || !result.data) {
+        throw new Error("Failed to fetch enquiries");
+      }
+
+      const allEnquiries = result.data;
+
+      // Convert to CSV format (Excel can open CSV files)
+      const headers = [
+        "ID",
+        "Full Name",
+        "Email Address",
+        "Phone Number",
+        "Location",
+        "Message",
+        "Status",
+        "Priority",
+        "Notes",
+        "Page URL",
+        "Created At",
+        "Updated At",
+      ];
+
+      const csvRows = [headers.join(",")];
+
+      allEnquiries.forEach((enquiry: Enquiry) => {
+        const row = [
+          enquiry._id || "",
+          `"${(enquiry.fullName || "").replace(/"/g, '""')}"`,
+          `"${(enquiry.emailAddress || "").replace(/"/g, '""')}"`,
+          `"${(enquiry.phoneNo || "").replace(/"/g, '""')}"`,
+          `"${(enquiry.location || "").replace(/"/g, '""')}"`,
+          `"${(enquiry.message || "").replace(/"/g, '""').replace(/\n/g, " ")}"`,
+          enquiry.status || "",
+          enquiry.priority || "",
+          `"${(enquiry.notes || "").replace(/"/g, '""').replace(/\n/g, " ")}"`,
+          `"${(enquiry.pageUrl || "").replace(/"/g, '""')}"`,
+          `"${new Date(enquiry.createdAt).toLocaleString()}"`,
+          `"${new Date(enquiry.updatedAt).toLocaleString()}"`,
+        ];
+        csvRows.push(row.join(","));
+      });
+
+      const csvContent = csvRows.join("\n");
+
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", `enquiries_${new Date().toISOString().split("T")[0]}.csv`);
+      link.style.visibility = "hidden";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`Exported ${allEnquiries.length} enquiries successfully!`);
+    } catch (error: any) {
+      console.error("Export error:", error);
+      toast.error(error.message || "Failed to export enquiries");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white p-6 -m-6 space-y-8 font-poppins">
       {/* Header */}
@@ -223,16 +296,30 @@ const EnquiriesManager = () => {
             </p>
           </div>
         </div>
-        <Button
-          onClick={() => dispatch(fetchEnquiries(filters))}
-          className="bg-emerald-900 border-slate-200/60 text-white hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer disabled:opacity-50 hover:text-primary"
-          disabled={loading}
-        >
-          <RefreshCw
-            className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-          />
-          <span className="font-medium">Refresh</span>
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button
+            onClick={exportToExcel}
+            className="bg-blue-600 border-slate-200/60 text-white hover:bg-blue-700 hover:shadow-sm transition-all duration-200 cursor-pointer disabled:opacity-50"
+            disabled={isExporting || loading}
+          >
+            <Download
+              className={`w-4 h-4 mr-2 ${isExporting ? "animate-pulse" : ""}`}
+            />
+            <span className="font-medium">
+              {isExporting ? "Exporting..." : "Export to Excel"}
+            </span>
+          </Button>
+          <Button
+            onClick={() => dispatch(fetchEnquiries(filters))}
+            className="bg-emerald-900 border-slate-200/60 text-white hover:bg-white hover:shadow-sm transition-all duration-200 cursor-pointer disabled:opacity-50 hover:text-primary"
+            disabled={loading}
+          >
+            <RefreshCw
+              className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+            />
+            <span className="font-medium">Refresh</span>
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}

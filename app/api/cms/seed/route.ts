@@ -196,8 +196,8 @@ export async function POST(request: NextRequest) {
           margin: "0",
         },
         content: {
-          mainHeading: "DISCOVER PRIME PROPERTIES",
-          subHeading: "ACROSS PHUKET",
+          mainHeading: "DISCOVER ",
+          subHeading: "PHUKET",
           description:
             "Explore a Curated Selection of Luxury Residences. Whether you're seeking a beachfront retreat, an investment opportunity, or a peaceful escape amidst nature, these developments represent the best of lifestyle and location in Phuket.",
           explorerHeading: "Phuket Explorer",

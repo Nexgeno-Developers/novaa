@@ -67,8 +67,8 @@ export default function PhuketPropertiesManager({
   const userHasInteractedRef = useRef(false);
 
   const defaultData: PhuketPropertiesData = {
-    mainHeading: "DISCOVER PRIME PROPERTIES",
-    subHeading: "ACROSS PHUKET",
+    mainHeading: "DISCOVER ",
+    subHeading: "PHUKET",
     description:
       "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
     explorerHeading: "Phuket Explorer",

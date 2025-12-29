@@ -21,9 +21,9 @@ const videos: VideoData[] = [
   {
     url: "https://www.youtube.com/shorts/s6_ZgUPRW1Y",
   },
-  {
-    url: "https://www.youtube.com/shorts/BKNuvvRgGWg",
-  },
+  // {
+  //   url: "https://www.youtube.com/shorts/BKNuvvRgGWg",
+  // },
   {
     url: "https://www.youtube.com/shorts/jBb8o0-dfbA",
   },

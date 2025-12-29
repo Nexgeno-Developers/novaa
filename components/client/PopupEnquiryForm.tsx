@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Phone, User, MapPin, Loader2, AlertCircle } from "lucide-react";
+import { X, Phone, User, MapPin, Loader2, AlertCircle, Mail, MessageSquare } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux";
 import {
@@ -23,12 +23,17 @@ const PopupEnquiryForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
     phone: "",
     location: "",
+    description: "",
   });
   const [formErrors, setFormErrors] = useState({
+    fullName: "",
+    email: "",
     phone: "",
     location: "",
+    description: "",
   });
 
   // Check if user has already submitted the popup form
@@ -46,10 +51,27 @@ const PopupEnquiryForm = () => {
   // Validate form
   const validateForm = () => {
     const errors = {
+      fullName: "",
+      email: "",
       phone: "",
       location: "",
+      description: "",
     };
 
+    // Name validation (required)
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Name is required";
+    }
+
+    // Email validation (optional, but if provided must be valid)
+    if (formData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        errors.email = "Please enter a valid email address";
+      }
+    }
+
+    // Phone validation (required)
     if (!formData.phone.trim()) {
       errors.phone = "Phone number is required";
     } else {
@@ -59,16 +81,19 @@ const PopupEnquiryForm = () => {
       }
     }
 
+    // Location validation (required)
     if (!formData.location.trim()) {
-      errors.location = "City is required";
+      errors.location = "Location is required";
     }
 
+    // Description is optional, no validation needed
+
     setFormErrors(errors);
-    return !errors.phone && !errors.location;
+    return !errors.fullName && !errors.email && !errors.phone && !errors.location;
   };
 
   // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -100,11 +125,11 @@ const PopupEnquiryForm = () => {
 
       // Prepare enquiry data
       const enquiryData = {
-        fullName: formData.fullName || "Popup Enquiry",
-        emailAddress: undefined,
+        fullName: formData.fullName,
+        emailAddress: formData.email || undefined,
         phoneNo: formData.phone,
         location: formData.location,
-        message: "Enquiry from popup form",
+        message: formData.description || "Enquiry from popup form",
         pageUrl,
       };
 
@@ -126,8 +151,10 @@ const PopupEnquiryForm = () => {
       // Reset form
       setFormData({
         fullName: "",
+        email: "",
         phone: "",
         location: "",
+        description: "",
       });
     } catch (error: any) {
       console.error("Enquiry submission error:", error);
@@ -213,22 +240,58 @@ const PopupEnquiryForm = () => {
                 onSubmit={handleFormSubmit}
                 className="space-y-4 font-josefin text-[14px]"
               >
-                {/* Name Field (Optional) */}
+                {/* Name Field (Required) */}
                 <div>
                   <label className="block text-primary text-sm font-medium mb-2">
-                    Name (Optional)
+                    Name *
                   </label>
                   <input
                     type="text"
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
+                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
+                      formErrors.fullName
+                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                        : "border-[#FFFFFF80]"
+                    }`}
                     placeholder="Enter your name"
+                    required
                   />
+                  {formErrors.fullName && (
+                    <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
+                      {formErrors.fullName}
+                    </p>
+                  )}
                 </div>
 
-                {/* Phone Field (Mandatory) */}
+                {/* Email Field (Optional) */}
+                <div>
+                  <label className="block text-primary text-sm font-medium mb-2">
+                    Email (Optional)
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
+                      formErrors.email
+                        ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                        : "border-[#FFFFFF80]"
+                    }`}
+                    placeholder="Enter your email"
+                  />
+                  {formErrors.email && (
+                    <p className="mt-1 text-sm text-red-400 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
+                      {formErrors.email}
+                    </p>
+                  )}
+                </div>
+
+                {/* Phone Field (Required) */}
                 <div>
                   <label className="block text-primary text-sm font-medium mb-2">
                     Phone Number *
@@ -254,10 +317,10 @@ const PopupEnquiryForm = () => {
                   )}
                 </div>
 
-                {/* City Field (Mandatory) */}
+                {/* Location Field (Required) */}
                 <div>
                   <label className="block text-primary text-sm font-medium mb-2">
-                    City *
+                    Location *
                   </label>
                   <input
                     type="text"
@@ -269,7 +332,7 @@ const PopupEnquiryForm = () => {
                         ? "border-red-400 focus:border-red-400 focus:ring-red-400"
                         : "border-[#FFFFFF80]"
                     }`}
-                    placeholder="Enter your city"
+                    placeholder="Enter your location"
                     required
                   />
                   {formErrors.location && (
@@ -278,6 +341,21 @@ const PopupEnquiryForm = () => {
                       {formErrors.location}
                     </p>
                   )}
+                </div>
+
+                {/* Description Field (Optional) */}
+                <div>
+                  <label className="block text-primary text-sm font-medium mb-2">
+                    Description (Optional)
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none border-[#FFFFFF80]"
+                    placeholder="Enter your message or description"
+                  />
                 </div>
 
                 {/* Submit Button */}

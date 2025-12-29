@@ -170,6 +170,14 @@ const PriceEnquiryCTA = () => {
     setIsOpen(false);
   };
 
+  // Handle WhatsApp contact
+  const handleWhatsAppContact = () => {
+    const phoneNumber = "+919867724223";
+    const message = encodeURIComponent("Hi, I am contacting you through your website");
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
   return (
     <>
       {/* Horizontal CTA Section */}
@@ -209,9 +217,8 @@ const PriceEnquiryCTA = () => {
               <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-cinzel  text-white mb-2">
                 Get Your{" "}
                 <span className="text-[#CDB04E] font-bold">
-                  Personalized Price
-                </span>{" "}
-                Instantly!
+                  Request Pricing & Tailored Payment Plans
+                </span>
               </h2>
             </motion.div>
 
@@ -226,7 +233,7 @@ const PriceEnquiryCTA = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setIsOpen(true)}
+                onClick={handleWhatsAppContact}
                 className="bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:from-[#CDB04E] hover:via-[#F5E7A8] hover:to-[#CDB04E] text-background font-semibold w-full px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3 group font-josefin text-lg cursor-pointer"
               >
                 Contact for Prices

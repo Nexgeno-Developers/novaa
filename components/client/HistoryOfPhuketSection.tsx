@@ -91,7 +91,7 @@ const HistoryOfPhuketSection = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] bg-background font-cinzel bg-clip-text text-transparent">
-              History of <span className="text-[#CDB04E] font-bold">Phuket</span>
+              Origin of <span className="text-[#CDB04E] font-bold">Phuket</span>
             </h2>
           </motion.div>
         </div>

@@ -356,10 +356,14 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
   };
 
   const handleScheduleMeeting = () => {
-    console.log("Schedule meeting clicked");
+    const phoneNumber = "+919867724223";
+    const message = encodeURIComponent("Hi, I am contacting you through your website");
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
+    <>
     <section
       ref={sectionRef}
       className="relative h-screen overflow-hidden bg-background"
@@ -476,29 +480,11 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
             </motion.h3>
           </div>
 
-          {/* Buttons Container */}
-          <div className="flex justify-start gap-4 mb-20 pt-0 sm:pt-5 ">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleScheduleMeeting}
-              className="inline-flex bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] font-josefin items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-md text-background font-semibold shadow-lg cursor-pointer transition-all duration-300 text-xs sm:text-base"
-            >
-              {parse(scheduleMeetingText)}
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleBrochureClick}
-              className="border border-[#CDB04E99] inline-flex font-josefin items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-md bg-[#CDB04E1A] text-primary font-semibold shadow-lg cursor-pointer transition-all duration-300 text-xs sm:text-base"
-            >
-              {parse(getBrochureText)}
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
-          </div>
+          
         </div>
       </div>
+
+
 
       {/* Brochure Form Modal */}
       <AnimatePresence>
@@ -685,6 +671,35 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
         )}
       </AnimatePresence>
     </section>
+
+
+<div className="bg-[#01292B]">
+      <div className="container">
+        {/* Buttons Container */}
+          <div className="flex justify-start gap-4 mb-0 pt-0 sm:pt-5 ">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleScheduleMeeting}
+              className="inline-flex bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] hover:bg-[#CDB04E] font-josefin items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-md text-background font-semibold shadow-lg cursor-pointer transition-all duration-300 text-xs sm:text-base"
+            >
+              {parse(scheduleMeetingText)}
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleBrochureClick}
+              className="border border-[#CDB04E99] inline-flex font-josefin items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-md bg-[#CDB04E1A] text-primary font-semibold shadow-lg cursor-pointer transition-all duration-300 text-xs sm:text-base"
+            >
+              {parse(getBrochureText)}
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </div>
+      </div>
+      </div>
+
+      </>
   );
 };
 

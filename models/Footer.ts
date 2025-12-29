@@ -134,12 +134,12 @@ const FooterSchema = new mongoose.Schema(
     tagline: {
       title: {
         type: String,
-        default: "YOUR DREAM HOME IN",
+        default: "Own the World",
         trim: true,
       },
       subtitle: {
         type: String,
-        default: "PHUKET AWAITS",
+        default: "One Home at a Time",
         trim: true,
       },
       description: {

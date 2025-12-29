@@ -95,7 +95,7 @@ export default function AboutPage({
 
       {/* Overlays */}
       {bottomOverlay && (
-        <div className="absolute inset-x-0 h-1/2 bottom-0 z-45 bg-gradient-to-t from-[#01292B] to-transparent" />
+        <div className="absolute inset-x-0 h-[80%] bottom-0 z-45 bg-gradient-to-t from-[#01292B] to-transparent" />
       )}
       {topOverlay && (
         <div className="absolute inset-x-0 h-1/6 top-0 z-45 bg-gradient-to-b from-[#01292B] to-transparent" />

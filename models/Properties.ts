@@ -48,11 +48,11 @@ const CategorySchema = new Schema({
 const PropertiesSchema: Schema = new Schema({
   mainHeading: { 
     type: String, 
-    default: 'DISCOVER PRIME PROPERTIES' 
+    default: 'DISCOVER ' 
   },
   subHeading: { 
     type: String, 
-    default: 'ACROSS PHUKET' 
+    default: 'PHUKET' 
   },
   description: { 
     type: String, 

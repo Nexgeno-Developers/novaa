@@ -72,8 +72,8 @@ const mapPinVariants: Variants = {
 };
 
 export default function PhuketPropertiesSection({
-  mainHeading = "DISCOVER",
-  subHeading = "PHUKET PROPERTIES",
+  mainHeading = "DISCOVER ",
+  subHeading = "PHUKET ",
   description = "<p>Explore premium properties across Phuket's most sought-after locations.</p>",
   explorerHeading = "PHUKET EXPLORER",
   explorerDescription = "<p>Navigate through different property categories and locations.</p>",
@@ -141,18 +141,16 @@ export default function PhuketPropertiesSection({
           className="font-cinzel space-y-2 sm:space-y-4 text-center "
         >
           <h1 className="text-white text-2xl lg:text-3xl xl:text-[50px] font-normal">
-            {mainHeading}
+            {mainHeading} <span className="font-bold bg-clip-text text-transparent bg-[#D4AF37]">{subHeading}</span>
           </h1>
-          <h2 className="text-2xl lg:text-3xl xl:text-[50px] font-bold bg-gradient-to-r from-[#C3912F] via-[#F5E7A8] to-[#C3912F] bg-clip-text text-transparent pb-5">
-            {subHeading}
-          </h2>
+        
 
           {/* Description */}
-          <motion.div
+          {/* <motion.div
             variants={itemVariants}
             className="font-josefin text-[#FFFFFFE5] description-text"
             dangerouslySetInnerHTML={createMarkup(description)}
-          />
+          /> */}
         </motion.div>
 
         <div className="font-cinzel grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-20 items-start">
