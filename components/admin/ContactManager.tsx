@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Editor from "@/components/admin/Editor";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,9 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   onChange,
   showSaveButton = false,
 }) => {
+  const isInitializedRef = useRef(false);
+  const initialDataSetRef = useRef(false);
+
   const [localData, setLocalData] = useState<ContactData>({
     details: section?.content?.details || [
       { _id: "", icon: "", title: "", description: "" },
@@ -46,7 +49,7 @@ const ContactManager: React.FC<ContactManagerProps> = ({
   });
 
   useEffect(() => {
-    if (section?.content) {
+    if (section?.content && !initialDataSetRef.current) {
       setLocalData({
         details: section.content.details || [
           { icon: "", title: "", description: "" },
@@ -57,13 +60,18 @@ const ContactManager: React.FC<ContactManagerProps> = ({
         formDescription: section.content.formDescription || "",
         mapImage: section.content.mapImage || "",
       });
+      initialDataSetRef.current = true;
+      isInitializedRef.current = true;
     }
   }, [section]);
 
   const handleDataChange = (newData: Partial<ContactData>) => {
     const updatedData = { ...localData, ...newData };
     setLocalData(updatedData);
-    onChange({ content: updatedData });
+    // Only call onChange after initialization
+    if (isInitializedRef.current && onChange) {
+      onChange({ content: updatedData });
+    }
   };
 
   const handleFormTitleChange = (content: string) => {

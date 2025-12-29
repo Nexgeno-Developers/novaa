@@ -158,6 +158,12 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
     (sectionId: string, changes: any) => {
       // Only track changes after sections are fully initialized
       if (!sectionsInitialized) {
+        console.log('Sections not initialized yet, skipping change tracking');
+        return;
+      }
+
+      // Skip if changes object is empty
+      if (!changes || Object.keys(changes).length === 0) {
         return;
       }
 
@@ -167,9 +173,11 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
           [sectionId]: { ...prev[sectionId], ...changes },
         };
 
-        // Only set hasChanges to true if there are actually changes
+        // Set hasChanges to true if there are any changes
         const hasActualChanges = Object.keys(newChanges).length > 0;
         setHasChanges(hasActualChanges);
+        
+        console.log('Change detected:', { sectionId, hasActualChanges, changeKeys: Object.keys(changes) });
 
         return newChanges;
       });
@@ -413,6 +421,28 @@ export default function PageSections({ pageSlug }: PageSectionsProps) {
         </div>
 
         <div className="flex items-center space-x-2">
+          {/* Save Button - Show when there are changes */}
+          {(hasChanges && Object.keys(sectionChanges).length > 0) && (
+            <Button
+              onClick={handleGlobalSave}
+              disabled={isSaving || !hasChanges || Object.keys(sectionChanges).length === 0}
+              size="lg"
+              className="bg-primary text-background hover:bg-primary/90 cursor-pointer shadow-lg hover:shadow-xl transition-all duration-200"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          )}
+
           {/* Only show discard button if there are actual changes */}
           {hasChanges && Object.keys(sectionChanges).length > 0 && (
             <Button
