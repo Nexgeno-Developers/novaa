@@ -124,7 +124,7 @@ export default function ProjectTabsSection({ project }: ProjectTabsProps) {
 
   if (!availableTabs || availableTabs.length === 0) {
     return null;
-  }
+  } 
 
   return (
     <section className="bg-background text-white py-12 sm:py-16">
