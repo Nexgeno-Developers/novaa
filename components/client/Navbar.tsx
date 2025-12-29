@@ -54,6 +54,7 @@ export default function Navbar({ data }: NavbarProps) {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [isBrochureModalOpen, setIsBrochureModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     phone: "",
     description: "",
@@ -99,7 +100,7 @@ export default function Navbar({ data }: NavbarProps) {
     document.body.removeChild(link);
 
     // Reset form and close modal
-    setFormData({ email: "", phone: "", description: "" });
+    setFormData({ name: "", email: "", phone: "", description: "" });
     setIsSubmitting(false);
     setIsBrochureModalOpen(false);
   };
@@ -429,6 +430,22 @@ export default function Navbar({ data }: NavbarProps) {
                 onSubmit={handleBrochureSubmit}
                 className="space-y-4 font-josefin text-[14px]"
               >
+                <div>
+                  <label className="block text-primary text-sm font-medium mb-2">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
+                    placeholder="Your full name"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-primary text-sm font-medium mb-2">
                     Email Address (optional)

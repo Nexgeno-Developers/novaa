@@ -276,8 +276,6 @@ export default function WhyInvestSection({
   ],
   ...props
 }: WhyInvestSectionProps) {
-  console.log("Props of why invest ", props);
-
   // Framer-motion variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -311,8 +309,10 @@ export default function WhyInvestSection({
     },
   };
 
-
-  console.log("Investment Points: ", investmentPoints);
+  // Ensure investmentPoints is always an array
+  const safeInvestmentPoints = Array.isArray(investmentPoints) ? investmentPoints : [];
+  // Ensure images is always an array
+  const safeImages = Array.isArray(images) ? images : [];
 
   return (
     <section className="font-cinzel py-10 sm:py-16 lg:py-24 bg-secondary">
@@ -351,9 +351,9 @@ export default function WhyInvestSection({
               animate="visible"
               className=""
             >
-              {investmentPoints.map((point, index) => (
+              {safeInvestmentPoints.map((point, index) => (
                 <motion.div
-                  key={point._id}
+                  key={point._id || `investment-point-${index}`}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.3, margin: "-50px" }}
@@ -419,13 +419,13 @@ export default function WhyInvestSection({
             className="flex flex-wrap gap-3 lg:gap-4 h-auto lg:h-full sm:py-10"
           >
             {/* Image 1 */}
-            {images[0] && (
+            {safeImages[0] && (
               <motion.div
                 variants={imageVariants}
                 className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[52%] xl:basis-[54%] rounded-3xl overflow-hidden [@media(max-width:300px)]:basis-full"
               >
                 <Image
-                  src={images[0]}
+                  src={safeImages[0]}
                   alt="Investment Image 1"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -434,13 +434,13 @@ export default function WhyInvestSection({
             )}
 
             {/* Image 2 */}
-            {images[1] && (
+            {safeImages[1] && (
               <motion.div
                 variants={imageVariants}
                 className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[48.5%] md:basis-[48.5%] lg:basis-[43%] rounded-3xl overflow-hidden  [@media(max-width:300px)]:basis-full"
               >
                 <Image
-                  src={images[1]}
+                  src={safeImages[1]}
                   alt="Investment Image 2"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -449,13 +449,13 @@ export default function WhyInvestSection({
             )}
 
             {/* Image 3 */}
-            {images[2] && (
+            {safeImages[2] && (
               <motion.div
                 variants={imageVariants}
                 className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[47%] sm:basis-[48%] md:basis-[48.5%] lg:basis-[58%] xl:basis-[60%] rounded-3xl overflow-hidden [@media(max-width:300px)]:basis-full"
               >
                 <Image
-                  src={images[2]}
+                  src={safeImages[2]}
                   alt="Investment Image 3"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -464,13 +464,13 @@ export default function WhyInvestSection({
             )}
 
             {/* Image 4 */}
-            {images[3] && (
+            {safeImages[3] && (
               <motion.div
                 variants={imageVariants}
                 className="relative h-auto min-h-[200px] sm:h-80 lg:h-110 basis-[48.5%] md:basis-[48.5%] lg:basis-[37%] rounded-3xl overflow-hidden [@media(max-width:300px)]:basis-full"
               >
                 <Image
-                  src={images[3]}
+                  src={safeImages[3]}
                   alt="Investment Image 4"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"

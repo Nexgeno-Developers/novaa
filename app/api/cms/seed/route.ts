@@ -650,7 +650,7 @@ export async function POST(request: NextRequest) {
               _id: "contact_detail_2",
               icon: "/images/phonenumber.svg",
               title: "Call Us",
-              description: "+66 76 123 4567",
+              description: "+91 98677 24223",
             },
             {
               _id: "contact_detail_3",
