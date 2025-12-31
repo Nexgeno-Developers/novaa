@@ -35,24 +35,30 @@ interface ContactSectionProps {
 const contactFormSchema = z.object({
   fullName: z
     .string()
-    .min(2, "Full name must be at least 2 characters")
-    .max(100, "Full name cannot exceed 100 characters")
+    .min(1, "Full name is required")
+    .max(20, "Full name cannot exceed 20 characters")
     .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
   emailAddress: z
     .string()
-    .email("Please enter a valid email address")
+    .regex(/^[a-zA-Z0-9@\-_.]+@[a-zA-Z0-9@\-_.]+\.[a-zA-Z0-9@\-_.]+$/, "Please enter a valid email address")
     .optional()
     .or(z.literal("")),
   phoneNo: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .max(20, "Phone number cannot exceed 20 characters")
-    .regex(/^[+]?[\d\s\-\(\)]+$/, "Please enter a valid phone number"),
-  location: z.string().min(1, "Please select your location"),
+    .min(1, "Phone number is required")
+    .max(15, "Phone number cannot exceed 15 digits")
+    .regex(/^\d+$/, "Phone number can only contain numbers"),
+  location: z
+    .string()
+    .min(1, "Please select your location")
+    .max(50, "Location cannot exceed 50 characters")
+    .regex(/^[a-zA-Z0-9\s.,\-]+$/, "Location contains invalid characters"),
   message: z
     .string()
-    .max(1000, "Message cannot exceed 1000 characters")
-    .optional(),
+    .max(200, "Message cannot exceed 200 characters")
+    .regex(/^[a-zA-Z\s]*$/, "Message can only contain letters")
+    .optional()
+    .or(z.literal("")),
 });
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
@@ -102,6 +108,7 @@ export default function ContactSection({
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -112,6 +119,53 @@ export default function ContactSection({
       message: "",
     },
   });
+
+  // Input filtering functions
+  const filterName = (value: string) => {
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 20);
+  };
+
+  const filterPhone = (value: string) => {
+    return value.replace(/\D/g, "").slice(0, 15);
+  };
+
+  const filterEmail = (value: string) => {
+    return value.replace(/[^a-zA-Z0-9@\-_.]/g, "");
+  };
+
+  const filterLocation = (value: string) => {
+    return value.replace(/[^a-zA-Z0-9\s.,\-]/g, "").slice(0, 50);
+  };
+
+  const filterMessage = (value: string) => {
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 200);
+  };
+
+  // Input handlers with filtering
+  const handleNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterName(e.target.value);
+    setValue("fullName", filtered, { shouldValidate: true });
+  };
+
+  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterPhone(e.target.value);
+    setValue("phoneNo", filtered, { shouldValidate: true });
+  };
+
+  const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterEmail(e.target.value);
+    setValue("emailAddress", filtered, { shouldValidate: true });
+  };
+
+  const handleLocationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterLocation(e.target.value);
+    setValue("location", filtered, { shouldValidate: true });
+  };
+
+  const handleMessageInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const filtered = filterMessage(e.target.value);
+    setValue("message", filtered, { shouldValidate: true });
+  };
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -299,6 +353,8 @@ export default function ContactSection({
                     {...register("fullName")}
                     id="fullName"
                     placeholder="Enter your full name"
+                    maxLength={20}
+                    onInput={handleNameInput}
                     className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                       errors.fullName
                         ? "border-red-400"
@@ -327,6 +383,8 @@ export default function ContactSection({
                       id="phoneNo"
                       type="tel"
                       placeholder="Enter your phone number"
+                      maxLength={15}
+                      onInput={handlePhoneInput}
                       className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                         errors.phoneNo
                           ? "border-red-400"
@@ -354,6 +412,7 @@ export default function ContactSection({
                       id="emailAddress"
                       type="email"
                       placeholder="Enter your email address"
+                      onInput={handleEmailInput}
                       className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                         errors.emailAddress
                           ? "border-red-400"
@@ -382,6 +441,8 @@ export default function ContactSection({
                     id="location"
                     type="text"
                     placeholder="Enter your location"
+                    maxLength={50}
+                    onInput={handleLocationInput}
                     className={`w-full bg-transparent border px-4 py-2 rounded text-white ${
                       errors.location
                         ? "border-red-400"
@@ -408,6 +469,8 @@ export default function ContactSection({
                     {...register("message")}
                     id="message"
                     placeholder="Tell us about your inquiry..."
+                    maxLength={200}
+                    onInput={handleMessageInput}
                     className={`w-full bg-transparent border px-4 py-2 rounded min-h-[96px] text-white ${
                       errors.message
                         ? "border-red-400"

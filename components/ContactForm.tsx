@@ -19,25 +19,30 @@ import { useRouter } from "next/navigation";
 const contactFormSchema = z.object({
   fullName: z
     .string()
-    .min(2, "Full name must be at least 2 characters")
-    .max(100, "Full name cannot exceed 100 characters")
+    .min(1, "Full name is required")
+    .max(20, "Full name cannot exceed 20 characters")
     .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
   emailAddress: z
     .string()
-    .email("Please enter a valid email address")
-    .max(255, "Email cannot exceed 255 characters")
+    .regex(/^[a-zA-Z0-9@\-_.]+@[a-zA-Z0-9@\-_.]+\.[a-zA-Z0-9@\-_.]+$/, "Please enter a valid email address")
     .optional()
     .or(z.literal("")),
   phoneNo: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
+    .min(1, "Phone number is required")
     .max(15, "Phone number cannot exceed 15 digits")
-    .regex(/^[0-9+\-\s()]+$/, "Please enter a valid phone number"),
-  location: z.string().min(1, "Please enter your location"),
+    .regex(/^\d+$/, "Phone number can only contain numbers"),
+  location: z
+    .string()
+    .min(1, "Please enter your location")
+    .max(50, "Location cannot exceed 50 characters")
+    .regex(/^[a-zA-Z0-9\s.,\-]+$/, "Location contains invalid characters"),
   message: z
     .string()
-    .max(1000, "Message cannot exceed 1000 characters")
-    .optional(),
+    .max(200, "Message cannot exceed 200 characters")
+    .regex(/^[a-zA-Z\s]*$/, "Message can only contain letters")
+    .optional()
+    .or(z.literal("")),
 });
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
@@ -54,6 +59,8 @@ const ContactForm = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
+    watch,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -64,6 +71,53 @@ const ContactForm = () => {
       message: "",
     },
   });
+
+  // Input filtering functions
+  const filterName = (value: string) => {
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 20);
+  };
+
+  const filterPhone = (value: string) => {
+    return value.replace(/\D/g, "").slice(0, 15);
+  };
+
+  const filterEmail = (value: string) => {
+    return value.replace(/[^a-zA-Z0-9@\-_.]/g, "");
+  };
+
+  const filterLocation = (value: string) => {
+    return value.replace(/[^a-zA-Z0-9\s.,\-]/g, "").slice(0, 50);
+  };
+
+  const filterMessage = (value: string) => {
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 200);
+  };
+
+  // Input handlers with filtering
+  const handleNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterName(e.target.value);
+    setValue("fullName", filtered, { shouldValidate: true });
+  };
+
+  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterPhone(e.target.value);
+    setValue("phoneNo", filtered, { shouldValidate: true });
+  };
+
+  const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterEmail(e.target.value);
+    setValue("emailAddress", filtered, { shouldValidate: true });
+  };
+
+  const handleLocationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filtered = filterLocation(e.target.value);
+    setValue("location", filtered, { shouldValidate: true });
+  };
+
+  const handleMessageInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const filtered = filterMessage(e.target.value);
+    setValue("message", filtered, { shouldValidate: true });
+  };
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -181,6 +235,8 @@ const ContactForm = () => {
                   {...register("fullName")}
                   type="text"
                   placeholder="Enter your full name"
+                  maxLength={20}
+                  onInput={handleNameInput}
                   className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                     errors.fullName
                       ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -206,6 +262,7 @@ const ContactForm = () => {
                   {...register("emailAddress")}
                   type="email"
                   placeholder="Enter your email address"
+                  onInput={handleEmailInput}
                   className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                     errors.emailAddress
                       ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -229,6 +286,8 @@ const ContactForm = () => {
                   {...register("phoneNo")}
                   type="tel"
                   placeholder="Enter your phone number"
+                  maxLength={15}
+                  onInput={handlePhoneInput}
                   className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                     errors.phoneNo
                       ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -254,6 +313,8 @@ const ContactForm = () => {
                   {...register("location")}
                   type="text"
                   placeholder="Enter your location"
+                  maxLength={50}
+                  onInput={handleLocationInput}
                   className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                     errors.location
                       ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -278,6 +339,8 @@ const ContactForm = () => {
                 {...register("message")}
                 placeholder="Tell us about your investment goals..."
                 rows={3}
+                maxLength={200}
+                onInput={handleMessageInput}
                 className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none ${
                   errors.message
                     ? "border-red-400 focus:border-red-400 focus:ring-red-400"

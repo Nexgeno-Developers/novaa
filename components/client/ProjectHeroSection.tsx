@@ -60,6 +60,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
     fullName: "",
     phone: "",
     email: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -268,31 +269,44 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       fullName: "",
       phone: "",
       email: "",
+      message: "",
     };
 
+    // Name validation (letters only, max 20)
     if (!formData.fullName.trim()) {
       errors.fullName = "Full name is required";
-    } else if (formData.fullName.trim().length < 2) {
-      errors.fullName = "Full name must be at least 2 characters";
     } else if (!/^[a-zA-Z\s]+$/.test(formData.fullName)) {
-      errors.fullName = "Name can only contain letters and spaces";
+      errors.fullName = "Name can only contain letters";
+    } else if (formData.fullName.length > 20) {
+      errors.fullName = "Name cannot exceed 20 characters";
     }
 
+    // Phone validation (numbers only, max 15)
     if (!formData.phone.trim()) {
       errors.phone = "Phone number is required";
-    } else if (!/^[0-9+\-\s()]{10,}$/.test(formData.phone)) {
-      errors.phone = "Please enter a valid phone number";
+    } else if (!/^\d+$/.test(formData.phone)) {
+      errors.phone = "Phone number can only contain numbers";
+    } else if (formData.phone.length > 15) {
+      errors.phone = "Phone number cannot exceed 15 digits";
     }
 
+    // Email validation
     if (
       formData.email.trim() &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+      !/^[a-zA-Z0-9@\-_.]+@[a-zA-Z0-9@\-_.]+\.[a-zA-Z0-9@\-_.]+$/.test(formData.email)
     ) {
       errors.email = "Please enter a valid email address";
     }
 
+    // Message validation (letters only, max 200)
+    if (formData.message && formData.message.trim() && !/^[a-zA-Z\s]+$/.test(formData.message)) {
+      errors.message = "Message can only contain letters";
+    } else if (formData.message && formData.message.length > 200) {
+      errors.message = "Message cannot exceed 200 characters";
+    }
+
     setFormErrors(errors);
-    return !errors.fullName && !errors.phone && !errors.email;
+    return !errors.fullName && !errors.phone && !errors.email && !errors.message;
   };
 
   const handleBrochureClick = () => {
@@ -302,17 +316,48 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
   const handleCloseForm = () => {
     setShowBrochureForm(false);
     setFormData({ fullName: "", phone: "", email: "", message: "" });
-    setFormErrors({ fullName: "", phone: "", email: "" });
+    setFormErrors({ fullName: "", phone: "", email: "", message: "" });
     dispatch(resetSubmissionStatus());
+  };
+
+  // Input filtering functions
+  const filterName = (value: string) => {
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 20);
+  };
+
+  const filterPhone = (value: string) => {
+    return value.replace(/\D/g, "").slice(0, 15);
+  };
+
+  const filterEmail = (value: string) => {
+    return value.replace(/[^a-zA-Z0-9@\-_.]/g, "");
+  };
+
+  const filterMessage = (value: string) => {
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 200);
   };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    
+    let filteredValue = value;
+    
+    // Apply filters based on field name
+    if (name === "fullName") {
+      filteredValue = filterName(value);
+    } else if (name === "phone") {
+      filteredValue = filterPhone(value);
+    } else if (name === "email") {
+      filteredValue = filterEmail(value);
+    } else if (name === "message") {
+      filteredValue = filterMessage(value);
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: filteredValue,
     }));
     if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors((prev) => ({
@@ -533,6 +578,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
+                    maxLength={20}
                     placeholder="Enter your full name"
                     className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                   />
@@ -554,6 +600,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    maxLength={15}
                     placeholder="Enter your phone number"
                     className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.phone
@@ -605,6 +652,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                     onChange={handleInputChange}
                     placeholder="Any specific requirements or questions?"
                     rows={3}
+                    maxLength={200}
                     className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none border-[#FFFFFF80]"
                   />
                 </div>

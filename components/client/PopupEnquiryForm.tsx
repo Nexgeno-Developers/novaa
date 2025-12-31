@@ -58,46 +58,101 @@ const PopupEnquiryForm = () => {
       description: "",
     };
 
-    // Name validation (required)
+    // Name validation (required, letters only, max 20)
     if (!formData.fullName.trim()) {
       errors.fullName = "Name is required";
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.fullName)) {
+      errors.fullName = "Name can only contain letters";
+    } else if (formData.fullName.length > 20) {
+      errors.fullName = "Name cannot exceed 20 characters";
     }
 
     // Email validation (optional, but if provided must be valid)
     if (formData.email.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[a-zA-Z0-9@\-_.]+@[a-zA-Z0-9@\-_.]+\.[a-zA-Z0-9@\-_.]+$/;
       if (!emailRegex.test(formData.email)) {
         errors.email = "Please enter a valid email address";
       }
     }
 
-    // Phone validation (required)
+    // Phone validation (required, numbers only, max 15)
     if (!formData.phone.trim()) {
       errors.phone = "Phone number is required";
-    } else {
-      const phoneRegex = /^[+]?[\d\s\-\(\)]+$/;
-      if (!phoneRegex.test(formData.phone)) {
-        errors.phone = "Invalid phone number format";
-      }
+    } else if (!/^\d+$/.test(formData.phone)) {
+      errors.phone = "Phone number can only contain numbers";
+    } else if (formData.phone.length > 15) {
+      errors.phone = "Phone number cannot exceed 15 digits";
     }
 
-    // Location validation (required)
+    // Location validation (required, allowed chars, max 50)
     if (!formData.location.trim()) {
       errors.location = "Location is required";
+    } else if (!/^[a-zA-Z0-9\s.,\-]+$/.test(formData.location)) {
+      errors.location = "Location contains invalid characters";
+    } else if (formData.location.length > 50) {
+      errors.location = "Location cannot exceed 50 characters";
     }
 
-    // Description is optional, no validation needed
+    // Description validation (optional, letters only, max 200)
+    if (formData.description.trim() && !/^[a-zA-Z\s]+$/.test(formData.description)) {
+      errors.description = "Description can only contain letters";
+    } else if (formData.description.length > 200) {
+      errors.description = "Description cannot exceed 200 characters";
+    }
 
     setFormErrors(errors);
-    return !errors.fullName && !errors.email && !errors.phone && !errors.location;
+    return !errors.fullName && !errors.email && !errors.phone && !errors.location && !errors.description;
+  };
+
+  // Input filtering functions
+  const filterName = (value: string) => {
+    // Only letters and spaces, max 20 characters
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 20);
+  };
+
+  const filterPhone = (value: string) => {
+    // Only numbers, max 15 characters
+    return value.replace(/\D/g, "").slice(0, 15);
+  };
+
+  const filterEmail = (value: string) => {
+    // Only @, -, _, and alphanumeric characters
+    return value.replace(/[^a-zA-Z0-9@\-_.]/g, "");
+  };
+
+  const filterLocation = (value: string) => {
+    // Only letters, numbers, spaces, and basic punctuation (.,-), max 50 characters
+    // Exclude: #$%^&*() etc
+    return value.replace(/[^a-zA-Z0-9\s.,\-]/g, "").slice(0, 50);
+  };
+
+  const filterDescription = (value: string) => {
+    // Only letters and spaces, max 200 characters
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 200);
   };
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    let filteredValue = value;
+    
+    // Apply filters based on field name
+    if (name === "fullName") {
+      filteredValue = filterName(value);
+    } else if (name === "phone") {
+      filteredValue = filterPhone(value);
+    } else if (name === "email") {
+      filteredValue = filterEmail(value);
+    } else if (name === "location") {
+      filteredValue = filterLocation(value);
+    } else if (name === "description") {
+      filteredValue = filterDescription(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: filteredValue,
     }));
 
     // Clear error when user starts typing
@@ -250,6 +305,7 @@ const PopupEnquiryForm = () => {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
+                    maxLength={20}
                     className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.fullName
                         ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -303,6 +359,7 @@ const PopupEnquiryForm = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    maxLength={15}
                     className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.phone
                         ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -329,6 +386,7 @@ const PopupEnquiryForm = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
+                    maxLength={50}
                     className={`w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 ${
                       formErrors.location
                         ? "border-red-400 focus:border-red-400 focus:ring-red-400"
@@ -357,6 +415,7 @@ const PopupEnquiryForm = () => {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
+                    maxLength={200}
                     className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none border-[#FFFFFF80]"
                     placeholder="Enter your message or description"
                   />
