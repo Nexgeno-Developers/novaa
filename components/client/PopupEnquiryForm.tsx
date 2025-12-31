@@ -292,7 +292,9 @@ const PopupEnquiryForm = () => {
                 </div>
 
                 {/* Phone Field (Required) */}
-                <div>
+
+                <div className="lg:flex justify-between">
+                     <div>
                   <label className="block text-primary text-sm font-medium mb-2">
                     Phone Number *
                   </label>
@@ -342,6 +344,8 @@ const PopupEnquiryForm = () => {
                     </p>
                   )}
                 </div>
+                </div>
+                
 
                 {/* Description Field (Optional) */}
                 <div>
