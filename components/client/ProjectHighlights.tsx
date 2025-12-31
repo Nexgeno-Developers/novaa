@@ -285,7 +285,7 @@ const HoverImageCard = ({
 
         {/* Caption Overlay */}
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
-          <h3 className="text-white text-lg font-semibold font-josefin">
+          <h3 className="text-white text-lg font-semibold font-josefin capitalize">
             {title}
           </h3>
         </div>
