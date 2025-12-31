@@ -74,12 +74,48 @@ export default function Navbar({ data }: NavbarProps) {
   // Rest of items (excluding last one)
   const mainNavItems = activeItems.slice(0, -1);
 
+  // Input filtering functions
+  const filterName = (value: string) => {
+    // Only letters and spaces, max 20 characters
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 20);
+  };
+
+  const filterPhone = (value: string) => {
+    // Only numbers, max 15 characters
+    return value.replace(/\D/g, "").slice(0, 15);
+  };
+
+  const filterEmail = (value: string) => {
+    // Only @, -, _, and alphanumeric characters
+    return value.replace(/[^a-zA-Z0-9@\-_.]/g, "");
+  };
+
+  const filterDescription = (value: string) => {
+    // Only letters and spaces, max 200 characters
+    return value.replace(/[^a-zA-Z\s]/g, "").slice(0, 200);
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    const { name, value } = e.target;
+    
+    let filteredValue = value;
+    
+    // Apply filters based on field name
+    if (name === "name") {
+      filteredValue = filterName(value);
+    } else if (name === "phone") {
+      filteredValue = filterPhone(value);
+    } else if (name === "email") {
+      filteredValue = filterEmail(value);
+    } else if (name === "description") {
+      filteredValue = filterDescription(value);
+    }
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: filteredValue,
     });
   };
 
@@ -441,6 +477,7 @@ export default function Navbar({ data }: NavbarProps) {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
+                    maxLength={20}
                     className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                     placeholder="Your full name"
                   />
@@ -472,6 +509,7 @@ export default function Navbar({ data }: NavbarProps) {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
+                    maxLength={15}
                     className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 border-[#FFFFFF80]"
                     placeholder="+1 (555) 000-0000"
                   />
@@ -487,6 +525,7 @@ export default function Navbar({ data }: NavbarProps) {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={3}
+                    maxLength={200}
                     className="w-full px-4 py-3 bg-transparent border rounded-lg text-[#FFFFFFCC] placeholder-[#FFFFFF80] focus:outline-none focus:border-primary focus:ring-1 focus:ring-[#FFFFFF80] transition-all duration-300 resize-none border-[#FFFFFF80]"
                     placeholder="Description (optional)"
                   />
