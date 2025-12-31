@@ -511,31 +511,39 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
               />
             </motion.div>
 
-            {/* Three Column Layout with Aligned Rows */}
+            {/* Three Column Layout with Flex */}
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-8"
+              className="flex flex-col lg:flex-row gap-2 lg:gap-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              style={{
-                gridTemplateRows: "auto 1fr", // First row auto-height for titles, second row flexible for buttons
-              }}
             >
-              {/* Left Column - Section Title */}
-              <motion.div variants={itemVariants} className="font-josefin">
+              {/* Left Column - Section Title and Buttons */}
+              <motion.div variants={itemVariants} className="font-josefin flex flex-col w-full lg:w-[30%]">
                 <h3 className="text-white font-medium text-lg lg:text-4xl text-center lg:text-left lg:mt-10">
                   {/* {gatewayData.sectionTitle} */}
                 </h3>
+                <div className="space-y-3 mt-4 lg:mt-8">
+                  {firstHalf.map((category, index) => (
+                    <CategoryButton
+                      key={`first-${index}`}
+                      category={category}
+                      index={index}
+                      isActive={safeActiveCategory === index}
+                      delay={index * 0.1}
+                    />
+                  ))}
+                </div>
               </motion.div>
 
               {/* Center Column - Interactive Map */}
               <motion.div
-                className="h-[400px] sm:h-[500px] lg:h-[700px] flex items-center justify-center row-span-2"
+                className="h-[400px] sm:h-[500px] lg:h-[700px] flex items-center justify-center w-full lg:w-[40%]"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <div className="relative w-full h-full max-w-lg map-container">
+                <div className="relative w-full h-full map-container">
                   <Image
                     key={mapImage}
                     src={mapImage}
@@ -778,34 +786,15 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
                 </div>
               </motion.div>
 
-              {/* Right Column - Section Description */}
-              <motion.div variants={itemVariants} className="font-josefin">
+              {/* Right Column - Section Description and Buttons */}
+              <motion.div variants={itemVariants} className="font-josefin flex flex-col w-full lg:w-[30%]">
                 {/* <div
                   className="text-[#FFFFFFE5] description-text w-full text-center lg:text-left"
                   dangerouslySetInnerHTML={{
                     __html: gatewayData.sectionDescription,
                   }}
                 /> */}
-              </motion.div>
-
-              {/* Left Column - First 2 Category Buttons (Second Row) */}
-              <motion.div variants={itemVariants} className="font-josefin">
-                <div className="space-y-3">
-                  {firstHalf.map((category, index) => (
-                    <CategoryButton
-                      key={`first-${index}`}
-                      category={category}
-                      index={index}
-                      isActive={safeActiveCategory === index}
-                      delay={index * 0.1}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Right Column - Last 2 Category Buttons (Second Row) */}
-              <motion.div variants={itemVariants} className="font-josefin">
-                <div className="space-y-3">
+                <div className="space-y-3 mt-4 lg:mt-8">
                   {secondHalf.map((category, index) => {
                     const actualIndex =
                       Math.ceil(categories.length / 2) + index;

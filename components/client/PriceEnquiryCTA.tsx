@@ -212,7 +212,7 @@ const PriceEnquiryCTA = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-center sm:text-left max-w-[60%]"
+              className="text-center sm:text-left lg:max-w-[60%]"
             >
               <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] font-cinzel  text-white mb-2">
                 Get Your{" "}

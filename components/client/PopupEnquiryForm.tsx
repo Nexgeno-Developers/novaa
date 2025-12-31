@@ -205,7 +205,7 @@ const PopupEnquiryForm = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto lg:pt-[30px] pt-[220px]"
             onClick={handleCloseForm}
           >
             {/* Form */}
@@ -293,7 +293,7 @@ const PopupEnquiryForm = () => {
 
                 {/* Phone Field (Required) */}
 
-                <div className="lg:flex justify-between">
+                <div className="flex justify-between">
                      <div>
                   <label className="block text-primary text-sm font-medium mb-2">
                     Phone Number *
