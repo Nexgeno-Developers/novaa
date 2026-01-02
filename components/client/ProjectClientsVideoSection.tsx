@@ -267,7 +267,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
                     >
                       <div className="relative w-full h-full">
                         <ReactPlayer
-                          ref={(player) => {
+                          ref={(player: any) => {
                             if (player) {
                               playerRefs.current[idx] = player;
                             }

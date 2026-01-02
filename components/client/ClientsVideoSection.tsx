@@ -266,7 +266,7 @@ const ClientVideosSection: React.FC = () => {
                     >
                       <div className="relative w-full h-full bg-gray-900">
                         <ReactPlayer
-                          ref={(player) => {
+                          ref={(player: any) => {
                             if (player) {
                               playerRefs.current[idx] = player;
                             }
