@@ -128,7 +128,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                           transition={{ delay: 0.2, duration: 0.4 }}
                           className="text-white font-medium text-base sm:text-2xl mb-1"
                         >
-                          C1 -{" "}
+                         
                           <span className="font-light">{tab.subtitle}</span>
                         </motion.p>
                       )}
@@ -139,7 +139,7 @@ const MasterplanSection = ({ project }: MasterplanSectionProps) => {
                           transition={{ delay: 0.3, duration: 0.4 }}
                           className="text-white font-medium text-base sm:text-2xl"
                         >
-                          C2 -{" "}
+                          
                           <span className="font-light">{tab.subtitle2}</span>
                         </motion.p>
                       )}
