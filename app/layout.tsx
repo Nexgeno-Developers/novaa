@@ -9,12 +9,14 @@ import { cn } from "@/lib/utils";
 import { Providers } from "@/lib/providers";
 import { Toaster } from "sonner";
 
-// Optimize fonts with Next.js font optimization
+// Optimize fonts with Next.js font optimization - self-hosted to avoid render blocking
 const josefinSans = Josefin_Sans({ 
   subsets: ["latin"],
   variable: "--font-josefin",
   display: "swap",
   preload: true,
+  fallback: ["system-ui", "arial"],
+  adjustFontFallback: true,
 });
 
 const cinzel = Cinzel({ 
@@ -23,6 +25,8 @@ const cinzel = Cinzel({
   display: "swap",
   preload: true,
   weight: ["400", "500", "600", "700"],
+  fallback: ["Georgia", "serif"],
+  adjustFontFallback: true,
 });
 
 const poppins = Poppins({ 
@@ -31,6 +35,8 @@ const poppins = Poppins({
   display: "swap",
   preload: false, // Only preload if used on initial page
   weight: ["300", "400", "500", "600", "700", "800"],
+  fallback: ["system-ui", "arial"],
+  adjustFontFallback: true,
 });
 
 const sourceCodePro = Source_Code_Pro({ 
@@ -39,11 +45,17 @@ const sourceCodePro = Source_Code_Pro({
   display: "swap",
   preload: false,
   weight: ["400", "500", "600"],
+  fallback: ["Courier New", "monospace"],
+  adjustFontFallback: true,
 });
 
 export const metadata = {
   title: "Novaa Global Properties",
   description: "Luxury real estate in Thailand, UAE, and Europe",
+  other: {
+    // Optimize font loading
+    "font-display": "swap",
+  },
 };
 
 export default function RootLayout({
