@@ -22,8 +22,8 @@ const josefinSans = Josefin_Sans({
 const cinzel = Cinzel({ 
   subsets: ["latin"],
   variable: "--font-cinzel",
-  display: "swap",
-  preload: true,
+  display: "swap", // Critical: Show fallback immediately, swap when font loads
+  preload: true, // Preload for faster LCP
   weight: ["400", "500", "600", "700"],
   fallback: ["Georgia", "serif"],
   adjustFontFallback: true,

@@ -57,7 +57,13 @@
 
 /* Font family classes - using CSS variables from Next.js font optimization */
 .font-cinzel {
-  font-family: var(--font-cinzel), serif;
+  font-family: var(--font-cinzel), Georgia, serif;
+  /* Critical: Ensure font-display swap for instant rendering */
+  font-display: swap;
+  /* Prevent invisible text during font load - critical for LCP */
+  visibility: visible !important;
+  /* Ensure text is always visible, even during font load */
+  opacity: 1 !important;
 }
 
 .font-josefin {

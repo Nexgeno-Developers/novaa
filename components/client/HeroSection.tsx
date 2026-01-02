@@ -412,14 +412,16 @@ export default function HeroSection({
           >
             <div className="container text-white hide-af-10-sec">
               <div>
-                <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1 }}
+                {/* LCP Element - Render immediately without animation delay */}
+                <div
                   className={`text-2xl lg:text-3xl xl:text-[60px] font-cinzel leading-[100%] tracking-[0%] font-normal`}
+                  style={{
+                    fontFamily: 'var(--font-cinzel), Georgia, serif',
+                    opacity: 1, // Ensure visible immediately
+                  }}
                 >
                   {title}{" "}
-                </motion.div>
+                </div>
 
                 {subtitle && (
                   <motion.div
