@@ -136,7 +136,7 @@ export default function CuratedCollection({
         <div className="flex flex-col lg:flex-row justify-center sm:justify-between items-center">
           <div className="mb-10 flex flex-col justify-center items-center lg:items-start text-center sm:text-left">
             <h2
-              className="font-cinzel text-2xl lg:text-3xl xl:text-[50px] font-bold mb-2 text-[#D4AF37]"
+              className="font-cinzel text-2xl lg:text-3xl xl:text-[50px] font-bold mb-3 text-[#D4AF37]"
               dangerouslySetInnerHTML={{ __html: title }}
             />
             <div
