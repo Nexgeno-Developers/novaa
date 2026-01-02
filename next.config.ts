@@ -6,40 +6,87 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        port: "", // Leave empty for default port
-        pathname: "/**", //  Allow any path on this hostname
+        port: "",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/dh5twxeqi/**", // Match your specific Cloudinary path
+        pathname: "/dh5twxeqi/**",
       },
       {
         protocol: "http",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/dh5twxeqi/**", // Match your specific Cloudinary path
+        pathname: "/dh5twxeqi/**",
       },
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/dofyqpsar/**", // Match your specific Cloudinary path
+        pathname: "/dofyqpsar/**",
       },
       {
         protocol: "http",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/dofyqpsar/**", // Match your specific Cloudinary path
+        pathname: "/dofyqpsar/**",
       },
       {
         protocol: "https",
         hostname: "images.pexels.com",
         port: "",
-        pathname: "/**", // Match your specific Cloudinary path
+        pathname: "/**",
       },
     ],
+    // Optimize images for better performance
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
+  },
+  // Enable compression
+  compress: true,
+  // Optimize production builds
+  swcMinify: true,
+  // Add headers for caching static assets
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+        ],
+      },
+      {
+        // Cache static assets
+        source: "/:path*\\.(jpg|jpeg|png|gif|ico|svg|webp|avif|woff|woff2|ttf|eot)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Cache CSS and JS
+        source: "/:path*\\.(css|js)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
   },
   webpack: (config, { isServer }) => {
     // Handle Fabric.js canvas dependency
