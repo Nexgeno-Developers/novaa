@@ -121,6 +121,8 @@ export default function PhuketPropertiesSection({
         fill
         className="object-cover"
         priority
+        quality={75}
+        sizes="100vw"
       />
       <div
         className="absolute inset-0 z-0"

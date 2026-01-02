@@ -287,7 +287,7 @@ export class CloudinaryService {
     return this.searchFiles(undefined, resourceType, maxResults, nextCursor);
   }
 
-  // Get optimized URL for display
+  // Get optimized URL for display with better compression
   getOptimizedUrl(
     publicId: string,
     options: {
@@ -300,9 +300,11 @@ export class CloudinaryService {
     return cloudinary.url(publicId, {
       width: options.width,
       height: options.height,
-      quality: options.quality || "auto:good",
+      quality: options.quality || "auto:best", // Better compression
       format: options.format || "auto",
       crop: "fill",
+      fetch_format: "auto", // Auto WebP/AVIF
+      flags: ["progressive"], // Progressive JPEG
     });
   }
 }

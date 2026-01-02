@@ -430,6 +430,8 @@ export default function WhyInvestSection({
                   alt="Investment Image 1"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
+                  quality={75}
+                  sizes="(max-width: 768px) 50vw, 25vw"
                 />
               </motion.div>
             )}
@@ -445,6 +447,8 @@ export default function WhyInvestSection({
                   alt="Investment Image 2"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
+                  quality={75}
+                  sizes="(max-width: 768px) 50vw, 25vw"
                 />
               </motion.div>
             )}
@@ -460,6 +464,8 @@ export default function WhyInvestSection({
                   alt="Investment Image 3"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
+                  quality={75}
+                  sizes="(max-width: 768px) 50vw, 30vw"
                 />
               </motion.div>
             )}
@@ -475,6 +481,8 @@ export default function WhyInvestSection({
                   alt="Investment Image 4"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
+                  quality={75}
+                  sizes="(max-width: 768px) 50vw, 20vw"
                 />
               </motion.div>
             )}

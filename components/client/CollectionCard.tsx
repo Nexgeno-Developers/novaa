@@ -294,6 +294,8 @@ export default function CollectionCard({
                     className="object-cover h-full group-hover:scale-105 transition-all duration-300"
                     priority={imgIndex === 0}
                     placeholder="empty"
+                    quality={75}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
               )
