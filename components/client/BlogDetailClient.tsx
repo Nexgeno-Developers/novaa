@@ -378,6 +378,7 @@ export default function BlogDetailClient({
         .blog-content li {
           margin-bottom: 0.5rem;
           line-height: 1.7;
+          font-family: "Josefin Sans", sans-serif;
         }
 
         .blog-content a {
