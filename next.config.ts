@@ -87,6 +87,10 @@ const nextConfig: NextConfig = {
             key: "X-Frame-Options",
             value: "SAMEORIGIN",
           },
+          {
+            key: "Link",
+            value: '<https://vumbnail.com>; rel=dns-prefetch, <https://player.vimeo.com>; rel=dns-prefetch, <https://res.cloudinary.com>; rel=dns-prefetch',
+          },
         ],
       },
       {

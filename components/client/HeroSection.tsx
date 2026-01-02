@@ -3,9 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+
+// Lazy load framer-motion to reduce initial bundle size and improve LCP
+const motion = dynamic(() => import("framer-motion").then((mod) => mod.motion.div), { ssr: false }) as any;
+const AnimatePresence = dynamic(() => import("framer-motion").then((mod) => mod.AnimatePresence), { ssr: false }) as any;
+const MotionButton = dynamic(() => import("framer-motion").then((mod) => mod.motion.button), { ssr: false }) as any;
+const MotionDiv = dynamic(() => import("framer-motion").then((mod) => mod.motion.div), { ssr: false }) as any;
 
 interface HighlightedWord {
   word: string;
@@ -355,16 +361,14 @@ export default function HeroSection({
         )}
       </div>
 
-      {/* Video Controls - Only show for video/vimeo */}
+      {/* Video Controls - Only show for video/vimeo - Use regular buttons for better performance */}
       {(backgroundMedia.type === "video" ||
         backgroundMedia.type === "vimeo") && (
         <div className="absolute flex-col bottom-24 xl:bottom-28 right-5 sm:right-8 z-20 flex gap-3">
-          {/* Play/Pause Button */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          {/* Play/Pause Button - No framer-motion for better performance */}
+          <button
             onClick={togglePlayPause}
-            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 cursor-pointer"
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95"
             aria-label={isPlaying ? "Pause video" : "Play video"}
           >
             {isPlaying ? (
@@ -372,14 +376,12 @@ export default function HeroSection({
             ) : (
               <Play className="w-5 h-5 ml-0.5" />
             )}
-          </motion.button>
+          </button>
 
-          {/* Mute/Unmute Button */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+          {/* Mute/Unmute Button - No framer-motion for better performance */}
+          <button
             onClick={toggleMute}
-            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 cursor-pointer"
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95"
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
             {isMuted ? (
@@ -387,7 +389,7 @@ export default function HeroSection({
             ) : (
               <Volume2 className="w-5 h-5" />
             )}
-          </motion.button>
+          </button>
         </div>
       )}
 
@@ -403,69 +405,57 @@ export default function HeroSection({
         }}
       />
 
-      {/* Text Overlay — fades out and unmounts after 10s of full page load */}
-      <AnimatePresence>
-        {!hideAfterDelay && (
-          <motion.div
-            className="absolute bottom-6 sm:bottom-10 w-full z-10"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="container text-white hide-af-10-sec">
-              <div>
-                {/* LCP Element - Render immediately without animation delay */}
-                <div
-                  className={`text-2xl lg:text-3xl xl:text-[60px] font-cinzel leading-[100%] tracking-[0%] font-normal`}
-                  style={{
-                    fontFamily: 'var(--font-cinzel), Georgia, serif',
-                    opacity: 1, // Ensure visible immediately
-                  }}
-                >
-                  {title}{" "}
-                </div>
-
-                {subtitle && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 0.2 }}
-                    className={`text-2xl lg:text-3xl font-bold xl:text-[60px] leading-[100%] mt-2 ${subtitleFontFamily}`}
-                    style={{
-                      background:
-                        "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
-                      WebkitBackgroundClip: "text",
-                      backgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      color: "transparent",
-                    }}
-                  >
-                    {subtitle}
-                  </motion.div>
-                )}
-
-                {ctaButton?.isActive && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 0.4 }}
-                    className="mt-6"
-                  >
-                    <Link href={ctaButton.href}>
-                      <Button
-                        size="lg"
-                        className="bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:scale-105"
-                      >
-                        {ctaButton.text}
-                      </Button>
-                    </Link>
-                  </motion.div>
-                )}
-              </div>
+      {/* Text Overlay — LCP Element renders immediately without framer-motion */}
+      <div className="absolute bottom-6 sm:bottom-10 w-full z-10">
+        <div className="container text-white">
+          <div>
+            {/* LCP Element - Critical: Render immediately, no animation delays */}
+            <div
+              className={`text-2xl lg:text-3xl xl:text-[60px] font-cinzel leading-[100%] tracking-[0%] font-normal`}
+              style={{
+                fontFamily: 'var(--font-cinzel), Georgia, serif',
+                opacity: 1,
+                visibility: 'visible',
+              }}
+            >
+              {title}{" "}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+            {/* Subtitle - Render immediately, animate later if needed */}
+            {subtitle && (
+              <div
+                className={`text-2xl lg:text-3xl font-bold xl:text-[60px] leading-[100%] mt-2 ${subtitleFontFamily}`}
+                style={{
+                  background:
+                    "radial-gradient(61.54% 61.54% at 1.15% 54.63%, #C3912F 0%, #F5E7A8 48.26%, #C3912F 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
+                  opacity: 1,
+                  visibility: 'visible',
+                }}
+              >
+                {subtitle}
+              </div>
+            )}
+
+            {/* CTA Button - Render immediately */}
+            {ctaButton?.isActive && (
+              <div className="mt-6">
+                <Link href={ctaButton.href}>
+                  <Button
+                    size="lg"
+                    className="bg-primary text-white hover:bg-primary/90 transition-all duration-300 hover:scale-105"
+                  >
+                    {ctaButton.text}
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

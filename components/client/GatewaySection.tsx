@@ -443,21 +443,21 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
       whileTap={{ scale: 0.98 }}
     >
       <div className="flex items-center justify-center">
-        <div className="flex items-center justify-center w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-2xl bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background">
+        <div className="flex items-center justify-center w-[40px] h-[40px] sm:w-[40px] sm:h-[40px] rounded-2xl bg-gradient-to-br from-[#F5E7A8] to-[#C3912F] text-background">
           <Image
             src={category.icon}
-            width={30}
-            height={30}
+            width={25}
+            height={25}
             alt={category.title}
             className="object-contain"
           />
         </div>
       </div>
       <div className="flex flex-col">
-        <span className="text-sm sm:text-lg font-normal font-josefin text-left">
+        <span className="lg:text-[20px] text-[16px] font-normal font-josefin text-left">
           {category.title}
         </span>
-        <p className="text-xs sm:text-lg font-light font-josefin text-left">
+        <p className="lg:text-[20px] text-[16px font-light font-josefin text-left">
           {category.description}
         </p>
       </div>
@@ -571,15 +571,15 @@ const GatewaySection: React.FC<GatewaySectionProps> = ({ project }) => {
                           <motion.foreignObject
                             x={convertedCoords.x - 12}
                             y={convertedCoords.y - 12}
-                            width="24"
-                            height="24"
+                            width="34"
+                            height="34"
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
                           >
-                            <div className="w-6 h-6 flex items-center justify-center">
+                            <div className="w-8 h-8 flex items-center justify-center bg-white p-1 rounded-full">
                               <img
-                                src="/gateway-images/main-project-icon.svg"
+                                src="/nova_favicon.png"
                                 alt="Main Project"
                                 className="w-full h-full drop-shadow-lg"
                               />
