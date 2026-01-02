@@ -67,6 +67,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
   // Video control states
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
+  const [shouldLoadVimeo, setShouldLoadVimeo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const vimeoIframeRef = useRef<HTMLIFrameElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
@@ -134,6 +135,27 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
   };
 
   const backgroundMedia = getBackgroundMedia();
+
+  // Defer Vimeo loading to prevent render blocking
+  useEffect(() => {
+    if (backgroundMedia.type === "vimeo") {
+      // Wait for page to be interactive before loading Vimeo
+      const loadVimeo = () => {
+        // Use requestIdleCallback if available, otherwise setTimeout
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(() => setShouldLoadVimeo(true), { timeout: 2000 });
+        } else {
+          setTimeout(() => setShouldLoadVimeo(true), 100);
+        }
+      };
+
+      if (document.readyState === 'complete') {
+        loadVimeo();
+      } else {
+        window.addEventListener('load', loadVimeo, { once: true });
+      }
+    }
+  }, [mediaType, heroData?.vimeoUrl]);
 
   // Vimeo Player API functions
   const sendVimeoCommand = (action: string, value?: any) => {
@@ -416,24 +438,41 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
       {/* Background Media - Conditional Rendering */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         {backgroundMedia.type === "vimeo" ? (
-          <iframe
-            ref={vimeoIframeRef}
-            src={backgroundMedia.src}
-            frameBorder="0"
-            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-            allowFullScreen
-            style={{
-              pointerEvents: "none",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "100vw",
-              height: "62.666vw",
-              minWidth: "159.5vh",
-              minHeight: "100vh",
-            }}
-          />
+          <>
+            {/* Show poster/placeholder first for instant load */}
+            {!shouldLoadVimeo && backgroundMedia.videoId && (
+              <div 
+                className="absolute inset-0 bg-black/20"
+                style={{
+                  backgroundImage: `url(https://vumbnail.com/${backgroundMedia.videoId}.jpg)`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+            )}
+            {/* Load Vimeo iframe only after page is ready */}
+            {shouldLoadVimeo && (
+              <iframe
+                ref={vimeoIframeRef}
+                src={backgroundMedia.src}
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                allowFullScreen
+                loading="lazy"
+                style={{
+                  pointerEvents: "none",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "100vw",
+                  height: "62.666vw",
+                  minWidth: "159.5vh",
+                  minHeight: "100vh",
+                }}
+              />
+            )}
+          </>
         ) : backgroundMedia.type === "video" ? (
           <video
             ref={videoRef}
