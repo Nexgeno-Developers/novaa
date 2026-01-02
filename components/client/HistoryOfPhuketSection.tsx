@@ -24,9 +24,10 @@ const HistoryOfPhuketSection = () => {
   const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay to work
   const [videoId] = useState("3o_f2rXdHgw");
 
-  // YouTube embed URL with parameters
+  // YouTube embed URL with parameters - Using privacy-enhanced mode to reduce cookies
   const getEmbedUrl = (autoplay: boolean = false, mute: boolean = true) => {
-    return `https://www.youtube.com/embed/${videoId}?autoplay=${
+    // Use youtube-nocookie.com to reduce third-party cookies
+    return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=${
       autoplay ? 1 : 0
     }&mute=${
       mute ? 1 : 0

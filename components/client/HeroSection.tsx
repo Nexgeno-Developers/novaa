@@ -317,6 +317,7 @@ export default function HeroSection({
                 allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                 allowFullScreen
                 loading="lazy"
+                title="Hero background video"
                 style={{
                   pointerEvents: "none",
                   position: "absolute",

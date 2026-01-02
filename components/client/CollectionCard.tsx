@@ -288,7 +288,7 @@ export default function CollectionCard({
                   }`}
                 >
                   <Image
-                    src={imageSrc}
+                    src={typeof imageSrc === 'string' ? imageSrc.replace(/^http:\/\//, 'https://') : imageSrc}
                     alt={`${property.name} - Image ${imgIndex + 1}`}
                     fill
                     className="object-cover h-full group-hover:scale-105 transition-all duration-300"
@@ -377,8 +377,9 @@ export default function CollectionCard({
                 className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors pointer-events-auto"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label="Previous image"
               >
-                <ChevronLeft className="w-[25px] h-[25px] lg:w-10 lg:h-10 bg-transparent" />
+                <ChevronLeft className="w-[25px] h-[25px] lg:w-10 lg:h-10 bg-transparent" aria-hidden="true" />
               </motion.button>
               <motion.button
                 onClick={(e) => {
@@ -389,8 +390,9 @@ export default function CollectionCard({
                 className="cursor-pointer text-[#FFFFFFCC] hover:text-white transition-colors pointer-events-auto"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label="Next image"
               >
-                <ChevronRight className="w-[25px] h-[25px] lg:w-10 lg:h-10 bg-transparent" />
+                <ChevronRight className="w-[25px] h-[25px] lg:w-10 lg:h-10 bg-transparent" aria-hidden="true" />
               </motion.button>
             </div>
           )}
@@ -415,6 +417,8 @@ export default function CollectionCard({
                         ? "bg-primary border-1 border-amber-400 scale-125"
                         : "bg-white/50 hover:bg-white/75"
                     }`}
+                    aria-label={`Go to image ${Number(imgIndex) + 1} of ${property.images.length}`}
+                    aria-current={(currentImageIndex[property._id] || 0) === imgIndex ? "true" : "false"}
                   />
                 )
               )}

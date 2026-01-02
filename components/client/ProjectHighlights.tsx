@@ -302,7 +302,8 @@ const YouTubeShortCard = ({
   title: string;
 }) => {
   const videoId = extractYouTubeId(youtubeUrl);
-  const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+  // Use youtube-nocookie.com to reduce third-party cookies
+  const embedUrl = videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1` : "";
 
   return (
     <motion.div

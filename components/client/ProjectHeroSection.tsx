@@ -459,6 +459,7 @@ const ProjectHeroSection: React.FC<ProjectHeroSectionProps> = ({ project }) => {
                 allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                 allowFullScreen
                 loading="lazy"
+                title="Project hero background video"
                 style={{
                   pointerEvents: "none",
                   position: "absolute",

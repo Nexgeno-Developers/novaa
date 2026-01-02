@@ -328,11 +328,13 @@ export default function Navbar({ data }: NavbarProps) {
             <button
               onClick={toggleMenu}
               className="lg:hidden rounded-md transition-colors"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? (
-                <X size={34} color="gold" />
+                <X size={34} color="gold" aria-hidden="true" />
               ) : (
-                <Menu size={34} color="gold" />
+                <Menu size={34} color="gold" aria-hidden="true" />
               )}
             </button>
           </div>
@@ -456,8 +458,9 @@ export default function Navbar({ data }: NavbarProps) {
                 <button
                   onClick={() => setIsBrochureModalOpen(false)}
                   className="text-white/60 hover:text-white transition-colors cursor-pointer"
+                  aria-label="Close brochure download modal"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-6 h-6" aria-hidden="true" />
                 </button>
               </div>
 

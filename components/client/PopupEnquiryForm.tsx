@@ -276,8 +276,9 @@ const PopupEnquiryForm = () => {
               <button
                 onClick={handleCloseForm}
                 className="cursor-pointer absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Close enquiry form"
               >
-                <X className="w-5 h-5 text-primary" />
+                <X className="w-5 h-5 text-primary" aria-hidden="true" />
               </button>
 
               {/* Header */}

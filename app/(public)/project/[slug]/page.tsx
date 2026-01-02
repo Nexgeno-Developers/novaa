@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
 import BreadcrumbsSection from "@/components/client/BreadcrumbsSection";
 import ProjectHeroSection from "@/components/client/ProjectHeroSection";
 import ProjectHighlights from "@/components/client/ProjectHighlights";
@@ -11,6 +12,21 @@ import ContactForm from "@/components/ContactForm";
 import GatewaySection from "@/components/client/GatewaySection";
 import ProjectClientsVideoSection from "@/components/client/ProjectClientsVideoSection";
 import PriceEnquiryCTA from "@/components/client/PriceEnquiryCTA";
+
+// Lazy load VirtualTour to improve initial page load
+const VirtualTour = dynamic(() => import("@/components/client/VirtualTour"), {
+  loading: () => (
+    <section className="py-10 sm:py-20 bg-white w-full">
+      <div className="">
+        <div className="w-full overflow-hidden shadow-lg bg-gray-100" style={{ height: "600px" }}>
+          <div className="h-full flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  ),
+});
 
 // API-based fetch function to avoid Mongoose schema issues
 async function getProjectBySlug(slug: string) {
@@ -251,6 +267,12 @@ export default async function ProjectDetailPage({
           projectName={project.name}
           clientVideos={project.projectDetail.clientVideos}
         />
+        {/* Virtual Tour Section */}
+        {/* <VirtualTour
+          tourUrl={project.projectDetail?.virtualTour || "https://storage.net-fs.com/hosting/6596533/37/"}
+          title="Virtual Tour"
+          height="600px"
+        /> */}
         {/* <ModernAmenities project={project} /> */}
         <MasterPlanSection project={project} />
         <InvestmentPlans project={project} />

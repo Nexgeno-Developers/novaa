@@ -36,17 +36,19 @@ export async function GET(request: NextRequest) {
       cursor
     );
 
-    // console.log("API sending result:", {
-    //   resourceCount: result.resources.length,
-    //   totalCount: result.total_count,
-    //   hasNextCursor: !!result.next_cursor,
-    //   resourceTypes: [...new Set(result.resources.map((r: any) => r.resource_type))],
-    //   formats: [...new Set(result.resources.map((r: any) => r.format))]
-    // });
+    // Ensure all URLs use HTTPS
+    const sanitizedResult = {
+      ...result,
+      resources: result.resources.map((resource: any) => ({
+        ...resource,
+        url: resource.secure_url || resource.url?.replace(/^http:\/\//, "https://") || resource.url,
+        secure_url: resource.secure_url || resource.url?.replace(/^http:\/\//, "https://") || resource.url,
+      })),
+    };
 
     return NextResponse.json({
       success: true,
-      data: result,
+      data: sanitizedResult,
     });
   } catch (error) {
     console.error("Media fetch error:", error);

@@ -3,6 +3,14 @@
  */
 
 /**
+ * Ensure URL uses HTTPS protocol (for Cloudinary and other URLs)
+ */
+export function ensureHttps(url: string): string {
+  if (!url) return url;
+  return url.replace(/^http:\/\//, "https://");
+}
+
+/**
  * Optimize Cloudinary URL with better compression settings
  */
 export function optimizeCloudinaryUrl(
@@ -19,13 +27,15 @@ export function optimizeCloudinaryUrl(
   }
 
   try {
-    const urlObj = new URL(url);
+    // Force HTTPS protocol
+    const httpsUrl = url.replace(/^http:\/\//, "https://");
+    const urlObj = new URL(httpsUrl);
     const pathParts = urlObj.pathname.split("/");
     const cloudNameIndex = pathParts.findIndex((part) =>
       part.includes("cloudinary")
     );
     
-    if (cloudNameIndex === -1) return url;
+    if (cloudNameIndex === -1) return httpsUrl;
 
     // Extract public_id from URL
     const publicId = pathParts.slice(cloudNameIndex + 2).join("/");
@@ -55,15 +65,17 @@ export function optimizeCloudinaryUrl(
     // Progressive loading for JPEG
     transformations.push("fl_progressive");
     
-    // Build new URL
+    // Build new URL - ensure HTTPS
     const transformString = transformations.join(",");
     const newPath = `/image/upload/${transformString}/${publicId}`;
     
+    urlObj.protocol = "https:";
     urlObj.pathname = newPath;
     return urlObj.toString();
   } catch (error) {
     console.error("Error optimizing Cloudinary URL:", error);
-    return url;
+    // Return original URL with HTTPS forced
+    return url.replace(/^http:\/\//, "https://");
   }
 }
 
@@ -79,9 +91,12 @@ export function getOptimizedImageProps(
     priority?: boolean;
   } = {}
 ) {
+  // Ensure HTTPS first
+  const httpsSrc = ensureHttps(src);
+  
   // If it's a Cloudinary URL, optimize it
-  if (src.includes("cloudinary.com")) {
-    const optimizedSrc = optimizeCloudinaryUrl(src, {
+  if (httpsSrc.includes("cloudinary.com")) {
+    const optimizedSrc = optimizeCloudinaryUrl(httpsSrc, {
       width: options.width,
       height: options.height,
       quality: options.quality || 75,
@@ -96,7 +111,7 @@ export function getOptimizedImageProps(
   }
   
   return {
-    src,
+    src: httpsSrc,
     quality: options.quality || 75,
     priority: options.priority || false,
   };

@@ -13,25 +13,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
-        pathname: "/dh5twxeqi/**",
-      },
-      {
-        protocol: "http",
-        hostname: "res.cloudinary.com",
-        port: "",
-        pathname: "/dh5twxeqi/**",
-      },
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        port: "",
-        pathname: "/dofyqpsar/**",
-      },
-      {
-        protocol: "http",
-        hostname: "res.cloudinary.com",
-        port: "",
-        pathname: "/dofyqpsar/**",
+        pathname: "/**",
       },
       {
         protocol: "https",
@@ -73,6 +55,8 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  // Generate source maps for production (helps with debugging and reduces "missing source maps" warning)
+  productionBrowserSourceMaps: false, // Set to true if you need source maps in production (increases build size)
   // Add headers for caching static assets
   async headers() {
     return [

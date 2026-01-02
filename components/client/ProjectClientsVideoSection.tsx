@@ -12,6 +12,9 @@ const ReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });
 
+// Import utility to convert YouTube URLs to privacy-enhanced mode
+import { convertToPrivacyEnhancedYouTube } from "@/lib/videoUtils";
+
 interface ClientVideo {
   url: string;
   order: number;
@@ -268,7 +271,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
                               playerRefs.current[idx] = player;
                             }
                           }}
-                          src={video.url}
+                          src={convertToPrivacyEnhancedYouTube(video.url)}
                           playing={isPlaying}
                           loop={true}
                           muted={false}
@@ -276,6 +279,15 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
                           width="100%"
                           height="100%"
                           controls={true}
+                          config={{
+                            youtube: {
+                              playerVars: {
+                                rel: 0,
+                                modestbranding: 1,
+                                playsinline: 1,
+                              },
+                            },
+                          }}
                           style={{
                             position: "absolute",
                             top: 0,
@@ -300,7 +312,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-12 z-40 bg-[#CDB04E] hover:bg-[#F5E7A8] text-black rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 cursor-pointer"
             aria-label="Previous video"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-6 h-6" aria-hidden="true" />
           </button>
 
           <button
@@ -308,7 +320,7 @@ const ProjectClientsVideoSection: React.FC<ProjectClientsVideoSectionProps> = ({
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-12 z-40 bg-[#CDB04E] hover:bg-[#F5E7A8] text-black rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 cursor-pointer"
             aria-label="Next video"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 

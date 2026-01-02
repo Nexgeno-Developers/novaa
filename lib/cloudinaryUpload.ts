@@ -5,6 +5,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true, // Force HTTPS for all URLs
 });
 
 export interface CloudinaryUploadResult {
@@ -88,10 +89,14 @@ export class CloudinaryService {
         overwrite: false,
       });
 
+      // Ensure all URLs use HTTPS
+      const secureUrl = result.secure_url || result.url?.replace(/^http:\/\//, "https://") || "";
+      const httpUrl = result.url?.replace(/^http:\/\//, "https://") || secureUrl;
+      
       return {
         success: true,
-        url: result.url,
-        secure_url: result.secure_url,
+        url: httpUrl, // Use HTTPS version
+        secure_url: secureUrl,
         public_id: result.public_id,
         format: result.format,
         resource_type: result.resource_type,
@@ -297,7 +302,8 @@ export class CloudinaryService {
       format?: string;
     } = {}
   ): string {
-    return cloudinary.url(publicId, {
+    // Force HTTPS by using secure_url or ensuring protocol is https
+    const url = cloudinary.url(publicId, {
       width: options.width,
       height: options.height,
       quality: options.quality || "auto:best", // Better compression
@@ -305,6 +311,10 @@ export class CloudinaryService {
       crop: "fill",
       fetch_format: "auto", // Auto WebP/AVIF
       flags: ["progressive"], // Progressive JPEG
+      secure: true, // Force HTTPS
     });
+    
+    // Ensure URL uses HTTPS
+    return url.replace(/^http:\/\//, "https://");
   }
 }

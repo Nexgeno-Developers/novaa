@@ -212,8 +212,9 @@ export default function EliteClientsTestimonials({
                   }}
                   onClick={scrollPrev}
                   className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg cursor-pointer"
+                  aria-label="Previous testimonial"
                 >
-                  <ArrowLeft className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" />
+                  <ArrowLeft className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" aria-hidden="true" />
                 </button>
 
                 <button
@@ -223,8 +224,9 @@ export default function EliteClientsTestimonials({
                   }}
                   onClick={scrollNext}
                   className="group flex items-center justify-center h-8 w-8 sm:w-12 sm:h-12 rounded-full bg-[#CDB04E] hover:bg-yellow-700 transition-colors duration-200 shadow-lg cursor-pointer"
+                  aria-label="Next testimonial"
                 >
-                  <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" />
+                  <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5 text-background group-hover:scale-110 transition-transform duration-200" aria-hidden="true" />
                 </button>
               </motion.div>
             )}
