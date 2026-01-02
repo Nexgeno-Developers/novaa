@@ -399,9 +399,10 @@ export default function WhyInvestSection({
                       <Link
                         href={`/why-invest#${point.title.replace(/\s+/g, '-').toLowerCase()}`}
                         className="inline-flex items-center gap-1 text-base text-[#D4AF37] hover:text-[#B8851A] font-medium transition-colors group/link absolute sm:-bottom-5 right-2 pl-2"
+                        aria-label={`Read more about ${point.title}`}
                       >
-                        Read More
-                        <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                        <span>Read More</span>
+                        <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" aria-hidden="true" />
                       </Link>
                     </div>
                   </div>
