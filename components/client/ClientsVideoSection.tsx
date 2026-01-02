@@ -270,7 +270,7 @@ const ClientVideosSection: React.FC = () => {
                               playerRefs.current[idx] = player;
                             }
                           }}
-                          src={convertToPrivacyEnhancedYouTube(video.url)}
+                          url={convertToPrivacyEnhancedYouTube(video.url)}
                           playing={isPlaying}
                           loop={true}
                           muted={false}
@@ -278,15 +278,6 @@ const ClientVideosSection: React.FC = () => {
                           width="100%"
                           height="100%"
                           controls={true}
-                          config={{
-                            youtube: {
-                              playerVars: {
-                                rel: 0,
-                                modestbranding: 1,
-                                playsinline: 1,
-                              },
-                            },
-                          }}
                           style={{
                             position: "absolute",
                             top: 0,
