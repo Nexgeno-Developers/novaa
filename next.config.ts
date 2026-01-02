@@ -55,6 +55,24 @@ const nextConfig: NextConfig = {
   compress: true,
   // Optimize production builds
   swcMinify: true,
+  // Experimental features for better performance
+  experimental: {
+    optimizePackageImports: [
+      'framer-motion',
+      'lucide-react',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-tooltip',
+    ],
+  },
+  // Optimize bundle size
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
   // Add headers for caching static assets
   async headers() {
     return [
@@ -93,7 +111,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     // Handle Fabric.js canvas dependency
     if (!isServer) {
       config.resolve.fallback = {
@@ -104,6 +122,46 @@ const nextConfig: NextConfig = {
         tls: false,
       };
     }
+
+    // Optimize bundle splitting for better performance
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Separate vendor chunks
+            framerMotion: {
+              name: 'framer-motion',
+              test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
+              priority: 30,
+              reuseExistingChunk: true,
+            },
+            radixUI: {
+              name: 'radix-ui',
+              test: /[\\/]node_modules[\\/](@radix-ui)[\\/]/,
+              priority: 25,
+              reuseExistingChunk: true,
+            },
+            redux: {
+              name: 'redux',
+              test: /[\\/]node_modules[\\/](@reduxjs|react-redux)[\\/]/,
+              priority: 20,
+              reuseExistingChunk: true,
+            },
+            vendor: {
+              name: 'vendor',
+              test: /[\\/]node_modules[\\/]/,
+              priority: 10,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
+    }
+
     return config;
   },
 };

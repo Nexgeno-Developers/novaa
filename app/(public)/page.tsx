@@ -1,20 +1,46 @@
 import React from "react";
 import connectDB from "@/lib/mongodb";
 import Section from "@/models/Section";
-
-import CuratedCollection from "@/components/client/CuratedCollection";
-import HeroSection from "@/components/client/HeroSection";
-import AboutPage from "@/components/client/About";
-import WhyInvestSection from "@/components/client/WhyInvestSection";
-import PhuketPropertiesSection from "@/components/client/PhuketPropertiesSection";
-import NovaaAdvantageSection from "@/components/client/NovaaAdvantageSection";
-import FaqSection from "@/components/client/FaqSection";
-import HistoryOfPhuketSection from "@/components/client/HistoryOfPhuketSection";
-import InvestorInsightsSection from "@/components/client/InvestorInsightsSection";
-import TestimonialsSection from "@/components/client/Testimonials";
-import ClientsVideoSection from "@/components/client/ClientsVideoSection";
+import nextDynamic from "next/dynamic";
 import { getSectionData } from "@/lib/data/getSectionData";
-import CounterSection from "@/components/client/CounterSection";
+
+// Critical components - load immediately (above the fold)
+import HeroSection from "@/components/client/HeroSection";
+
+// Non-critical components - lazy load for better performance
+const CuratedCollection = nextDynamic(() => import("@/components/client/CuratedCollection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const AboutPage = nextDynamic(() => import("@/components/client/About"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const WhyInvestSection = nextDynamic(() => import("@/components/client/WhyInvestSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const PhuketPropertiesSection = nextDynamic(() => import("@/components/client/PhuketPropertiesSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const NovaaAdvantageSection = nextDynamic(() => import("@/components/client/NovaaAdvantageSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const FaqSection = nextDynamic(() => import("@/components/client/FaqSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const HistoryOfPhuketSection = nextDynamic(() => import("@/components/client/HistoryOfPhuketSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const InvestorInsightsSection = nextDynamic(() => import("@/components/client/InvestorInsightsSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const TestimonialsSection = nextDynamic(() => import("@/components/client/Testimonials"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const ClientsVideoSection = nextDynamic(() => import("@/components/client/ClientsVideoSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
+const CounterSection = nextDynamic(() => import("@/components/client/CounterSection"), {
+  loading: () => <div className="min-h-[400px]" />,
+});
 
 // Define proper TypeScript interfaces based on your Section model
 interface SectionContent {
@@ -112,7 +138,6 @@ export default async function Home() {
   );
 }
 
-// Enable ISR with revalidation
-// This allows the page to be regenerated in the background
-export const revalidate = 30; // Revalidate every 30 seconds
+// Enable ISR with revalidation for better performance
+export const revalidate = 60; // Revalidate every 60 seconds
 export const dynamic = "force-static"; // Ensure the page is statically generated

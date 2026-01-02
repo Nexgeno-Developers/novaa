@@ -50,11 +50,16 @@ const sourceCodePro = Source_Code_Pro({
 });
 
 export const metadata = {
-  title: "Novaa Global Properties",
+  title: "Novaa Global Properties - Luxury Real Estate",
   description: "Luxury real estate in Thailand, UAE, and Europe",
   other: {
     // Optimize font loading
     "font-display": "swap",
+  },
+  // Performance optimizations
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

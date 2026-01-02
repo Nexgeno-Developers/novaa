@@ -1,11 +1,17 @@
-import Navbar from "@/components/client/Navbar";
-import Footer from "@/components/client/Footer";
-import WhatsAppChat from "@/components/ui/whatsapp-chat";
-import PopupEnquiryForm from "@/components/client/PopupEnquiryForm";
+import dynamic from "next/dynamic";
 import { getFooterData } from "@/lib/data/getFooterData";
 import { getNavbarData } from "@/lib/data/getNavbarData";
+
+// Critical - load immediately
+import Navbar from "@/components/client/Navbar";
 import LoadingBarWrapper from "@/components/client/LoadingBarWrapper";
-import NavigationLoadingProvider from "@/components/client/NavigationLoadingProvider"; 
+import NavigationLoadingProvider from "@/components/client/NavigationLoadingProvider";
+import ClientOnlyComponents from "@/components/client/ClientOnlyComponents";
+
+// Non-critical - lazy load below the fold components
+const Footer = dynamic(() => import("@/components/client/Footer"), {
+  loading: () => null,
+}); 
 // Fancybox CSS moved to be loaded dynamically where needed to avoid blocking render
 
 // Force dynamic rendering
@@ -29,12 +35,7 @@ export default async function PublicLayout({
           {navbarData && <Navbar data={navbarData} />}
           {children}
           {footerData && <Footer data={footerData} />}
-          <WhatsAppChat
-            phoneNumber="+9867724223"
-            websiteUrl="https://novaa-pi.vercel.app/"
-            companyName="Novaa Global Properties"
-          />
-          <PopupEnquiryForm />
+          <ClientOnlyComponents />
         </NavigationLoadingProvider>
       </LoadingBarWrapper>
     </>
