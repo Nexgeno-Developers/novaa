@@ -8,9 +8,10 @@ import useEmblaCarousel from "embla-carousel-react";
 // import Autoplay from "embla-carousel-autoplay";
 
 // Dynamically import ReactPlayer to avoid SSR issues
+// Type assertion needed because dynamic import doesn't preserve types
 const ReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
-});
+}) as any;
 
 // Import utility to convert YouTube URLs to privacy-enhanced mode
 import { convertToPrivacyEnhancedYouTube } from "@/lib/videoUtils";
