@@ -5,7 +5,7 @@ import PopupEnquiryForm from "@/components/client/PopupEnquiryForm";
 import { getFooterData } from "@/lib/data/getFooterData";
 import { getNavbarData } from "@/lib/data/getNavbarData";
 import LoadingBarWrapper from "@/components/client/LoadingBarWrapper";
-import NavigationLoadingProvider from "@/components/client/NavigationLoadingProvider";
+import NavigationLoadingProvider from "@/components/client/NavigationLoadingProvider"; 
 // Fancybox CSS moved to be loaded dynamically where needed to avoid blocking render
 
 // Force dynamic rendering
